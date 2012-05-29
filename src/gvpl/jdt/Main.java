@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
@@ -24,8 +25,12 @@ public class Main {
 		parser.setUnitName(file);
 			
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
-		cu.accept(new Visitor());
+		
+		ASTNode root = cu.getRoot();
+		Visitor visitor = new Visitor(root);
+		cu.accept(visitor);
  
+		System.out.println(visitor._root.toString());
 	}
  
 	//read file content into a string
