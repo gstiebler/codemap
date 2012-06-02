@@ -17,8 +17,8 @@ public class Graph {
 	public class GraphNode {
 		public GraphNodeId _id;
 		public String _name;
-		private NodeType _type;
-		List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
+		public NodeType _type;
+		public List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
 
 		public GraphNode(GraphNodeId id, String name, NodeType type) {
 			_id = id;
@@ -29,14 +29,14 @@ public class Graph {
 
 	public class GraphNodeId {
 
-		private int _id;
+		public int _id;
 
 		public GraphNodeId(int id) {
 			_id = id;
 		}
 	}
 
-	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
+	public List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
 
 	public GraphNode add_graph_node(String name, NodeType type) {
 		GraphNode graph_node = new GraphNode(new GraphNodeId(_graph_nodes.size()), name, type);

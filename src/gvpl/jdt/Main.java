@@ -1,7 +1,6 @@
 package gvpl.jdt;
 import gvpl.Graph;
 import gvpl.GraphBuilder;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,7 +34,9 @@ public class Main {
  
 		Graph gvpl_graph = new Graph();
 		GraphBuilder graph_builder = new GraphBuilder(gvpl_graph);
-		AstInterpreter ast_interpreter = new AstInterpreter(graph_builder, visitor._root);
+		new AstInterpreter(graph_builder, visitor._root);
+		
+		new gvpl.graphviz.FileDriver(graph_builder._gvpl_graph, "K:\\Projetos\\GVPL\\exemplos\\first.dot");
 	}
  
 	//read file content into a string
@@ -46,7 +47,6 @@ public class Main {
 		char[] buf = new char[10];
 		int numRead = 0;
 		while ((numRead = reader.read(buf)) != -1) {
-			System.out.println(numRead);
 			String readData = String.valueOf(buf, 0, numRead);
 			fileData.append(readData);
 			buf = new char[1024];

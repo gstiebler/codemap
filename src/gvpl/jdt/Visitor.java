@@ -9,6 +9,7 @@ import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.InfixExpression;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -87,6 +88,12 @@ public class Visitor extends ASTVisitor {
 	
 	@Override
 	public boolean visit(NumberLiteral node) {
+		insert(node);
+		return true;
+	}
+	
+	@Override
+	public boolean visit(BooleanLiteral node) {
 		insert(node);
 		return true;
 	}

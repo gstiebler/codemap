@@ -80,7 +80,7 @@ public class GraphBuilder {
 			eAssignBinOp.class);
 
 	/** Stores all the graph */
-	private Graph _gvpl_graph;
+	public Graph _gvpl_graph;
 
 	// TODO clear the variables that aren't in scope anymore
 	/** Converts a ast node id to a graph node id */

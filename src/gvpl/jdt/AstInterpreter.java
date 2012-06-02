@@ -24,6 +24,8 @@ public class AstInterpreter {
 	private int _var_id_gen = 1;
 	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	private Map<InfixExpression.Operator, eBinOp> _bin_op_types = new HashMap<InfixExpression.Operator, eBinOp>();
+	private Map<Assignment.Operator, eAssignBinOp> _assign_bin_op_types = 
+				new HashMap<Assignment.Operator, eAssignBinOp>();
 
 	public AstInterpreter(GraphBuilder graph_builder, ASTItem root) {
 		_graph_builder = graph_builder;
@@ -44,12 +46,15 @@ public class AstInterpreter {
 		_bin_op_types.put(InfixExpression.Operator.DIVIDE, eBinOp.E_DIV_OP);
 		_bin_op_types.put(InfixExpression.Operator.LESS, eBinOp.E_LESS_THAN_OP);
 		_bin_op_types.put(InfixExpression.Operator.GREATER, eBinOp.E_GREATER_THAN_OP);
+		
+		_assign_bin_op_types.put(Assignment.Operator.ASSIGN, eAssignBinOp.E_ASSIGN_OP);
+		_assign_bin_op_types.put(Assignment.Operator.PLUS_ASSIGN, eAssignBinOp.E_PLUS_ASSIGN_OP);
+		_assign_bin_op_types.put(Assignment.Operator.MINUS_ASSIGN, eAssignBinOp.E_SUB_ASSIGN_OP);
 	}
 
 	private void load_function(ASTItem node) {
 		MethodDeclaration md = (MethodDeclaration) node._ast_item;
 		String function_name = md.getName().toString();
-		System.out.println(function_name);
 		List<GraphBuilder.VarDecl> list = new ArrayList<GraphBuilder.VarDecl>();
 		_graph_builder.enter_function(function_name, list);
 
@@ -63,7 +68,7 @@ public class AstInterpreter {
 	}
 
 	private void load_basic_block(ASTItem node) {
-		Block block = (Block)node._ast_item;
+		//Block block = (Block)node._ast_item;
 
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);
@@ -75,8 +80,6 @@ public class AstInterpreter {
 	private void load_instruction_line(ASTItem node) {
 		ASTNode ast_node = node._ast_item;
 
-		System.out.println("load_instruction_line " + ast_node.toString());
-
 		if (ast_node instanceof VariableDeclarationFragment)
 			load_var_decl(node);
 		else if (ast_node instanceof ExpressionStatement)
@@ -85,8 +88,6 @@ public class AstInterpreter {
 			load_for_stmt(node);
 		else if (ast_node instanceof Assignment)
 			load_assign_bin_op_types(node);
-		else if (ast_node instanceof SimpleName)
-			ErrorOutputter.warning("Não sei pq cai aqui. " + ast_node.toString());
 		else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + ast_node.toString());
 	}
@@ -113,7 +114,7 @@ public class AstInterpreter {
 
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);
-			if (curr_node._ast_item instanceof NumberLiteral) {
+			if (curr_node._ast_item instanceof NumberLiteral || curr_node._ast_item instanceof BooleanLiteral) {
 				GraphNode val = load_direct_value(curr_node);
 				_graph_builder.add_assign_op(var_decl._id, val);
 			}
@@ -121,16 +122,18 @@ public class AstInterpreter {
 	}
 
 	GraphNode load_assign_bin_op_types(ASTItem node) {
+		Assignment assignment = (Assignment)node._ast_item;
+		
 		VarId lhs_var_id = load_lhs(node._AST.get(0));
 		GraphNode rvalue = load_value(node._AST.get(1));
 		
-		if(true) { //TODO verificar se o assign é = e não é += 
+		if(assignment.getOperator() == Assignment.Operator.ASSIGN) {
 			_graph_builder.add_assign_op(lhs_var_id, rvalue); 
 			return null; 
 		}
 		
 		GraphNode lvalue = load_value(node._AST.get(0));
-		eAssignBinOp op = eAssignBinOp.E_PLUS_ASSIGN_OP; //TODO verificar qual o verdadeiro
+		eAssignBinOp op = _assign_bin_op_types.get(assignment.getOperator());
 		return _graph_builder.add_assign_bin_op(op, lhs_var_id, lvalue, rvalue);
 	}
 	
@@ -140,8 +143,6 @@ public class AstInterpreter {
 	}
 
 	private GraphNode load_value(ASTItem node) {
-		
-		System.out.println("load_value " + node._ast_item.getClass());
 		
 		if(node._ast_item instanceof SimpleName){
 			IBinding binding = ((Name)node._ast_item).resolveBinding();
