@@ -1,4 +1,8 @@
-package gvpl.jdt;
+package gvpl;
+
+import gvpl.Graph.GraphNode;
+import gvpl.Graph.GraphNodeId;
+import gvpl.Graph.NodeType;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -6,9 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import gvpl.jdt.Graph.GraphNode;
-import gvpl.jdt.Graph.GraphNodeId;
-import gvpl.jdt.Graph.NodeType;
 
 public class GraphBuilder {
 
@@ -17,7 +18,7 @@ public class GraphBuilder {
 		E_PLUS_PLUS_OP
 	};
 
-	enum eBinOp {
+	public enum eBinOp {
 		E_INVALID_BIN_OP,
 		E_ADD_OP,
 		E_SUB_OP,
@@ -27,14 +28,14 @@ public class GraphBuilder {
 		E_GREATER_THAN_OP
 	}
 
-	enum eAssignBinOp {
+	public enum eAssignBinOp {
 		E_INVALID_A_BIN_OP,
 		E_ASSIGN_OP,
 		E_PLUS_ASSIGN_OP,
 		E_SUB_ASSIGN_OP
 	}
 
-	enum eValueType {
+	public enum eValueType {
 		E_INVALID_TYPE,
 		E_INT,
 		E_FLOAT,
@@ -61,10 +62,10 @@ public class GraphBuilder {
 		}
 	}
 
-	class VarDecl {
-		VarId _id;
-		String _name;
-		String _type;
+	public class VarDecl {
+		public VarId _id;
+		public String _name;
+		public String _type;
 		private GraphNodeId _curr_graph_node_id;
 
 		public VarDecl() {
@@ -113,15 +114,15 @@ public class GraphBuilder {
 		_assign_bin_op_strings.put(eAssignBinOp.E_SUB_ASSIGN_OP, "-");
 	}
 
-	void add_var_decl(VarDecl var_decl) {
+	public void add_var_decl(VarDecl var_decl) {
 		_var_graph_nodes.put(var_decl._id, var_decl);
 	}
 
-	GraphNode add_direct_val(eValueType type, String value) {
+	public GraphNode add_direct_val(eValueType type, String value) {
 		return _gvpl_graph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
 	}
 
-	void add_assign_op(VarId lhs, GraphNode rhs_node) {
+	public void add_assign_op(VarId lhs, GraphNode rhs_node) {
 		VarDecl var_decl = find_var(lhs);
 
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(var_decl._name, NodeType.E_VARIABLE);
@@ -139,7 +140,7 @@ public class GraphBuilder {
 		return un_op_node;
 	}
 
-	GraphNode add_bin_op(eBinOp op, GraphNode val1_node, GraphNode val2_node) {
+	public GraphNode add_bin_op(eBinOp op, GraphNode val1_node, GraphNode val2_node) {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
@@ -149,7 +150,7 @@ public class GraphBuilder {
 		return bin_op_node;
 	}
 
-	GraphNode add_assign_bin_op(eAssignBinOp op, VarId lhs_var_id, GraphNode lhs_node,
+	public GraphNode add_assign_bin_op(eAssignBinOp op, VarId lhs_var_id, GraphNode lhs_node,
 			GraphNode rhs_node) {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
@@ -166,7 +167,7 @@ public class GraphBuilder {
 		return result_node;
 	}
 
-	GraphNode add_var_ref(VarId var) {
+	public GraphNode add_var_ref(VarId var) {
 		VarDecl var_decl = find_var(var);
 		return _gvpl_graph.find_graph_node(var_decl._curr_graph_node_id);
 	}
@@ -212,7 +213,7 @@ public class GraphBuilder {
 		_for_loop_state = eForLoopState.E_OUT_OF_LOOP;
 	}
 	
-	void enter_function(String name, List<VarDecl> parameters) {}
-	void decrease_depth() {}
+	public void enter_function(String name, List<VarDecl> parameters) {}
+	public void decrease_depth() {}
 
 }

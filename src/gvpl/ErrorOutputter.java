@@ -1,12 +1,12 @@
-package gvpl.jdt;
+package gvpl;
 
 public class ErrorOutputter {
 	
-	static void warning(String error) {
+	public static void warning(String error) {
 		System.out.println(error);
 	}
 
-	static void fatalError(String error) {
+	public static void fatalError(String error) {
 		System.out.println(error);
 	}
 	

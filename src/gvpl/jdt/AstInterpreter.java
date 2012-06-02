@@ -8,11 +8,13 @@ import java.util.Map;
 
 import org.eclipse.jdt.core.dom.*;
 
-import gvpl.jdt.Graph.GraphNode;
-import gvpl.jdt.GraphBuilder.VarDecl;
-import gvpl.jdt.GraphBuilder.VarId;
-import gvpl.jdt.GraphBuilder.eAssignBinOp;
-import gvpl.jdt.GraphBuilder.eBinOp;
+import gvpl.ErrorOutputter;
+import gvpl.GraphBuilder;
+import gvpl.Graph.GraphNode;
+import gvpl.GraphBuilder.VarDecl;
+import gvpl.GraphBuilder.VarId;
+import gvpl.GraphBuilder.eAssignBinOp;
+import gvpl.GraphBuilder.eBinOp;
 import gvpl.jdt.Visitor.ASTItem;
 
 public class AstInterpreter {

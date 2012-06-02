@@ -1,4 +1,5 @@
-package gvpl.jdt;
+package gvpl;
+
 
 import java.util.ArrayList;
 import java.util.List;
