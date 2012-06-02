@@ -2,6 +2,7 @@ package gvpl.jdt;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -60,10 +61,10 @@ public class GraphBuilder {
 		}
 	}
 
-	private class VarDecl {
-		private VarId _id;
-		private String _name;
-		private String _type;
+	class VarDecl {
+		VarId _id;
+		String _name;
+		String _type;
 		private GraphNodeId _curr_graph_node_id;
 
 		public VarDecl() {
@@ -74,7 +75,7 @@ public class GraphBuilder {
 
 	private Map<eBinOp, String> _bin_op_strings = new EnumMap<eBinOp, String>(eBinOp.class);
 	private Map<eUnOp, String> _un_op_strings = new EnumMap<eUnOp, String>(eUnOp.class);
-	private Map<eAssignBinOp, String> _assign_bin_op_strings = new EnumMap<eAssignBinOp, String>(
+	Map<eAssignBinOp, String> _assign_bin_op_strings = new EnumMap<eAssignBinOp, String>(
 			eAssignBinOp.class);
 
 	/** Stores all the graph */
@@ -82,7 +83,7 @@ public class GraphBuilder {
 
 	// TODO clear the variables that aren't in scope anymore
 	/** Converts a ast node id to a graph node id */
-	private Map<VarId, VarDecl> _var_graph_nodes;
+	private Map<VarId, VarDecl> _var_graph_nodes = new HashMap<VarId, VarDecl>();
 
 	private List<Graph> _for_loops = new ArrayList<Graph>();
 
@@ -210,5 +211,8 @@ public class GraphBuilder {
 			ErrorOutputter.fatalError("Invalid state in for loop");
 		_for_loop_state = eForLoopState.E_OUT_OF_LOOP;
 	}
+	
+	void enter_function(String name, List<VarDecl> parameters) {}
+	void decrease_depth() {}
 
 }

@@ -17,7 +17,7 @@ public class Graph {
 		public GraphNodeId _id;
 		public String _name;
 		private NodeType _type;
-		List<GraphNode> _dependent_nodes;
+		List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
 
 		public GraphNode(GraphNodeId id, String name, NodeType type) {
 			_id = id;

@@ -30,7 +30,9 @@ public class Main {
 		Visitor visitor = new Visitor(root);
 		cu.accept(visitor);
  
-		System.out.println(visitor._root.toString());
+		Graph gvpl_graph = new Graph();
+		GraphBuilder graph_builder = new GraphBuilder(gvpl_graph);
+		AstInterpreter ast_interpreter = new AstInterpreter(graph_builder, visitor._root);
 	}
  
 	//read file content into a string

@@ -26,8 +26,6 @@ public class Visitor extends ASTVisitor {
 		public ASTItem(ASTNode ast_item){
 			_AST = new ArrayList<ASTItem>();
 			_ast_item = ast_item;
-			
-			System.out.println(ast_item.toString());
 		}
 	}
 	
@@ -68,7 +66,7 @@ public class Visitor extends ASTVisitor {
 	@Override
 	public boolean visit(VariableDeclarationFragment node) {
 		insert(node);
-		return false;
+		return true;
 	}
 	
 	public boolean visit(Assignment node) {
