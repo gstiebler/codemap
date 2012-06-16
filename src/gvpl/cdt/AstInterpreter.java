@@ -20,9 +20,11 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstInterpreter {
@@ -42,8 +44,9 @@ public class AstInterpreter {
 
 		for (int i = 0; i < root._AST.size(); ++i) {
 			ASTItem node = root._AST.get(i);
-			if (node._ast_item instanceof IASTFunctionDefinition)
-				load_function(node);
+			IASTNode parent = node._ast_item.getParent();
+			if (parent instanceof IASTFunctionDefinition && node._ast_item instanceof IASTCompoundStatement)
+				load_function((IASTFunctionDefinition) parent, node);
 		}
 	}
 	
@@ -60,17 +63,12 @@ public class AstInterpreter {
 		_assign_bin_op_types.put(IASTBinaryExpression.op_minusAssign, eAssignBinOp.E_SUB_ASSIGN_OP);
 	}
 
-	private void load_function(ASTItem node) {
-		IASTFunctionDefinition md = (IASTFunctionDefinition) node._ast_item;
-		String function_name = md.getRawSignature();
+	private void load_function(IASTFunctionDefinition fd, ASTItem compoundStatement) {
+		String function_name = fd.getDeclarator().getName().toString();
 		List<GraphBuilder.VarDecl> list = new ArrayList<GraphBuilder.VarDecl>();
 		_graph_builder.enter_function(function_name, list);
-
-		for (int i = 0; i < node._AST.size(); ++i) {
-			ASTItem curr_node = node._AST.get(i);
-			if (curr_node._ast_item instanceof IASTCompoundStatement)
-				load_basic_block(curr_node);
-		}
+		
+		load_basic_block(compoundStatement);
 
 		_graph_builder.decrease_depth();
 	}
@@ -101,32 +99,28 @@ public class AstInterpreter {
 	}
 
 	private void load_var_decl(ASTItem node) {
-		System.out.println("load_var_decl " + node._ast_item.toString());
-		
 		VarDecl var_decl = _graph_builder.new VarDecl();
-
-		for (int i = 0; i < node._AST.size(); ++i) {
-			ASTItem curr_node = node._AST.get(i);
-			if (curr_node._ast_item instanceof IASTName)
-			{
-				var_decl._name = curr_node._ast_item.toString();
-				IBinding binding = ((IASTName)curr_node._ast_item).resolveBinding();
-				var_decl._id = _graph_builder.new VarId(_var_id_gen++);
-				_var_id_map.put(binding, var_decl._id);
-			}
-		}
+		
+		IASTDeclarator decl = (IASTDeclarator) node._ast_item;
+		IASTName name = decl.getName();
+		var_decl._name = name.toString();
+		IBinding binding = name.resolveBinding();
+		var_decl._id = _graph_builder.new VarId(_var_id_gen++);
+		_var_id_map.put(binding, var_decl._id);
 
 		// var_decl._type = ; TODO pegar o tipo do parent
 
 		_graph_builder.add_var_decl(var_decl);
-
-		for (int i = 0; i < node._AST.size(); ++i) {
-			ASTItem curr_node = node._AST.get(i);
-			if (curr_node._ast_item instanceof IASTLiteralExpression) {
-				GraphNode val = load_direct_value(curr_node);
-				_graph_builder.add_assign_op(var_decl._id, val);
-			}
-		}
+		
+		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
+		
+		if(init_exp == null)
+			return;
+		
+		//TODO resolver para quando a inicialização não for um literal, pode ser uma expressão
+		//O melhor é chamar load_value
+		GraphNode val = load_direct_value((IASTLiteralExpression) init_exp.getExpression());
+		_graph_builder.add_assign_op(var_decl._id, val);
 	}
 
 	GraphNode load_assign_bin_op_types(ASTItem node) {
@@ -160,7 +154,7 @@ public class AstInterpreter {
 			return load_bin_op(node);
 		}	
 		else if(node._ast_item instanceof IASTLiteralExpression){
-			return load_direct_value(node);
+			return load_direct_value((IASTLiteralExpression) node._ast_item);
 		}
 		
 		return null;
@@ -179,8 +173,8 @@ public class AstInterpreter {
 
 	}
 
-	GraphNode load_direct_value(ASTItem node) {
-		String value = node._ast_item.toString();
+	GraphNode load_direct_value(IASTLiteralExpression node) {
+		String value = node.toString();
 		return _graph_builder.add_direct_val(GraphBuilder.eValueType.E_INVALID_TYPE, value);
 	}
 

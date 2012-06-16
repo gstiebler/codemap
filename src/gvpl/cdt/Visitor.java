@@ -7,7 +7,12 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -59,6 +64,11 @@ public class Visitor extends ASTVisitor {
 		}
 	}
 
+	public int visit(IASTFunctionDefinition node) {
+		insert(node);
+		return ASTVisitor.PROCESS_CONTINUE;
+	}
+
 	public int visit(IASTName node) {
 		insert(node);
 		//IBinding a = node.resolveBinding();
@@ -66,14 +76,17 @@ public class Visitor extends ASTVisitor {
 	}
 
 	public int visit(IASTDeclarator node) {
+		if(node instanceof IASTFunctionDeclarator)
+			return ASTVisitor.PROCESS_CONTINUE;
+			
 		insert(node);
 		return ASTVisitor.PROCESS_CONTINUE;
 	}
 
-	/*public int visit(IASTExpression node) {
-		insert((IASTNode) node);
-		return ASTVisitor.PROCESS_CONTINUE;
-	}*/
+//	public int visit(IASTExpression node) {
+//		insert((IASTNode) node);
+//		return ASTVisitor.PROCESS_CONTINUE;
+//	}
 
 	public int visit(IASTParameterDeclaration node) {
 		insert((IASTNode) node);
@@ -81,6 +94,9 @@ public class Visitor extends ASTVisitor {
 	}
 
 	public int visit(IASTStatement node) {
+		if(node instanceof IASTDeclarationStatement)
+			return ASTVisitor.PROCESS_CONTINUE;
+			
 		insert(node);
 		return ASTVisitor.PROCESS_CONTINUE;
 	}
@@ -104,58 +120,5 @@ public class Visitor extends ASTVisitor {
 		insert(node);
 		return ASTVisitor.PROCESS_CONTINUE;
 	}
-
-	/*
-	@Override
-	public boolean visit(VariableDeclarationFragment node) {
-		insert(node);
-		return true;
-	}
-
-	public boolean visit(Assignment node) {
-		insert(node);
-		return true;
-	}
-
-	@Override
-	public boolean visit(InfixExpression node) {
-		insert(node);
-		return true;
-	}
-
-	public boolean visit(ForStatement node) {
-		insert(node);
-		return true;
-	}
-
-	@Override
-	public boolean visit(NumberLiteral node) {
-		insert(node);
-		return true;
-	}
-
-	@Override
-	public boolean visit(BooleanLiteral node) {
-		insert(node);
-		return true;
-	}
-
-	@Override
-	public boolean visit(MethodDeclaration node) {
-		insert(node);
-		return true;
-	}
-
-	@Override
-	public boolean visit(Block node) {
-		insert(node);
-		return true;
-	}
-
-	@Override
-	public boolean visit(SimpleName node) {
-		insert(node);
-		return true;
-	}*/
 
 }

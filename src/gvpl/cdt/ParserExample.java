@@ -1,5 +1,7 @@
 package gvpl.cdt;
 
+import gvpl.Graph;
+import gvpl.GraphBuilder;
 import gvpl.common.*;
 
 import java.util.HashMap;
@@ -35,11 +37,20 @@ public class ParserExample {
 
             visitor.shouldVisitNames = true;
             visitor.shouldVisitDeclarations = true;
+            visitor.shouldVisitDeclarators = true;
+            visitor.shouldVisitDeclSpecifiers = true;
             visitor.shouldVisitExpressions = true;
+            visitor.shouldVisitInitializers = true;
             visitor.shouldVisitProblems = true;
             visitor.shouldVisitStatements = true;
             visitor.shouldVisitTypeIds = true;
             
             translationUnit.accept(visitor);
+            
+    		Graph gvpl_graph = new Graph();
+    		GraphBuilder graph_builder = new GraphBuilder(gvpl_graph);
+    		new AstInterpreter(graph_builder, visitor._root);
+    		
+    		new gvpl.graphviz.FileDriver(graph_builder._gvpl_graph, File.examplesPath() + "first.dot");
       }
 }
