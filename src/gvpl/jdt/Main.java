@@ -15,16 +15,17 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
  
 public class Main {
 	
-	private String path;
 	private String file;
 	
 	//use ASTParse to parse string
-	public void parse(String str) {		
+	public void parse(String str) {	
+		file = "Main.java";
+		
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
 		parser.setKind(ASTParser.K_COMPILATION_UNIT);
 		parser.setSource(str.toCharArray()); // set source
 		parser.setResolveBindings(true); // we need bindings later on
-		parser.setEnvironment(null, new String[]{  path }, null, false);
+		parser.setEnvironment(null, new String[]{  File.examplesPath() }, null, false);
 		parser.setUnitName(file);
 			
 		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
@@ -42,7 +43,7 @@ public class Main {
  
 	//loop directory to get file list
 	public void ParseFilesInDir() throws IOException{
-		parse(File.readFileToString(File.examplesPath() + "Main.java"));
+		parse(File.readFileToString(File.examplesPath() + file));
 	}
  
 	public static void main(String[] args) throws IOException {

@@ -1,21 +1,32 @@
 package gvpl.jdt;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.eclipse.jdt.core.dom.*;
-
 import gvpl.ErrorOutputter;
-import gvpl.GraphBuilder;
 import gvpl.Graph.GraphNode;
+import gvpl.GraphBuilder;
 import gvpl.GraphBuilder.VarDecl;
 import gvpl.GraphBuilder.VarId;
 import gvpl.GraphBuilder.eAssignBinOp;
 import gvpl.GraphBuilder.eBinOp;
 import gvpl.jdt.Visitor.ASTItem;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.eclipse.jdt.core.dom.ASTNode;
+import org.eclipse.jdt.core.dom.Assignment;
+import org.eclipse.jdt.core.dom.Block;
+import org.eclipse.jdt.core.dom.BooleanLiteral;
+import org.eclipse.jdt.core.dom.ExpressionStatement;
+import org.eclipse.jdt.core.dom.ForStatement;
+import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.InfixExpression;
+import org.eclipse.jdt.core.dom.MethodDeclaration;
+import org.eclipse.jdt.core.dom.Name;
+import org.eclipse.jdt.core.dom.NumberLiteral;
+import org.eclipse.jdt.core.dom.SimpleName;
+import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 public class AstInterpreter {
 

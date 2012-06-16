@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTProblem;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.parser.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.parser.ast.IASTParameterDeclaration;
 
 public class Visitor extends ASTVisitor {
@@ -69,10 +70,10 @@ public class Visitor extends ASTVisitor {
 		return ASTVisitor.PROCESS_CONTINUE;
 	}
 
-	public int visit(IASTExpression node) {
+	/*public int visit(IASTExpression node) {
 		insert((IASTNode) node);
 		return ASTVisitor.PROCESS_CONTINUE;
-	}
+	}*/
 
 	public int visit(IASTParameterDeclaration node) {
 		insert((IASTNode) node);
@@ -85,6 +86,21 @@ public class Visitor extends ASTVisitor {
 	}
 
 	public int visit(IASTProblem node) {
+		insert(node);
+		return ASTVisitor.PROCESS_CONTINUE;
+	}
+
+	public int visit(IASTBinaryExpression node) {
+		insert(node);
+		return ASTVisitor.PROCESS_CONTINUE;
+	}
+
+	public int visit(IASTIdExpression node) {
+		insert(node);
+		return ASTVisitor.PROCESS_CONTINUE;
+	}
+
+	public int visit(IASTLiteralExpression node) {
 		insert(node);
 		return ASTVisitor.PROCESS_CONTINUE;
 	}

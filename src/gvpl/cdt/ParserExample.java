@@ -18,22 +18,19 @@ import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 
 public class ParserExample {
 	
-	
       public static void main(String[] args) throws Exception {
             IParserLogService log = new DefaultLogService();
 
-    		String file = "main.cpp";
-            String code = File.readFileToString(File.examplesPath() + file);
+            String code = File.readFileToString(File.examplesPath() + "main.cpp");
             
             CodeReader reader = new CodeReader(code.toCharArray());
-            Map definedSymbols = new HashMap();
+            @SuppressWarnings("rawtypes")
+			Map definedSymbols = new HashMap();
             String[] includePaths = new String[0];
             IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
             ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 
             IASTTranslationUnit translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info, readerFactory, null, log);
-
-            translationUnit.getParent();
             Visitor visitor = new Visitor(translationUnit);
 
             visitor.shouldVisitNames = true;
@@ -41,6 +38,7 @@ public class ParserExample {
             visitor.shouldVisitExpressions = true;
             visitor.shouldVisitProblems = true;
             visitor.shouldVisitStatements = true;
+            visitor.shouldVisitTypeIds = true;
             
             translationUnit.accept(visitor);
       }
