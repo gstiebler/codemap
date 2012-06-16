@@ -1,4 +1,4 @@
-package gvpl.jdt;
+package gvpl.cdt;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.jdt.core.dom.*;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 import gvpl.ErrorOutputter;
 import gvpl.GraphBuilder;

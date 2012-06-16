@@ -1,8 +1,9 @@
 package gvpl.jdt;
+
 import gvpl.Graph;
 import gvpl.GraphBuilder;
-import java.io.BufferedReader;
-import java.io.FileReader;
+import gvpl.common.*;
+
 import java.io.IOException;
 
 import org.eclipse.jdt.core.dom.AST;
@@ -36,39 +37,19 @@ public class Main {
 		GraphBuilder graph_builder = new GraphBuilder(gvpl_graph);
 		new AstInterpreter(graph_builder, visitor._root);
 		
-		new gvpl.graphviz.FileDriver(graph_builder._gvpl_graph, "K:\\Projetos\\GVPL\\exemplos\\first.dot");
-	}
- 
-	//read file content into a string
-	public static String readFileToString(String filePath) throws IOException {
-		StringBuilder fileData = new StringBuilder(1000);
-		BufferedReader reader = new BufferedReader(new FileReader(filePath));
- 
-		char[] buf = new char[10];
-		int numRead = 0;
-		while ((numRead = reader.read(buf)) != -1) {
-			String readData = String.valueOf(buf, 0, numRead);
-			fileData.append(readData);
-			buf = new char[1024];
-		}
- 
-		reader.close();
- 
-		return  fileData.toString();	
+		new gvpl.graphviz.FileDriver(graph_builder._gvpl_graph, File.examplesPath() + "first.dot");
 	}
  
 	//loop directory to get file list
 	public void ParseFilesInDir() throws IOException{
-		path = "K:\\Projetos\\GVPL\\exemplos\\";
-		file = "Main.java";
-		parse(readFileToString(path + file));
+		parse(File.readFileToString(File.examplesPath() + "Main.java"));
 	}
  
 	public static void main(String[] args) throws IOException {
 		(new Main()).ParseFilesInDir();
 	}
 	
-	public static void inutil(String[] args) {
+	/*public static void inutil(String[] args) {
 		int x = 0;
 		int y = 3;
 		x += y;
@@ -79,5 +60,5 @@ public class Main {
 		{
 			int x2 = 5;
 		}
-	}
+	}*/
 }
