@@ -27,5 +27,6 @@
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.core.filebuffers_3.5.200.v20110505-0800.jar"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
+	<classpathentry kind="lib" path="C:/Programas/eclipse-europa/plugins/org.eclipse.cdt.core_4.0.3.200802251018.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
