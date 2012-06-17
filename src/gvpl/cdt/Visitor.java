@@ -7,10 +7,8 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
@@ -19,7 +17,6 @@ import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTProblem;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.core.parser.ast.IASTParameterDeclaration;
 
 public class Visitor extends ASTVisitor {
 
@@ -88,10 +85,10 @@ public class Visitor extends ASTVisitor {
 //		return ASTVisitor.PROCESS_CONTINUE;
 //	}
 
-	public int visit(IASTParameterDeclaration node) {
-		insert((IASTNode) node);
-		return ASTVisitor.PROCESS_CONTINUE;
-	}
+//	public int visit(IASTParameterDeclaration node) {
+//		insert((IASTNode) node);
+//		return ASTVisitor.PROCESS_CONTINUE;
+//	}
 
 	public int visit(IASTStatement node) {
 		if(node instanceof IASTDeclarationStatement)

@@ -7,7 +7,6 @@ import gvpl.GraphBuilder.VarDecl;
 import gvpl.GraphBuilder.VarId;
 import gvpl.GraphBuilder.eAssignBinOp;
 import gvpl.GraphBuilder.eBinOp;
-import gvpl.cdt.Visitor.ASTItem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +15,9 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
@@ -25,6 +26,7 @@ import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstInterpreter {
@@ -37,16 +39,17 @@ public class AstInterpreter {
 	private Map<Integer, eAssignBinOp> _assign_bin_op_types = 
 				new HashMap<Integer, eAssignBinOp>();
 
-	public AstInterpreter(GraphBuilder graph_builder, ASTItem root) {
+	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
 		_graph_builder = graph_builder;
 		
 		initialize_maps();
-
-		for (int i = 0; i < root._AST.size(); ++i) {
-			ASTItem node = root._AST.get(i);
-			IASTNode parent = node._ast_item.getParent();
-			if (parent instanceof IASTFunctionDefinition && node._ast_item instanceof IASTCompoundStatement)
-				load_function((IASTFunctionDefinition) parent, node);
+		
+		IASTDeclaration[] declarations = root.getDeclarations();
+		
+		for (int i = 0; i < declarations.length; ++i)
+		{
+			if(declarations[i] instanceof IASTFunctionDefinition)
+				load_function((IASTFunctionDefinition) declarations[i]);
 		}
 	}
 	
@@ -63,45 +66,44 @@ public class AstInterpreter {
 		_assign_bin_op_types.put(IASTBinaryExpression.op_minusAssign, eAssignBinOp.E_SUB_ASSIGN_OP);
 	}
 
-	private void load_function(IASTFunctionDefinition fd, ASTItem compoundStatement) {
+	private void load_function(IASTFunctionDefinition fd) {
 		String function_name = fd.getDeclarator().getName().toString();
 		List<GraphBuilder.VarDecl> list = new ArrayList<GraphBuilder.VarDecl>();
 		_graph_builder.enter_function(function_name, list);
 		
-		load_basic_block(compoundStatement);
+		IASTStatement body = fd.getBody();
+		
+		//TODO tratar o else
+		if(body instanceof IASTCompoundStatement)
+			load_basic_block((IASTCompoundStatement) body);
 
 		_graph_builder.decrease_depth();
 	}
 
-	private void load_basic_block(ASTItem node) {
+	private void load_basic_block(IASTCompoundStatement cs) {
 		//Block block = (Block)node._ast_item;
-
-		for (int i = 0; i < node._AST.size(); ++i) {
-			ASTItem curr_node = node._AST.get(i);
-			// if(curr_node._ast_item instanceof Block)
-			load_instruction_line(curr_node);
-		}
+		IASTStatement[] statements = cs.getStatements();
+		
+		for (int i = 0; i < statements.length; ++i)
+			load_instruction_line(statements[i]);
 	}
 
-	private void load_instruction_line(ASTItem node) {
-		IASTNode ast_node = node._ast_item;
-
-		if (ast_node instanceof IASTDeclarator)
-			load_var_decl(node);
-		else if (ast_node instanceof IASTExpressionStatement)
-			load_value(node);
-		else if (ast_node instanceof IASTForStatement)
-			load_for_stmt(node);
-		else if (ast_node instanceof IASTBinaryExpression)
-			load_assign_bin_op_types(node);
+	private void load_instruction_line(IASTStatement statement) {
+		if (statement instanceof IASTDeclarator)
+			load_var_decl((IASTDeclarator) statement);
+		else if (statement instanceof IASTExpression)
+			load_value((IASTExpression) statement);
+		else if (statement instanceof IASTForStatement)
+			load_for_stmt((IASTForStatement) statement);
+		else if (statement instanceof IASTBinaryExpression)
+			load_assign_bin_op_types((IASTBinaryExpression) statement);
 		else
-			ErrorOutputter.fatalError("Node type not found!! Node: " + ast_node.toString());
+			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
 
-	private void load_var_decl(ASTItem node) {
+	private void load_var_decl(IASTDeclarator decl) {
 		VarDecl var_decl = _graph_builder.new VarDecl();
 		
-		IASTDeclarator decl = (IASTDeclarator) node._ast_item;
 		IASTName name = decl.getName();
 		var_decl._name = name.toString();
 		IBinding binding = name.resolveBinding();
@@ -123,53 +125,51 @@ public class AstInterpreter {
 		_graph_builder.add_assign_op(var_decl._id, val);
 	}
 
-	GraphNode load_assign_bin_op_types(ASTItem node) {
-	    IASTBinaryExpression assignment = (IASTBinaryExpression)node._ast_item;
+	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
 		
-		VarId lhs_var_id = load_lhs(node._AST.get(0));
-		GraphNode rvalue = load_value(node._AST.get(1));
+		VarId lhs_var_id = load_lhs((IASTName) node.getOperand1());
+		GraphNode rvalue = load_value(node.getOperand2());
 		
-		if(assignment.getOperator() == IASTBinaryExpression.op_assign) {
+		if(node.getOperator() == IASTBinaryExpression.op_assign) {
 			_graph_builder.add_assign_op(lhs_var_id, rvalue); 
 			return null; 
 		}
 		
-		GraphNode lvalue = load_value(node._AST.get(0));
-		eAssignBinOp op = _assign_bin_op_types.get(assignment.getOperator());
+		GraphNode lvalue = load_value(node.getOperand1());
+		eAssignBinOp op = _assign_bin_op_types.get(node.getOperator());
 		return _graph_builder.add_assign_bin_op(op, lhs_var_id, lvalue, rvalue);
 	}
 	
-	private VarId load_lhs(ASTItem lhs) {
-		IBinding binding = ((IASTName)lhs._ast_item).resolveBinding();
+	private VarId load_lhs(IASTName lhs) {
+		IBinding binding = lhs.resolveBinding();
 		return _var_id_map.get(binding);
 	}
 
-	private GraphNode load_value(ASTItem node) {
+	private GraphNode load_value(IASTExpression node) {
 		
-		if(node._ast_item instanceof IASTName){
-			IBinding binding = ((IASTName)node._ast_item).resolveBinding();
+		if(node instanceof IASTName){
+			IBinding binding = ((IASTName)node).resolveBinding();
 			return _graph_builder.add_var_ref(_var_id_map.get(binding));
 		}		
-		else if(node._ast_item instanceof IASTBinaryExpression){
-			return load_bin_op(node);
+		else if(node instanceof IASTBinaryExpression){
+			return load_bin_op((IASTBinaryExpression) node);
 		}	
-		else if(node._ast_item instanceof IASTLiteralExpression){
-			return load_direct_value((IASTLiteralExpression) node._ast_item);
+		else if(node instanceof IASTLiteralExpression){
+			return load_direct_value((IASTLiteralExpression) node);
 		}
 		
 		return null;
 	}
 	
-	GraphNode load_bin_op(ASTItem node)
+	GraphNode load_bin_op(IASTBinaryExpression bin_op)
 	{
-		IASTBinaryExpression infex = (IASTBinaryExpression)node._ast_item;
-		eBinOp op = _bin_op_types.get(infex.getOperator()); 
-		GraphNode lvalue = load_value(node._AST.get(0));
-		GraphNode rvalue = load_value(node._AST.get(1));
+		eBinOp op = _bin_op_types.get(bin_op.getOperator()); 
+		GraphNode lvalue = load_value(bin_op.getOperand1());
+		GraphNode rvalue = load_value(bin_op.getOperand1());
 		return _graph_builder.add_bin_op(op, lvalue, rvalue);
 	}
 
-	private void load_for_stmt(ASTItem node) {
+	private void load_for_stmt(IASTForStatement node) {
 
 	}
 
