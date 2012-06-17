@@ -33,19 +33,6 @@ public class ParserExample {
             ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 
             IASTTranslationUnit translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info, readerFactory, null, log);
-//            Visitor visitor = new Visitor(translationUnit);
-//
-//            visitor.shouldVisitNames = true;
-//            visitor.shouldVisitDeclarations = true;
-//            visitor.shouldVisitDeclarators = true;
-//            visitor.shouldVisitDeclSpecifiers = true;
-//            visitor.shouldVisitExpressions = true;
-//            visitor.shouldVisitInitializers = true;
-//            visitor.shouldVisitProblems = true;
-//            visitor.shouldVisitStatements = true;
-//            visitor.shouldVisitTypeIds = true;
-            
-//            translationUnit.accept(visitor);
             
     		Graph gvpl_graph = new Graph();
     		GraphBuilder graph_builder = new GraphBuilder(gvpl_graph);

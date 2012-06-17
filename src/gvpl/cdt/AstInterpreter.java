@@ -3,31 +3,14 @@ package gvpl.cdt;
 import gvpl.ErrorOutputter;
 import gvpl.Graph.GraphNode;
 import gvpl.GraphBuilder;
-import gvpl.GraphBuilder.VarDecl;
-import gvpl.GraphBuilder.VarId;
-import gvpl.GraphBuilder.eAssignBinOp;
-import gvpl.GraphBuilder.eBinOp;
+import gvpl.GraphBuilder.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
-import org.eclipse.cdt.core.dom.ast.IASTForStatement;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
-import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
-import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
-import org.eclipse.cdt.core.dom.ast.IASTName;
-import org.eclipse.cdt.core.dom.ast.IASTNode;
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.*;
 
 public class AstInterpreter {
 
@@ -89,14 +72,27 @@ public class AstInterpreter {
 	}
 
 	private void load_instruction_line(IASTStatement statement) {
-		if (statement instanceof IASTDeclarator)
-			load_var_decl((IASTDeclarator) statement);
+		if (statement instanceof IASTDeclarationStatement)
+		{
+			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
+			IASTDeclaration decl = decl_statement.getDeclaration();
+			if(!(decl instanceof IASTSimpleDeclaration))
+				ErrorOutputter.fatalError("Deu merda aqui.");
+				
+			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) decl;
+			IASTDeclarator[] declarators = simple_decl.getDeclarators();
+			for(int i = 0; i < declarators.length; ++i)
+				load_var_decl(declarators[i]);
+		}
 		else if (statement instanceof IASTExpression)
 			load_value((IASTExpression) statement);
 		else if (statement instanceof IASTForStatement)
 			load_for_stmt((IASTForStatement) statement);
-		else if (statement instanceof IASTBinaryExpression)
-			load_assign_bin_op_types((IASTBinaryExpression) statement);
+		else if (statement instanceof IASTExpressionStatement)
+		{
+			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
+			load_assign_bin_op_types((IASTBinaryExpression) expr_stat.getExpression());
+		}
 		else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
@@ -119,15 +115,14 @@ public class AstInterpreter {
 		if(init_exp == null)
 			return;
 		
-		//TODO resolver para quando a inicialização não for um literal, pode ser uma expressão
-		//O melhor é chamar load_value
-		GraphNode val = load_direct_value((IASTLiteralExpression) init_exp.getExpression());
+		GraphNode val = load_value(init_exp.getExpression());
 		_graph_builder.add_assign_op(var_decl._id, val);
 	}
 
 	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
 		
-		VarId lhs_var_id = load_lhs((IASTName) node.getOperand1());
+		IASTIdExpression id_expr = (IASTIdExpression) node.getOperand1();
+		VarId lhs_var_id = load_lhs(id_expr.getName());
 		GraphNode rvalue = load_value(node.getOperand2());
 		
 		if(node.getOperator() == IASTBinaryExpression.op_assign) {
@@ -145,16 +140,20 @@ public class AstInterpreter {
 		return _var_id_map.get(binding);
 	}
 
+	/*
+	 * @brief Alguma coisa que retorna um valor
+	 */
 	private GraphNode load_value(IASTExpression node) {
 		
-		if(node instanceof IASTName){
-			IBinding binding = ((IASTName)node).resolveBinding();
+		//Eh uma variavel
+		if(node instanceof IASTIdExpression){
+			IBinding binding = ((IASTIdExpression)node).getName().resolveBinding();
 			return _graph_builder.add_var_ref(_var_id_map.get(binding));
 		}		
-		else if(node instanceof IASTBinaryExpression){
+		else if(node instanceof IASTBinaryExpression){//Eh uma expressao
 			return load_bin_op((IASTBinaryExpression) node);
 		}	
-		else if(node instanceof IASTLiteralExpression){
+		else if(node instanceof IASTLiteralExpression){//Eh um valor direto
 			return load_direct_value((IASTLiteralExpression) node);
 		}
 		
@@ -165,7 +164,7 @@ public class AstInterpreter {
 	{
 		eBinOp op = _bin_op_types.get(bin_op.getOperator()); 
 		GraphNode lvalue = load_value(bin_op.getOperand1());
-		GraphNode rvalue = load_value(bin_op.getOperand1());
+		GraphNode rvalue = load_value(bin_op.getOperand2());
 		return _graph_builder.add_bin_op(op, lvalue, rvalue);
 	}
 
