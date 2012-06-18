@@ -32,7 +32,6 @@ public class AstInterpreter {
 
 	GraphBuilder _graph_builder;
 	
-	private int _var_id_gen = 1;
 	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	private Map<InfixExpression.Operator, eBinOp> _bin_op_types = new HashMap<InfixExpression.Operator, eBinOp>();
 	private Map<Assignment.Operator, eAssignBinOp> _assign_bin_op_types = 
@@ -113,7 +112,7 @@ public class AstInterpreter {
 			if (curr_node._ast_item instanceof SimpleName)
 			{
 				IBinding binding = ((Name)curr_node._ast_item).resolveBinding();
-				VarId id = _graph_builder.new VarId(_var_id_gen++);
+				VarId id = _graph_builder.new VarId();
 				
 				VarDecl var_decl = _graph_builder.new VarDecl(id, curr_node._ast_item.toString());
 				_var_id_map.put(binding, id);

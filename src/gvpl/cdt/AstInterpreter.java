@@ -17,7 +17,6 @@ public class AstInterpreter {
 
 	GraphBuilder _graph_builder;
 
-	private int _var_id_gen = 1;
 	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	private Map<Integer, eBinOp> _bin_op_types = new HashMap<Integer, eBinOp>();
 	private Map<Integer, eAssignBinOp> _assign_bin_op_types = new HashMap<Integer, eAssignBinOp>();
@@ -98,7 +97,7 @@ public class AstInterpreter {
 		} else if (statement instanceof IASTReturnStatement){
 			IASTReturnStatement return_node = (IASTReturnStatement) statement;
 			
-			VarId id = _graph_builder.new VarId(_var_id_gen++);
+			VarId id = _graph_builder.new VarId();
 			VarDecl var_decl = _graph_builder.new VarDecl(id, "RETURN");
 			_graph_builder.add_var_decl(var_decl);
 			
@@ -113,7 +112,7 @@ public class AstInterpreter {
 		IASTName name = decl.getName();
 		IBinding binding = name.resolveBinding();
 
-		VarId id = _graph_builder.new VarId(_var_id_gen++);
+		VarId id = _graph_builder.new VarId();
 		VarDecl var_decl = _graph_builder.new VarDecl(id, name.toString());
 		_var_id_map.put(binding, id);
 

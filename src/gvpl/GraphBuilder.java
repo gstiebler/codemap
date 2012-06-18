@@ -54,11 +54,7 @@ public class GraphBuilder {
 	}
 
 	public class VarId {
-
-		private int _id;
-
-		public VarId(int id) {
-			_id = id;
+		public VarId() {
 		}
 	}
 
