@@ -63,13 +63,18 @@ public class GraphBuilder {
 	}
 
 	public class VarDecl {
-		public VarId _id;
-		public String _name;
+		private VarId _id;
+		private String _name;
 		public String _type;
 		private GraphNodeId _curr_graph_node_id;
+		
+		public VarId getVarId(){
+			return _id;
+		}
 
-		public VarDecl() {
-			_id = null;
+		public VarDecl(VarId id, String name) {
+			_id = id;
+			_name = name;
 			_curr_graph_node_id = null;
 		}
 	}
@@ -213,7 +218,15 @@ public class GraphBuilder {
 		_for_loop_state = eForLoopState.E_OUT_OF_LOOP;
 	}
 	
-	public void enter_function(String name, List<VarDecl> parameters) {}
+	public void enter_function(String name, List<VarDecl> parameters) 
+	{
+		for(VarDecl parameter : parameters)
+		{
+			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name, NodeType.E_VARIABLE);
+			parameter._curr_graph_node_id = var_node._id;
+		}
+	}
+	
 	public void decrease_depth() {}
 
 }

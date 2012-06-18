@@ -105,29 +105,31 @@ public class AstInterpreter {
 
 	private void load_var_decl(ASTItem node) {
 		System.out.println("load_var_decl " + node._ast_item.toString());
-		
-		VarDecl var_decl = _graph_builder.new VarDecl();
 
+		VarDecl curr_var_decl = null;
+		
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);
 			if (curr_node._ast_item instanceof SimpleName)
 			{
-				var_decl._name = curr_node._ast_item.toString();
 				IBinding binding = ((Name)curr_node._ast_item).resolveBinding();
-				var_decl._id = _graph_builder.new VarId(_var_id_gen++);
-				_var_id_map.put(binding, var_decl._id);
+				VarId id = _graph_builder.new VarId(_var_id_gen++);
+				
+				VarDecl var_decl = _graph_builder.new VarDecl(id, curr_node._ast_item.toString());
+				_var_id_map.put(binding, id);
+				curr_var_decl = var_decl;
 			}
 		}
 
 		// var_decl._type = ; TODO pegar o tipo do parent
 
-		_graph_builder.add_var_decl(var_decl);
+		_graph_builder.add_var_decl(curr_var_decl);
 
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);
 			if (curr_node._ast_item instanceof NumberLiteral || curr_node._ast_item instanceof BooleanLiteral) {
 				GraphNode val = load_direct_value(curr_node);
-				_graph_builder.add_assign_op(var_decl._id, val);
+				_graph_builder.add_assign_op(curr_var_decl.getVarId(), val);
 			}
 		}
 	}
