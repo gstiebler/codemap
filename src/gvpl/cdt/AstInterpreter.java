@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.*;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class AstInterpreter {
 
@@ -50,8 +51,16 @@ public class AstInterpreter {
 	}
 
 	private void load_function(IASTFunctionDefinition fd) {
-		String function_name = fd.getDeclarator().getName().toString();
+		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
+		String function_name = decl.getName().toString();
+		IASTParameterDeclaration[] parameters = decl.getParameters();
 		List<GraphBuilder.VarDecl> list = new ArrayList<GraphBuilder.VarDecl>();
+		for(int i = 0; i < parameters.length; ++i)
+		{
+			IASTDeclarator parameter_var_decl = parameters[i].getDeclarator();
+			VarDecl var_decl = load_var_decl(parameter_var_decl);
+			list.add(var_decl);
+		}
 		_graph_builder.enter_function(function_name, list);
 		
 		IASTStatement body = fd.getBody();
@@ -97,7 +106,7 @@ public class AstInterpreter {
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
 
-	private void load_var_decl(IASTDeclarator decl) {
+	private VarDecl load_var_decl(IASTDeclarator decl) {
 		VarDecl var_decl = _graph_builder.new VarDecl();
 		
 		IASTName name = decl.getName();
@@ -113,10 +122,12 @@ public class AstInterpreter {
 		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
 		
 		if(init_exp == null)
-			return;
+			return var_decl;
 		
 		GraphNode val = load_value(init_exp.getExpression());
 		_graph_builder.add_assign_op(var_decl._id, val);
+		
+		return var_decl;
 	}
 
 	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
