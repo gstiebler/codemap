@@ -12,9 +12,8 @@ import gvpl.graph.GraphBuilder.*;
 import gvpl.graph.GraphNode;
 
 import org.eclipse.cdt.core.dom.ast.*;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
 
 public class AstInterpreter {
 
@@ -186,38 +185,46 @@ public class AstInterpreter {
 			return var_decl;
 
 		GraphNode val = load_value(init_exp.getExpression());
-		_graph_builder.add_assign_op(var_decl.getVarId(), val);
+		_graph_builder.add_assign_op(var_decl, val);
 
 		return var_decl;
 	}
 
 	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
 		IASTExpression expr = node.getOperand1();
-		if (expr instanceof IASTIdExpression){
-			IASTIdExpression id_expr = (IASTIdExpression) expr;
-		} else if (expr instanceof IASTFieldReference){
-			IASTFieldReference field_ref = (IASTFieldReference) expr;
-			//field_ref.get
-			ErrorOutputter.fatalError("Work here " + expr.getClass());
-		} else
-			ErrorOutputter.fatalError("Work here " + expr.getClass());
+		VarDecl var_decl = getVarDecl(expr);
 		
-		VarId lhs_var_id = load_lhs(id_expr.getName());
 		GraphNode rvalue = load_value(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			_graph_builder.add_assign_op(lhs_var_id, rvalue);
+			_graph_builder.add_assign_op(var_decl, rvalue);
 			return null;
 		}
 
 		GraphNode lvalue = load_value(node.getOperand1());
 		eAssignBinOp op = _assign_bin_op_types.get(node.getOperator());
-		return _graph_builder.add_assign_bin_op(op, lhs_var_id, lvalue, rvalue);
+		return _graph_builder.add_assign_bin_op(op, var_decl, lvalue, rvalue);
 	}
 
-	private VarId load_lhs(IASTName lhs) {
-		IBinding binding = lhs.resolveBinding();
-		return _var_id_map.get(binding);
+	private VarDecl getVarDecl(IASTExpression expr) {
+		if (expr instanceof IASTIdExpression){
+			IASTIdExpression id_expr = (IASTIdExpression) expr;
+			IBinding binding = id_expr.getName().resolveBinding();
+			VarId lhs_var_id = _var_id_map.get(binding);
+			
+			return _graph_builder.find_var(lhs_var_id);
+		} else if (expr instanceof IASTFieldReference){
+			CPPASTFieldReference field_ref = (CPPASTFieldReference) expr;
+			IASTIdExpression owner = (IASTIdExpression) field_ref.getFieldOwner();
+			
+			TypeId type_id = _type_id_map.get(field_ref.getFieldName());
+			MemberId member_id = _member_id_map.get(owner.getName().resolveBinding());
+			
+			return _graph_builder.findMember(type_id, member_id);
+		} else
+			ErrorOutputter.fatalError("Work here " + expr.getClass());
+		
+		return null;
 	}
 
 	/*
@@ -227,8 +234,8 @@ public class AstInterpreter {
 
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
-			IBinding binding = ((IASTIdExpression) node).getName().resolveBinding();
-			return _graph_builder.add_var_ref(_var_id_map.get(binding));
+			VarDecl var_decl = getVarDecl(node);
+			return _graph_builder.add_var_ref(var_decl);
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return load_bin_op((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto

@@ -109,12 +109,12 @@ public class GraphBuilder {
 		private GraphNode _return_node;
 		
 		public String _name;
-		public List<DirectVarDecl> _parameters;
+		public List<VarDecl> _parameters;
 
 		public FuncDecl(FuncId id, String name) {
 			_id = id;
 			_name = name;
-			_parameters = new ArrayList<DirectVarDecl>();
+			_parameters = new ArrayList<VarDecl>();
 			_return_node = null;
 		}
 
@@ -126,6 +126,7 @@ public class GraphBuilder {
 	public class StructDecl {
 		private TypeId _id;
 		private String _name;
+		private Map<MemberId, MemberDecl> _member_var_graph_nodes;
 		
 		public List<MemberDecl> _members;
 
@@ -133,6 +134,7 @@ public class GraphBuilder {
 			_id = id;
 			_name = name;
 			_members = new ArrayList<MemberDecl>();
+			_member_var_graph_nodes = new HashMap<MemberId, MemberDecl>();
 		}
 	}
 
@@ -146,7 +148,7 @@ public class GraphBuilder {
 
 	// TODO clear the variables that aren't in scope anymore
 	/** Converts a ast node id to a graph node id */
-	private Map<VarId, DirectVarDecl> _var_graph_nodes = new HashMap<VarId, DirectVarDecl>();
+	private Map<VarId, DirectVarDecl> _direct_var_graph_nodes = new HashMap<VarId, DirectVarDecl>();
 	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
 	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
 
@@ -182,20 +184,21 @@ public class GraphBuilder {
 
 	public void addStructDecl(StructDecl struct_decl) {
 		_struct_graph_nodes.put(struct_decl._id, struct_decl);
+		
+		for (MemberDecl member : struct_decl._members)
+			struct_decl._member_var_graph_nodes.put(member._id, member);
 	}
 
 	public void add_var_decl(DirectVarDecl var_decl) {
-		_var_graph_nodes.put(var_decl._id, var_decl);
+		_direct_var_graph_nodes.put(var_decl._id, var_decl);
 	}
 
 	public GraphNode add_direct_val(eValueType type, String value) {
 		return _gvpl_graph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
 	}
 
-	public void add_assign_op(VarId lhs, GraphNode rhs_node) {
-		DirectVarDecl var_decl = find_var(lhs);
-
-		add_assign(var_decl, NodeType.E_VARIABLE, rhs_node);
+	public void add_assign_op(VarDecl var_decl_lhs, GraphNode rhs_node) {
+		add_assign(var_decl_lhs, NodeType.E_VARIABLE, rhs_node);
 	}
 
 	/**
@@ -203,7 +206,7 @@ public class GraphBuilder {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	private GraphNode add_assign(DirectVarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
+	private GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl._name, lhs_type);
 		lhs_var_decl._curr_graph_node = lhs_node;
 
@@ -230,7 +233,7 @@ public class GraphBuilder {
 		return bin_op_node;
 	}
 
-	public GraphNode add_assign_bin_op(eAssignBinOp op, VarId lhs_var_id, GraphNode lhs_node,
+	public GraphNode add_assign_bin_op(eAssignBinOp op, VarDecl lhs_var_decl, GraphNode lhs_node,
 			GraphNode rhs_node) {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
@@ -241,24 +244,30 @@ public class GraphBuilder {
 		GraphNode result_node = _gvpl_graph.add_graph_node(lhs_node._name, NodeType.E_VARIABLE);
 		bin_op_node._dependent_nodes.add(result_node);
 
-		DirectVarDecl var_decl = find_var(lhs_var_id);
-		var_decl._curr_graph_node = result_node;
+		lhs_var_decl._curr_graph_node = result_node;
 
 		return result_node;
 	}
 
-	public GraphNode add_var_ref(VarId var) {
-		DirectVarDecl var_decl = find_var(var);
+	public GraphNode add_var_ref(VarDecl var_decl) {
 		return var_decl._curr_graph_node;
 	}
 
-	DirectVarDecl find_var(VarId id) {
-		DirectVarDecl temp = _var_graph_nodes.get(id);
-
-		if (temp == null)
+	public DirectVarDecl find_var(VarId id) {
+		DirectVarDecl result = _direct_var_graph_nodes.get(id);
+		if (result == null)
 			ErrorOutputter.fatalError("VarId " + id + " not found.\n");
 
-		return temp;
+		return result;
+	}
+
+	public MemberDecl findMember(TypeId type_id, MemberId id) {
+		StructDecl struct_decl = _struct_graph_nodes.get(type_id);
+		MemberDecl result = struct_decl._member_var_graph_nodes.get(id);
+		if (result == null)
+			ErrorOutputter.fatalError("VarId " + id + " not found.\n");
+
+		return result;
 	}
 
 	void enter_for_init_expr() {
@@ -296,7 +305,7 @@ public class GraphBuilder {
 	public void enter_function(FuncDecl func_decl) {
 		_current_function = func_decl;
 
-		for (DirectVarDecl parameter : func_decl._parameters) {
+		for (VarDecl parameter : func_decl._parameters) {
 			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name,
 					NodeType.E_DECLARED_PARAMETER);
 			parameter._curr_graph_node = var_node;
@@ -312,7 +321,7 @@ public class GraphBuilder {
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < parameter_values.size(); ++i) {
-			DirectVarDecl declared_parameter = func_decl._parameters.get(i);
+			VarDecl declared_parameter = func_decl._parameters.get(i);
 			GraphNode received_parameter = parameter_values.get(i);
 
 			received_parameter._dependent_nodes.add(declared_parameter._curr_graph_node);

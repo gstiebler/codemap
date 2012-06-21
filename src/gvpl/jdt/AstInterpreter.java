@@ -134,7 +134,8 @@ public class AstInterpreter {
 			ASTItem curr_node = node._AST.get(i);
 			if (curr_node._ast_item instanceof NumberLiteral || curr_node._ast_item instanceof BooleanLiteral) {
 				GraphNode val = load_direct_value(curr_node);
-				_graph_builder.add_assign_op(curr_var_decl.getVarId(), val);
+				//TODO corrigir
+				//_graph_builder.add_assign_op(curr_var_decl.getVarId(), val);
 			}
 		}
 	}
@@ -146,13 +147,17 @@ public class AstInterpreter {
 		GraphNode rvalue = load_value(node._AST.get(1));
 		
 		if(assignment.getOperator() == Assignment.Operator.ASSIGN) {
-			_graph_builder.add_assign_op(lhs_var_id, rvalue); 
+			//TODO corrigir
+			//_graph_builder.add_assign_op(lhs_var_id, rvalue); 
 			return null; 
 		}
 		
 		GraphNode lvalue = load_value(node._AST.get(0));
 		eAssignBinOp op = _assign_bin_op_types.get(assignment.getOperator());
-		return _graph_builder.add_assign_bin_op(op, lhs_var_id, lvalue, rvalue);
+
+		//TODO corrigir
+		//return _graph_builder.add_assign_bin_op(op, lhs_var_id, lvalue, rvalue);
+		return null;
 	}
 	
 	private VarId load_lhs(ASTItem lhs) {
@@ -164,7 +169,9 @@ public class AstInterpreter {
 		
 		if(node._ast_item instanceof SimpleName){
 			IBinding binding = ((Name)node._ast_item).resolveBinding();
-			return _graph_builder.add_var_ref(_var_id_map.get(binding));
+			//TODO corrigir
+			//return _graph_builder.add_var_ref(_var_id_map.get(binding));
+			return null;
 		}		
 		else if(node._ast_item instanceof InfixExpression){
 			return load_bin_op(node);
