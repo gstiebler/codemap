@@ -51,51 +51,88 @@ public class GraphBuilder {
 		E_OUT_OF_LOOP
 	}
 
-	/**
-	 * This is basically a typedef
-	 */
-	public class VarId {}
+	/** typedef */
+	public class VarId {
+	}
+
+	/** typedef */
+	public class FuncId {
+	}
+
+	/** typedef */
+	public class TypeId {
+	}
+
+	/** typedef */
+	public class MemberId {
+	}
 	
-	/**
-	 * This is basically a typedef
-	 */
-	public class FuncId {}
+	public class VarDecl {
+		protected String _name;
+		protected TypeId _type;
+		protected GraphNode _curr_graph_node;
+
+		public VarDecl(String name, TypeId type) {
+			_name = name;
+			_type = type;
+			_curr_graph_node = null;
+		}
+	}
 
 	/**
 	 * Structure that holds variable declaration parameters
 	 */
-	public class VarDecl {
+	public class DirectVarDecl extends VarDecl {
 		private VarId _id;
-		private String _name;
-		public String _type;
-		private GraphNode _curr_graph_node;
 
 		public VarId getVarId() {
 			return _id;
 		}
 
-		public VarDecl(VarId id, String name) {
+		public DirectVarDecl(VarId id, String name, TypeId type) {
+			super(name, type);
 			_id = id;
-			_name = name;
-			_curr_graph_node = null;
 		}
 	}
 	
+	public class MemberDecl extends VarDecl{
+		private MemberId _id;
+		
+		public MemberDecl(MemberId id, String name, TypeId type){
+			super(name, type);
+			_id = id;
+		}
+	}
+
 	public class FuncDecl {
 		private FuncId _id;
-		public String _name;
-		public List<VarDecl> _parameters;
 		private GraphNode _return_node;
 		
-		public FuncDecl(FuncId id, String name){
+		public String _name;
+		public List<DirectVarDecl> _parameters;
+
+		public FuncDecl(FuncId id, String name) {
 			_id = id;
 			_name = name;
-			_parameters = new ArrayList<VarDecl>();
+			_parameters = new ArrayList<DirectVarDecl>();
 			_return_node = null;
 		}
-		
-		public FuncId getFuncId(){
+
+		public FuncId getFuncId() {
 			return _id;
+		}
+	}
+
+	public class StructDecl {
+		private TypeId _id;
+		private String _name;
+		
+		public List<MemberDecl> _members;
+
+		public StructDecl(TypeId id, String name) {
+			_id = id;
+			_name = name;
+			_members = new ArrayList<MemberDecl>();
 		}
 	}
 
@@ -109,9 +146,9 @@ public class GraphBuilder {
 
 	// TODO clear the variables that aren't in scope anymore
 	/** Converts a ast node id to a graph node id */
-	private Map<VarId, VarDecl> _var_graph_nodes = new HashMap<VarId, VarDecl>();
-	
+	private Map<VarId, DirectVarDecl> _var_graph_nodes = new HashMap<VarId, DirectVarDecl>();
 	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
+	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
 
 	private List<Graph> _for_loops = new ArrayList<Graph>();
 
@@ -143,7 +180,11 @@ public class GraphBuilder {
 		_assign_bin_op_strings.put(eAssignBinOp.E_SUB_ASSIGN_OP, "-");
 	}
 
-	public void add_var_decl(VarDecl var_decl) {
+	public void addStructDecl(StructDecl struct_decl) {
+		_struct_graph_nodes.put(struct_decl._id, struct_decl);
+	}
+
+	public void add_var_decl(DirectVarDecl var_decl) {
 		_var_graph_nodes.put(var_decl._id, var_decl);
 	}
 
@@ -152,16 +193,17 @@ public class GraphBuilder {
 	}
 
 	public void add_assign_op(VarId lhs, GraphNode rhs_node) {
-		VarDecl var_decl = find_var(lhs);
-		
+		DirectVarDecl var_decl = find_var(lhs);
+
 		add_assign(var_decl, NodeType.E_VARIABLE, rhs_node);
 	}
-	
+
 	/**
 	 * Creates an assignment
+	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	private GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node){
+	private GraphNode add_assign(DirectVarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl._name, lhs_type);
 		lhs_var_decl._curr_graph_node = lhs_node;
 
@@ -199,19 +241,19 @@ public class GraphBuilder {
 		GraphNode result_node = _gvpl_graph.add_graph_node(lhs_node._name, NodeType.E_VARIABLE);
 		bin_op_node._dependent_nodes.add(result_node);
 
-		VarDecl var_decl = find_var(lhs_var_id);
+		DirectVarDecl var_decl = find_var(lhs_var_id);
 		var_decl._curr_graph_node = result_node;
 
 		return result_node;
 	}
 
 	public GraphNode add_var_ref(VarId var) {
-		VarDecl var_decl = find_var(var);
+		DirectVarDecl var_decl = find_var(var);
 		return var_decl._curr_graph_node;
 	}
 
-	VarDecl find_var(VarId id) {
-		VarDecl temp = _var_graph_nodes.get(id);
+	DirectVarDecl find_var(VarId id) {
+		DirectVarDecl temp = _var_graph_nodes.get(id);
 
 		if (temp == null)
 			ErrorOutputter.fatalError("VarId " + id + " not found.\n");
@@ -254,32 +296,33 @@ public class GraphBuilder {
 	public void enter_function(FuncDecl func_decl) {
 		_current_function = func_decl;
 
-		for (VarDecl parameter : func_decl._parameters) {
-			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name, NodeType.E_DECLARED_PARAMETER);
+		for (DirectVarDecl parameter : func_decl._parameters) {
+			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name,
+					NodeType.E_DECLARED_PARAMETER);
 			parameter._curr_graph_node = var_node;
 		}
-		
+
 		_func_graph_nodes.put(func_decl._id, func_decl);
 	}
-	
-	public GraphNode addFuncRef(FuncId func_id, List<GraphNode> parameter_values){
+
+	public GraphNode addFuncRef(FuncId func_id, List<GraphNode> parameter_values) {
 		FuncDecl func_decl = _func_graph_nodes.get(func_id);
-		
+
 		if (func_decl._parameters.size() != parameter_values.size())
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
-		
-		for (int i = 0; i < parameter_values.size(); ++i){
-			VarDecl declared_parameter = func_decl._parameters.get(i);
+
+		for (int i = 0; i < parameter_values.size(); ++i) {
+			DirectVarDecl declared_parameter = func_decl._parameters.get(i);
 			GraphNode received_parameter = parameter_values.get(i);
 
 			received_parameter._dependent_nodes.add(declared_parameter._curr_graph_node);
 		}
-		
+
 		return func_decl._return_node;
 	}
-	
-	public void addReturnStatement(GraphNode rvalue){
-		VarDecl var_decl = new VarDecl(new VarId(), _current_function._name);
+
+	public void addReturnStatement(GraphNode rvalue, TypeId type) {
+		DirectVarDecl var_decl = new DirectVarDecl(new VarId(), _current_function._name, type);
 		add_var_decl(var_decl);
 
 		_current_function._return_node = add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);

@@ -21,6 +21,7 @@ public class FileDriver extends Visualizer {
 		}
 		out = new PrintWriter(outFile);
 		out.println("digraph G\n{");
+		out.println("rankdir=LR;");
 		
 		print_graph(graph);
 		

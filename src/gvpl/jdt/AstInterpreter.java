@@ -5,7 +5,7 @@ import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.FuncId;
-import gvpl.graph.GraphBuilder.VarDecl;
+import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.VarId;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
 import gvpl.graph.GraphBuilder.eBinOp;
@@ -110,7 +110,7 @@ public class AstInterpreter {
 	private void load_var_decl(ASTItem node) {
 		System.out.println("load_var_decl " + node._ast_item.toString());
 
-		VarDecl curr_var_decl = null;
+		DirectVarDecl curr_var_decl = null;
 		
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);
@@ -119,7 +119,8 @@ public class AstInterpreter {
 				IBinding binding = ((Name)curr_node._ast_item).resolveBinding();
 				VarId id = _graph_builder.new VarId();
 				
-				VarDecl var_decl = _graph_builder.new VarDecl(id, curr_node._ast_item.toString());
+				//TODO set the correct type, not always null
+				DirectVarDecl var_decl = _graph_builder.new DirectVarDecl(id, curr_node._ast_item.toString(), null);
 				_var_id_map.put(binding, id);
 				curr_var_decl = var_decl;
 			}

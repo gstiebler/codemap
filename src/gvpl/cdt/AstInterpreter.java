@@ -1,42 +1,20 @@
 package gvpl.cdt;
 
-import gvpl.ErrorOutputter;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphNode;
-import gvpl.graph.GraphBuilder.FuncDecl;
-import gvpl.graph.GraphBuilder.FuncId;
-import gvpl.graph.GraphBuilder.VarDecl;
-import gvpl.graph.GraphBuilder.VarId;
-import gvpl.graph.GraphBuilder.eAssignBinOp;
-import gvpl.graph.GraphBuilder.eBinOp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
-import org.eclipse.cdt.core.dom.ast.IASTForStatement;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
-import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
-import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
-import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
-import org.eclipse.cdt.core.dom.ast.IASTName;
-import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
-import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-import org.eclipse.cdt.core.dom.ast.IBinding;
+import gvpl.ErrorOutputter;
+import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphBuilder.*;
+import gvpl.graph.GraphNode;
+
+import org.eclipse.cdt.core.dom.ast.*;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
 
 public class AstInterpreter {
 
@@ -44,6 +22,8 @@ public class AstInterpreter {
 
 	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	private Map<IBinding, FuncId> _func_id_map = new HashMap<IBinding, FuncId>();
+	private Map<IBinding, TypeId> _type_id_map = new HashMap<IBinding, TypeId>();
+	private Map<IBinding, MemberId> _member_id_map = new HashMap<IBinding, MemberId>();
 	private Map<Integer, eBinOp> _bin_op_types = new HashMap<Integer, eBinOp>();
 	private Map<Integer, eAssignBinOp> _assign_bin_op_types = new HashMap<Integer, eAssignBinOp>();
 
@@ -57,6 +37,12 @@ public class AstInterpreter {
 		for (IASTDeclaration declaration : declarations) {
 			if (declaration instanceof IASTFunctionDefinition)
 				load_function((IASTFunctionDefinition) declaration);
+			else if (declaration instanceof IASTSimpleDeclaration){
+				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
+				loadStructureDecl((IASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
+			} else
+				ErrorOutputter.fatalError("Deu merda aqui.");
+				
 		}
 	}
 
@@ -72,6 +58,43 @@ public class AstInterpreter {
 		_assign_bin_op_types.put(IASTBinaryExpression.op_plusAssign, eAssignBinOp.E_PLUS_ASSIGN_OP);
 		_assign_bin_op_types.put(IASTBinaryExpression.op_minusAssign, eAssignBinOp.E_SUB_ASSIGN_OP);
 	}
+	
+	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl){
+		IASTName name = strDecl.getName();
+		IASTDeclaration[] members = strDecl.getMembers();
+		
+		TypeId struct_type = _graph_builder.new TypeId();
+		_type_id_map.put(name.resolveBinding(), struct_type);
+		
+		StructDecl struct_decl = _graph_builder.new StructDecl(struct_type, name.toString());
+		
+		for (IASTDeclaration member : members){
+			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
+			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
+			TypeId param_type = getType(decl_spec);
+			IASTDeclarator[] declarators = simple_decl.getDeclarators();
+			for (IASTDeclarator declarator : declarators){
+				IASTName decl_name = declarator.getName();
+				MemberId member_id = _graph_builder.new MemberId();
+				_member_id_map.put(decl_name.resolveBinding(), member_id);
+				
+				MemberDecl member_decl = 
+						_graph_builder.new MemberDecl(member_id, decl_name.toString(), param_type);
+				struct_decl._members.add(member_decl);
+			}
+		}
+		
+		_graph_builder.addStructDecl(struct_decl);
+	}
+	
+	TypeId getType(IASTDeclSpecifier decl_spec){
+		if (decl_spec instanceof IASTNamedTypeSpecifier){
+			IASTNamedTypeSpecifier named_type = (IASTNamedTypeSpecifier) decl_spec;
+			return _type_id_map.get(named_type.getName().resolveBinding());
+		}
+		
+		return null;
+	}
 
 	private void load_function(IASTFunctionDefinition fd) {
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
@@ -84,7 +107,10 @@ public class AstInterpreter {
 		FuncDecl func_decl = _graph_builder.new FuncDecl(func_id, function_name);
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameter_var_decl = parameter.getDeclarator();
-			VarDecl var_decl = load_var_decl(parameter_var_decl);
+			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
+			TypeId type = getType(decl_spec);
+			//TODO send the correct type, not always null
+			DirectVarDecl var_decl = load_var_decl(parameter_var_decl, type);
 			func_decl._parameters.add(var_decl);
 		}
 		_graph_builder.enter_function(func_decl);
@@ -114,9 +140,13 @@ public class AstInterpreter {
 				ErrorOutputter.fatalError("Deu merda aqui.");
 
 			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) decl;
+			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
+			
+			TypeId type = getType(decl_spec);
+			
 			IASTDeclarator[] declarators = simple_decl.getDeclarators();
 			for (IASTDeclarator declarator : declarators)//possibly more than one variable per line
-				load_var_decl(declarator);
+				load_var_decl(declarator, type);
 		} else if (statement instanceof IASTExpression)
 			load_value((IASTExpression) statement);
 		else if (statement instanceof IASTForStatement)
@@ -138,19 +168,16 @@ public class AstInterpreter {
 		IASTReturnStatement return_node = (IASTReturnStatement) statement;
 
 		GraphNode rvalue = load_value(return_node.getReturnValue());
-		_graph_builder.addReturnStatement(rvalue);
+		//TODO set the correct type of the return value
+		_graph_builder.addReturnStatement(rvalue, null);
 	}
 
-	private VarDecl load_var_decl(IASTDeclarator decl) {
+	private DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
-		IBinding binding = name.resolveBinding();
 
 		VarId id = _graph_builder.new VarId();
-		VarDecl var_decl = _graph_builder.new VarDecl(id, name.toString());
-		_var_id_map.put(binding, id);
-
-		// var_decl._type = ; TODO pegar o tipo do parent
-
+		DirectVarDecl var_decl = _graph_builder.new DirectVarDecl(id, name.toString(), type);
+		_var_id_map.put(name.resolveBinding(), id);
 		_graph_builder.add_var_decl(var_decl);
 
 		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
@@ -165,8 +192,16 @@ public class AstInterpreter {
 	}
 
 	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
-
-		IASTIdExpression id_expr = (IASTIdExpression) node.getOperand1();
+		IASTExpression expr = node.getOperand1();
+		if (expr instanceof IASTIdExpression){
+			IASTIdExpression id_expr = (IASTIdExpression) expr;
+		} else if (expr instanceof IASTFieldReference){
+			IASTFieldReference field_ref = (IASTFieldReference) expr;
+			//field_ref.get
+			ErrorOutputter.fatalError("Work here " + expr.getClass());
+		} else
+			ErrorOutputter.fatalError("Work here " + expr.getClass());
+		
 		VarId lhs_var_id = load_lhs(id_expr.getName());
 		GraphNode rvalue = load_value(node.getOperand2());
 
