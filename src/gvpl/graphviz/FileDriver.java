@@ -37,6 +37,16 @@ public class FileDriver extends Visualizer {
 		String properties = ", style=filled, fillcolor=\"#E9FFE9\"";
 		insertNode(node_id, node_name, properties);
 	}
+
+	void insertDeclaredParameter(int node_id, String node_name) {
+		String properties = ", style=filled, fillcolor=\"#FFE9E9\"";
+		insertNode(node_id, node_name, properties);
+	}
+	
+	void insertReturnValue(int node_id, String node_name) {
+		String properties = ", style=filled, fillcolor=\"#FFFFD0\"";
+		insertNode(node_id, node_name, properties);
+	}
 	
 	void insertVariable(int node_id, String node_name) {
 		insertNode(node_id, node_name, "");

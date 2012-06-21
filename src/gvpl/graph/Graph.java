@@ -11,7 +11,9 @@ public class Graph {
 		E_DIRECT_VALUE,
 		E_VARIABLE,
 		E_OPERATION,
-		E_FOR_LOOP
+		E_FOR_LOOP,
+		E_DECLARED_PARAMETER,
+		E_RETURN_VALUE
 	}
 
 	public List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();

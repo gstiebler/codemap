@@ -154,15 +154,15 @@ public class GraphBuilder {
 	public void add_assign_op(VarId lhs, GraphNode rhs_node) {
 		VarDecl var_decl = find_var(lhs);
 		
-		add_assign(var_decl, rhs_node);
+		add_assign(var_decl, NodeType.E_VARIABLE, rhs_node);
 	}
 	
 	/**
 	 * Creates an assignment
 	 * @return New node from assignment, the left from assignment
 	 */
-	private GraphNode add_assign(VarDecl lhs_var_decl, GraphNode rhs_node){
-		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl._name, NodeType.E_VARIABLE);
+	private GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node){
+		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl._name, lhs_type);
 		lhs_var_decl._curr_graph_node = lhs_node;
 
 		rhs_node._dependent_nodes.add(lhs_node);
@@ -255,7 +255,7 @@ public class GraphBuilder {
 		_current_function = func_decl;
 
 		for (VarDecl parameter : func_decl._parameters) {
-			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name, NodeType.E_VARIABLE);
+			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name, NodeType.E_DECLARED_PARAMETER);
 			parameter._curr_graph_node = var_node;
 		}
 		
@@ -282,7 +282,7 @@ public class GraphBuilder {
 		VarDecl var_decl = new VarDecl(new VarId(), _current_function._name);
 		add_var_decl(var_decl);
 
-		_current_function._return_node = add_assign(var_decl, rvalue);
+		_current_function._return_node = add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
 	}
 
 	public void decrease_depth() {
