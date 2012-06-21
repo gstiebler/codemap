@@ -4,7 +4,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-import gvpl.Graph;
+import gvpl.graph.Graph;
 
 public class FileDriver extends Visualizer {
 

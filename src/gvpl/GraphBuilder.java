@@ -1,15 +1,14 @@
 package gvpl;
 
-import gvpl.Graph.GraphNode;
-import gvpl.Graph.GraphNodeId;
-import gvpl.Graph.NodeType;
+import gvpl.graph.Graph;
+import gvpl.graph.GraphNode;
+import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 
 public class GraphBuilder {
 
@@ -53,25 +52,31 @@ public class GraphBuilder {
 		E_OUT_OF_LOOP
 	}
 
+	/**
+	 * This is basically a typedef
+	 */
 	public class VarId {
 		public VarId() {
 		}
 	}
 
+	/**
+	 * Structure that holds variable declaration parameters
+	 */
 	public class VarDecl {
 		private VarId _id;
 		private String _name;
 		public String _type;
-		private GraphNodeId _curr_graph_node_id;
-		
-		public VarId getVarId(){
+		private GraphNode _curr_graph_node;
+
+		public VarId getVarId() {
 			return _id;
 		}
 
 		public VarDecl(VarId id, String name) {
 			_id = id;
 			_name = name;
-			_curr_graph_node_id = null;
+			_curr_graph_node = null;
 		}
 	}
 
@@ -90,6 +95,8 @@ public class GraphBuilder {
 	private List<Graph> _for_loops = new ArrayList<Graph>();
 
 	private eForLoopState _for_loop_state;
+
+	private String _current_function_name;
 
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
@@ -127,7 +134,7 @@ public class GraphBuilder {
 		VarDecl var_decl = find_var(lhs);
 
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(var_decl._name, NodeType.E_VARIABLE);
-		var_decl._curr_graph_node_id = lhs_node._id;
+		var_decl._curr_graph_node = lhs_node;
 
 		rhs_node._dependent_nodes.add(lhs_node);
 	}
@@ -163,14 +170,14 @@ public class GraphBuilder {
 		bin_op_node._dependent_nodes.add(result_node);
 
 		VarDecl var_decl = find_var(lhs_var_id);
-		var_decl._curr_graph_node_id = result_node._id;
+		var_decl._curr_graph_node = result_node;
 
 		return result_node;
 	}
 
 	public GraphNode add_var_ref(VarId var) {
 		VarDecl var_decl = find_var(var);
-		return _gvpl_graph.find_graph_node(var_decl._curr_graph_node_id);
+		return var_decl._curr_graph_node;
 	}
 
 	VarDecl find_var(VarId id) {
@@ -213,16 +220,25 @@ public class GraphBuilder {
 			ErrorOutputter.fatalError("Invalid state in for loop");
 		_for_loop_state = eForLoopState.E_OUT_OF_LOOP;
 	}
-	
-	public void enter_function(String name, List<VarDecl> parameters) 
-	{
-		for(VarDecl parameter : parameters)
-		{
+
+	public void enter_function(String name, List<VarDecl> parameters) {
+		_current_function_name = name;
+
+		for (VarDecl parameter : parameters) {
 			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name, NodeType.E_VARIABLE);
-			parameter._curr_graph_node_id = var_node._id;
+			parameter._curr_graph_node = var_node;
 		}
 	}
 	
-	public void decrease_depth() {}
+	public void addReturnStatement(GraphNode rvalue){
+		VarId id = new VarId();
+		VarDecl var_decl = new VarDecl(id, _current_function_name);
+		add_var_decl(var_decl);
+
+		add_assign_op(id, rvalue);
+	}
+
+	public void decrease_depth() {
+	}
 
 }

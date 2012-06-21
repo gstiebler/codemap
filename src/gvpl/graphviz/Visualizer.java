@@ -1,7 +1,7 @@
 package gvpl.graphviz;
 
-import gvpl.Graph;
-import gvpl.Graph.GraphNode;
+import gvpl.graph.Graph;
+import gvpl.graph.GraphNode;
 
 public abstract class Visualizer {
 
@@ -12,11 +12,11 @@ public abstract class Visualizer {
 		for (int i = 0; i < size; ++i) {
 			graph_node = graph._graph_nodes.get(i);
 			if (graph_node._type == Graph.NodeType.E_OPERATION)
-				insertOperation(graph_node._id._id, graph_node._name);
+				insertOperation(graph_node.getId(), graph_node._name);
 			else if (graph_node._type == Graph.NodeType.E_DIRECT_VALUE)
-				insertValueNode(graph_node._id._id, graph_node._name);
+				insertValueNode(graph_node.getId(), graph_node._name);
 			else
-				insertVariable(graph_node._id._id, graph_node._name);
+				insertVariable(graph_node.getId(), graph_node._name);
 		}
 		
 		int dependents_size;
@@ -25,7 +25,7 @@ public abstract class Visualizer {
 
 			dependents_size = graph_node._dependent_nodes.size();
 			for (int j = 0; j < dependents_size; ++j)
-				insertDependency(graph_node._id._id, graph_node._dependent_nodes.get(j)._id._id);
+				insertDependency(graph_node.getId(), graph_node._dependent_nodes.get(j).getId());
 		}
 	}
 

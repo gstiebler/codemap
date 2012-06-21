@@ -1,9 +1,9 @@
 package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
-import gvpl.Graph.GraphNode;
 import gvpl.GraphBuilder;
 import gvpl.GraphBuilder.*;
+import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,17 +95,16 @@ public class AstInterpreter {
 			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
 			load_assign_bin_op_types((IASTBinaryExpression) expr_stat.getExpression());
 		} else if (statement instanceof IASTReturnStatement){
-			IASTReturnStatement return_node = (IASTReturnStatement) statement;
-			
-			VarId id = _graph_builder.new VarId();
-			VarDecl var_decl = _graph_builder.new VarDecl(id, "RETURN");
-			_graph_builder.add_var_decl(var_decl);
-			
-			GraphNode rvalue = load_value(return_node.getReturnValue());
-
-			_graph_builder.add_assign_op(id, rvalue);
+			loadReturnStatement((IASTReturnStatement) statement);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
+	}
+	
+	private void loadReturnStatement(IASTReturnStatement statement){
+		IASTReturnStatement return_node = (IASTReturnStatement) statement;
+
+		GraphNode rvalue = load_value(return_node.getReturnValue());
+		_graph_builder.addReturnStatement(rvalue);
 	}
 
 	private VarDecl load_var_decl(IASTDeclarator decl) {
@@ -165,8 +164,11 @@ public class AstInterpreter {
 			return load_bin_op((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
 			return load_direct_value((IASTLiteralExpression) node);
-		}
-
+		} else if (node instanceof IASTFunctionCallExpression) {// Eh uma chamada a funcao
+			ErrorOutputter.fatalError("Implementar IASTFunctionCallExpression");
+		}  else
+			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
+		
 		return null;
 	}
 

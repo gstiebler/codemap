@@ -1,12 +1,12 @@
 package gvpl.jdt;
 
 import gvpl.ErrorOutputter;
-import gvpl.Graph.GraphNode;
 import gvpl.GraphBuilder;
 import gvpl.GraphBuilder.VarDecl;
 import gvpl.GraphBuilder.VarId;
 import gvpl.GraphBuilder.eAssignBinOp;
 import gvpl.GraphBuilder.eBinOp;
+import gvpl.graph.GraphNode;
 import gvpl.jdt.Visitor.ASTItem;
 
 import java.util.ArrayList;
