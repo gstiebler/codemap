@@ -1,12 +1,14 @@
 package gvpl.jdt;
 
 import gvpl.ErrorOutputter;
-import gvpl.GraphBuilder;
-import gvpl.GraphBuilder.VarDecl;
-import gvpl.GraphBuilder.VarId;
-import gvpl.GraphBuilder.eAssignBinOp;
-import gvpl.GraphBuilder.eBinOp;
+import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
+import gvpl.graph.GraphBuilder.FuncDecl;
+import gvpl.graph.GraphBuilder.FuncId;
+import gvpl.graph.GraphBuilder.VarDecl;
+import gvpl.graph.GraphBuilder.VarId;
+import gvpl.graph.GraphBuilder.eAssignBinOp;
+import gvpl.graph.GraphBuilder.eBinOp;
 import gvpl.jdt.Visitor.ASTItem;
 
 import java.util.ArrayList;
@@ -65,8 +67,11 @@ public class AstInterpreter {
 	private void load_function(ASTItem node) {
 		MethodDeclaration md = (MethodDeclaration) node._ast_item;
 		String function_name = md.getName().toString();
-		List<GraphBuilder.VarDecl> list = new ArrayList<GraphBuilder.VarDecl>();
-		_graph_builder.enter_function(function_name, list);
+
+		//TODO pegar o ID certo
+		FuncId func_id = null;
+		FuncDecl func_decl = _graph_builder.new FuncDecl(func_id, function_name);
+		_graph_builder.enter_function(func_decl);
 
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);

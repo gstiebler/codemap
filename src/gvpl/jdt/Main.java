@@ -1,8 +1,8 @@
 package gvpl.jdt;
 
-import gvpl.GraphBuilder;
 import gvpl.common.*;
 import gvpl.graph.Graph;
+import gvpl.graph.GraphBuilder;
 
 import java.io.IOException;
 

@@ -1,16 +1,41 @@
 package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
-import gvpl.GraphBuilder;
-import gvpl.GraphBuilder.*;
+import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
+import gvpl.graph.GraphBuilder.FuncDecl;
+import gvpl.graph.GraphBuilder.FuncId;
+import gvpl.graph.GraphBuilder.VarDecl;
+import gvpl.graph.GraphBuilder.VarId;
+import gvpl.graph.GraphBuilder.eAssignBinOp;
+import gvpl.graph.GraphBuilder.eBinOp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.*;
+import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
+import org.eclipse.cdt.core.dom.ast.IASTForStatement;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
+import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class AstInterpreter {
@@ -18,6 +43,7 @@ public class AstInterpreter {
 	GraphBuilder _graph_builder;
 
 	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
+	private Map<IBinding, FuncId> _func_id_map = new HashMap<IBinding, FuncId>();
 	private Map<Integer, eBinOp> _bin_op_types = new HashMap<Integer, eBinOp>();
 	private Map<Integer, eAssignBinOp> _assign_bin_op_types = new HashMap<Integer, eAssignBinOp>();
 
@@ -49,15 +75,19 @@ public class AstInterpreter {
 
 	private void load_function(IASTFunctionDefinition fd) {
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
-		String function_name = decl.getName().toString();
 		IASTParameterDeclaration[] parameters = decl.getParameters();
-		List<GraphBuilder.VarDecl> list = new ArrayList<GraphBuilder.VarDecl>();
+		IASTName name_binding = decl.getName();
+		String function_name = name_binding.toString();
+		
+		FuncId func_id = _graph_builder.new FuncId();
+		_func_id_map.put(name_binding.resolveBinding(), func_id);
+		FuncDecl func_decl = _graph_builder.new FuncDecl(func_id, function_name);
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameter_var_decl = parameter.getDeclarator();
 			VarDecl var_decl = load_var_decl(parameter_var_decl);
-			list.add(var_decl);
+			func_decl._parameters.add(var_decl);
 		}
-		_graph_builder.enter_function(function_name, list);
+		_graph_builder.enter_function(func_decl);
 
 		IASTStatement body = fd.getBody();
 
@@ -77,7 +107,7 @@ public class AstInterpreter {
 	}
 
 	private void load_instruction_line(IASTStatement statement) {
-		if (statement instanceof IASTDeclarationStatement) {
+		if (statement instanceof IASTDeclarationStatement) {//variable declaration
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
 			IASTDeclaration decl = decl_statement.getDeclaration();
 			if (!(decl instanceof IASTSimpleDeclaration))
@@ -85,7 +115,7 @@ public class AstInterpreter {
 
 			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) decl;
 			IASTDeclarator[] declarators = simple_decl.getDeclarators();
-			for (IASTDeclarator declarator : declarators)
+			for (IASTDeclarator declarator : declarators)//possibly more than one variable per line
 				load_var_decl(declarator);
 		} else if (statement instanceof IASTExpression)
 			load_value((IASTExpression) statement);
@@ -93,7 +123,11 @@ public class AstInterpreter {
 			load_for_stmt((IASTForStatement) statement);
 		else if (statement instanceof IASTExpressionStatement) {
 			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
-			load_assign_bin_op_types((IASTBinaryExpression) expr_stat.getExpression());
+			IASTExpression expr = expr_stat.getExpression();
+			if(expr instanceof IASTBinaryExpression)
+				load_assign_bin_op_types((IASTBinaryExpression) expr);
+			else if (expr instanceof IASTFunctionCallExpression)
+				loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (statement instanceof IASTReturnStatement){
 			loadReturnStatement((IASTReturnStatement) statement);
 		} else
@@ -165,11 +199,24 @@ public class AstInterpreter {
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
 			return load_direct_value((IASTLiteralExpression) node);
 		} else if (node instanceof IASTFunctionCallExpression) {// Eh uma chamada a funcao
-			ErrorOutputter.fatalError("Implementar IASTFunctionCallExpression");
+			return loadFunctionCall((IASTFunctionCallExpression) node);
 		}  else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
 		
 		return null;
+	}
+	
+	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call){
+		IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
+		FuncId func_id = _func_id_map.get(expr.getName().resolveBinding());
+		IASTExpressionList expr_list = (IASTExpressionList) func_call.getParameterExpression();
+		IASTExpression[] parameters = expr_list.getExpressions();
+		
+		List<GraphNode> parameter_values = new ArrayList<GraphNode>();
+		for (IASTExpression parameter : parameters)
+			parameter_values.add(load_value(parameter));
+		
+		return _graph_builder.addFuncRef(func_id, parameter_values);
 	}
 
 	GraphNode load_bin_op(IASTBinaryExpression bin_op) {

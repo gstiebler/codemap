@@ -1,8 +1,8 @@
 package gvpl.cdt;
 
-import gvpl.GraphBuilder;
 import gvpl.common.*;
 import gvpl.graph.Graph;
+import gvpl.graph.GraphBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
