@@ -108,21 +108,23 @@ public class GraphBuilder {
 	/** This class represents each member of a instance of a struct */
 	public class MemberStructInstance extends VarDecl{
 		private StructMember _struct_member;
+		private VarDecl _parent;
 		
-		public MemberStructInstance(StructMember struct_member, TypeId type){
-			super(type);
+		public MemberStructInstance(StructMember struct_member, VarDecl parent){
+			super(struct_member._type);
 			_struct_member = struct_member;
+			_parent = parent;
 		}
 		
 		public String getName() {
-			return _struct_member._parent._name + "." + _struct_member._name;
+			return _parent.getName() + "." + _struct_member._name;
 		}
 	}
 	
 	public class StructMember{
 		private MemberId _id;
 		private String _name;
-		//private TypeId _type;
+		private TypeId _type;
 		private StructDecl _parent;
 		
 		/** Maps the instance of a variable of the struct to the instance of the member */
@@ -132,7 +134,7 @@ public class GraphBuilder {
 			_parent = parent;
 			_id = id;
 			_name = name;
-			//_type = type;
+			_type = type;
 		}
 	}
 
@@ -230,7 +232,7 @@ public class GraphBuilder {
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
 				StructMember struct_member = entry.getValue();
 				
-				member_instance = new MemberStructInstance(struct_member, var_decl._type);
+				member_instance = new MemberStructInstance(struct_member, var_decl);
 				struct_member._instances.put(var_decl._id, member_instance);
 			}
 		}

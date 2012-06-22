@@ -220,10 +220,11 @@ public class AstInterpreter {
 			CPPASTFieldReference field_ref = (CPPASTFieldReference) expr;
 			IASTIdExpression owner = (IASTIdExpression) field_ref.getFieldOwner();
 
-			IBinding binding = owner.getName().resolveBinding();
-			MemberId member_id = _member_id_map.get(binding);
+			IBinding field_binding = field_ref.getFieldName().resolveBinding();
+			MemberId member_id = _member_id_map.get(field_binding);
 
-			VarId var_id = _var_id_map.get(binding);
+			IBinding owner_binding = owner.getName().resolveBinding();
+			VarId var_id = _var_id_map.get(owner_binding);
 			
 			return _graph_builder.findMember(var_id, member_id);
 		} else
@@ -245,11 +246,15 @@ public class AstInterpreter {
 			return load_bin_op((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
 			return load_direct_value((IASTLiteralExpression) node);
-		} else if (node instanceof IASTFunctionCallExpression) {// Eh uma
-																// chamada a
-																// funcao
+		} 
+		else if (node instanceof IASTFunctionCallExpression) {// Eh umachamada a funcao
 			return loadFunctionCall((IASTFunctionCallExpression) node);
-		} else
+		} 
+		else if (node instanceof IASTFieldReference) {// reference to field of a struct
+			VarDecl var_decl = getVarDecl(node);
+			return _graph_builder.add_var_ref(var_decl);
+		} 
+		else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
 
 		return null;
