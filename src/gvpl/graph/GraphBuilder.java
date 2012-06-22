@@ -66,17 +66,21 @@ public class GraphBuilder {
 	/** typedef */
 	public class MemberId {
 	}
+
+	/** typedef */
+	public class MemberInstanceId {
+	}
 	
-	public class VarDecl {
-		protected String _name;
+	public abstract class VarDecl {
 		protected TypeId _type;
 		protected GraphNode _curr_graph_node;
 
-		public VarDecl(String name, TypeId type) {
-			_name = name;
+		public VarDecl(TypeId type) {
 			_type = type;
 			_curr_graph_node = null;
 		}
+		
+		abstract public String getName();
 	}
 
 	/**
@@ -84,23 +88,51 @@ public class GraphBuilder {
 	 */
 	public class DirectVarDecl extends VarDecl {
 		private VarId _id;
+		protected String _name;
 
 		public VarId getVarId() {
 			return _id;
 		}
 
 		public DirectVarDecl(VarId id, String name, TypeId type) {
-			super(name, type);
+			super(type);
+			_name = name;
 			_id = id;
+		}
+		
+		public String getName() {
+			return _name;
 		}
 	}
 	
-	public class MemberDecl extends VarDecl{
-		private MemberId _id;
+	/** This class represents each member of a instance of a struct */
+	public class MemberStructInstance extends VarDecl{
+		private StructMember _struct_member;
 		
-		public MemberDecl(MemberId id, String name, TypeId type){
-			super(name, type);
+		public MemberStructInstance(StructMember struct_member, TypeId type){
+			super(type);
+			_struct_member = struct_member;
+		}
+		
+		public String getName() {
+			return _struct_member._parent._name + "." + _struct_member._name;
+		}
+	}
+	
+	public class StructMember{
+		private MemberId _id;
+		private String _name;
+		//private TypeId _type;
+		private StructDecl _parent;
+		
+		/** Maps the instance of a variable of the struct to the instance of the member */
+		public Map<VarId, MemberStructInstance> _instances = new HashMap<VarId, MemberStructInstance>();
+		
+		public StructMember(StructDecl parent, MemberId id, String name, TypeId type) {
+			_parent = parent;
 			_id = id;
+			_name = name;
+			//_type = type;
 		}
 	}
 
@@ -126,15 +158,19 @@ public class GraphBuilder {
 	public class StructDecl {
 		private TypeId _id;
 		private String _name;
-		private Map<MemberId, MemberDecl> _member_var_graph_nodes;
+		private Map<MemberId, StructMember> _member_var_graph_nodes;
 		
-		public List<MemberDecl> _members;
+		//public List<StructMember> _members;
 
 		public StructDecl(TypeId id, String name) {
 			_id = id;
 			_name = name;
-			_members = new ArrayList<MemberDecl>();
-			_member_var_graph_nodes = new HashMap<MemberId, MemberDecl>();
+			//_members = new ArrayList<StructMember>();
+			_member_var_graph_nodes = new HashMap<MemberId, StructMember>();
+		}
+		
+		public void addMember(StructMember structMember) {
+			_member_var_graph_nodes.put(structMember._id, structMember);
 		}
 	}
 
@@ -146,13 +182,10 @@ public class GraphBuilder {
 	/** Stores all the graph */
 	public Graph _gvpl_graph;
 
-	// TODO clear the variables that aren't in scope anymore
 	/** Converts a ast node id to a graph node id */
 	private Map<VarId, DirectVarDecl> _direct_var_graph_nodes = new HashMap<VarId, DirectVarDecl>();
 	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
 	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
-
-	private List<Graph> _for_loops = new ArrayList<Graph>();
 
 	private eForLoopState _for_loop_state;
 
@@ -184,13 +217,23 @@ public class GraphBuilder {
 
 	public void addStructDecl(StructDecl struct_decl) {
 		_struct_graph_nodes.put(struct_decl._id, struct_decl);
-		
-		for (MemberDecl member : struct_decl._members)
-			struct_decl._member_var_graph_nodes.put(member._id, member);
 	}
 
 	public void add_var_decl(DirectVarDecl var_decl) {
 		_direct_var_graph_nodes.put(var_decl._id, var_decl);
+		
+		//Create declaration for every member of the struct
+		if (var_decl._type != null){
+			StructDecl structDecl = _struct_graph_nodes.get(var_decl._type);
+			MemberStructInstance member_instance = null;
+			
+			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
+				StructMember struct_member = entry.getValue();
+				
+				member_instance = new MemberStructInstance(struct_member, var_decl._type);
+				struct_member._instances.put(var_decl._id, member_instance);
+			}
+		}
 	}
 
 	public GraphNode add_direct_val(eValueType type, String value) {
@@ -207,7 +250,7 @@ public class GraphBuilder {
 	 * @return New node from assignment, the left from assignment
 	 */
 	private GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
-		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl._name, lhs_type);
+		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl.getName(), lhs_type);
 		lhs_var_decl._curr_graph_node = lhs_node;
 
 		rhs_node._dependent_nodes.add(lhs_node);
@@ -261,11 +304,13 @@ public class GraphBuilder {
 		return result;
 	}
 
-	public MemberDecl findMember(TypeId type_id, MemberId id) {
-		StructDecl struct_decl = _struct_graph_nodes.get(type_id);
-		MemberDecl result = struct_decl._member_var_graph_nodes.get(id);
+	public MemberStructInstance findMember(VarId var_id, MemberId member_id) {
+		VarDecl var_decl = find_var(var_id);
+		StructDecl struct_decl = _struct_graph_nodes.get(var_decl._type);
+		StructMember member = struct_decl._member_var_graph_nodes.get(member_id);
+		MemberStructInstance result = member._instances.get(var_id);
 		if (result == null)
-			ErrorOutputter.fatalError("VarId " + id + " not found.\n");
+			ErrorOutputter.fatalError("VarId " + var_id + " not found.\n");
 
 		return result;
 	}
@@ -306,7 +351,7 @@ public class GraphBuilder {
 		_current_function = func_decl;
 
 		for (VarDecl parameter : func_decl._parameters) {
-			GraphNode var_node = _gvpl_graph.add_graph_node(parameter._name,
+			GraphNode var_node = _gvpl_graph.add_graph_node(parameter.getName(),
 					NodeType.E_DECLARED_PARAMETER);
 			parameter._curr_graph_node = var_node;
 		}
