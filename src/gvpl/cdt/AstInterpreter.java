@@ -1,34 +1,41 @@
 package gvpl.cdt;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.*;
-import gvpl.graph.GraphNode;
+import gvpl.graph.GraphBuilder.DirectVarDecl;
+import gvpl.graph.GraphBuilder.FuncDecl;
+import gvpl.graph.GraphBuilder.FuncId;
+import gvpl.graph.GraphBuilder.MemberId;
+import gvpl.graph.GraphBuilder.StructDecl;
+import gvpl.graph.GraphBuilder.StructMember;
+import gvpl.graph.GraphBuilder.TypeId;
 
-import org.eclipse.cdt.core.dom.ast.*;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
-public class AstInterpreter implements AstLoader {
+public class AstInterpreter extends AstLoader {
 
-	GraphBuilder _graph_builder;
-	
-	CppMaps _cppMaps;
-
-	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
-	private Map<IBinding, FuncId> _func_id_map = new HashMap<IBinding, FuncId>();
 	private Map<IBinding, TypeId> _type_id_map = new HashMap<IBinding, TypeId>();
 	private Map<IBinding, MemberId> _member_id_map = new HashMap<IBinding, MemberId>();
+	private Map<IBinding, FuncId> _func_id_map = new HashMap<IBinding, FuncId>();
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
-		_graph_builder = graph_builder;
-
-		_cppMaps = new CppMaps();
+		super(graph_builder, null, new CppMaps(), null);
 
 		IASTDeclaration[] declarations = root.getDeclarations();
 
@@ -90,7 +97,7 @@ public class AstInterpreter implements AstLoader {
 	}
 
 	private void load_function(IASTFunctionDefinition fd) {
-		LoadBasicBlock basicBlockLoader = new LoadBasicBlock(_graph_builder, this, _cppMaps);
+		LoadBasicBlock basicBlockLoader = new LoadBasicBlock(_graph_builder, this, _cppMaps, this);
 		
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
 		IASTParameterDeclaration[] parameters = decl.getParameters();
@@ -118,37 +125,13 @@ public class AstInterpreter implements AstLoader {
 
 		_graph_builder.decrease_depth();
 	}
-
-	public VarDecl getVarDecl(IASTExpression expr) {
-		if (expr instanceof IASTIdExpression) {
-			IASTIdExpression id_expr = (IASTIdExpression) expr;
-			IBinding binding = id_expr.getName().resolveBinding();
-			VarId lhs_var_id = _var_id_map.get(binding);
-
-			return _graph_builder.find_var(lhs_var_id);
-		} else if (expr instanceof IASTFieldReference) {
-			CPPASTFieldReference field_ref = (CPPASTFieldReference) expr;
-			IASTIdExpression owner = (IASTIdExpression) field_ref.getFieldOwner();
-
-			IBinding field_binding = field_ref.getFieldName().resolveBinding();
-			MemberId member_id = _member_id_map.get(field_binding);
-
-			IBinding owner_binding = owner.getName().resolveBinding();
-			VarId var_id = _var_id_map.get(owner_binding);
-			
-			return _graph_builder.findMember(var_id, member_id);
-		} else
-			ErrorOutputter.fatalError("Work here " + expr.getClass());
-
-		return null;
-	}
-	
-	public void addVarDecl(IBinding binding, VarId id){
-		_var_id_map.put(binding, id);
-	}
 	
 	public FuncId getFuncId(IBinding binding){
 		return _func_id_map.get(binding);
+	}
+	
+	public MemberId getMemberId(IBinding binding) {
+		return _member_id_map.get(binding);
 	}
 
 }

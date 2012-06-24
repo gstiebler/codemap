@@ -1,21 +1,66 @@
 package gvpl.cdt;
 
-import gvpl.graph.GraphBuilder.FuncId;
-import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.ErrorOutputter;
+import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.VarDecl;
 import gvpl.graph.GraphBuilder.VarId;
 
-import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IBinding;
+import java.util.HashMap;
+import java.util.Map;
 
-public interface AstLoader {
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
+import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
+
+public class AstLoader {
+
+	protected GraphBuilder _graph_builder;
+	protected AstLoader _parent;
+	protected CppMaps _cppMaps;
+	protected AstInterpreter _astInterpreter;
+
+	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	
-	TypeId getType(IASTDeclSpecifier decl_spec);
+	public AstLoader(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps, AstInterpreter astInterpreter) {
+		_graph_builder = graph_builder;
+		_parent = parent;
+		_cppMaps = cppMaps;
+		_astInterpreter = astInterpreter;
+	}
 	
-	VarDecl getVarDecl(IASTExpression expr);
+	public void addVarDecl(IBinding binding, VarId id){
+		_var_id_map.put(binding, id);
+	}
 	
-	FuncId getFuncId(IBinding binding);
+	public VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
+		IBinding binding = id_expr.getName().resolveBinding();
+		VarId lhs_var_id = _var_id_map.get(binding);
+		return _graph_builder.find_var(lhs_var_id);
+	}
 	
-	void addVarDecl(IBinding binding, VarId id);
+	public VarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref){
+		IASTIdExpression owner = (IASTIdExpression) field_ref.getFieldOwner();
+
+		IBinding field_binding = field_ref.getFieldName().resolveBinding();
+		MemberId member_id = _astInterpreter.getMemberId(field_binding);
+
+		IBinding owner_binding = owner.getName().resolveBinding();
+		VarId var_id = _var_id_map.get(owner_binding);
+		
+		return _graph_builder.findMember(var_id, member_id);
+	}
+	
+	public VarDecl getVarDecl(IASTExpression expr) {
+		if (expr instanceof IASTIdExpression) {
+			return getVarDeclOfReference((IASTIdExpression) expr);
+		} else if (expr instanceof IASTFieldReference) {
+			return getVarDeclOfFieldRef((CPPASTFieldReference) expr);
+		} else
+			ErrorOutputter.fatalError("Work here " + expr.getClass());
+
+		return null;
+	}
 }
