@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
+import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphBuilder.VarDecl;
 import gvpl.graph.GraphBuilder.VarId;
 
@@ -32,11 +33,11 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 	
-	public void addVarDecl(IBinding binding, VarId id){
+	protected void addVarDecl(IBinding binding, VarId id){
 		_var_id_map.put(binding, id);
 	}
 	
-	public VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
+	protected VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		VarId lhs_var_id = _var_id_map.get(binding);
 		
@@ -46,7 +47,13 @@ public class AstLoader {
 		return _graph_builder.find_var(lhs_var_id);
 	}
 	
-	public VarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref){
+	protected TypeId getVarTypeFromBinding(IBinding binding) {
+		VarId owner_var_id = _var_id_map.get(binding);
+		VarDecl owner_var_decl = _graph_builder.find_var(owner_var_id);
+		return owner_var_decl.getType();
+	}
+	
+	protected VarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref){
 		IASTIdExpression owner = (IASTIdExpression) field_ref.getFieldOwner();
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
@@ -61,7 +68,7 @@ public class AstLoader {
 		return _graph_builder.findMember(owner_var_id, member_id);
 	}
 	
-	public VarDecl getVarDecl(IASTExpression expr) {
+	protected VarDecl getVarDecl(IASTExpression expr) {
 		if (expr instanceof IASTIdExpression) {
 			return getVarDeclOfReference((IASTIdExpression) expr);
 		} else if (expr instanceof IASTFieldReference) {

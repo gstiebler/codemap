@@ -14,7 +14,7 @@ public class LoadStruct extends AstLoader {
 	private StructDecl _structDecl;
 	private IBinding _binding;
 	
-	private Map<IBinding, MemberId> _member_id_map = new HashMap<IBinding, MemberId>();
+	private Map<IBinding, StructMember> _member_id_map = new HashMap<IBinding, StructMember>();
 	private Map<IBinding, FuncId> _member_func_id_map = new HashMap<IBinding, FuncId>();
 	
 	public LoadStruct(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
@@ -49,7 +49,7 @@ public class LoadStruct extends AstLoader {
 							member_id, decl_name.toString(), param_type);
 					_structDecl.addMember(struct_member);
 
-					_member_id_map.put(decl_name.resolveBinding(), member_id);
+					_member_id_map.put(decl_name.resolveBinding(), struct_member);
 				}
 			} else if (member instanceof IASTFunctionDefinition) {
 				func_def = (IASTFunctionDefinition) member;
@@ -74,7 +74,7 @@ public class LoadStruct extends AstLoader {
 		return _structDecl;
 	}
 	
-	public MemberId getMemberId(IBinding binding) {
+	public StructMember getMember(IBinding binding) {
 		return _member_id_map.get(binding);
 	}
 	

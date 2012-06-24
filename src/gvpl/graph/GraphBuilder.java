@@ -107,6 +107,10 @@ public class GraphBuilder {
 		public String getName() {
 			return _name;
 		}
+		
+		public void initializeGraphNode() {
+			_curr_graph_node = _gvpl_graph.add_graph_node(_name, NodeType.E_VARIABLE);
+		}
 	}
 	
 	/** This class represents each member of a instance of a struct */
@@ -139,6 +143,14 @@ public class GraphBuilder {
 			_id = id;
 			_name = name;
 			_type = type;
+		}
+		
+		public MemberId getMemberId() {
+			return _id;
+		}
+		
+		public TypeId getMemberType() {
+			return _type;
 		}
 	}
 

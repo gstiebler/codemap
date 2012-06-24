@@ -8,9 +8,9 @@ public abstract class Visualizer {
 	public void print_graph(Graph graph) {
 
 		GraphNode graph_node;
-		int size = graph._graph_nodes.size();
+		int size = graph.getNumNodes();
 		for (int i = 0; i < size; ++i) {
-			graph_node = graph._graph_nodes.get(i);
+			graph_node = graph.getNode(i);
 			if (graph_node._type == Graph.NodeType.E_OPERATION)
 				insertOperation(graph_node.getId(), graph_node._name);
 			else if (graph_node._type == Graph.NodeType.E_DIRECT_VALUE)
@@ -25,7 +25,7 @@ public abstract class Visualizer {
 		
 		int dependents_size;
 		for (int i = 0; i < size; ++i) {
-			graph_node = graph._graph_nodes.get(i);
+			graph_node = graph.getNode(i);
 
 			dependents_size = graph_node._dependent_nodes.size();
 			for (int j = 0; j < dependents_size; ++j)

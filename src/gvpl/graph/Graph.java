@@ -16,11 +16,19 @@ public class Graph {
 		E_RETURN_VALUE
 	}
 
-	public List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
+	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
 
 	public GraphNode add_graph_node(String name, NodeType type) {
 		GraphNode graph_node = new GraphNode(name, type);
 		_graph_nodes.add(graph_node);
 		return graph_node;
+	}
+	
+	public int getNumNodes() {
+		return _graph_nodes.size();
+	}
+	
+	public GraphNode getNode(int index) {
+		return _graph_nodes.get(index);
 	}
 }

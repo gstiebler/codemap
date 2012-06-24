@@ -95,12 +95,14 @@ public class AstInterpreter extends AstLoader {
 
 	public MemberId getMemberId(IBinding member_binding, IBinding type_binding) {
 		LoadStruct loadStruct = _typeBindingToStruct.get(type_binding);
-		return loadStruct.getMemberId(member_binding);
+		StructMember structMember = loadStruct.getMember(member_binding);
+		return structMember.getMemberId();
 	}
 
 	public MemberId getMemberId(TypeId type_id, IBinding member_binding) {
 		LoadStruct loadStruct = _typeIdToStruct.get(type_id);
-		return loadStruct.getMemberId(member_binding);
+		StructMember structMember = loadStruct.getMember(member_binding);
+		return structMember.getMemberId();
 	}
 
 }

@@ -4,7 +4,7 @@ import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphBuilder.StructMember;
 import gvpl.graph.GraphBuilder.VarDecl;
 import gvpl.graph.GraphBuilder.VarId;
 
@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -59,15 +58,15 @@ public class LoadMemberFunc extends AstLoader {
 	public VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
 		IASTName name = id_expr.getName();
 		IBinding binding = name.resolveBinding();
-		MemberId lhs_member_id = _parentLoadStruct.getMemberId(binding);
+		StructMember structMember = _parentLoadStruct.getMember(binding);
+		MemberId lhs_member_id = structMember.getMemberId();
 		
 		DirectVarDecl var_decl = _referenced_members.get(lhs_member_id);
 		if(var_decl == null) {
-			IASTDeclSpecifier decl_spec = null;//simple_decl.getDeclSpecifier();
-			TypeId type = _astInterpreter.getType(decl_spec);
 			VarId id = _graph_builder.new VarId();
-			var_decl = _graph_builder.new DirectVarDecl(id, name.toString(), type);
-			addVarDecl(name.resolveBinding(), id);
+			var_decl = _graph_builder.new DirectVarDecl(id, name.toString(), structMember.getMemberType());
+			var_decl.initializeGraphNode();
+			addVarDecl(binding, id);
 			_graph_builder.add_var_decl(var_decl);
 			
 			_referenced_members.put(lhs_member_id, var_decl);
