@@ -78,8 +78,6 @@ public class AstInterpreter {
 			if (curr_node._ast_item instanceof Block)
 				load_basic_block(curr_node);
 		}
-
-		_graph_builder.decrease_depth();
 	}
 
 	private void load_basic_block(ASTItem node) {

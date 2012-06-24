@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 
@@ -38,6 +39,10 @@ public class AstLoader {
 	public VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		VarId lhs_var_id = _var_id_map.get(binding);
+		
+		if(lhs_var_id == null)
+			return _parent.getVarDeclOfReference(id_expr);
+		
 		return _graph_builder.find_var(lhs_var_id);
 	}
 	
@@ -45,12 +50,15 @@ public class AstLoader {
 		IASTIdExpression owner = (IASTIdExpression) field_ref.getFieldOwner();
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
-		MemberId member_id = _astInterpreter.getMemberId(field_binding);
 
-		IBinding owner_binding = owner.getName().resolveBinding();
-		VarId var_id = _var_id_map.get(owner_binding);
+		IASTName owner_name = owner.getName();
+		IBinding owner_binding = owner_name.resolveBinding();
+		VarId owner_var_id = _var_id_map.get(owner_binding);
+		VarDecl owner_var_decl = _graph_builder.find_var(owner_var_id);
 		
-		return _graph_builder.findMember(var_id, member_id);
+		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
+		
+		return _graph_builder.findMember(owner_var_id, member_id);
 	}
 	
 	public VarDecl getVarDecl(IASTExpression expr) {

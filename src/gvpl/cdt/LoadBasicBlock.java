@@ -3,42 +3,17 @@ package gvpl.cdt;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
-import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
-import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
-import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
-import org.eclipse.cdt.core.dom.ast.IASTForStatement;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
-import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
-import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
-import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
-import org.eclipse.cdt.core.dom.ast.IASTName;
-import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
-import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.*;
 
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
-import gvpl.graph.GraphBuilder.DirectVarDecl;
-import gvpl.graph.GraphBuilder.FuncId;
-import gvpl.graph.GraphBuilder.TypeId;
-import gvpl.graph.GraphBuilder.VarDecl;
-import gvpl.graph.GraphBuilder.VarId;
-import gvpl.graph.GraphBuilder.eAssignBinOp;
-import gvpl.graph.GraphBuilder.eBinOp;
+import gvpl.graph.GraphBuilder.*;
 
 public class LoadBasicBlock extends AstLoader {
 	
-	public LoadBasicBlock(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
-			AstInterpreter astInterpreter) {
-		super(graph_builder, parent, cppMaps, astInterpreter);
+	public LoadBasicBlock(AstLoader parent, AstInterpreter astInterpreter) {
+		super(parent._graph_builder, parent, parent._cppMaps, astInterpreter);
 	}
 
 	public void load(IASTCompoundStatement cs) {

@@ -80,6 +80,10 @@ public class GraphBuilder {
 			_curr_graph_node = null;
 		}
 		
+		public TypeId getType() {
+			return _type;
+		}
+		
 		abstract public String getName();
 	}
 
@@ -125,13 +129,13 @@ public class GraphBuilder {
 		private MemberId _id;
 		private String _name;
 		private TypeId _type;
-		private StructDecl _parent;
+		//private StructDecl _parent;
 		
 		/** Maps the instance of a variable of the struct to the instance of the member */
 		public Map<VarId, MemberStructInstance> _instances = new HashMap<VarId, MemberStructInstance>();
 		
 		public StructMember(StructDecl parent, MemberId id, String name, TypeId type) {
-			_parent = parent;
+			//_parent = parent;
 			_id = id;
 			_name = name;
 			_type = type;
@@ -159,15 +163,12 @@ public class GraphBuilder {
 
 	public class StructDecl {
 		private TypeId _id;
-		private String _name;
+		//private String _name;
 		private Map<MemberId, StructMember> _member_var_graph_nodes;
-		
-		//public List<StructMember> _members;
 
 		public StructDecl(TypeId id, String name) {
 			_id = id;
-			_name = name;
-			//_members = new ArrayList<StructMember>();
+			//_name = name;
 			_member_var_graph_nodes = new HashMap<MemberId, StructMember>();
 		}
 		
@@ -382,9 +383,6 @@ public class GraphBuilder {
 		add_var_decl(var_decl);
 
 		_current_function._return_node = add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
-	}
-
-	public void decrease_depth() {
 	}
 
 }
