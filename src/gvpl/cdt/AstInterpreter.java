@@ -2,12 +2,29 @@ package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.*;
+import gvpl.graph.GraphBuilder.DirectVarDecl;
+import gvpl.graph.GraphBuilder.FuncDecl;
+import gvpl.graph.GraphBuilder.FuncId;
+import gvpl.graph.GraphBuilder.MemberId;
+import gvpl.graph.GraphBuilder.StructMember;
+import gvpl.graph.GraphBuilder.TypeId;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.*;
+import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class AstInterpreter extends AstLoader {
@@ -28,11 +45,11 @@ public class AstInterpreter extends AstLoader {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
 				loadStructureDecl((IASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
-				ErrorOutputter.fatalError("Deu merda aqui.");
+				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
 
 		}
 	}
-	
+
 	private void addStruct(LoadStruct structLoader) {
 		_typeBindingToStruct.put(structLoader.getBinding(), structLoader);
 		_typeIdToStruct.put(structLoader.getTypeId(), structLoader);
@@ -64,9 +81,9 @@ public class AstInterpreter extends AstLoader {
 
 		FuncId func_id = _graph_builder.new FuncId();
 		_func_id_map.put(name_binding.resolveBinding(), func_id);
-		
+
 		FuncDecl func_decl = _graph_builder.new FuncDecl(func_id, function_name);
-		
+
 		loadFuncParameters(parameters, func_decl, basicBlockLoader);
 
 		_graph_builder.enter_function(func_decl);
@@ -78,8 +95,9 @@ public class AstInterpreter extends AstLoader {
 			basicBlockLoader.load((IASTCompoundStatement) body);
 		}
 	}
-	
-	public void loadFuncParameters(IASTParameterDeclaration[] parameters, FuncDecl func_decl, LoadBasicBlock basicBlockLoader) {
+
+	public void loadFuncParameters(IASTParameterDeclaration[] parameters, FuncDecl func_decl,
+			LoadBasicBlock basicBlockLoader) {
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameter_var_decl = parameter.getDeclarator();
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
@@ -103,6 +121,18 @@ public class AstInterpreter extends AstLoader {
 		LoadStruct loadStruct = _typeIdToStruct.get(type_id);
 		StructMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
+	}
+
+	public LoadMemberFunc getMemberFunc(IBinding func_member_binding) {
+		for (Map.Entry<TypeId, LoadStruct> entry : _typeIdToStruct.entrySet()) {
+			LoadStruct loadStruct = entry.getValue();
+			LoadMemberFunc member_func = loadStruct.getMemberFunc(func_member_binding);
+			if (member_func != null)
+				return member_func;
+		}
+
+		ErrorOutputter.fatalError("Problem here.");
+		return null;
 	}
 
 }

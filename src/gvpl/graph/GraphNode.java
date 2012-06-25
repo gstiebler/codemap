@@ -10,6 +10,7 @@ public class GraphNode {
 	private int _id;
 	public String _name;
 	public NodeType _type;
+	/** Lista de nohs das quais este noh depende */
 	public List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
 
 	public GraphNode(String name, NodeType type) {

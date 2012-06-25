@@ -11,11 +11,12 @@ struct sPri
 	float a;
 	float h;
 	
-	void inc_a5()
+	void inc_a5(float w)
 	{
 		float inc;
 		inc = 5.0;
 		a += inc;
+		a += w;
 	}
 };
 
@@ -28,7 +29,7 @@ int main() {
 	str2.a = 45.98;
 	str2.h = 9099.0;
 	
-	//str2.inc_a5();
+	str2.inc_a5(6.0);
 	
 	float g = str1.a + str1.h;
 	float k = str2.a + str2.h;

@@ -13,73 +13,74 @@ public class LoadStruct extends AstLoader {
 	private TypeId _typeId;
 	private StructDecl _structDecl;
 	private IBinding _binding;
-	
+
 	private Map<IBinding, StructMember> _member_id_map = new HashMap<IBinding, StructMember>();
-	private Map<IBinding, FuncId> _member_func_id_map = new HashMap<IBinding, FuncId>();
-	
+	private Map<IBinding, LoadMemberFunc> _member_func_id_map = new HashMap<IBinding, LoadMemberFunc>();
+	//private Map<IBinding, LoadMemberFunc> _
+
 	public LoadStruct(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter, IASTCompositeTypeSpecifier strDecl) {
 		super(graph_builder, parent, cppMaps, astInterpreter);
-		
-		_typeId = _graph_builder.new TypeId();
 
+		_typeId = _graph_builder.new TypeId();
 
 		IASTName name = strDecl.getName();
 		IASTDeclaration[] members = strDecl.getMembers();
-		
+
 		_binding = name.resolveBinding();
 
 		_structDecl = _graph_builder.new StructDecl(_typeId, name.toString());
-		
-		IASTFunctionDefinition func_def = null;
-		
-		//load every field and stores the pointer to the function
+		// load every field
 		for (IASTDeclaration member : members) {
-			if (member instanceof IASTSimpleDeclaration) {
-				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
-				IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
-				TypeId param_type = _astInterpreter.getType(decl_spec);
-				IASTDeclarator[] declarators = simple_decl.getDeclarators();
-				// for each variable declared in a line
-				for (IASTDeclarator declarator : declarators) {
-					IASTName decl_name = declarator.getName();
-					MemberId member_id = _graph_builder.new MemberId();
+			if (!(member instanceof IASTSimpleDeclaration))
+				continue;
 
-					StructMember struct_member = _graph_builder.new StructMember(_structDecl,
-							member_id, decl_name.toString(), param_type);
-					_structDecl.addMember(struct_member);
+			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
+			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
+			TypeId param_type = _astInterpreter.getType(decl_spec);
+			IASTDeclarator[] declarators = simple_decl.getDeclarators();
+			// for each variable declared in a line
+			for (IASTDeclarator declarator : declarators) {
+				IASTName decl_name = declarator.getName();
+				MemberId member_id = _graph_builder.new MemberId();
 
-					_member_id_map.put(decl_name.resolveBinding(), struct_member);
-				}
-			} else if (member instanceof IASTFunctionDefinition) {
-				func_def = (IASTFunctionDefinition) member;
+				StructMember struct_member = _graph_builder.new StructMember(_structDecl,
+						member_id, decl_name.toString(), param_type);
+				_structDecl.addMember(struct_member);
+
+				_member_id_map.put(decl_name.resolveBinding(), struct_member);
 			}
 		}
-		
-		if(func_def != null) {
+
+		for (IASTDeclaration member : members) {
+			if (!(member instanceof IASTFunctionDefinition))
+				continue;
+			
+			IASTFunctionDefinition func_def = (IASTFunctionDefinition) member;
 			LoadMemberFunc memberFunc = new LoadMemberFunc(this);
-			memberFunc.load(func_def);
+			IBinding member_func_binding = memberFunc.load(func_def);
+			
+			_member_func_id_map.put(member_func_binding, memberFunc);
 		}
 	}
-	
+
 	TypeId getTypeId() {
 		return _typeId;
 	}
-	
+
 	IBinding getBinding() {
 		return _binding;
 	}
-	
+
 	public StructDecl getStructDecl() {
 		return _structDecl;
 	}
-	
+
 	public StructMember getMember(IBinding binding) {
 		return _member_id_map.get(binding);
 	}
-	
-	public void addMemberFuncBinding(IBinding binding, FuncId func_id) {
-		_member_func_id_map.put(binding, func_id);
-	}
 
+	public LoadMemberFunc getMemberFunc(IBinding binding) {
+		return _member_func_id_map.get(binding);
+	}
 }

@@ -73,15 +73,32 @@ public class GraphBuilder {
 	
 	public abstract class VarDecl {
 		protected TypeId _type;
-		protected GraphNode _curr_graph_node;
+		private GraphNode _curr_graph_node;
+		private GraphNode _first_graph_node;
 
 		public VarDecl(TypeId type) {
 			_type = type;
 			_curr_graph_node = null;
+			_first_graph_node = null;
 		}
 		
 		public TypeId getType() {
 			return _type;
+		}
+		
+		public void updateNode(GraphNode node) {
+			if (_curr_graph_node == null)
+				_first_graph_node = node;
+			
+			_curr_graph_node = node;
+		}
+		
+		public GraphNode getFirstNode() {
+			return _first_graph_node;
+		}
+		
+		public GraphNode getCurrentNode() {
+			return _curr_graph_node;
 		}
 		
 		abstract public String getName();
@@ -109,7 +126,7 @@ public class GraphBuilder {
 		}
 		
 		public void initializeGraphNode() {
-			_curr_graph_node = _gvpl_graph.add_graph_node(_name, NodeType.E_VARIABLE);
+			updateNode(_gvpl_graph.add_graph_node(_name, NodeType.E_VARIABLE));
 		}
 	}
 	
@@ -266,7 +283,7 @@ public class GraphBuilder {
 	 */
 	private GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl.getName(), lhs_type);
-		lhs_var_decl._curr_graph_node = lhs_node;
+		lhs_var_decl.updateNode(lhs_node);
 
 		rhs_node._dependent_nodes.add(lhs_node);
 		return lhs_node;
@@ -302,13 +319,13 @@ public class GraphBuilder {
 		GraphNode result_node = _gvpl_graph.add_graph_node(lhs_node._name, NodeType.E_VARIABLE);
 		bin_op_node._dependent_nodes.add(result_node);
 
-		lhs_var_decl._curr_graph_node = result_node;
+		lhs_var_decl.updateNode(result_node);
 
 		return result_node;
 	}
 
 	public GraphNode add_var_ref(VarDecl var_decl) {
-		return var_decl._curr_graph_node;
+		return var_decl.getCurrentNode();
 	}
 
 	public DirectVarDecl find_var(VarId id) {
@@ -368,7 +385,7 @@ public class GraphBuilder {
 		for (VarDecl parameter : func_decl._parameters) {
 			GraphNode var_node = _gvpl_graph.add_graph_node(parameter.getName(),
 					NodeType.E_DECLARED_PARAMETER);
-			parameter._curr_graph_node = var_node;
+			parameter.updateNode(var_node);
 		}
 
 		_func_graph_nodes.put(func_decl._id, func_decl);
@@ -384,7 +401,7 @@ public class GraphBuilder {
 			VarDecl declared_parameter = func_decl._parameters.get(i);
 			GraphNode received_parameter = parameter_values.get(i);
 
-			received_parameter._dependent_nodes.add(declared_parameter._curr_graph_node);
+			received_parameter._dependent_nodes.add(declared_parameter.getFirstNode());
 		}
 
 		return func_decl._return_node;
@@ -395,6 +412,10 @@ public class GraphBuilder {
 		add_var_decl(var_decl);
 
 		_current_function._return_node = add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
+	}
+	
+	public void addDependency(VarDecl source, VarDecl dependent) {
+		source.getCurrentNode()._dependent_nodes.add(dependent.getFirstNode());
 	}
 
 }

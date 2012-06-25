@@ -1,14 +1,39 @@
 package gvpl.cdt;
 
+import gvpl.ErrorOutputter;
+import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphBuilder.DirectVarDecl;
+import gvpl.graph.GraphBuilder.FuncId;
+import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphBuilder.VarDecl;
+import gvpl.graph.GraphBuilder.VarId;
+import gvpl.graph.GraphBuilder.eAssignBinOp;
+import gvpl.graph.GraphBuilder.eBinOp;
+import gvpl.graph.GraphNode;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.cdt.core.dom.ast.*;
-
-import gvpl.ErrorOutputter;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphNode;
-import gvpl.graph.GraphBuilder.*;
+import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
+import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
+import org.eclipse.cdt.core.dom.ast.IASTForStatement;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
+import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
+import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class LoadBasicBlock extends AstLoader {
 	
@@ -131,16 +156,29 @@ public class LoadBasicBlock extends AstLoader {
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
-		IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
-		FuncId func_id = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-		IASTExpressionList expr_list = (IASTExpressionList) func_call.getParameterExpression();
-		IASTExpression[] parameters = expr_list.getExpressions();
-
 		List<GraphNode> parameter_values = new ArrayList<GraphNode>();
-		for (IASTExpression parameter : parameters)
-			parameter_values.add(load_value(parameter));
-
-		return _graph_builder.addFuncRef(func_id, parameter_values);
+		IASTExpression param_expr = func_call.getParameterExpression();
+		if(param_expr instanceof IASTExpressionList) {
+			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
+			IASTExpression[] parameters = expr_list.getExpressions();
+			for (IASTExpression parameter : parameters)
+				parameter_values.add(load_value(parameter));
+		} else {
+			parameter_values.add(load_value(param_expr));
+		}
+		
+		IASTExpression name_expr = func_call.getFunctionNameExpression();
+		if (name_expr instanceof IASTIdExpression) {
+			IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
+			FuncId func_id = _astInterpreter.getFuncId(expr.getName().resolveBinding());
+			return _graph_builder.addFuncRef(func_id, parameter_values);
+		} else if (name_expr instanceof IASTFieldReference) {
+			return loadMemberFuncRef(func_call, parameter_values);
+		}
+		else
+			ErrorOutputter.fatalError("Not treated. " + name_expr.getClass());
+		
+		return null;
 	}
 
 	GraphNode load_bin_op(IASTBinaryExpression bin_op) {
@@ -153,5 +191,22 @@ public class LoadBasicBlock extends AstLoader {
 	GraphNode load_direct_value(IASTLiteralExpression node) {
 		String value = node.toString();
 		return _graph_builder.add_direct_val(GraphBuilder.eValueType.E_INVALID_TYPE, value);
+	}
+
+	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression func_call,
+			List<GraphNode> parameter_values) {
+		IASTFieldReference field_ref = (IASTFieldReference) func_call.getFunctionNameExpression();
+
+		IBinding func_member_binding = field_ref.getFieldName().resolveBinding();
+		LoadMemberFunc member_func = _astInterpreter.getMemberFunc(func_member_binding);
+		
+		IASTExpression expr = field_ref.getFieldOwner();
+		VarDecl varDecl = getVarDecl(expr);
+		if (varDecl instanceof DirectVarDecl)
+			member_func.loadMemberFuncRef((DirectVarDecl) varDecl);
+		else
+			ErrorOutputter.fatalError("Work here.");
+
+		return _graph_builder.addFuncRef(member_func.getFuncId(), parameter_values);
 	}
 }
