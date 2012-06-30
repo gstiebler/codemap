@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
@@ -11,6 +12,7 @@ import gvpl.graph.GraphBuilder.VarId;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
@@ -37,15 +39,24 @@ public class AstLoader {
 	protected void addVarDecl(IBinding binding, VarId id){
 		_var_id_map.put(binding, id);
 	}
-	
-	protected VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
+
+	protected VarDecl getVarDeclOfLocalReference(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		VarId lhs_var_id = _var_id_map.get(binding);
-		
+
 		if(lhs_var_id == null)
-			return _parent.getVarDeclOfReference(id_expr);
+			return null;
 		
 		return _graph_builder.find_var(lhs_var_id);
+	}
+	
+	protected VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
+		VarDecl varDecl = getVarDeclOfLocalReference(id_expr);
+		
+		if(varDecl != null)
+			return varDecl;
+		else
+			return _parent.getVarDeclOfReference(id_expr);
 	}
 	
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
@@ -78,6 +89,17 @@ public class AstLoader {
 			ErrorOutputter.fatalError("Work here " + expr.getClass());
 
 		return null;
+	}
+	
+	public DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
+		IASTName name = decl.getName();
+
+		VarId id = _graph_builder.new VarId();
+		DirectVarDecl var_decl = _graph_builder.new DirectVarDecl(id, name.toString(), type);
+		addVarDecl(name.resolveBinding(), id);
+		_graph_builder.add_var_decl(var_decl);
+
+		return var_decl;
 	}
 	
 	public FuncDecl getFuncDecl() {

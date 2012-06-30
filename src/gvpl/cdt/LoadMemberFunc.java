@@ -26,26 +26,30 @@ public class LoadMemberFunc extends LoadFunction {
 
 	@Override
 	public VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
+		VarDecl var_decl = getVarDeclOfLocalReference(id_expr);
+		if(var_decl != null)
+			return var_decl;
+		
 		IASTName name = id_expr.getName();
 		IBinding binding = name.resolveBinding();
 		StructMember structMember = _parentLoadStruct.getMember(binding);
 		MemberId lhs_member_id = structMember.getMemberId();
 
-		DirectVarDecl var_decl = _referenced_members.get(lhs_member_id);
+		DirectVarDecl direct_var_decl = _referenced_members.get(lhs_member_id);
 
 		// If it was not referenced yet, add to the list of referenced variables
-		if (var_decl == null) {
+		if (direct_var_decl == null) {
 			VarId id = _graph_builder.new VarId();
-			var_decl = _graph_builder.new DirectVarDecl(id, name.toString(),
+			direct_var_decl = _graph_builder.new DirectVarDecl(id, name.toString(),
 					structMember.getMemberType());
-			var_decl.initializeGraphNode();
+			direct_var_decl.initializeGraphNode();
 			addVarDecl(binding, id);
-			_graph_builder.add_var_decl(var_decl);
+			_graph_builder.add_var_decl(direct_var_decl);
 
-			_referenced_members.put(lhs_member_id, var_decl);
+			_referenced_members.put(lhs_member_id, direct_var_decl);
 		}
 
-		return var_decl;
+		return direct_var_decl;
 	}
 
 	public void loadMemberFuncRef(DirectVarDecl varDecl) {

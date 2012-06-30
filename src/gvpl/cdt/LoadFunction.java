@@ -45,7 +45,7 @@ public class LoadFunction extends AstLoader {
 		IBinding member_func_binding = name_binding.resolveBinding();
 		_func_decl = _graph_builder.new FuncDecl(_funcId, function_name);
 
-		loadFuncParameters(parameters, _func_decl, basicBlockLoader);
+		loadFuncParameters(parameters);
 
 		_graph_builder.enter_function(_func_decl);
 
@@ -69,14 +69,13 @@ public class LoadFunction extends AstLoader {
 	 * @param basicBlockLoader
 	 *            The class which loads the function definition
 	 */
-	public void loadFuncParameters(IASTParameterDeclaration[] parameters, FuncDecl func_decl,
-			LoadBasicBlock basicBlockLoader) {
+	public void loadFuncParameters(IASTParameterDeclaration[] parameters) {
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameter_var_decl = parameter.getDeclarator();
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(decl_spec);
-			DirectVarDecl var_decl = basicBlockLoader.load_var_decl(parameter_var_decl, type);
-			func_decl._parameters.add(var_decl);
+			DirectVarDecl var_decl = load_var_decl(parameter_var_decl, type);
+			_func_decl._parameters.add(var_decl);
 		}
 	}
 
