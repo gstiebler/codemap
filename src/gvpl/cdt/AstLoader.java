@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphBuilder.VarDecl;
@@ -77,5 +78,9 @@ public class AstLoader {
 			ErrorOutputter.fatalError("Work here " + expr.getClass());
 
 		return null;
+	}
+	
+	public FuncDecl getFuncDecl() {
+		return _parent.getFuncDecl();
 	}
 }

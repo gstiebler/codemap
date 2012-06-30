@@ -175,7 +175,7 @@ public class GraphBuilder {
 		private FuncId _id;
 		private GraphNode _return_node;
 		
-		public String _name;
+		private String _name;
 		public List<VarDecl> _parameters;
 
 		public FuncDecl(FuncId id, String name) {
@@ -187,6 +187,14 @@ public class GraphBuilder {
 
 		public FuncId getFuncId() {
 			return _id;
+		}
+		
+		public String getName() {
+			return _name;
+		}
+		
+		public void setReturnNode(GraphNode returnNode) {
+			_return_node = returnNode;
 		}
 	}
 
@@ -219,18 +227,12 @@ public class GraphBuilder {
 	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
 	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
 
-	private eForLoopState _for_loop_state;
-
-	private FuncDecl _current_function;
-
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
 
 	public GraphBuilder(Graph gvpl_graph)
-
 	{
 		_gvpl_graph = gvpl_graph;
-		_for_loop_state = eForLoopState.E_OUT_OF_LOOP;
 
 		// _bin_op_strings[E_ASSIGN_OP] = "=";
 
@@ -347,41 +349,7 @@ public class GraphBuilder {
 		return result;
 	}
 
-	void enter_for_init_expr() {
-		if ((_for_loop_state != eForLoopState.E_BASIC_BLOCK)
-				&& (_for_loop_state != eForLoopState.E_OUT_OF_LOOP))
-			ErrorOutputter.fatalError("Invalid state in for loop");
-		_for_loop_state = eForLoopState.E_INIT;
-	}
-
-	void enter_for_condition_expr() {
-		if (_for_loop_state != eForLoopState.E_INIT)
-			ErrorOutputter.fatalError("Invalid state in for loop");
-		_for_loop_state = eForLoopState.E_CONDITION_EXPR;
-	}
-
-	void enter_for_post_expr() {
-		if (_for_loop_state != eForLoopState.E_CONDITION_EXPR)
-			ErrorOutputter.fatalError("Invalid state in for loop");
-		_for_loop_state = eForLoopState.E_POST_EXPR;
-	}
-
-	void enter_for_basic_block() {
-		if (_for_loop_state != eForLoopState.E_POST_EXPR)
-			ErrorOutputter.fatalError("Invalid state in for loop");
-		_for_loop_state = eForLoopState.E_BASIC_BLOCK;
-	}
-
-	void exit_for_loop() {
-		if ((_for_loop_state != eForLoopState.E_BASIC_BLOCK)
-				&& (_for_loop_state != eForLoopState.E_OUT_OF_LOOP))
-			ErrorOutputter.fatalError("Invalid state in for loop");
-		_for_loop_state = eForLoopState.E_OUT_OF_LOOP;
-	}
-
 	public void enter_function(FuncDecl func_decl) {
-		_current_function = func_decl;
-
 		for (VarDecl parameter : func_decl._parameters) {
 			GraphNode var_node = _gvpl_graph.add_graph_node(parameter.getName(),
 					NodeType.E_DECLARED_PARAMETER);
@@ -407,11 +375,11 @@ public class GraphBuilder {
 		return func_decl._return_node;
 	}
 
-	public void addReturnStatement(GraphNode rvalue, TypeId type) {
-		DirectVarDecl var_decl = new DirectVarDecl(new VarId(), _current_function._name, type);
+	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
+		DirectVarDecl var_decl = new DirectVarDecl(new VarId(), functionName, type);
 		add_var_decl(var_decl);
 
-		_current_function._return_node = add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
+		return add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
 	}
 	
 	public void addDependency(VarDecl source, VarDecl dependent) {

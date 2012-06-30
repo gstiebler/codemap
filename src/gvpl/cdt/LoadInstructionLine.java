@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
+import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphBuilder.VarDecl;
@@ -127,8 +128,13 @@ public class LoadInstructionLine {
 		IASTReturnStatement return_node = (IASTReturnStatement) statement;
 
 		GraphNode rvalue = load_value(return_node.getReturnValue());
+		
+		FuncDecl funcDecl = _parentBasicBlock.getFuncDecl();
+		
 		// TODO set the correct type of the return value
-		_graphBuilder.addReturnStatement(rvalue, null);
+		GraphNode returnNode = _graphBuilder.addReturnStatement(rvalue, null, funcDecl.getName());
+		
+		funcDecl.setReturnNode(returnNode);
 	}
 
 	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
