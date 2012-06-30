@@ -35,8 +35,7 @@ public class LoadMemberFunc extends AstLoader {
 	/**
 	 * Loads the member function definition
 	 * 
-	 * @param fd
-	 *            The ast function definition
+	 * @param fd The ast function definition
 	 * @return The binding of the loaded function member
 	 */
 	public IBinding load(IASTFunctionDefinition fd) {
@@ -73,6 +72,8 @@ public class LoadMemberFunc extends AstLoader {
 		MemberId lhs_member_id = structMember.getMemberId();
 
 		DirectVarDecl var_decl = _referenced_members.get(lhs_member_id);
+		
+		//If it was not referenced yet, add to the list of referenced variables
 		if (var_decl == null) {
 			VarId id = _graph_builder.new VarId();
 			var_decl = _graph_builder.new DirectVarDecl(id, name.toString(),

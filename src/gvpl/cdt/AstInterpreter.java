@@ -96,6 +96,16 @@ public class AstInterpreter extends AstLoader {
 		}
 	}
 
+	/**
+	 * Reads the parameters from a function declaration
+	 * 
+	 * @param parameters
+	 *            Parameters of the function
+	 * @param func_decl
+	 *            Declaration of the function
+	 * @param basicBlockLoader
+	 *            The class which loads the function definition
+	 */
 	public void loadFuncParameters(IASTParameterDeclaration[] parameters, FuncDecl func_decl,
 			LoadBasicBlock basicBlockLoader) {
 		for (IASTParameterDeclaration parameter : parameters) {
