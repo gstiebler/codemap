@@ -4,6 +4,7 @@ import gvpl.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.MemberId;
+import gvpl.graph.GraphBuilder.StructDecl;
 import gvpl.graph.GraphBuilder.StructMember;
 import gvpl.graph.GraphBuilder.TypeId;
 
@@ -24,6 +25,9 @@ public class AstInterpreter extends AstLoader {
 	private Map<IBinding, LoadStruct> _typeBindingToStruct = new HashMap<IBinding, LoadStruct>();
 	private Map<TypeId, LoadStruct> _typeIdToStruct = new HashMap<TypeId, LoadStruct>();
 	private Map<IBinding, FuncId> _func_id_map = new HashMap<IBinding, FuncId>();
+	
+
+	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
 		super(graph_builder, null, new CppMaps(), null);
@@ -55,7 +59,7 @@ public class AstInterpreter extends AstLoader {
 		LoadStruct structLoader = new LoadStruct(_graph_builder, this, _cppMaps, this, strDecl);
 
 		addStruct(structLoader);
-		_graph_builder.addStructDecl(structLoader.getStructDecl());
+		addStructDecl(structLoader.getStructDecl());
 	}
 
 	public TypeId getType(IASTDeclSpecifier decl_spec) {
@@ -93,6 +97,14 @@ public class AstInterpreter extends AstLoader {
 
 		ErrorOutputter.fatalError("Problem here.");
 		return null;
+	}
+
+	public void addStructDecl(StructDecl struct_decl) {
+		_struct_graph_nodes.put(struct_decl._id, struct_decl);
+	}
+	
+	public StructDecl getStructDecl(TypeId type) {
+		return _struct_graph_nodes.get(type);
 	}
 
 }

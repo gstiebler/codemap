@@ -1,6 +1,9 @@
 package gvpl.graph;
 
 import gvpl.ErrorOutputter;
+import gvpl.common.MemberStructInstance;
+import gvpl.common.VarDecl;
+import gvpl.common.typedefs.VarId;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -52,10 +55,6 @@ public class GraphBuilder {
 	}
 
 	/** typedef */
-	public class VarId {
-	}
-
-	/** typedef */
 	public class FuncId {
 	}
 
@@ -69,39 +68,6 @@ public class GraphBuilder {
 
 	/** typedef */
 	public class MemberInstanceId {
-	}
-	
-	public abstract class VarDecl {
-		protected TypeId _type;
-		private GraphNode _curr_graph_node;
-		private GraphNode _first_graph_node;
-
-		public VarDecl(TypeId type) {
-			_type = type;
-			_curr_graph_node = null;
-			_first_graph_node = null;
-		}
-		
-		public TypeId getType() {
-			return _type;
-		}
-		
-		public void updateNode(GraphNode node) {
-			if (_curr_graph_node == null)
-				_first_graph_node = node;
-			
-			_curr_graph_node = node;
-		}
-		
-		public GraphNode getFirstNode() {
-			return _first_graph_node;
-		}
-		
-		public GraphNode getCurrentNode() {
-			return _curr_graph_node;
-		}
-		
-		abstract public String getName();
 	}
 
 	/**
@@ -130,20 +96,25 @@ public class GraphBuilder {
 		}
 	}
 	
-	/** This class represents each member of a instance of a struct */
-	public class MemberStructInstance extends VarDecl{
-		private StructMember _struct_member;
-		private VarDecl _parent;
+	public class StructVarDecl extends DirectVarDecl {
 		
-		public MemberStructInstance(StructMember struct_member, VarDecl parent){
-			super(struct_member._type);
-			_struct_member = struct_member;
-			_parent = parent;
+		Map<MemberId, MemberStructInstance> _member_instances = new HashMap<MemberId, MemberStructInstance>();
+
+		public StructVarDecl(VarId id, String name, TypeId type, StructDecl structDecl) {
+			super(id, name, type);
+			
+			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
+				StructMember struct_member = entry.getValue();
+				
+				MemberStructInstance member_instance = new MemberStructInstance(struct_member, this);
+				_member_instances.put(entry.getKey(), member_instance);
+			}
+		}
+
+		public MemberStructInstance findMember(MemberId member_id) {
+			return _member_instances.get(member_id);
 		}
 		
-		public String getName() {
-			return _parent.getName() + "." + _struct_member._name;
-		}
 	}
 	
 	public class StructMember{
@@ -168,6 +139,10 @@ public class GraphBuilder {
 		
 		public TypeId getMemberType() {
 			return _type;
+		}
+		
+		public String getName() {
+			return _name;
 		}
 	}
 
@@ -199,9 +174,9 @@ public class GraphBuilder {
 	}
 
 	public class StructDecl {
-		private TypeId _id;
+		public TypeId _id;
 		//private String _name;
-		private Map<MemberId, StructMember> _member_var_graph_nodes;
+		public Map<MemberId, StructMember> _member_var_graph_nodes;
 
 		public StructDecl(TypeId id, String name) {
 			_id = id;
@@ -223,9 +198,7 @@ public class GraphBuilder {
 	public Graph _gvpl_graph;
 
 	/** Converts a ast node id to a graph node id */
-	private Map<VarId, DirectVarDecl> _direct_var_graph_nodes = new HashMap<VarId, DirectVarDecl>();
 	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
-	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
 
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
@@ -249,27 +222,6 @@ public class GraphBuilder {
 		_assign_bin_op_strings.put(eAssignBinOp.E_SUB_ASSIGN_OP, "-");
 	}
 
-	public void addStructDecl(StructDecl struct_decl) {
-		_struct_graph_nodes.put(struct_decl._id, struct_decl);
-	}
-
-	public void add_var_decl(DirectVarDecl var_decl) {
-		_direct_var_graph_nodes.put(var_decl._id, var_decl);
-		
-		//Create declaration for every member of the struct
-		if (var_decl._type != null){
-			StructDecl structDecl = _struct_graph_nodes.get(var_decl._type);
-			MemberStructInstance member_instance = null;
-			
-			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
-				StructMember struct_member = entry.getValue();
-				
-				member_instance = new MemberStructInstance(struct_member, var_decl);
-				struct_member._instances.put(var_decl._id, member_instance);
-			}
-		}
-	}
-
 	public GraphNode add_direct_val(eValueType type, String value) {
 		return _gvpl_graph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
 	}
@@ -283,7 +235,7 @@ public class GraphBuilder {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	private GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
+	public GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl.getName(), lhs_type);
 		lhs_var_decl.updateNode(lhs_node);
 
@@ -330,25 +282,6 @@ public class GraphBuilder {
 		return var_decl.getCurrentNode();
 	}
 
-	public DirectVarDecl find_var(VarId id) {
-		DirectVarDecl result = _direct_var_graph_nodes.get(id);
-		if (result == null)
-			ErrorOutputter.fatalError("VarId " + id + " not found.\n");
-
-		return result;
-	}
-
-	public MemberStructInstance findMember(VarId var_id, MemberId member_id) {
-		VarDecl var_decl = find_var(var_id);
-		StructDecl struct_decl = _struct_graph_nodes.get(var_decl._type);
-		StructMember member = struct_decl._member_var_graph_nodes.get(member_id);
-		MemberStructInstance result = member._instances.get(var_id);
-		if (result == null)
-			ErrorOutputter.fatalError("VarId " + var_id + " not found.\n");
-
-		return result;
-	}
-
 	public void enter_function(FuncDecl func_decl) {
 		for (VarDecl parameter : func_decl._parameters) {
 			GraphNode var_node = _gvpl_graph.add_graph_node(parameter.getName(),
@@ -373,13 +306,6 @@ public class GraphBuilder {
 		}
 
 		return func_decl._return_node;
-	}
-
-	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
-		DirectVarDecl var_decl = new DirectVarDecl(new VarId(), functionName, type);
-		add_var_decl(var_decl);
-
-		return add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
 	}
 	
 	public void addDependency(VarDecl source, VarDecl dependent) {

@@ -1,12 +1,13 @@
 package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
+import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.FuncId;
+import gvpl.graph.GraphBuilder.StructVarDecl;
 import gvpl.graph.GraphBuilder.TypeId;
-import gvpl.graph.GraphBuilder.VarDecl;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
 import gvpl.graph.GraphBuilder.eBinOp;
 import gvpl.graph.GraphNode;
@@ -132,7 +133,7 @@ public class LoadInstructionLine {
 		FuncDecl funcDecl = _parentBasicBlock.getFuncDecl();
 		
 		// TODO set the correct type of the return value
-		GraphNode returnNode = _graphBuilder.addReturnStatement(rvalue, null, funcDecl.getName());
+		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, null, funcDecl.getName());
 		
 		funcDecl.setReturnNode(returnNode);
 	}
@@ -200,8 +201,8 @@ public class LoadInstructionLine {
 		
 		IASTExpression expr = field_ref.getFieldOwner();
 		VarDecl varDecl = _parentBasicBlock.getVarDecl(expr);
-		if (varDecl instanceof DirectVarDecl)
-			member_func.loadMemberFuncRef((DirectVarDecl) varDecl);
+		if (varDecl instanceof StructVarDecl)
+			member_func.loadMemberFuncRef((StructVarDecl) varDecl);
 		else
 			ErrorOutputter.fatalError("Work here.");
 

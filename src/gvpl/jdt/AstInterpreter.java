@@ -1,25 +1,21 @@
 package gvpl.jdt;
 
 import gvpl.ErrorOutputter;
+import gvpl.common.typedefs.VarId;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphNode;
 import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.FuncId;
-import gvpl.graph.GraphBuilder.DirectVarDecl;
-import gvpl.graph.GraphBuilder.VarId;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
 import gvpl.graph.GraphBuilder.eBinOp;
+import gvpl.graph.GraphNode;
 import gvpl.jdt.Visitor.ASTItem;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.Assignment;
 import org.eclipse.jdt.core.dom.Block;
-import org.eclipse.jdt.core.dom.BooleanLiteral;
 import org.eclipse.jdt.core.dom.ExpressionStatement;
 import org.eclipse.jdt.core.dom.ForStatement;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -106,7 +102,7 @@ public class AstInterpreter {
 	}
 
 	private void load_var_decl(ASTItem node) {
-		System.out.println("load_var_decl " + node._ast_item.toString());
+/*		System.out.println("load_var_decl " + node._ast_item.toString());
 
 		DirectVarDecl curr_var_decl = null;
 		
@@ -135,7 +131,7 @@ public class AstInterpreter {
 				//TODO corrigir
 				//_graph_builder.add_assign_op(curr_var_decl.getVarId(), val);
 			}
-		}
+		}*/
 	}
 
 	GraphNode load_assign_bin_op_types(ASTItem node) {

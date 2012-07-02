@@ -1,13 +1,17 @@
 package gvpl.cdt;
 
 import gvpl.ErrorOutputter;
+import gvpl.common.VarDecl;
+import gvpl.common.typedefs.VarId;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.MemberId;
+import gvpl.graph.GraphBuilder.StructDecl;
+import gvpl.graph.GraphBuilder.StructVarDecl;
 import gvpl.graph.GraphBuilder.TypeId;
-import gvpl.graph.GraphBuilder.VarDecl;
-import gvpl.graph.GraphBuilder.VarId;
+import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +33,9 @@ public class AstLoader {
 
 	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	
+
+	private Map<VarId, DirectVarDecl> _direct_var_graph_nodes = new HashMap<VarId, DirectVarDecl>();
+	
 	public AstLoader(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps, AstInterpreter astInterpreter) {
 		_graph_builder = graph_builder;
 		_parent = parent;
@@ -47,7 +54,7 @@ public class AstLoader {
 		if(lhs_var_id == null)
 			return null;
 		
-		return _graph_builder.find_var(lhs_var_id);
+		return find_var(lhs_var_id);
 	}
 	
 	protected VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
@@ -61,7 +68,7 @@ public class AstLoader {
 	
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
 		VarId owner_var_id = _var_id_map.get(binding);
-		VarDecl owner_var_decl = _graph_builder.find_var(owner_var_id);
+		VarDecl owner_var_decl = find_var(owner_var_id);
 		return owner_var_decl.getType();
 	}
 	
@@ -73,11 +80,11 @@ public class AstLoader {
 		IASTName owner_name = owner.getName();
 		IBinding owner_binding = owner_name.resolveBinding();
 		VarId owner_var_id = _var_id_map.get(owner_binding);
-		VarDecl owner_var_decl = _graph_builder.find_var(owner_var_id);
+		StructVarDecl owner_var_decl = (StructVarDecl) find_var(owner_var_id);
 		
 		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
 		
-		return _graph_builder.findMember(owner_var_id, member_id);
+		return owner_var_decl.findMember(member_id);
 	}
 	
 	protected VarDecl getVarDecl(IASTExpression expr) {
@@ -94,12 +101,42 @@ public class AstLoader {
 	public DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
 
-		VarId id = _graph_builder.new VarId();
-		DirectVarDecl var_decl = _graph_builder.new DirectVarDecl(id, name.toString(), type);
-		addVarDecl(name.resolveBinding(), id);
-		_graph_builder.add_var_decl(var_decl);
+		DirectVarDecl var_decl = add_var_decl(type, name.toString());
+		addVarDecl(name.resolveBinding(), var_decl.getVarId());
 
 		return var_decl;
+	}
+	
+	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
+		DirectVarDecl var_decl = add_var_decl(type, functionName);
+
+		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
+	}
+	
+	public void add_var_decl(DirectVarDecl var_decl) {
+		_direct_var_graph_nodes.put(var_decl.getVarId(), var_decl);
+	}
+	
+	public DirectVarDecl add_var_decl(TypeId type, String functionName) {
+		DirectVarDecl var_decl = null;
+		
+		if (type == null) {
+			var_decl = _graph_builder.new DirectVarDecl(new VarId(), functionName, type);
+		}else
+		{
+			StructDecl structDecl = _astInterpreter.getStructDecl(type);
+			var_decl = _graph_builder.new StructVarDecl(new VarId(), functionName, type, structDecl);
+		}
+		_direct_var_graph_nodes.put(var_decl.getVarId(), var_decl);
+		return var_decl;
+	}
+
+	public DirectVarDecl find_var(VarId id) {
+		DirectVarDecl result = _direct_var_graph_nodes.get(id);
+		if (result == null)
+			return _parent.find_var(id);
+
+		return result;
 	}
 	
 	public FuncDecl getFuncDecl() {
