@@ -17,4 +17,8 @@ public class MemberStructInstance extends VarDecl {
 		return _parent.getName() + "." + _struct_member.getName();
 	}
 
+	public void clearNodes() {
+		_curr_graph_node = null;
+		_first_graph_node = null;
+	}
 }

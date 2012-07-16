@@ -1,6 +1,6 @@
 package gvpl.graph;
 
-import gvpl.ErrorOutputter;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
 import gvpl.common.typedefs.VarId;
@@ -122,9 +122,6 @@ public class GraphBuilder {
 		private String _name;
 		private TypeId _type;
 		//private StructDecl _parent;
-		
-		/** Maps the instance of a variable of the struct to the instance of the member */
-		public Map<VarId, MemberStructInstance> _instances = new HashMap<VarId, MemberStructInstance>();
 		
 		public StructMember(StructDecl parent, MemberId id, String name, TypeId type) {
 			//_parent = parent;

@@ -16,7 +16,8 @@ struct sPri
 		float inc;
 		inc = 5.0;
 		a += inc;
-		a += w;
+		h = h + w + 3.0;
+		a += h;
 	}
 };
 

@@ -1,6 +1,6 @@
 package gvpl.jdt;
 
-import gvpl.ErrorOutputter;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.typedefs.VarId;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.FuncDecl;

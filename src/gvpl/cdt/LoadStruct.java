@@ -3,7 +3,9 @@ package gvpl.cdt;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.*;
@@ -82,5 +84,9 @@ public class LoadStruct extends AstLoader {
 
 	public LoadMemberFunc getMemberFunc(IBinding binding) {
 		return _member_func_id_map.get(binding);
+	}
+	
+	public List<StructMember> getMembers() {
+		return new ArrayList<StructMember>(_member_id_map.values());
 	}
 }

@@ -36,9 +36,11 @@ public class LoadFunction extends AstLoader {
 	public IBinding load(IASTFunctionDefinition fd) {
 		LoadBasicBlock basicBlockLoader = new LoadBasicBlock(this, _astInterpreter);
 
+		//The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
+		//Gets the name of the function
 		String function_name = name_binding.toString();
 
 		_funcId = _graph_builder.new FuncId();

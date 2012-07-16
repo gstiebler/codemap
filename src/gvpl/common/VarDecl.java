@@ -5,8 +5,8 @@ import gvpl.graph.GraphBuilder.TypeId;
 
 public abstract class VarDecl {
 	protected TypeId _type;
-	private GraphNode _curr_graph_node;
-	private GraphNode _first_graph_node;
+	protected GraphNode _curr_graph_node;
+	protected GraphNode _first_graph_node;
 
 	public VarDecl(TypeId type) {
 		_type = type;

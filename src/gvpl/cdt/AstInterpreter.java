@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.ErrorOutputter;
+import gvpl.common.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.MemberId;
