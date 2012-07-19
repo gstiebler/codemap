@@ -40,7 +40,7 @@ public class LoadInstructionLine {
 	private CppMaps _cppMaps;
 	private AstInterpreter _astInterpreter;
 	private LoadBasicBlock _parentBasicBlock;
-	
+
 	public LoadInstructionLine(GraphBuilder graph_builder, LoadBasicBlock parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		_graphBuilder = graph_builder;
@@ -48,7 +48,7 @@ public class LoadInstructionLine {
 		_astInterpreter = astInterpreter;
 		_parentBasicBlock = parent;
 	}
-	
+
 	public void load(IASTStatement statement) {
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
@@ -76,7 +76,7 @@ public class LoadInstructionLine {
 			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
 			IASTExpression expr = expr_stat.getExpression();
 			if (expr instanceof IASTBinaryExpression)
-				load_assign_bin_op_types((IASTBinaryExpression) expr);
+				load_assign_bin_op((IASTBinaryExpression) expr);
 			else if (expr instanceof IASTFunctionCallExpression)
 				loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (statement instanceof IASTReturnStatement) {
@@ -84,7 +84,7 @@ public class LoadInstructionLine {
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
-	
+
 	public void LoadVariableInitialization(DirectVarDecl var_decl, IASTDeclarator decl) {
 		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
 
@@ -94,7 +94,7 @@ public class LoadInstructionLine {
 		GraphNode val = load_value(init_exp.getExpression());
 		_graphBuilder.add_assign_op(var_decl, val);
 	}
-	
+
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
@@ -129,16 +129,24 @@ public class LoadInstructionLine {
 		IASTReturnStatement return_node = (IASTReturnStatement) statement;
 
 		GraphNode rvalue = load_value(return_node.getReturnValue());
-		
+
 		FuncDecl funcDecl = _parentBasicBlock.getFuncDecl();
-		
+
 		// TODO set the correct type of the return value
-		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, null, funcDecl.getName());
-		
+		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, null,
+				funcDecl.getName());
+
 		funcDecl.setReturnNode(returnNode);
 	}
 
-	GraphNode load_assign_bin_op_types(IASTBinaryExpression node) {
+	/**
+	 * Loads a binary operation with an assignment
+	 * 
+	 * @param node
+	 *            The cpp node of this operation
+	 * @return The graph node of the result of the operation
+	 */
+	GraphNode load_assign_bin_op(IASTBinaryExpression node) {
 		IASTExpression expr = node.getOperand1();
 		VarDecl var_decl = _parentBasicBlock.getVarDecl(expr);
 
@@ -157,7 +165,7 @@ public class LoadInstructionLine {
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
 		List<GraphNode> parameter_values = new ArrayList<GraphNode>();
 		IASTExpression param_expr = func_call.getParameterExpression();
-		if(param_expr instanceof IASTExpressionList) {
+		if (param_expr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
 			IASTExpression[] parameters = expr_list.getExpressions();
 			for (IASTExpression parameter : parameters)
@@ -165,7 +173,7 @@ public class LoadInstructionLine {
 		} else {
 			parameter_values.add(load_value(param_expr));
 		}
-		
+
 		IASTExpression name_expr = func_call.getFunctionNameExpression();
 		if (name_expr instanceof IASTIdExpression) {
 			IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
@@ -173,10 +181,9 @@ public class LoadInstructionLine {
 			return _graphBuilder.addFuncRef(func_id, parameter_values);
 		} else if (name_expr instanceof IASTFieldReference) {
 			return loadMemberFuncRef(func_call, parameter_values);
-		}
-		else
+		} else
 			ErrorOutputter.fatalError("Not treated. " + name_expr.getClass());
-		
+
 		return null;
 	}
 
@@ -198,14 +205,14 @@ public class LoadInstructionLine {
 
 		IBinding func_member_binding = field_ref.getFieldName().resolveBinding();
 		LoadMemberFunc member_func = _astInterpreter.getMemberFunc(func_member_binding);
-		
+
 		IASTExpression expr = field_ref.getFieldOwner();
 		VarDecl varDecl = _parentBasicBlock.getVarDecl(expr);
 		if (varDecl instanceof StructVarDecl)
-			member_func.loadMemberFuncRef((StructVarDecl) varDecl);
+			member_func.loadMemberFuncRef((StructVarDecl) varDecl, _graphBuilder);
 		else
 			ErrorOutputter.fatalError("Work here.");
 
-		return _graphBuilder.addFuncRef(member_func.getFuncId(), parameter_values);
+		return member_func.getGraphBuilder().addFuncRef(member_func.getFuncId(), parameter_values);
 	}
 }

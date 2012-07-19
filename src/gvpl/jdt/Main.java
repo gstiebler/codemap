@@ -34,8 +34,7 @@ public class Main {
 		Visitor visitor = new Visitor(root);
 		cu.accept(visitor);
  
-		Graph gvpl_graph = new Graph();
-		GraphBuilder graph_builder = new GraphBuilder(gvpl_graph);
+		GraphBuilder graph_builder = new GraphBuilder();
 		new AstInterpreter(graph_builder, visitor._root);
 		
 		new gvpl.graphviz.FileDriver(graph_builder._gvpl_graph, File.examplesPath() + "first.dot");

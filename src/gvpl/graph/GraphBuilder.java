@@ -103,6 +103,7 @@ public class GraphBuilder {
 		public StructVarDecl(VarId id, String name, TypeId type, StructDecl structDecl) {
 			super(id, name, type);
 			
+			//For each member of the struct, create a variable instance of the member
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
 				StructMember struct_member = entry.getValue();
 				
@@ -192,7 +193,7 @@ public class GraphBuilder {
 			eAssignBinOp.class);
 
 	/** Stores all the graph */
-	public Graph _gvpl_graph;
+	public Graph _gvpl_graph = new Graph();
 
 	/** Converts a ast node id to a graph node id */
 	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
@@ -200,10 +201,8 @@ public class GraphBuilder {
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
 
-	public GraphBuilder(Graph gvpl_graph)
+	public GraphBuilder()
 	{
-		_gvpl_graph = gvpl_graph;
-
 		// _bin_op_strings[E_ASSIGN_OP] = "=";
 
 		_bin_op_strings.put(eBinOp.E_ADD_OP, "+");
@@ -305,8 +304,13 @@ public class GraphBuilder {
 		return func_decl._return_node;
 	}
 	
-	public void addDependency(VarDecl source, VarDecl dependent) {
-		source.getCurrentNode()._dependent_nodes.add(dependent.getFirstNode());
+	/**
+	 * Add one graph into another
+	 * @param graphBuilder
+	 * @return The map between the nodes in the old graph and in the new
+	 */
+	public Map<GraphNode, GraphNode> addGraph(GraphBuilder graphBuilder){
+		return _gvpl_graph.merge(graphBuilder._gvpl_graph);
 	}
 
 }

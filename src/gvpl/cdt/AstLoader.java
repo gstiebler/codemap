@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.common.typedefs.VarId;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
@@ -141,5 +142,9 @@ public class AstLoader {
 	
 	public FuncDecl getFuncDecl() {
 		return _parent.getFuncDecl();
+	}
+	
+	public GraphBuilder getGraphBuilder() {
+		return _graph_builder;
 	}
 }

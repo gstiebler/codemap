@@ -19,7 +19,14 @@ public class GraphNode {
 		_type = type;
 	}
 	
+	public GraphNode(GraphNode other){
+		_id = _counter++;
+		_name = other._name;
+		_type = other._type;
+	}
+	
 	public int getId(){
 		return _id;
 	}
+	
 }
