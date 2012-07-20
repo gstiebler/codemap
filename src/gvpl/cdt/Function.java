@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gvpl.common.ErrorOutputter;
@@ -22,11 +23,18 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class Function extends AstLoader {
 
-	protected FuncDecl _func_decl = null;
+	private GraphNode _return_node;
+	
+	private String _name;
+	public List<VarDecl> _parameters;
 
 	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		super(graph_builder, parent, cppMaps, astInterpreter);
+		
+		_name = "";
+		_parameters = new ArrayList<VarDecl>();
+		_return_node = null;
 	}
 	
 	/**
@@ -47,11 +55,11 @@ public class Function extends AstLoader {
 		String function_name = name_binding.toString();
 
 		IBinding member_func_binding = name_binding.resolveBinding();
-		_func_decl = new FuncDecl(function_name);
+		_name = function_name;
 
 		loadFuncParameters(parameters);
 
-		for (VarDecl parameter : _func_decl._parameters) {
+		for (VarDecl parameter : _parameters) {
 			GraphNode var_node = _graph_builder._gvpl_graph.add_graph_node(parameter.getName(),
 					NodeType.E_DECLARED_PARAMETER);
 			parameter.updateNode(var_node);
@@ -83,27 +91,34 @@ public class Function extends AstLoader {
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(decl_spec);
 			DirectVarDecl var_decl = load_var_decl(parameter_var_decl, type);
-			_func_decl._parameters.add(var_decl);
+			_parameters.add(var_decl);
 		}
 	}
 	
 	public GraphNode addFuncRef(List<GraphNode> parameter_values) {
-		if (_func_decl._parameters.size() != parameter_values.size())
+		if (_parameters.size() != parameter_values.size())
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < parameter_values.size(); ++i) {
-			VarDecl declared_parameter = _func_decl._parameters.get(i);
+			VarDecl declared_parameter = _parameters.get(i);
 			GraphNode received_parameter = parameter_values.get(i);
 
 			received_parameter._dependent_nodes.add(declared_parameter.getFirstNode());
 		}
 
-		return _func_decl.getReturnNode();
+		return _return_node;
 	}
 	
-	@Override
-	public FuncDecl getFuncDecl() {
-		return _func_decl;
+	public String getName() {
+		return _name;
+	}
+	
+	public void setReturnNode(GraphNode returnNode) {
+		_return_node = returnNode;
+	}
+	
+	public Function getFunction() {
+		return this;
 	}
 
 }

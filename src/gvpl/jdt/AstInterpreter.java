@@ -1,6 +1,5 @@
 package gvpl.jdt;
 
-import gvpl.cdt.FuncDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.typedefs.VarId;
 import gvpl.graph.GraphBuilder;
@@ -63,7 +62,7 @@ public class AstInterpreter {
 		MethodDeclaration md = (MethodDeclaration) node._ast_item;
 		String function_name = md.getName().toString();
 
-		FuncDecl func_decl = new FuncDecl(function_name);
+		//FuncDecl func_decl = new FuncDecl(function_name);
 		//_graph_builder.enter_function(func_decl);
 
 		for (int i = 0; i < node._AST.size(); ++i) {

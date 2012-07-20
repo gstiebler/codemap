@@ -138,8 +138,8 @@ public class AstLoader {
 		return result;
 	}
 	
-	public FuncDecl getFuncDecl() {
-		return _parent.getFuncDecl();
+	public Function getFunction() {
+		return _parent.getFunction();
 	}
 	
 	public GraphBuilder getGraphBuilder() {

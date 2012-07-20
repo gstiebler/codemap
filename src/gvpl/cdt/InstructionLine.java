@@ -128,13 +128,13 @@ public class InstructionLine {
 
 		GraphNode rvalue = load_value(return_node.getReturnValue());
 
-		FuncDecl funcDecl = _parentBasicBlock.getFuncDecl();
+		Function function = _parentBasicBlock.getFunction();
 
 		// TODO set the correct type of the return value
 		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, null,
-				funcDecl.getName());
+				function.getName());
 
-		funcDecl.setReturnNode(returnNode);
+		function.setReturnNode(returnNode);
 	}
 
 	/**
