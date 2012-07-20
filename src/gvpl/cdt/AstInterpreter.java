@@ -30,23 +30,28 @@ public class AstInterpreter extends AstLoader {
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
 		super(graph_builder, null, new CppMaps(), null);
-
+		
 		IASTDeclaration[] declarations = root.getDeclarations();
+		
+		Function mainFunction = null;
 
 		for (IASTDeclaration declaration : declarations) {
 			if (declaration instanceof IASTFunctionDefinition) {
 				Function loadFunction = new Function(_graph_builder, this, _cppMaps, this);
 				IBinding binding = loadFunction.load((IASTFunctionDefinition) declaration);
-
 				_func_id_map.put(binding, loadFunction);
+				
+				if(loadFunction.getName().equals("main"))
+					mainFunction = loadFunction;
 			}
 			else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
 				loadStructureDecl((IASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
 				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
-
 		}
+		
+		_graph_builder.addGraph(mainFunction.getGraphBuilder());
 	}
 
 	private void addStruct(Struct structLoader) {

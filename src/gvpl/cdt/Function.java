@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
@@ -24,19 +25,19 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 public class Function extends AstLoader {
 
 	private GraphNode _return_node;
-	
+
 	private String _name;
 	public List<VarDecl> _parameters;
 
 	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
-		super(graph_builder, parent, cppMaps, astInterpreter);
-		
+		super(new GraphBuilder(), parent, cppMaps, astInterpreter);
+
 		_name = "";
 		_parameters = new ArrayList<VarDecl>();
 		_return_node = null;
 	}
-	
+
 	/**
 	 * Loads the member function definition
 	 * 
@@ -47,11 +48,11 @@ public class Function extends AstLoader {
 	public IBinding load(IASTFunctionDefinition fd) {
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 
-		//The declaration of the function
+		// The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
-		//Gets the name of the function
+		// Gets the name of the function
 		String function_name = name_binding.toString();
 
 		IBinding member_func_binding = name_binding.resolveBinding();
@@ -64,13 +65,13 @@ public class Function extends AstLoader {
 					NodeType.E_DECLARED_PARAMETER);
 			parameter.updateNode(var_node);
 		}
-		
+
 		IASTStatement body = fd.getBody();
 
-		// TODO tratar o else
 		if (body instanceof IASTCompoundStatement) {
 			basicBlockLoader.load((IASTCompoundStatement) body);
-		}
+		} else
+			ErrorOutputter.fatalError("Work here.");
 
 		return member_func_binding;
 	}
@@ -94,29 +95,37 @@ public class Function extends AstLoader {
 			_parameters.add(var_decl);
 		}
 	}
-	
-	public GraphNode addFuncRef(List<GraphNode> parameter_values) {
+
+	public GraphNode addFuncRef(List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder.addGraph(_graph_builder);
+		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap);
+	}
+
+	protected GraphNode addParametersReferenceAndReturn(List<GraphNode> parameter_values,
+			Map<GraphNode, GraphNode> internalToMainGraphMap) {
 		if (_parameters.size() != parameter_values.size())
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < parameter_values.size(); ++i) {
 			VarDecl declared_parameter = _parameters.get(i);
+			GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declared_parameter
+					.getFirstNode());
 			GraphNode received_parameter = parameter_values.get(i);
 
-			received_parameter._dependent_nodes.add(declared_parameter.getFirstNode());
+			received_parameter._dependent_nodes.add(declParamNodeInMainGraph);
 		}
 
-		return _return_node;
+		return internalToMainGraphMap.get(_return_node);
 	}
-	
+
 	public String getName() {
 		return _name;
 	}
-	
+
 	public void setReturnNode(GraphNode returnNode) {
 		_return_node = returnNode;
 	}
-	
+
 	public Function getFunction() {
 		return this;
 	}

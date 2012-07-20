@@ -176,7 +176,7 @@ public class InstructionLine {
 		if (name_expr instanceof IASTIdExpression) {
 			IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
 			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-			return loadFunction.addFuncRef(parameter_values);
+			return loadFunction.addFuncRef(parameter_values, _graphBuilder);
 		} else if (name_expr instanceof IASTFieldReference) {
 			return loadMemberFuncRef(func_call, parameter_values);
 		} else
@@ -206,11 +206,10 @@ public class InstructionLine {
 
 		IASTExpression expr = field_ref.getFieldOwner();
 		VarDecl varDecl = _parentBasicBlock.getVarDecl(expr);
-		if (varDecl instanceof StructVarDecl)
-			member_func.loadMemberFuncRef((StructVarDecl) varDecl, _graphBuilder);
-		else
+		if (!(varDecl instanceof StructVarDecl))
 			ErrorOutputter.fatalError("Work here.");
 
-		return member_func.addFuncRef(parameter_values);
+		return member_func.loadMemberFuncRef((StructVarDecl) varDecl, parameter_values,
+				_graphBuilder);
 	}
 }

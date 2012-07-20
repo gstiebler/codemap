@@ -53,7 +53,8 @@ public class MemberFunc extends Function {
 		VarDecl var_decl = getVarDeclOfLocalReference(id_expr);
 		if (var_decl != null)
 			return var_decl;
-		// Ok, if the function did not returned until here, the variable is a member.
+		// Ok, if the function did not returned until here, the variable is a
+		// member.
 
 		IASTName name = id_expr.getName();
 		IBinding binding = name.resolveBinding();
@@ -74,7 +75,8 @@ public class MemberFunc extends Function {
 	 * @param structVarDecl
 	 * @param graphBuilder
 	 */
-	public void loadMemberFuncRef(StructVarDecl structVarDecl, GraphBuilder graphBuilder) {
+	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
+			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
 		Map<GraphNode, GraphNode> map = graphBuilder.addGraph(_graph_builder);
 
 		for (Map.Entry<MemberId, DirectVarDecl> entry : _var_from_members.entrySet()) {
@@ -98,6 +100,8 @@ public class MemberFunc extends Function {
 				graphBuilder.add_assign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph);
 			}
 		}
+
+		return addParametersReferenceAndReturn(parameter_values, map);
 	}
 
 }
