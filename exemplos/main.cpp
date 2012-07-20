@@ -46,7 +46,7 @@ int main() {
 	d = x * 5 + y * m;
 	e = soma(x, 5);
 	bool value = false;
-	int f = d + e + 4;
+	int f = soma(d, e) + 4;
 	
 	for (int i = 0; i < 4; i++)
 	{
