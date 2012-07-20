@@ -5,7 +5,6 @@ import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.FuncDecl;
-import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.StructVarDecl;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
@@ -177,8 +176,8 @@ public class LoadInstructionLine {
 		IASTExpression name_expr = func_call.getFunctionNameExpression();
 		if (name_expr instanceof IASTIdExpression) {
 			IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
-			FuncId func_id = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-			return _graphBuilder.addFuncRef(func_id, parameter_values);
+			LoadFunction loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
+			return loadFunction.addFuncRef(parameter_values);
 		} else if (name_expr instanceof IASTFieldReference) {
 			return loadMemberFuncRef(func_call, parameter_values);
 		} else
@@ -213,6 +212,6 @@ public class LoadInstructionLine {
 		else
 			ErrorOutputter.fatalError("Work here.");
 
-		return member_func.getGraphBuilder().addFuncRef(member_func.getFuncId(), parameter_values);
+		return member_func.addFuncRef(parameter_values);
 	}
 }

@@ -3,15 +3,13 @@ package gvpl.cdt;
 import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
 import gvpl.common.typedefs.VarId;
-import gvpl.graph.Graph;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.StructMember;
 import gvpl.graph.GraphBuilder.StructVarDecl;
-import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
 import java.util.List;

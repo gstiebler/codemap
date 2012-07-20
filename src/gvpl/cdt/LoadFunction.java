@@ -1,9 +1,13 @@
 package gvpl.cdt;
 
+import java.util.List;
+
+import gvpl.common.ErrorOutputter;
+import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphNode;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.FuncDecl;
-import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.TypeId;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -19,7 +23,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 public class LoadFunction extends AstLoader {
 	
 	protected FuncDecl _func_decl = null;
-	private FuncId _funcId = null;
 
 	public LoadFunction(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
@@ -43,9 +46,8 @@ public class LoadFunction extends AstLoader {
 		//Gets the name of the function
 		String function_name = name_binding.toString();
 
-		_funcId = _graph_builder.new FuncId();
 		IBinding member_func_binding = name_binding.resolveBinding();
-		_func_decl = _graph_builder.new FuncDecl(_funcId, function_name);
+		_func_decl = _graph_builder.new FuncDecl(function_name);
 
 		loadFuncParameters(parameters);
 
@@ -80,9 +82,19 @@ public class LoadFunction extends AstLoader {
 			_func_decl._parameters.add(var_decl);
 		}
 	}
+	
+	public GraphNode addFuncRef(List<GraphNode> parameter_values) {
+		if (_func_decl._parameters.size() != parameter_values.size())
+			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
-	public FuncId getFuncId() {
-		return _funcId;
+		for (int i = 0; i < parameter_values.size(); ++i) {
+			VarDecl declared_parameter = _func_decl._parameters.get(i);
+			GraphNode received_parameter = parameter_values.get(i);
+
+			received_parameter._dependent_nodes.add(declared_parameter.getFirstNode());
+		}
+
+		return _func_decl.getReturnNode();
 	}
 	
 	@Override

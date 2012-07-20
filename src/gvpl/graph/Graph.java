@@ -1,8 +1,5 @@
 package gvpl.graph;
 
-import gvpl.graph.GraphBuilder.DirectVarDecl;
-import gvpl.graph.GraphBuilder.MemberId;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

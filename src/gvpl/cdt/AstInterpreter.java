@@ -2,7 +2,6 @@ package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.FuncId;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.StructDecl;
 import gvpl.graph.GraphBuilder.StructMember;
@@ -24,7 +23,7 @@ public class AstInterpreter extends AstLoader {
 
 	private Map<IBinding, LoadStruct> _typeBindingToStruct = new HashMap<IBinding, LoadStruct>();
 	private Map<TypeId, LoadStruct> _typeIdToStruct = new HashMap<TypeId, LoadStruct>();
-	private Map<IBinding, FuncId> _func_id_map = new HashMap<IBinding, FuncId>();
+	private Map<IBinding, LoadFunction> _func_id_map = new HashMap<IBinding, LoadFunction>();
 	
 
 	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
@@ -39,7 +38,7 @@ public class AstInterpreter extends AstLoader {
 				LoadFunction loadFunction = new LoadFunction(_graph_builder, this, _cppMaps, this);
 				IBinding binding = loadFunction.load((IASTFunctionDefinition) declaration);
 
-				_func_id_map.put(binding, loadFunction.getFuncId());
+				_func_id_map.put(binding, loadFunction);
 			}
 			else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
@@ -71,7 +70,7 @@ public class AstInterpreter extends AstLoader {
 		return null;
 	}
 
-	public FuncId getFuncId(IBinding binding) {
+	public LoadFunction getFuncId(IBinding binding) {
 		return _func_id_map.get(binding);
 	}
 

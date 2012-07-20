@@ -1,7 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.*;
-import gvpl.graph.Graph;
+import gvpl.common.File;
 import gvpl.graph.GraphBuilder;
 
 import java.util.HashMap;

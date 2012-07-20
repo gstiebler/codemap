@@ -1,6 +1,5 @@
 package gvpl.graph;
 
-import gvpl.common.ErrorOutputter;
 import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
 import gvpl.common.typedefs.VarId;
@@ -52,10 +51,6 @@ public class GraphBuilder {
 		E_POST_EXPR,
 		E_BASIC_BLOCK,
 		E_OUT_OF_LOOP
-	}
-
-	/** typedef */
-	public class FuncId {
 	}
 
 	/** typedef */
@@ -145,21 +140,15 @@ public class GraphBuilder {
 	}
 
 	public class FuncDecl {
-		private FuncId _id;
 		private GraphNode _return_node;
 		
 		private String _name;
 		public List<VarDecl> _parameters;
 
-		public FuncDecl(FuncId id, String name) {
-			_id = id;
+		public FuncDecl(String name) {
 			_name = name;
 			_parameters = new ArrayList<VarDecl>();
 			_return_node = null;
-		}
-
-		public FuncId getFuncId() {
-			return _id;
 		}
 		
 		public String getName() {
@@ -168,6 +157,10 @@ public class GraphBuilder {
 		
 		public void setReturnNode(GraphNode returnNode) {
 			_return_node = returnNode;
+		}
+		
+		public GraphNode getReturnNode() {
+			return _return_node;
 		}
 	}
 
@@ -194,9 +187,6 @@ public class GraphBuilder {
 
 	/** Stores all the graph */
 	public Graph _gvpl_graph = new Graph();
-
-	/** Converts a ast node id to a graph node id */
-	private Map<FuncId, FuncDecl> _func_graph_nodes = new HashMap<FuncId, FuncDecl>();
 
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
@@ -284,24 +274,6 @@ public class GraphBuilder {
 					NodeType.E_DECLARED_PARAMETER);
 			parameter.updateNode(var_node);
 		}
-
-		_func_graph_nodes.put(func_decl._id, func_decl);
-	}
-
-	public GraphNode addFuncRef(FuncId func_id, List<GraphNode> parameter_values) {
-		FuncDecl func_decl = _func_graph_nodes.get(func_id);
-
-		if (func_decl._parameters.size() != parameter_values.size())
-			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
-
-		for (int i = 0; i < parameter_values.size(); ++i) {
-			VarDecl declared_parameter = func_decl._parameters.get(i);
-			GraphNode received_parameter = parameter_values.get(i);
-
-			received_parameter._dependent_nodes.add(declared_parameter.getFirstNode());
-		}
-
-		return func_decl._return_node;
 	}
 	
 	/**
