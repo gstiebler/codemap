@@ -2,7 +2,6 @@ package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
-import gvpl.common.typedefs.VarId;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
@@ -96,25 +95,17 @@ public class AstLoader {
 		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
 	}
 	
-	public DirectVarDecl add_var_decl(TypeId type, String functionName) {
+	private DirectVarDecl add_var_decl(TypeId type, String functionName) {
 		DirectVarDecl var_decl = null;
 		
 		if (type == null) {
-			var_decl = _graph_builder.new DirectVarDecl(new VarId(), functionName, type);
+			var_decl = _graph_builder.new DirectVarDecl(functionName, type);
 		}else
 		{
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			var_decl = _graph_builder.new StructVarDecl(new VarId(), functionName, type, structDecl);
+			var_decl = _graph_builder.new StructVarDecl(functionName, type, structDecl);
 		}
 		return var_decl;
-	}
-
-	public DirectVarDecl find_var(VarId id) {
-		DirectVarDecl result = _direct_var_graph_nodes.get(id);
-		if (result == null)
-			return _parent.find_var(id);
-
-		return result;
 	}
 	
 	public Function getFunction() {

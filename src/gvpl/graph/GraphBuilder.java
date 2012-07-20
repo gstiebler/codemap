@@ -2,7 +2,6 @@ package gvpl.graph;
 
 import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
-import gvpl.common.typedefs.VarId;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -69,17 +68,11 @@ public class GraphBuilder {
 	 * Structure that holds variable declaration parameters
 	 */
 	public class DirectVarDecl extends VarDecl {
-		private VarId _id;
 		protected String _name;
 
-		public VarId getVarId() {
-			return _id;
-		}
-
-		public DirectVarDecl(VarId id, String name, TypeId type) {
+		public DirectVarDecl(String name, TypeId type) {
 			super(type);
 			_name = name;
-			_id = id;
 		}
 		
 		public String getName() {
@@ -95,8 +88,8 @@ public class GraphBuilder {
 		
 		Map<MemberId, MemberStructInstance> _member_instances = new HashMap<MemberId, MemberStructInstance>();
 
-		public StructVarDecl(VarId id, String name, TypeId type, StructDecl structDecl) {
-			super(id, name, type);
+		public StructVarDecl(String name, TypeId type, StructDecl structDecl) {
+			super(name, type);
 			
 			//For each member of the struct, create a variable instance of the member
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){

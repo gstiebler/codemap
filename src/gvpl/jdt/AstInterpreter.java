@@ -1,7 +1,6 @@
 package gvpl.jdt;
 
 import gvpl.common.ErrorOutputter;
-import gvpl.common.typedefs.VarId;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
 import gvpl.graph.GraphBuilder.eBinOp;
@@ -28,7 +27,6 @@ public class AstInterpreter {
 
 	GraphBuilder _graph_builder;
 	
-	private Map<IBinding, VarId> _var_id_map = new HashMap<IBinding, VarId>();
 	private Map<InfixExpression.Operator, eBinOp> _bin_op_types = new HashMap<InfixExpression.Operator, eBinOp>();
 	private Map<Assignment.Operator, eAssignBinOp> _assign_bin_op_types = 
 				new HashMap<Assignment.Operator, eAssignBinOp>();
@@ -133,7 +131,7 @@ public class AstInterpreter {
 	GraphNode load_assign_bin_op_types(ASTItem node) {
 		Assignment assignment = (Assignment)node._ast_item;
 		
-		VarId lhs_var_id = load_lhs(node._AST.get(0));
+		//VarId lhs_var_id = load_lhs(node._AST.get(0));
 		GraphNode rvalue = load_value(node._AST.get(1));
 		
 		if(assignment.getOperator() == Assignment.Operator.ASSIGN) {
@@ -150,9 +148,9 @@ public class AstInterpreter {
 		return null;
 	}
 	
-	private VarId load_lhs(ASTItem lhs) {
+	private void load_lhs(ASTItem lhs) {
 		IBinding binding = ((Name)lhs._ast_item).resolveBinding();
-		return _var_id_map.get(binding);
+		//return null;//_var_id_map.get(binding);
 	}
 
 	private GraphNode load_value(ASTItem node) {

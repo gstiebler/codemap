@@ -2,7 +2,6 @@ package gvpl.cdt;
 
 import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
-import gvpl.common.typedefs.VarId;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
@@ -31,8 +30,8 @@ public class MemberFunc extends Function {
 
 		List<StructMember> members = _parentLoadStruct.getMembers();
 		for (StructMember member : members) {
-			DirectVarDecl member_var = _graph_builder.new DirectVarDecl(new VarId(),
-					member.getName(), member.getMemberType());
+			DirectVarDecl member_var = _graph_builder.new DirectVarDecl(member.getName(),
+					member.getMemberType());
 			member_var.initializeGraphNode();
 			_var_from_members.put(member.getMemberId(), member_var);
 		}
