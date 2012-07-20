@@ -139,31 +139,6 @@ public class GraphBuilder {
 		}
 	}
 
-	public class FuncDecl {
-		private GraphNode _return_node;
-		
-		private String _name;
-		public List<VarDecl> _parameters;
-
-		public FuncDecl(String name) {
-			_name = name;
-			_parameters = new ArrayList<VarDecl>();
-			_return_node = null;
-		}
-		
-		public String getName() {
-			return _name;
-		}
-		
-		public void setReturnNode(GraphNode returnNode) {
-			_return_node = returnNode;
-		}
-		
-		public GraphNode getReturnNode() {
-			return _return_node;
-		}
-	}
-
 	public class StructDecl {
 		public TypeId _id;
 		//private String _name;
@@ -266,14 +241,6 @@ public class GraphBuilder {
 
 	public GraphNode add_var_ref(VarDecl var_decl) {
 		return var_decl.getCurrentNode();
-	}
-
-	public void enter_function(FuncDecl func_decl) {
-		for (VarDecl parameter : func_decl._parameters) {
-			GraphNode var_node = _gvpl_graph.add_graph_node(parameter.getName(),
-					NodeType.E_DECLARED_PARAMETER);
-			parameter.updateNode(var_node);
-		}
 	}
 	
 	/**

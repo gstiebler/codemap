@@ -6,7 +6,6 @@ import gvpl.common.typedefs.VarId;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
-import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.StructDecl;
 import gvpl.graph.GraphBuilder.StructVarDecl;

@@ -1,9 +1,9 @@
 package gvpl.jdt;
 
+import gvpl.cdt.FuncDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.typedefs.VarId;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
 import gvpl.graph.GraphBuilder.eBinOp;
 import gvpl.graph.GraphNode;
@@ -63,8 +63,8 @@ public class AstInterpreter {
 		MethodDeclaration md = (MethodDeclaration) node._ast_item;
 		String function_name = md.getName().toString();
 
-		FuncDecl func_decl = _graph_builder.new FuncDecl(function_name);
-		_graph_builder.enter_function(func_decl);
+		FuncDecl func_decl = new FuncDecl(function_name);
+		//_graph_builder.enter_function(func_decl);
 
 		for (int i = 0; i < node._AST.size(); ++i) {
 			ASTItem curr_node = node._AST.get(i);

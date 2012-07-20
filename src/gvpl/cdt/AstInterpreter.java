@@ -21,9 +21,9 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstInterpreter extends AstLoader {
 
-	private Map<IBinding, LoadStruct> _typeBindingToStruct = new HashMap<IBinding, LoadStruct>();
-	private Map<TypeId, LoadStruct> _typeIdToStruct = new HashMap<TypeId, LoadStruct>();
-	private Map<IBinding, LoadFunction> _func_id_map = new HashMap<IBinding, LoadFunction>();
+	private Map<IBinding, Struct> _typeBindingToStruct = new HashMap<IBinding, Struct>();
+	private Map<TypeId, Struct> _typeIdToStruct = new HashMap<TypeId, Struct>();
+	private Map<IBinding, Function> _func_id_map = new HashMap<IBinding, Function>();
 	
 
 	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
@@ -35,7 +35,7 @@ public class AstInterpreter extends AstLoader {
 
 		for (IASTDeclaration declaration : declarations) {
 			if (declaration instanceof IASTFunctionDefinition) {
-				LoadFunction loadFunction = new LoadFunction(_graph_builder, this, _cppMaps, this);
+				Function loadFunction = new Function(_graph_builder, this, _cppMaps, this);
 				IBinding binding = loadFunction.load((IASTFunctionDefinition) declaration);
 
 				_func_id_map.put(binding, loadFunction);
@@ -49,13 +49,13 @@ public class AstInterpreter extends AstLoader {
 		}
 	}
 
-	private void addStruct(LoadStruct structLoader) {
+	private void addStruct(Struct structLoader) {
 		_typeBindingToStruct.put(structLoader.getBinding(), structLoader);
 		_typeIdToStruct.put(structLoader.getTypeId(), structLoader);
 	}
 
 	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl) {
-		LoadStruct structLoader = new LoadStruct(_graph_builder, this, _cppMaps, this, strDecl);
+		Struct structLoader = new Struct(_graph_builder, this, _cppMaps, this, strDecl);
 
 		addStruct(structLoader);
 		addStructDecl(structLoader.getStructDecl());
@@ -70,26 +70,26 @@ public class AstInterpreter extends AstLoader {
 		return null;
 	}
 
-	public LoadFunction getFuncId(IBinding binding) {
+	public Function getFuncId(IBinding binding) {
 		return _func_id_map.get(binding);
 	}
 
 	public MemberId getMemberId(IBinding member_binding, IBinding type_binding) {
-		LoadStruct loadStruct = _typeBindingToStruct.get(type_binding);
+		Struct loadStruct = _typeBindingToStruct.get(type_binding);
 		StructMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
 	}
 
 	public MemberId getMemberId(TypeId type_id, IBinding member_binding) {
-		LoadStruct loadStruct = _typeIdToStruct.get(type_id);
+		Struct loadStruct = _typeIdToStruct.get(type_id);
 		StructMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
 	}
 
-	public LoadMemberFunc getMemberFunc(IBinding func_member_binding) {
-		for (Map.Entry<TypeId, LoadStruct> entry : _typeIdToStruct.entrySet()) {
-			LoadStruct loadStruct = entry.getValue();
-			LoadMemberFunc member_func = loadStruct.getMemberFunc(func_member_binding);
+	public MemberFunc getMemberFunc(IBinding func_member_binding) {
+		for (Map.Entry<TypeId, Struct> entry : _typeIdToStruct.entrySet()) {
+			Struct loadStruct = entry.getValue();
+			MemberFunc member_func = loadStruct.getMemberFunc(func_member_binding);
 			if (member_func != null)
 				return member_func;
 		}

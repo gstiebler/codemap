@@ -6,8 +6,8 @@ import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.DirectVarDecl;
-import gvpl.graph.GraphBuilder.FuncDecl;
 import gvpl.graph.GraphBuilder.TypeId;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -20,11 +20,11 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
-public class LoadFunction extends AstLoader {
-	
+public class Function extends AstLoader {
+
 	protected FuncDecl _func_decl = null;
 
-	public LoadFunction(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
+	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		super(graph_builder, parent, cppMaps, astInterpreter);
 	}
@@ -37,7 +37,7 @@ public class LoadFunction extends AstLoader {
 	 * @return The binding of the loaded function member
 	 */
 	public IBinding load(IASTFunctionDefinition fd) {
-		LoadBasicBlock basicBlockLoader = new LoadBasicBlock(this, _astInterpreter);
+		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 
 		//The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
@@ -47,12 +47,16 @@ public class LoadFunction extends AstLoader {
 		String function_name = name_binding.toString();
 
 		IBinding member_func_binding = name_binding.resolveBinding();
-		_func_decl = _graph_builder.new FuncDecl(function_name);
+		_func_decl = new FuncDecl(function_name);
 
 		loadFuncParameters(parameters);
 
-		_graph_builder.enter_function(_func_decl);
-
+		for (VarDecl parameter : _func_decl._parameters) {
+			GraphNode var_node = _graph_builder._gvpl_graph.add_graph_node(parameter.getName(),
+					NodeType.E_DECLARED_PARAMETER);
+			parameter.updateNode(var_node);
+		}
+		
 		IASTStatement body = fd.getBody();
 
 		// TODO tratar o else
