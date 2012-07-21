@@ -24,6 +24,8 @@ public class CppMaps {
 		_assign_bin_op_types.put(IASTBinaryExpression.op_assign, eAssignBinOp.E_ASSIGN_OP);
 		_assign_bin_op_types.put(IASTBinaryExpression.op_plusAssign, eAssignBinOp.E_PLUS_ASSIGN_OP);
 		_assign_bin_op_types.put(IASTBinaryExpression.op_minusAssign, eAssignBinOp.E_SUB_ASSIGN_OP);
+		_assign_bin_op_types.put(IASTBinaryExpression.op_multiplyAssign, eAssignBinOp.E_MULT_ASSIGN_OP);
+		_assign_bin_op_types.put(IASTBinaryExpression.op_divideAssign, eAssignBinOp.E_DIV_ASSIGN_OP);
 	}
 	
 	public eBinOp getBinOpType(Integer op) {

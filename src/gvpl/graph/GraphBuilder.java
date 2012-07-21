@@ -4,10 +4,8 @@ import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 
-import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class GraphBuilder {
@@ -31,7 +29,9 @@ public class GraphBuilder {
 		E_INVALID_A_BIN_OP,
 		E_ASSIGN_OP,
 		E_PLUS_ASSIGN_OP,
-		E_SUB_ASSIGN_OP
+		E_SUB_ASSIGN_OP,
+		E_DIV_ASSIGN_OP,
+		E_MULT_ASSIGN_OP
 	}
 
 	public enum eValueType {
@@ -174,6 +174,8 @@ public class GraphBuilder {
 
 		_assign_bin_op_strings.put(eAssignBinOp.E_PLUS_ASSIGN_OP, "+");
 		_assign_bin_op_strings.put(eAssignBinOp.E_SUB_ASSIGN_OP, "-");
+		_assign_bin_op_strings.put(eAssignBinOp.E_DIV_ASSIGN_OP, "/");
+		_assign_bin_op_strings.put(eAssignBinOp.E_MULT_ASSIGN_OP, "*");
 	}
 
 	public GraphNode add_direct_val(eValueType type, String value) {
