@@ -230,12 +230,7 @@ public class GraphBuilder {
 		lhs_node.addDependentNode(bin_op_node);
 		rhs_node.addDependentNode(bin_op_node);
 
-		GraphNode result_node = _gvpl_graph.add_graph_node(lhs_node._name, NodeType.E_VARIABLE);
-		bin_op_node.addDependentNode(result_node);
-
-		lhs_var_decl.updateNode(result_node);
-
-		return result_node;
+		return add_assign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node);
 	}
 
 	public GraphNode add_var_ref(VarDecl var_decl) {
