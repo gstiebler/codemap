@@ -199,7 +199,7 @@ public class GraphBuilder {
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl.getName(), lhs_type);
 		lhs_var_decl.updateNode(lhs_node);
 
-		rhs_node._dependent_nodes.add(lhs_node);
+		rhs_node.addDependentNode(lhs_node);
 		return lhs_node;
 	}
 
@@ -207,7 +207,7 @@ public class GraphBuilder {
 		GraphNode un_op_node = _gvpl_graph.add_graph_node(_un_op_strings.get(op),
 				NodeType.E_OPERATION);
 
-		val_node._dependent_nodes.add(un_op_node);
+		val_node.addDependentNode(un_op_node);
 
 		return un_op_node;
 	}
@@ -216,8 +216,8 @@ public class GraphBuilder {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
-		val1_node._dependent_nodes.add(bin_op_node);
-		val2_node._dependent_nodes.add(bin_op_node);
+		val1_node.addDependentNode(bin_op_node);
+		val2_node.addDependentNode(bin_op_node);
 
 		return bin_op_node;
 	}
@@ -227,11 +227,11 @@ public class GraphBuilder {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
-		lhs_node._dependent_nodes.add(bin_op_node);
-		rhs_node._dependent_nodes.add(bin_op_node);
+		lhs_node.addDependentNode(bin_op_node);
+		rhs_node.addDependentNode(bin_op_node);
 
 		GraphNode result_node = _gvpl_graph.add_graph_node(lhs_node._name, NodeType.E_VARIABLE);
-		bin_op_node._dependent_nodes.add(result_node);
+		bin_op_node.addDependentNode(result_node);
 
 		lhs_var_decl.updateNode(result_node);
 

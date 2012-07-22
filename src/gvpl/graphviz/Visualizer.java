@@ -35,20 +35,17 @@ public abstract class Visualizer {
 	}
 	
 	private void printEdges(Graph graph) {
-		GraphNode graph_node, dependentNode;
+		GraphNode graph_node;
 		int size = graph.getNumNodes();
-		int dependents_size;
+
 		for (int i = 0; i < size; ++i) {
 			graph_node = graph.getNode(i);
-
-			dependents_size = graph_node._dependent_nodes.size();
-			for (int j = 0; j < dependents_size; ++j) {
-				dependentNode = graph_node._dependent_nodes.get(j);
+			
+			for(GraphNode dependentNode : graph_node.getDependentNodes()) {
 				insertDependency(graph_node.getId(), dependentNode.getId());
 			}
 		}
 		
-
 		for(Graph subgraph : graph._subgraphs) {
 			printEdges(subgraph);
 		}

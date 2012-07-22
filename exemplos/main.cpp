@@ -36,12 +36,24 @@ int main() {
 	float g = str1.a - str1.h;
 	float k = str2.a * str2.h;
 	
-	float m = g / k;
+	float m;
+	
+	{
+		m = g / k;
+	}
 
 	int z, e, x = 0;
 	z = 30;
+	
+	if(m > 5)
+	{
+		z = 40;
+		x = 11;
+	}
+	
 	int y = 3;
-	x += y;
+	//if(m >= 8)
+		x += y;
 	int d = 9;
 	d /= x * 5 + y * m;
 	e = soma(x, 5);

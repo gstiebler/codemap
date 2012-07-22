@@ -91,7 +91,7 @@ public class MemberFunc extends Function {
 				GraphNode firstNode = var_decl.getFirstNode();
 				GraphNode firstNodeInNewGraph = map.get(firstNode);
 				MemberStructInstance memberInstance = structVarDecl.findMember(entry.getKey());
-				memberInstance.getCurrentNode()._dependent_nodes.add(firstNodeInNewGraph);
+				memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph);
 			}
 
 			// Binds the internal variables to the variables from the instance

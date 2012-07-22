@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
@@ -25,6 +26,7 @@ import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
+import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
@@ -79,6 +81,11 @@ public class InstructionLine {
 				loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (statement instanceof IASTReturnStatement) {
 			loadReturnStatement((IASTReturnStatement) statement);
+		} else if (statement instanceof IASTIfStatement) {
+			loadIfStatement((IASTIfStatement) statement);
+		} else if (statement instanceof IASTCompoundStatement) {
+			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, null);
+			basicBlockLoader.load((IASTCompoundStatement) statement);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
@@ -211,5 +218,24 @@ public class InstructionLine {
 
 		return member_func.loadMemberFuncRef((StructVarDecl) varDecl, parameter_values,
 				_graphBuilder);
+	}
+	
+	public void loadIfStatement(IASTIfStatement ifStatement) {
+		IASTExpression condition = ifStatement.getConditionExpression();
+		GraphNode conditionNode = load_value(condition);
+			
+		IASTStatement thenClause = ifStatement.getThenClause();
+		{
+			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, conditionNode);
+			basicBlockLoader.load((IASTCompoundStatement) thenClause);
+		}
+		
+		IASTStatement elseClause = ifStatement.getElseClause();
+		if (elseClause != null)
+		{
+			//TODO the conditionNode should be inverted
+			//BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, conditionNode);
+			//basicBlockLoader.load((IASTCompoundStatement) elseClause);
+		}
 	}
 }

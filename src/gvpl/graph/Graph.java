@@ -56,8 +56,8 @@ public class Graph {
 		for (Map.Entry<GraphNode, GraphNode> entry : map.entrySet()) {
 			GraphNode oldNode = entry.getKey();
 			GraphNode newNode = entry.getValue();
-			for (GraphNode dependentNode : oldNode._dependent_nodes) {
-				newNode._dependent_nodes.add(map.get(dependentNode));
+			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
+				newNode.addDependentNode(map.get(dependentNode));
 			}
 		}
 

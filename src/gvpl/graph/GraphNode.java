@@ -11,7 +11,7 @@ public class GraphNode {
 	public String _name;
 	public NodeType _type;
 	/** Lista de nohs das quais este noh depende */
-	public List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
+	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
 
 	public GraphNode(String name, NodeType type) {
 		_id = _counter++;
@@ -27,6 +27,14 @@ public class GraphNode {
 	
 	public int getId(){
 		return _id;
+	}
+	
+	public void addDependentNode(GraphNode dependentNode) {
+		_dependent_nodes.add(dependentNode);
+	}
+	
+	public Iterable<GraphNode> getDependentNodes() {
+		return _dependent_nodes;
 	}
 	
 }

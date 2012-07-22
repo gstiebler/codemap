@@ -45,7 +45,6 @@ public class Function extends AstLoader {
 	 * @return The binding of the loaded function member
 	 */
 	public IBinding load(IASTFunctionDefinition fd) {
-		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 
 		// The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
@@ -68,6 +67,7 @@ public class Function extends AstLoader {
 		IASTStatement body = fd.getBody();
 
 		if (body instanceof IASTCompoundStatement) {
+			BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
 			basicBlockLoader.load((IASTCompoundStatement) body);
 		} else
 			ErrorOutputter.fatalError("Work here.");
@@ -115,7 +115,7 @@ public class Function extends AstLoader {
 					.getFirstNode());
 			GraphNode received_parameter = parameter_values.get(i);
 
-			received_parameter._dependent_nodes.add(declParamNodeInMainGraph);
+			received_parameter.addDependentNode(declParamNodeInMainGraph);
 		}
 
 		return internalToMainGraphMap.get(_return_node);
