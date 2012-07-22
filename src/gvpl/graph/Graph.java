@@ -17,7 +17,16 @@ public class Graph {
 		E_RETURN_VALUE
 	}
 
+	private String _name;
+
 	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
+	public List<Graph> _subgraphs = new ArrayList<Graph>();
+	
+	public Graph(String name) {
+		_name = name;
+	}	
+	
+	public Graph() { }
 
 	public GraphNode add_graph_node(String name, NodeType type) {
 		GraphNode graph_node = new GraphNode(name, type);
@@ -33,22 +42,8 @@ public class Graph {
 		return _graph_nodes.get(index);
 	}
 
-	/**
-	 * Copy one graph into another
-	 * 
-	 * @param other
-	 *            The other graph
-	 * @return The map between the nodes in the old graph and in the new
-	 */
-	public Map<GraphNode, GraphNode> merge(Graph other) {
-		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
-		Graph copy = other.getCopy(map);
-		_graph_nodes.addAll(copy._graph_nodes);
-		return map;
-	}
-
-	private Graph getCopy(Map<GraphNode, GraphNode> map) {
-		Graph graph = new Graph();
+	public Graph getCopy(Map<GraphNode, GraphNode> map) {
+		Graph graph = new Graph(_name);
 
 		// duplicate the nodes
 		for (GraphNode node : _graph_nodes) {
@@ -67,5 +62,26 @@ public class Graph {
 		}
 
 		return graph;
+	}
+	
+	/**
+	 * Adds one graph into another
+	 * @param graph
+	 * @param name
+	 * @return The map between the nodes in the old graph and in the new
+	 */
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph){
+		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
+		Graph graphCopy = graph.getCopy(map);
+		_subgraphs.add(graphCopy);
+		return map;
+	}
+	
+	public String getName() {
+		return _name;
+	}
+	
+	public void setName(String name) {
+		_name = name;
 	}
 }

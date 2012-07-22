@@ -26,14 +26,13 @@ public class Function extends AstLoader {
 
 	private GraphNode _return_node;
 
-	private String _name;
+	private String _externalName = "";
 	public List<VarDecl> _parameters;
 
 	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		super(new GraphBuilder(), parent, cppMaps, astInterpreter);
 
-		_name = "";
 		_parameters = new ArrayList<VarDecl>();
 		_return_node = null;
 	}
@@ -56,7 +55,7 @@ public class Function extends AstLoader {
 		String function_name = name_binding.toString();
 
 		IBinding member_func_binding = name_binding.resolveBinding();
-		_name = function_name;
+		setName(calcName(function_name));
 
 		loadFuncParameters(parameters);
 
@@ -76,6 +75,10 @@ public class Function extends AstLoader {
 		return member_func_binding;
 	}
 
+	protected String calcName(String internalName) {
+		return internalName;
+	}
+	
 	/**
 	 * Reads the parameters from a function declaration
 	 * 
@@ -97,7 +100,7 @@ public class Function extends AstLoader {
 	}
 
 	public GraphNode addFuncRef(List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder.addGraph(_graph_builder);
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph);
 		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap);
 	}
 
@@ -118,8 +121,13 @@ public class Function extends AstLoader {
 		return internalToMainGraphMap.get(_return_node);
 	}
 
+	private void setName(String name) {
+		_externalName = name;
+		_graph_builder._gvpl_graph.setName(name);
+	}
+	
 	public String getName() {
-		return _name;
+		return _externalName;
 	}
 
 	public void setReturnNode(GraphNode returnNode) {

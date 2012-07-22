@@ -134,17 +134,21 @@ public class GraphBuilder {
 
 	public class StructDecl {
 		public TypeId _id;
-		//private String _name;
+		private String _name;
 		public Map<MemberId, StructMember> _member_var_graph_nodes;
 
 		public StructDecl(TypeId id, String name) {
 			_id = id;
-			//_name = name;
+			_name = name;
 			_member_var_graph_nodes = new HashMap<MemberId, StructMember>();
 		}
 		
 		public void addMember(StructMember structMember) {
 			_member_var_graph_nodes.put(structMember._id, structMember);
+		}
+		
+		public String getName() {
+			return _name;
 		}
 	}
 
@@ -236,15 +240,6 @@ public class GraphBuilder {
 
 	public GraphNode add_var_ref(VarDecl var_decl) {
 		return var_decl.getCurrentNode();
-	}
-	
-	/**
-	 * Add one graph into another
-	 * @param graphBuilder
-	 * @return The map between the nodes in the old graph and in the new
-	 */
-	public Map<GraphNode, GraphNode> addGraph(GraphBuilder graphBuilder){
-		return _gvpl_graph.merge(graphBuilder._gvpl_graph);
 	}
 
 }

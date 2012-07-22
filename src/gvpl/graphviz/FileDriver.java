@@ -9,6 +9,8 @@ import gvpl.graph.Graph;
 public class FileDriver extends Visualizer {
 
 	PrintWriter out;
+
+	static int subGraphCounter = 1;
 	
 	public FileDriver(Graph graph, String filename){
 		
@@ -56,6 +58,15 @@ public class FileDriver extends Visualizer {
 	void insertNode(int node_id, String node_name, String properties){
 		out.println("\tnode_" + node_id + " [ label = \"" + node_name + "\"" + properties + " ]");
 	}
+	
+    void insertSubGraphStart(String name) {
+    	out.println("subgraph cluster_" + subGraphCounter++ + " {");
+    	out.println("label = \"" + name + "\";");
+    }
+    
+	void insertSubGraphEnd() {
+    	out.println("}");
+    }
 	
 	void insertDependency(int node_id, int dep_node_id){
 		out.println("\tnode_" + node_id + " -> node_" + dep_node_id);

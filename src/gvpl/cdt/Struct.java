@@ -89,4 +89,8 @@ public class Struct extends AstLoader {
 	public List<StructMember> getMembers() {
 		return new ArrayList<StructMember>(_member_id_map.values());
 	}
+
+	public String getName() {
+		return _structDecl.getName();
+	}
 }

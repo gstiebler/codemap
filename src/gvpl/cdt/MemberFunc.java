@@ -36,6 +36,10 @@ public class MemberFunc extends Function {
 			_var_from_members.put(member.getMemberId(), member_var);
 		}
 	}
+	
+	protected String calcName(String internalName) {
+		return _parentLoadStruct.getName() + "::" + internalName;
+	}
 
 	@Override
 	public IBinding load(IASTFunctionDefinition fd) {
@@ -76,7 +80,7 @@ public class MemberFunc extends Function {
 	 */
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
 			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
-		Map<GraphNode, GraphNode> map = graphBuilder.addGraph(_graph_builder);
+		Map<GraphNode, GraphNode> map = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph);
 
 		for (Map.Entry<MemberId, DirectVarDecl> entry : _var_from_members.entrySet()) {
 			DirectVarDecl var_decl = entry.getValue();

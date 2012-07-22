@@ -51,7 +51,7 @@ public class AstInterpreter extends AstLoader {
 				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
 		}
 		
-		_graph_builder.addGraph(mainFunction.getGraphBuilder());
+		_graph_builder._gvpl_graph = mainFunction.getGraphBuilder()._gvpl_graph;
 	}
 
 	private void addStruct(Struct structLoader) {
