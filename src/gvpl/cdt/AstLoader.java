@@ -92,7 +92,7 @@ public class AstLoader {
 	
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
 		DirectVarDecl var_decl = add_var_decl(type, functionName);
-		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue);
+		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
 	}
 	
 	private DirectVarDecl add_var_decl(TypeId type, String functionName) {
@@ -114,5 +114,10 @@ public class AstLoader {
 	
 	public GraphBuilder getGraphBuilder() {
 		return _graph_builder;
+	}
+	
+	public void varWrite(VarDecl var) {
+		if (_parent != null) 
+			_parent.varWrite(var);
 	}
 }

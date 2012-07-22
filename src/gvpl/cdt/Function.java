@@ -59,9 +59,7 @@ public class Function extends AstLoader {
 		loadFuncParameters(parameters);
 
 		for (VarDecl parameter : _parameters) {
-			GraphNode var_node = _graph_builder._gvpl_graph.add_graph_node(parameter.getName(),
-					NodeType.E_DECLARED_PARAMETER);
-			parameter.updateNode(var_node);
+			parameter.initializeGraphNode(NodeType.E_DECLARED_PARAMETER);
 		}
 
 		IASTStatement body = fd.getBody();

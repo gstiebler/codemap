@@ -22,18 +22,23 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 public class MemberFunc extends Function {
 
 	private Struct _parentLoadStruct;
-	private Map<MemberId, DirectVarDecl> _var_from_members = new HashMap<MemberId, DirectVarDecl>();
+	private Map<MemberId, DirectVarDecl> _var_from_members_map = new HashMap<MemberId, DirectVarDecl>();
+	private Map<VarDecl, MemberId> _memberFromVar = new HashMap<VarDecl, MemberId>();
+	private Map<VarDecl, MemberId> _writtenMembers = new HashMap<VarDecl, MemberId>();
+	private Map<VarDecl, MemberId> _readMembers = new HashMap<VarDecl, MemberId>();
 
 	public MemberFunc(Struct parent) {
 		super(new GraphBuilder(), parent, parent._cppMaps, parent._astInterpreter);
 		_parentLoadStruct = parent;
 
 		List<StructMember> members = _parentLoadStruct.getMembers();
+		//declare a variable for each member of the struct
 		for (StructMember member : members) {
 			DirectVarDecl member_var = _graph_builder.new DirectVarDecl(member.getName(),
 					member.getMemberType());
-			member_var.initializeGraphNode();
-			_var_from_members.put(member.getMemberId(), member_var);
+			member_var.initializeGraphNode(NodeType.E_VARIABLE);
+			_var_from_members_map.put(member.getMemberId(), member_var);
+			_memberFromVar.put(member_var, member.getMemberId());
 		}
 	}
 	
@@ -64,11 +69,19 @@ public class MemberFunc extends Function {
 		StructMember structMember = _parentLoadStruct.getMember(binding);
 		MemberId lhs_member_id = structMember.getMemberId();
 
-		DirectVarDecl direct_var_decl = _var_from_members.get(lhs_member_id);
-
-		direct_var_decl.setRead();
+		DirectVarDecl direct_var_decl = _var_from_members_map.get(lhs_member_id);
+		_readMembers.put(direct_var_decl, lhs_member_id);
 
 		return direct_var_decl;
+	}
+	
+	@Override
+	public void varWrite(VarDecl var) {
+		if (_parent != null) 
+			_parent.varWrite(var);
+		
+		if(_memberFromVar.containsKey(var))
+			_writtenMembers.put(var, _memberFromVar.get(var));
 	}
 
 	/**
@@ -82,26 +95,20 @@ public class MemberFunc extends Function {
 			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph);
 
-		for (Map.Entry<MemberId, DirectVarDecl> entry : _var_from_members.entrySet()) {
-			DirectVarDecl var_decl = entry.getValue();
+		for (Map.Entry<VarDecl, MemberId> entry : _readMembers.entrySet()) {
+			VarDecl varDecl = entry.getKey();
+			GraphNode firstNode = varDecl.getFirstNode();
+			GraphNode firstNodeInNewGraph = map.get(firstNode);
+			MemberStructInstance memberInstance = structVarDecl.findMember(entry.getValue());
+			memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph);
+		}
 
-			// Binds the variables from the instance of the structure to the
-			// internal variables
-			if (var_decl.getWritten()) {
-				GraphNode firstNode = var_decl.getFirstNode();
-				GraphNode firstNodeInNewGraph = map.get(firstNode);
-				MemberStructInstance memberInstance = structVarDecl.findMember(entry.getKey());
-				memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph);
-			}
-
-			// Binds the internal variables to the variables from the instance
-			// of the structure
-			if (var_decl.getRead()) {
-				GraphNode currNode = var_decl.getCurrentNode();
-				GraphNode currNodeInNewGraph = map.get(currNode);
-				MemberStructInstance memberInstance = structVarDecl.findMember(entry.getKey());
-				graphBuilder.add_assign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph);
-			}
+		for (Map.Entry<VarDecl, MemberId> entry : _writtenMembers.entrySet()) {
+			VarDecl varDecl = entry.getKey();
+			GraphNode currNode = varDecl.getCurrentNode();
+			GraphNode currNodeInNewGraph = map.get(currNode);
+			MemberStructInstance memberInstance = structVarDecl.findMember(entry.getValue());
+			graphBuilder.add_assign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph, null);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map);

@@ -1,5 +1,6 @@
 package gvpl.graph;
 
+import gvpl.cdt.AstLoader;
 import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
@@ -71,16 +72,12 @@ public class GraphBuilder {
 		protected String _name;
 
 		public DirectVarDecl(String name, TypeId type) {
-			super(type);
+			super(type, _gvpl_graph);
 			_name = name;
 		}
 		
 		public String getName() {
 			return _name;
-		}
-		
-		public void initializeGraphNode() {
-			updateNode(_gvpl_graph.add_graph_node(_name, NodeType.E_VARIABLE));
 		}
 	}
 	
@@ -95,7 +92,7 @@ public class GraphBuilder {
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
 				StructMember struct_member = entry.getValue();
 				
-				MemberStructInstance member_instance = new MemberStructInstance(struct_member, this);
+				MemberStructInstance member_instance = new MemberStructInstance(struct_member, this, _gvpl_graph);
 				_member_instances.put(entry.getKey(), member_instance);
 			}
 		}
@@ -186,8 +183,8 @@ public class GraphBuilder {
 		return _gvpl_graph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
 	}
 
-	public void add_assign_op(VarDecl var_decl_lhs, GraphNode rhs_node) {
-		add_assign(var_decl_lhs, NodeType.E_VARIABLE, rhs_node);
+	public void add_assign_op(VarDecl var_decl_lhs, GraphNode rhs_node, AstLoader astLoader) {
+		add_assign(var_decl_lhs, NodeType.E_VARIABLE, rhs_node, astLoader);
 	}
 
 	/**
@@ -195,7 +192,10 @@ public class GraphBuilder {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node) {
+	public GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node, AstLoader astLoader) {
+		if(astLoader != null)
+			astLoader.varWrite(lhs_var_decl);
+		
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl.getName(), lhs_type);
 		lhs_var_decl.updateNode(lhs_node);
 
@@ -223,14 +223,14 @@ public class GraphBuilder {
 	}
 
 	public GraphNode add_assign_bin_op(eAssignBinOp op, VarDecl lhs_var_decl, GraphNode lhs_node,
-			GraphNode rhs_node) {
+			GraphNode rhs_node, AstLoader astLoader) {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
 		lhs_node.addDependentNode(bin_op_node);
 		rhs_node.addDependentNode(bin_op_node);
 
-		return add_assign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node);
+		return add_assign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
 	}
 
 	public GraphNode add_var_ref(VarDecl var_decl) {

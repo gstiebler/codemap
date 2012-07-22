@@ -97,7 +97,7 @@ public class InstructionLine {
 			return;
 
 		GraphNode val = load_value(init_exp.getExpression());
-		_graphBuilder.add_assign_op(var_decl, val);
+		_graphBuilder.add_assign_op(var_decl, val, _parentBasicBlock);
 	}
 
 	/*
@@ -158,13 +158,13 @@ public class InstructionLine {
 		GraphNode rvalue = load_value(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			_graphBuilder.add_assign_op(var_decl, rvalue);
+			_graphBuilder.add_assign_op(var_decl, rvalue, _parentBasicBlock);
 			return null;
 		}
 
 		GraphNode lvalue = load_value(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.add_assign_bin_op(op, var_decl, lvalue, rvalue);
+		return _graphBuilder.add_assign_bin_op(op, var_decl, lvalue, rvalue, _parentBasicBlock);
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
