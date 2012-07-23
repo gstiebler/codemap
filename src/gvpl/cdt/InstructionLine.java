@@ -233,9 +233,10 @@ public class InstructionLine {
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null)
 		{
-			//TODO the conditionNode should be inverted
-			//BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, conditionNode);
-			//basicBlockLoader.load((IASTCompoundStatement) elseClause);
+			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode);
+
+			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, notCondition);
+			basicBlockLoader.load((IASTCompoundStatement) elseClause);
 		}
 	}
 }

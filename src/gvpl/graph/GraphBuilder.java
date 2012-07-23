@@ -212,6 +212,13 @@ public class GraphBuilder {
 		return un_op_node;
 	}
 
+	public GraphNode addNotOp(GraphNode val_node) {
+		GraphNode notOpNode = _gvpl_graph.add_graph_node("!", NodeType.E_OPERATION);
+		val_node.addDependentNode(notOpNode);
+
+		return notOpNode;
+	} 
+
 	public GraphNode add_bin_op(eBinOp op, GraphNode val1_node, GraphNode val2_node) {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
