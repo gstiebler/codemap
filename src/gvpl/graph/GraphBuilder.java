@@ -236,5 +236,15 @@ public class GraphBuilder {
 	public GraphNode add_var_ref(VarDecl var_decl) {
 		return var_decl.getCurrentNode();
 	}
+	
+	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition) {
+		GraphNode ifOpNode = _gvpl_graph.add_graph_node("If", NodeType.E_OPERATION);
+
+		ifTrue.addDependentNode(ifOpNode);
+		ifFalse.addDependentNode(ifOpNode);
+		condition.addDependentNode(ifOpNode);
+		
+		add_assign(var, NodeType.E_VARIABLE, ifOpNode, null);
+	}
 
 }
