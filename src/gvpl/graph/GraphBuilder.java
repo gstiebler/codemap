@@ -23,7 +23,9 @@ public class GraphBuilder {
 		E_MULT_OP,
 		E_DIV_OP,
 		E_LESS_THAN_OP,
-		E_GREATER_THAN_OP
+		E_GREATER_THAN_OP,
+		E_LESS_EQUAL_OP,
+		E_GREATER_EQUAL_OP
 	}
 
 	public enum eAssignBinOp {
@@ -168,8 +170,10 @@ public class GraphBuilder {
 		_bin_op_strings.put(eBinOp.E_SUB_OP, "-");
 		_bin_op_strings.put(eBinOp.E_MULT_OP, "*");
 		_bin_op_strings.put(eBinOp.E_DIV_OP, "/");
-		_bin_op_strings.put(eBinOp.E_LESS_THAN_OP, "<=");
-		_bin_op_strings.put(eBinOp.E_GREATER_THAN_OP, ">=");
+		_bin_op_strings.put(eBinOp.E_LESS_THAN_OP, "<");
+		_bin_op_strings.put(eBinOp.E_GREATER_THAN_OP, ">");
+		_bin_op_strings.put(eBinOp.E_LESS_EQUAL_OP, "<=");
+		_bin_op_strings.put(eBinOp.E_GREATER_EQUAL_OP, ">=");
 
 		_un_op_strings.put(eUnOp.E_PLUS_PLUS_OP, "++");
 

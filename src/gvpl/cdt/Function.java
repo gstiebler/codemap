@@ -66,7 +66,7 @@ public class Function extends AstLoader {
 
 		if (body instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
-			basicBlockLoader.load((IASTCompoundStatement) body);
+			basicBlockLoader.load(body);
 		} else
 			ErrorOutputter.fatalError("Work here.");
 

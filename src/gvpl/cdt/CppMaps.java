@@ -20,6 +20,8 @@ public class CppMaps {
 		_bin_op_types.put(IASTBinaryExpression.op_divide, eBinOp.E_DIV_OP);
 		_bin_op_types.put(IASTBinaryExpression.op_lessThan, eBinOp.E_LESS_THAN_OP);
 		_bin_op_types.put(IASTBinaryExpression.op_greaterThan, eBinOp.E_GREATER_THAN_OP);
+		_bin_op_types.put(IASTBinaryExpression.op_lessEqual, eBinOp.E_LESS_EQUAL_OP);
+		_bin_op_types.put(IASTBinaryExpression.op_greaterEqual, eBinOp.E_GREATER_EQUAL_OP);
 
 		_assign_bin_op_types.put(IASTBinaryExpression.op_assign, eAssignBinOp.E_ASSIGN_OP);
 		_assign_bin_op_types.put(IASTBinaryExpression.op_plusAssign, eAssignBinOp.E_PLUS_ASSIGN_OP);

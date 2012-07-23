@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class BasicBlock extends AstLoader {
@@ -19,8 +20,15 @@ public class BasicBlock extends AstLoader {
 		_conditionNode = conditionNode;
 	}
 
-	public void load(IASTCompoundStatement cs) {
-		IASTStatement[] statements = cs.getStatements();
+	public void load(IASTStatement baseStatement) {
+		IASTStatement[] statements = null;
+		if(baseStatement instanceof IASTCompoundStatement)
+			statements = ((IASTCompoundStatement)baseStatement).getStatements();
+		else if (baseStatement instanceof IASTExpressionStatement)
+		{
+			statements = new IASTStatement [1];
+			statements[0] = baseStatement;
+		}
 
 		for (IASTStatement statement : statements) {
 			InstructionLine instructionLine = new InstructionLine(_graph_builder, this, _cppMaps, _astInterpreter);

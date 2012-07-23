@@ -57,7 +57,7 @@ int main() {
 	}
 	
 	int y = 3;
-	//if(m >= 8)
+	if(m >= 8)
 		x += y;
 	int d = 9;
 	d /= x * 5 + y * m;

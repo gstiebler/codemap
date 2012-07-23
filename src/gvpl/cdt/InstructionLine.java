@@ -85,7 +85,7 @@ public class InstructionLine {
 			loadIfStatement((IASTIfStatement) statement);
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, null);
-			basicBlockLoader.load((IASTCompoundStatement) statement);
+			basicBlockLoader.load(statement);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
@@ -227,7 +227,7 @@ public class InstructionLine {
 		IASTStatement thenClause = ifStatement.getThenClause();
 		{
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, conditionNode);
-			basicBlockLoader.load((IASTCompoundStatement) thenClause);
+			basicBlockLoader.load(thenClause);
 		}
 		
 		IASTStatement elseClause = ifStatement.getElseClause();
@@ -236,7 +236,7 @@ public class InstructionLine {
 			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode);
 
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, notCondition);
-			basicBlockLoader.load((IASTCompoundStatement) elseClause);
+			basicBlockLoader.load(elseClause);
 		}
 	}
 }
