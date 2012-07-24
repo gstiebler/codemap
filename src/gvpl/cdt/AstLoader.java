@@ -92,25 +92,25 @@ public class AstLoader {
 
 	public DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
-		DirectVarDecl var_decl = add_var_decl(type, name.toString());
+		DirectVarDecl var_decl = addVarDecl(name.toString(), type);
 		_direct_var_graph_nodes.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
 	}
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
-		DirectVarDecl var_decl = add_var_decl(type, functionName);
+		DirectVarDecl var_decl = addVarDecl(functionName, type);
 		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
 	}
 
-	private DirectVarDecl add_var_decl(TypeId type, String functionName) {
+	protected DirectVarDecl addVarDecl(String name, TypeId type) {
 		DirectVarDecl var_decl = null;
 
 		if (type == null) {
-			var_decl = _graph_builder.new DirectVarDecl(functionName, type);
+			var_decl = _graph_builder.new DirectVarDecl(name, type, this);
 		} else {
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			var_decl = _graph_builder.new StructVarDecl(functionName, type, structDecl);
+			var_decl = _graph_builder.new StructVarDecl(name, type, structDecl, this);
 		}
 		return var_decl;
 	}
@@ -126,5 +126,10 @@ public class AstLoader {
 	public void varWrite(VarDecl var) {
 		if (_parent != null)
 			_parent.varWrite(var);
+	}
+
+	public void varRead(VarDecl var) {
+		if (_parent != null)
+			_parent.varRead(var);
 	}
 }

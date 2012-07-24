@@ -73,8 +73,8 @@ public class GraphBuilder {
 	public class DirectVarDecl extends VarDecl {
 		protected String _name;
 
-		public DirectVarDecl(String name, TypeId type) {
-			super(type, _gvpl_graph);
+		public DirectVarDecl(String name, TypeId type, AstLoader parentAstLoader) {
+			super(type, _gvpl_graph, parentAstLoader);
 			_name = name;
 		}
 		
@@ -87,14 +87,14 @@ public class GraphBuilder {
 		
 		Map<MemberId, MemberStructInstance> _member_instances = new HashMap<MemberId, MemberStructInstance>();
 
-		public StructVarDecl(String name, TypeId type, StructDecl structDecl) {
-			super(name, type);
+		public StructVarDecl(String name, TypeId type, StructDecl structDecl, AstLoader parentAstLoader) {
+			super(name, type, parentAstLoader);
 			
 			//For each member of the struct, create a variable instance of the member
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
 				StructMember struct_member = entry.getValue();
 				
-				MemberStructInstance member_instance = new MemberStructInstance(struct_member, this, _gvpl_graph);
+				MemberStructInstance member_instance = new MemberStructInstance(struct_member, this, _gvpl_graph, _parentAstLoader);
 				_member_instances.put(entry.getKey(), member_instance);
 			}
 		}
@@ -200,7 +200,7 @@ public class GraphBuilder {
 		if(astLoader != null)
 			astLoader.varWrite(lhs_var_decl);
 		
-		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl.getName(), lhs_type);
+		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl, lhs_type);
 		lhs_var_decl.updateNode(lhs_node);
 
 		rhs_node.addDependentNode(lhs_node);

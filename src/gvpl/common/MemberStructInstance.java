@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstLoader;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphBuilder.StructMember;
 
@@ -8,8 +9,8 @@ public class MemberStructInstance extends VarDecl {
 	private StructMember _struct_member;
 	private VarDecl _parent;
 	
-	public MemberStructInstance(StructMember struct_member, VarDecl parent, Graph graph){
-		super(struct_member.getMemberType(), graph);
+	public MemberStructInstance(StructMember struct_member, VarDecl parent, Graph graph, AstLoader parentAstLoader){
+		super(struct_member.getMemberType(), graph, parentAstLoader);
 		_struct_member = struct_member;
 		_parent = parent;
 	}

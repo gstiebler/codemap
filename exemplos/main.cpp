@@ -16,7 +16,7 @@ struct sPri
 	float a;
 	float h;
 	
-	//sSeg seg;
+	sSeg seg;
 	
 	float inc_a5(float w)
 	{
@@ -25,7 +25,7 @@ struct sPri
 		a -= inc;
 		h = h + w + 3.0;
 		a *= h;
-		//seg.m1 = 16;
+		seg.m1 = 16;
 		return 7 * h;
 	}
 };

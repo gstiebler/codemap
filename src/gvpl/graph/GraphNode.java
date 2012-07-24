@@ -1,5 +1,6 @@
 package gvpl.graph;
 
+import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -10,12 +11,20 @@ public class GraphNode {
 	private int _id;
 	public String _name;
 	public NodeType _type;
+	private VarDecl _parentVar = null;
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
 
 	public GraphNode(String name, NodeType type) {
 		_id = _counter++;
 		_name = name;
+		_type = type;
+	}	
+	
+	public GraphNode(VarDecl parentVar, NodeType type) { 
+		_id = _counter++;
+		_parentVar = parentVar;
+		_name = parentVar.getName();
 		_type = type;
 	}
 	
@@ -31,6 +40,15 @@ public class GraphNode {
 	
 	public void addDependentNode(GraphNode dependentNode) {
 		_dependent_nodes.add(dependentNode);
+		if(_parentVar != null)
+			_parentVar.read();
+		
+		dependentNode.write();
+	}
+	
+	private void write() {
+		if(_parentVar != null)
+			_parentVar.write();
 	}
 	
 	public Iterable<GraphNode> getDependentNodes() {

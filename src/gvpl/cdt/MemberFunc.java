@@ -34,8 +34,7 @@ public class MemberFunc extends Function {
 		List<StructMember> members = _parentLoadStruct.getMembers();
 		//declare a variable for each member of the struct
 		for (StructMember member : members) {
-			DirectVarDecl member_var = _graph_builder.new DirectVarDecl(member.getName(),
-					member.getMemberType());
+			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType());
 			member_var.initializeGraphNode(NodeType.E_VARIABLE);
 			_var_from_members_map.put(member.getMemberId(), member_var);
 			_memberFromVar.put(member_var, member.getMemberId());
@@ -70,7 +69,6 @@ public class MemberFunc extends Function {
 		MemberId lhs_member_id = structMember.getMemberId();
 
 		DirectVarDecl direct_var_decl = _var_from_members_map.get(lhs_member_id);
-		_readMembers.put(direct_var_decl, lhs_member_id);
 
 		return direct_var_decl;
 	}
@@ -82,6 +80,15 @@ public class MemberFunc extends Function {
 		
 		if(_memberFromVar.containsKey(var))
 			_writtenMembers.put(var, _memberFromVar.get(var));
+	}
+	
+	@Override
+	public void varRead(VarDecl var) {
+		if (_parent != null) 
+			_parent.varRead(var);
+		
+		if(_memberFromVar.containsKey(var))
+			_readMembers.put(var, _memberFromVar.get(var));
 	}
 
 	/**

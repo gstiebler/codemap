@@ -1,5 +1,7 @@
 package gvpl.graph;
 
+import gvpl.common.VarDecl;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -30,6 +32,12 @@ public class Graph {
 
 	public GraphNode add_graph_node(String name, NodeType type) {
 		GraphNode graph_node = new GraphNode(name, type);
+		_graph_nodes.add(graph_node);
+		return graph_node;
+	}
+
+	public GraphNode add_graph_node(VarDecl parentVar, NodeType type) {
+		GraphNode graph_node = new GraphNode(parentVar, type);
 		_graph_nodes.add(graph_node);
 		return graph_node;
 	}
