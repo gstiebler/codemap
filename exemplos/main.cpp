@@ -6,10 +6,17 @@ int soma(int a, int b)
 	return resultado;
 }
 
+struct sSeg
+{
+	int m1, n1;
+};
+
 struct sPri
 {
 	float a;
 	float h;
+	
+	//sSeg seg;
 	
 	float inc_a5(float w)
 	{
@@ -18,6 +25,7 @@ struct sPri
 		a -= inc;
 		h = h + w + 3.0;
 		a *= h;
+		//seg.m1 = 16;
 		return 7 * h;
 	}
 };
@@ -30,6 +38,8 @@ int main() {
 	
 	str2.a = 45.98;
 	str2.h = 9099.0;
+	
+	//str2.seg.m1 = 15;
 	
 	float p = str2.inc_a5(6.0);
 	
@@ -49,6 +59,7 @@ int main() {
 	{
 		z = 40;
 		x = 11;
+		str1.h = 400.0;
 	}
 	else
 	{

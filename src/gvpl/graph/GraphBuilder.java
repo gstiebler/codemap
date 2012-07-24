@@ -134,7 +134,7 @@ public class GraphBuilder {
 	public class StructDecl {
 		public TypeId _id;
 		private String _name;
-		public Map<MemberId, StructMember> _member_var_graph_nodes;
+		private Map<MemberId, StructMember> _member_var_graph_nodes;
 
 		public StructDecl(TypeId id, String name) {
 			_id = id;
