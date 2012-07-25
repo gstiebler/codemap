@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.MemberStructInstance;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -55,7 +56,14 @@ public class MemberFunc extends Function {
 	 * Returns the VarDecl of the reference to a variable
 	 * @return The VarDecl of the reference to a variable
 	 */
-	public VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
+	public VarDecl getVarDeclOfReference(IASTExpression expr) {
+		
+		IASTIdExpression id_expr = null;
+		if(expr instanceof IASTIdExpression)
+			id_expr = (IASTIdExpression) expr;
+		else
+			ErrorOutputter.fatalError("problem here");
+		
 		// Check if the variable is declared inside the own block
 		VarDecl var_decl = getVarDeclOfLocalReference(id_expr);
 		if (var_decl != null)
@@ -106,7 +114,7 @@ public class MemberFunc extends Function {
 			VarDecl varDecl = entry.getKey();
 			GraphNode firstNode = varDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			MemberStructInstance memberInstance = structVarDecl.findMember(entry.getValue());
+			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
 			memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph);
 		}
 
@@ -114,7 +122,7 @@ public class MemberFunc extends Function {
 			VarDecl varDecl = entry.getKey();
 			GraphNode currNode = varDecl.getCurrentNode();
 			GraphNode currNodeInNewGraph = map.get(currNode);
-			MemberStructInstance memberInstance = structVarDecl.findMember(entry.getValue());
+			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
 			graphBuilder.add_assign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph, null);
 		}
 

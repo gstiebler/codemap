@@ -39,7 +39,7 @@ int main() {
 	str2.a = 45.98;
 	str2.h = 9099.0;
 	
-	//str2.seg.m1 = 15;
+	str2.seg.m1 = 15;
 	
 	float p = str2.inc_a5(6.0);
 	

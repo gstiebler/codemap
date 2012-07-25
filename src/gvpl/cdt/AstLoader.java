@@ -1,6 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -20,7 +19,6 @@ import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 
 public class AstLoader {
 
@@ -44,13 +42,18 @@ public class AstLoader {
 		return _direct_var_graph_nodes.get(binding);
 	}
 
-	protected VarDecl getVarDeclOfReference(IASTIdExpression id_expr) {
-		VarDecl varDecl = getVarDeclOfLocalReference(id_expr);
+	protected VarDecl getVarDeclOfReference(IASTExpression expr) {
+		VarDecl varDecl = null;
+		if (expr instanceof IASTIdExpression)
+			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
+		else if (expr instanceof IASTFieldReference){
+			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
+		}
 
 		if (varDecl != null)
 			return varDecl;
 		else
-			return _parent.getVarDeclOfReference(id_expr);
+			return _parent.getVarDeclOfReference(expr);
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
@@ -61,33 +64,13 @@ public class AstLoader {
 	protected VarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref) {
 		IASTExpression owner = field_ref.getFieldOwner();
 
-		if (owner instanceof IASTIdExpression) {
-			IBinding field_binding = field_ref.getFieldName().resolveBinding();
+		IBinding field_binding = field_ref.getFieldName().resolveBinding();
 
-			StructVarDecl owner_var_decl = (StructVarDecl) getVarDeclOfReference((IASTIdExpression) owner);
+		StructVarDecl owner_var_decl = (StructVarDecl) getVarDeclOfReference(owner);
 
-			MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(),
-					field_binding);
+		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
 
-			return owner_var_decl.findMember(member_id);
-		} else if (owner instanceof IASTFieldReference) {
-			
-			
-			ErrorOutputter.fatalError("erro aqui");
-			return null;
-		}
-		return null;
-	}
-
-	protected VarDecl getVarDecl(IASTExpression expr) {
-		if (expr instanceof IASTIdExpression) {
-			return getVarDeclOfReference((IASTIdExpression) expr);
-		} else if (expr instanceof IASTFieldReference) {
-			return getVarDeclOfFieldRef((CPPASTFieldReference) expr);
-		} else
-			ErrorOutputter.fatalError("Work here " + expr.getClass());
-
-		return null;
+		return owner_var_decl.findMember(member_id);
 	}
 
 	public DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
@@ -103,7 +86,7 @@ public class AstLoader {
 		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
 	}
 
-	protected DirectVarDecl addVarDecl(String name, TypeId type) {
+	public DirectVarDecl addVarDecl(String name, TypeId type) {
 		DirectVarDecl var_decl = null;
 
 		if (type == null) {

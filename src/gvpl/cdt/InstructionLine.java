@@ -153,7 +153,7 @@ public class InstructionLine {
 	 */
 	GraphNode load_assign_bin_op(IASTBinaryExpression node) {
 		IASTExpression expr = node.getOperand1();
-		VarDecl var_decl = _parentBasicBlock.getVarDecl(expr);
+		VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(expr);
 
 		GraphNode rvalue = load_value(node.getOperand2());
 
@@ -212,7 +212,7 @@ public class InstructionLine {
 		MemberFunc member_func = _astInterpreter.getMemberFunc(func_member_binding);
 
 		IASTExpression expr = field_ref.getFieldOwner();
-		VarDecl varDecl = _parentBasicBlock.getVarDecl(expr);
+		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(expr);
 		if (!(varDecl instanceof StructVarDecl))
 			ErrorOutputter.fatalError("Work here.");
 

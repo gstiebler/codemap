@@ -1,7 +1,6 @@
 package gvpl.graph;
 
 import gvpl.cdt.AstLoader;
-import gvpl.common.MemberStructInstance;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 
@@ -85,7 +84,7 @@ public class GraphBuilder {
 	
 	public class StructVarDecl extends DirectVarDecl {
 		
-		Map<MemberId, MemberStructInstance> _member_instances = new HashMap<MemberId, MemberStructInstance>();
+		Map<MemberId, VarDecl> _member_instances = new HashMap<MemberId, VarDecl>();
 
 		public StructVarDecl(String name, TypeId type, StructDecl structDecl, AstLoader parentAstLoader) {
 			super(name, type, parentAstLoader);
@@ -94,12 +93,13 @@ public class GraphBuilder {
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
 				StructMember struct_member = entry.getValue();
 				
-				MemberStructInstance member_instance = new MemberStructInstance(struct_member, this, _gvpl_graph, _parentAstLoader);
+				String memberName = name + "." + struct_member.getName();
+				VarDecl member_instance = parentAstLoader.addVarDecl(memberName, struct_member.getMemberType());
 				_member_instances.put(entry.getKey(), member_instance);
 			}
 		}
 
-		public MemberStructInstance findMember(MemberId member_id) {
+		public VarDecl findMember(MemberId member_id) {
 			return _member_instances.get(member_id);
 		}
 		
