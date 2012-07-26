@@ -25,7 +25,7 @@ struct sPri
 		a -= inc;
 		h = h + w + 3.0;
 		a *= h;
-		seg.m1 = 16;
+		seg.m1 += 16;
 		return 7 * h;
 	}
 };
@@ -41,7 +41,7 @@ int main() {
 	
 	str2.seg.m1 = 15;
 	
-	float p = str2.inc_a5(6.0);
+	float p = str2.inc_a5(6.0) / str2.seg.m1;
 	
 	float g = str1.a - str1.h;
 	float k = str2.a * str2.h;

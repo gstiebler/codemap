@@ -37,9 +37,20 @@ public class MemberFunc extends Function {
 		for (StructMember member : members) {
 			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType());
 			member_var.initializeGraphNode(NodeType.E_VARIABLE);
-			_var_from_members_map.put(member.getMemberId(), member_var);
-			_memberFromVar.put(member_var, member.getMemberId());
+			addMember(member_var, member.getMemberId());
+			
+			if (member_var instanceof StructVarDecl){
+				StructVarDecl structVarDecl = (StructVarDecl) member_var;
+				for (Map.Entry<MemberId, VarDecl> entry : structVarDecl.getInternalVariables().entrySet()) {
+					addMember((DirectVarDecl) entry.getValue(), entry.getKey());
+				}
+			}
 		}
+	}
+	
+	private void addMember(DirectVarDecl var, MemberId id) {
+		_var_from_members_map.put(id, var);
+		_memberFromVar.put(var, id);
 	}
 	
 	protected String calcName(String internalName) {

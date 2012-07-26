@@ -84,7 +84,7 @@ public class GraphBuilder {
 	
 	public class StructVarDecl extends DirectVarDecl {
 		
-		Map<MemberId, VarDecl> _member_instances = new HashMap<MemberId, VarDecl>();
+		Map<MemberId, VarDecl> _memberInstances = new HashMap<MemberId, VarDecl>();
 
 		public StructVarDecl(String name, TypeId type, StructDecl structDecl, AstLoader parentAstLoader) {
 			super(name, type, parentAstLoader);
@@ -95,14 +95,38 @@ public class GraphBuilder {
 				
 				String memberName = name + "." + struct_member.getName();
 				VarDecl member_instance = parentAstLoader.addVarDecl(memberName, struct_member.getMemberType());
-				_member_instances.put(entry.getKey(), member_instance);
+				_memberInstances.put(entry.getKey(), member_instance);
 			}
 		}
 
 		public VarDecl findMember(MemberId member_id) {
-			return _member_instances.get(member_id);
+			VarDecl varDecl = _memberInstances.get(member_id);
+			if(varDecl != null)
+				return varDecl;
+			
+			for (VarDecl var : _memberInstances.values()){
+				if (var instanceof StructVarDecl){
+					varDecl = ((StructVarDecl)var).findMember(member_id);
+					if (varDecl != null)
+						return varDecl;
+				}
+					
+			}
+			
+			return null;
 		}
 		
+		@Override
+		public void initializeGraphNode(NodeType type) {
+			super.initializeGraphNode(type);
+
+			for (VarDecl var : _memberInstances.values())
+				var.initializeGraphNode(NodeType.E_VARIABLE);
+		}
+		
+		public Map<MemberId, VarDecl> getInternalVariables() {
+			return _memberInstances;
+		}
 	}
 	
 	public class StructMember{
