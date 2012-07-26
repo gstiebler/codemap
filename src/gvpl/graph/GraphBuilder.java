@@ -125,7 +125,15 @@ public class GraphBuilder {
 		}
 		
 		public Map<MemberId, VarDecl> getInternalVariables() {
-			return _memberInstances;
+			Map<MemberId, VarDecl> internalVariables = new HashMap<MemberId, VarDecl>();
+			
+			internalVariables.putAll(_memberInstances);
+			
+			for (VarDecl var : _memberInstances.values())
+				if (var instanceof StructVarDecl)
+					internalVariables.putAll(((StructVarDecl)var)._memberInstances);
+			
+			return internalVariables;
 		}
 	}
 	
@@ -221,9 +229,6 @@ public class GraphBuilder {
 	 * @return New node from assignment, the left from assignment
 	 */
 	public GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node, AstLoader astLoader) {
-		if(astLoader != null)
-			astLoader.varWrite(lhs_var_decl);
-		
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl, lhs_type);
 		lhs_var_decl.updateNode(lhs_node);
 
