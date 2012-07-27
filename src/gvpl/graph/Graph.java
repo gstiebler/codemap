@@ -51,13 +51,25 @@ public class Graph {
 	}
 
 	public Graph getCopy(Map<GraphNode, GraphNode> map) {
+		
+		class NodeChange {
+			GraphNode _originalNode;
+			GraphNode _newNode;
+			NodeChange(GraphNode originalNode, GraphNode newNode) {
+				_originalNode = originalNode;
+				_newNode = newNode;
+			}
+		}
+		
 		Graph graph = new Graph(_name);
+		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 		
 		// duplicate the nodes
 		for (GraphNode node : _graph_nodes) {
 			GraphNode newNode = new GraphNode(node);
 			map.put(node, newNode);
 			graph._graph_nodes.add(newNode);
+			nodesList.add(new NodeChange(node, newNode));
 		}
 
 		for (Graph subgraph : _subgraphs) {
@@ -66,9 +78,9 @@ public class Graph {
 		}
 
 		// add the dependent nodes
-		for (Map.Entry<GraphNode, GraphNode> entry : map.entrySet()) {
-			GraphNode oldNode = entry.getKey();
-			GraphNode newNode = entry.getValue();
+		for (NodeChange nodeChange : nodesList) {
+			GraphNode oldNode = nodeChange._originalNode;
+			GraphNode newNode = nodeChange._newNode;
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
 				newNode.addDependentNode(map.get(dependentNode));
 			}
@@ -84,6 +96,9 @@ public class Graph {
 	 * @return The map between the nodes in the old graph and in the new
 	 */
 	public Map<GraphNode, GraphNode> addSubGraph(Graph graph){
+
+		System.out.println(graph._name + " -> " + _name);
+		
 		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map);
 		_subgraphs.add(graphCopy);
