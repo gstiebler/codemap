@@ -98,7 +98,7 @@ public class Function extends AstLoader {
 	}
 
 	public GraphNode addFuncRef(List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph);
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph, this);
 		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap);
 	}
 
@@ -113,7 +113,7 @@ public class Function extends AstLoader {
 					.getFirstNode());
 			GraphNode received_parameter = parameter_values.get(i);
 
-			received_parameter.addDependentNode(declParamNodeInMainGraph);
+			received_parameter.addDependentNode(declParamNodeInMainGraph, this);
 		}
 
 		return internalToMainGraphMap.get(_return_node);

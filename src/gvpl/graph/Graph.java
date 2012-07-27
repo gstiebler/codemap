@@ -1,5 +1,6 @@
 package gvpl.graph;
 
+import gvpl.cdt.AstLoader;
 import gvpl.common.VarDecl;
 
 import java.util.ArrayList;
@@ -50,7 +51,7 @@ public class Graph {
 		return _graph_nodes.get(index);
 	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader) {
 		
 		class NodeChange {
 			GraphNode _originalNode;
@@ -73,7 +74,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map);
+			Graph copy = subgraph.getCopy(map, astLoader);
 			graph._subgraphs.add(copy);
 		}
 
@@ -82,7 +83,7 @@ public class Graph {
 			GraphNode oldNode = nodeChange._originalNode;
 			GraphNode newNode = nodeChange._newNode;
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
-				newNode.addDependentNode(map.get(dependentNode));
+				newNode.addDependentNode(map.get(dependentNode), astLoader);
 			}
 		}
 
@@ -95,12 +96,9 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph){
-
-		System.out.println(graph._name + " -> " + _name);
-		
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader){
 		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
-		Graph graphCopy = graph.getCopy(map);
+		Graph graphCopy = graph.getCopy(map, astLoader);
 		_subgraphs.add(graphCopy);
 		return map;
 	}

@@ -177,7 +177,7 @@ public class AstInterpreter {
 		eBinOp op = _bin_op_types.get(infex.getOperator()); 
 		GraphNode lvalue = load_value(node._AST.get(0));
 		GraphNode rvalue = load_value(node._AST.get(1));
-		return _graph_builder.add_bin_op(op, lvalue, rvalue);
+		return null;//_graph_builder.add_bin_op(op, lvalue, rvalue);
 	}
 
 	private void load_for_stmt(ASTItem node) {
@@ -186,7 +186,7 @@ public class AstInterpreter {
 
 	GraphNode load_direct_value(ASTItem node) {
 		String value = node._ast_item.toString();
-		return _graph_builder.add_direct_val(GraphBuilder.eValueType.E_INVALID_TYPE, value);
+		return null;// _graph_builder.add_direct_val(GraphBuilder.eValueType.E_INVALID_TYPE, value);
 	}
 
 }

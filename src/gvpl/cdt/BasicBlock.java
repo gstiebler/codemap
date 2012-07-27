@@ -38,7 +38,7 @@ public class BasicBlock extends AstLoader {
 		if(_conditionNode != null) {
 			for (Map.Entry<VarDecl, GraphNode> entry : _writtenVar.entrySet()) {
 				VarDecl var = entry.getKey();
-				_graph_builder.addIf(var, var.getCurrentNode(), entry.getValue(), _conditionNode);
+				_graph_builder.addIf(var, var.getCurrentNode(), entry.getValue(), _conditionNode, null);
 			}
 		}
 	}

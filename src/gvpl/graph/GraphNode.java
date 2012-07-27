@@ -1,5 +1,7 @@
 package gvpl.graph;
 
+import gvpl.cdt.AstLoader;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 
@@ -38,17 +40,22 @@ public class GraphNode {
 		return _id;
 	}
 	
-	public void addDependentNode(GraphNode dependentNode) {
-		_dependent_nodes.add(dependentNode);
-		if(_parentVar != null)
-			_parentVar.read();
+	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader) {
 		
-		dependentNode.write();
-	}
-	
-	private void write() {
+		if(_dependent_nodes.contains(dependentNode))
+			ErrorOutputter.fatalError("Already dependent!!");
+		
+		
+		_dependent_nodes.add(dependentNode);
+		
+		if(astLoader == null)
+			return;
+		
 		if(_parentVar != null)
-			_parentVar.write();
+			astLoader.varRead(_parentVar);
+		
+		if(dependentNode._parentVar != null)
+			astLoader.varWrite(dependentNode._parentVar);
 	}
 	
 	public Iterable<GraphNode> getDependentNodes() {

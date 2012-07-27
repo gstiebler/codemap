@@ -196,7 +196,7 @@ public class InstructionLine {
 		eBinOp op = _cppMaps.getBinOpType(bin_op.getOperator());
 		GraphNode lvalue = load_value(bin_op.getOperand1());
 		GraphNode rvalue = load_value(bin_op.getOperand2());
-		return _graphBuilder.add_bin_op(op, lvalue, rvalue);
+		return _graphBuilder.add_bin_op(op, lvalue, rvalue, _parentBasicBlock);
 	}
 
 	GraphNode load_direct_value(IASTLiteralExpression node) {
@@ -233,7 +233,7 @@ public class InstructionLine {
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null)
 		{
-			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode);
+			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode, _parentBasicBlock);
 
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, notCondition);
 			basicBlockLoader.load(elseClause);

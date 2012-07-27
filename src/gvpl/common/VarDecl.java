@@ -10,14 +10,12 @@ public abstract class VarDecl {
 	protected TypeId _type;
 	protected GraphNode _curr_graph_node = null;
 	protected GraphNode _first_graph_node = null;
-	protected AstLoader _parentAstLoader = null;
 	
 	private Graph _gvpl_graph;
 
-	public VarDecl(TypeId type, Graph graph, AstLoader parentAstLoader) {
+	public VarDecl(TypeId type, Graph graph) {
 		_type = type;
 		_gvpl_graph = graph;
-		_parentAstLoader = parentAstLoader;
 	}
 	
 	public TypeId getType() {
@@ -41,14 +39,6 @@ public abstract class VarDecl {
 	
 	public void initializeGraphNode(NodeType type) {
 		updateNode(_gvpl_graph.add_graph_node(this, type));
-	}
-	
-	public void read() {
-		_parentAstLoader.varRead(this);
-	}
-	
-	public void write() {
-		_parentAstLoader.varWrite(this);
 	}
 	
 	abstract public String getName();

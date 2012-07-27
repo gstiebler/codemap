@@ -72,8 +72,8 @@ public class GraphBuilder {
 	public class DirectVarDecl extends VarDecl {
 		protected String _name;
 
-		public DirectVarDecl(String name, TypeId type, AstLoader parentAstLoader) {
-			super(type, _gvpl_graph, parentAstLoader);
+		public DirectVarDecl(String name, TypeId type) {
+			super(type, _gvpl_graph);
 			_name = name;
 		}
 		
@@ -87,7 +87,7 @@ public class GraphBuilder {
 		Map<MemberId, VarDecl> _memberInstances = new HashMap<MemberId, VarDecl>();
 
 		public StructVarDecl(String name, TypeId type, StructDecl structDecl, AstLoader parentAstLoader) {
-			super(name, type, parentAstLoader);
+			super(name, type);
 			
 			//For each member of the struct, create a variable instance of the member
 			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
@@ -230,34 +230,34 @@ public class GraphBuilder {
 	 */
 	public GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node, AstLoader astLoader) {
 		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl, lhs_type);
+		rhs_node.addDependentNode(lhs_node, astLoader);
 		lhs_var_decl.updateNode(lhs_node);
 
-		rhs_node.addDependentNode(lhs_node);
 		return lhs_node;
 	}
 
-	GraphNode add_un_op(eUnOp op, GraphNode val_node) {
+	GraphNode add_un_op(eUnOp op, GraphNode val_node, AstLoader astLoader) {
 		GraphNode un_op_node = _gvpl_graph.add_graph_node(_un_op_strings.get(op),
 				NodeType.E_OPERATION);
 
-		val_node.addDependentNode(un_op_node);
+		val_node.addDependentNode(un_op_node, astLoader);
 
 		return un_op_node;
 	}
 
-	public GraphNode addNotOp(GraphNode val_node) {
+	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader) {
 		GraphNode notOpNode = _gvpl_graph.add_graph_node("!", NodeType.E_OPERATION);
-		val_node.addDependentNode(notOpNode);
+		val_node.addDependentNode(notOpNode, astLoader);
 
 		return notOpNode;
 	} 
 
-	public GraphNode add_bin_op(eBinOp op, GraphNode val1_node, GraphNode val2_node) {
+	public GraphNode add_bin_op(eBinOp op, GraphNode val1_node, GraphNode val2_node, AstLoader astLoader) {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
-		val1_node.addDependentNode(bin_op_node);
-		val2_node.addDependentNode(bin_op_node);
+		val1_node.addDependentNode(bin_op_node, astLoader);
+		val2_node.addDependentNode(bin_op_node, astLoader);
 
 		return bin_op_node;
 	}
@@ -267,8 +267,8 @@ public class GraphBuilder {
 		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
-		lhs_node.addDependentNode(bin_op_node);
-		rhs_node.addDependentNode(bin_op_node);
+		lhs_node.addDependentNode(bin_op_node, astLoader);
+		rhs_node.addDependentNode(bin_op_node, astLoader);
 
 		return add_assign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
 	}
@@ -277,12 +277,12 @@ public class GraphBuilder {
 		return var_decl.getCurrentNode();
 	}
 	
-	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition) {
+	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition, AstLoader astLoader) {
 		GraphNode ifOpNode = _gvpl_graph.add_graph_node("If", NodeType.E_OPERATION);
 
-		ifTrue.addDependentNode(ifOpNode);
-		ifFalse.addDependentNode(ifOpNode);
-		condition.addDependentNode(ifOpNode);
+		ifTrue.addDependentNode(ifOpNode, astLoader);
+		ifFalse.addDependentNode(ifOpNode, astLoader);
+		condition.addDependentNode(ifOpNode, astLoader);
 		
 		add_assign(var, NodeType.E_VARIABLE, ifOpNode, null);
 	}

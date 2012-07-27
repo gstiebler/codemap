@@ -119,14 +119,14 @@ public class MemberFunc extends Function {
 	 */
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
 			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
-		Map<GraphNode, GraphNode> map = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph);
+		Map<GraphNode, GraphNode> map = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph, this);
 
 		for (Map.Entry<VarDecl, MemberId> entry : _readMembers.entrySet()) {
 			VarDecl varDecl = entry.getKey();
 			GraphNode firstNode = varDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
 			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
-			memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph);
+			memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph, this);
 		}
 
 		for (Map.Entry<VarDecl, MemberId> entry : _writtenMembers.entrySet()) {

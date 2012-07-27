@@ -90,7 +90,7 @@ public class AstLoader {
 		DirectVarDecl var_decl = null;
 
 		if (type == null) {
-			var_decl = _graph_builder.new DirectVarDecl(name, type, this);
+			var_decl = _graph_builder.new DirectVarDecl(name, type);
 		} else {
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
 			var_decl = _graph_builder.new StructVarDecl(name, type, structDecl, this);
