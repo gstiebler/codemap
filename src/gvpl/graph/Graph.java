@@ -52,12 +52,17 @@ public class Graph {
 
 	public Graph getCopy(Map<GraphNode, GraphNode> map) {
 		Graph graph = new Graph(_name);
-
+		
 		// duplicate the nodes
 		for (GraphNode node : _graph_nodes) {
 			GraphNode newNode = new GraphNode(node);
 			map.put(node, newNode);
 			graph._graph_nodes.add(newNode);
+		}
+
+		for (Graph subgraph : _subgraphs) {
+			Graph copy = subgraph.getCopy(map);
+			graph._subgraphs.add(copy);
 		}
 
 		// add the dependent nodes

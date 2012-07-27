@@ -6,6 +6,13 @@ int soma(int a, int b)
 	return resultado;
 }
 
+int func1(int x, int y)
+{
+	int resultado = x + 2;
+	resultado -= soma(3, y - x);
+	return resultado;
+}
+
 struct sInterno
 {
 	float soEsse;
@@ -55,6 +62,8 @@ int main() {
 	
 	float g = str1.a - str1.h;
 	float k = str2.a * str2.h;
+	
+	int l = func1(20, 22);
 	
 	float m;
 	
