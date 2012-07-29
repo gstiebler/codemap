@@ -1,10 +1,9 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoader;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphNode;
 
 public abstract class VarDecl {
 	protected TypeId _type;

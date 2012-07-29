@@ -25,7 +25,7 @@ public class File {
 	}
 	
 	public static String examplesPath(){
-		return "K:\\Projetos\\GVPL\\gvpl_jdt\\exemplos\\";
+		return "K:\\Projetos\\GVPL\\exemplos\\";
 	}
 
 }

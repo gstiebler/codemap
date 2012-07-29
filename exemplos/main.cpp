@@ -95,8 +95,9 @@ int main() {
 	bool value = false;
 	int f = soma(d, e) + 4;
 	
+	int q = 3;
 	for (int i = 0; i < 4; i++)
 	{
-		int x;
+		q = 29;
 	}
 }

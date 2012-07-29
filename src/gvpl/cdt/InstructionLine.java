@@ -127,7 +127,7 @@ public class InstructionLine {
 	}
 
 	private void load_for_stmt(IASTForStatement node) {
-
+		ErrorOutputter.fatalError("not implemented");
 	}
 
 	private void loadReturnStatement(IASTReturnStatement statement) {
