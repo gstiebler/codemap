@@ -7,7 +7,9 @@ import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
@@ -17,7 +19,10 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 public class ForLoop extends AstLoader {
 
 	/** Maps the external variables (from external graph) to internal generated variables */
-	private Map<VarDecl, VarDecl> _externalVars = new HashMap<VarDecl, VarDecl>();
+	private Map<VarDecl, VarDecl> _externalVars = new HashMap<VarDecl, VarDecl>();	
+	
+	private Set<VarDecl> _writtenExtVars = new HashSet<VarDecl>();
+	private Set<VarDecl> _readExtVars = new HashSet<VarDecl>();
 
 	public ForLoop(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
@@ -40,8 +45,11 @@ public class ForLoop extends AstLoader {
 			GraphNode firstNode = map.get(intVarDecl.getFirstNode());
 			GraphNode currentNode = map.get(intVarDecl.getCurrentNode());
 			
-			extVarDecl.getCurrentNode().addDependentNode(firstNode, null);
-			graphBuilder.addAssign(extVarDecl, NodeType.E_VARIABLE, currentNode, null);
+			if(_readExtVars.contains(intVarDecl))
+				extVarDecl.getCurrentNode().addDependentNode(firstNode, null);
+			
+			if(_writtenExtVars.contains(intVarDecl))
+				graphBuilder.addAssign(extVarDecl, NodeType.E_VARIABLE, currentNode, null);
 		}
 	}
 
@@ -69,6 +77,22 @@ public class ForLoop extends AstLoader {
 		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
+	}
+	
+	@Override
+	public void varWrite(VarDecl var) {
+		if (_parent != null) 
+			_parent.varWrite(var);
+		
+		_writtenExtVars.add(var);
+	}
+	
+	@Override
+	public void varRead(VarDecl var) {
+		if (_parent != null) 
+			_parent.varRead(var);
+		
+		_readExtVars.add(var);
 	}
 
 }
