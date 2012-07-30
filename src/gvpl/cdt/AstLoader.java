@@ -22,7 +22,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstLoader {
 
-	protected GraphBuilder _graph_builder;
+	protected GraphBuilder _graphBuilder;
 	protected AstLoader _parent;
 	protected CppMaps _cppMaps;
 	protected AstInterpreter _astInterpreter;
@@ -31,7 +31,7 @@ public class AstLoader {
 
 	public AstLoader(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
-		_graph_builder = graph_builder;
+		_graphBuilder = graph_builder;
 		_parent = parent;
 		_cppMaps = cppMaps;
 		_astInterpreter = astInterpreter;
@@ -83,17 +83,17 @@ public class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
 		DirectVarDecl var_decl = addVarDecl(functionName, type);
-		return _graph_builder.add_assign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
+		return _graphBuilder.addAssign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
 	}
 
 	public DirectVarDecl addVarDecl(String name, TypeId type) {
 		DirectVarDecl var_decl = null;
 
 		if (type == null) {
-			var_decl = _graph_builder.new DirectVarDecl(name, type);
+			var_decl = _graphBuilder.new DirectVarDecl(name, type);
 		} else {
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			var_decl = _graph_builder.new StructVarDecl(name, type, structDecl, this);
+			var_decl = _graphBuilder.new StructVarDecl(name, type, structDecl, this);
 		}
 		return var_decl;
 	}
@@ -103,7 +103,7 @@ public class AstLoader {
 	}
 
 	public GraphBuilder getGraphBuilder() {
-		return _graph_builder;
+		return _graphBuilder;
 	}
 
 	public void varWrite(VarDecl var) {

@@ -37,7 +37,7 @@ public class AstInterpreter extends AstLoader {
 
 		for (IASTDeclaration declaration : declarations) {
 			if (declaration instanceof IASTFunctionDefinition) {
-				Function loadFunction = new Function(_graph_builder, this, _cppMaps, this);
+				Function loadFunction = new Function(_graphBuilder, this, _cppMaps, this);
 				IBinding binding = loadFunction.load((IASTFunctionDefinition) declaration);
 				_func_id_map.put(binding, loadFunction);
 				
@@ -51,7 +51,7 @@ public class AstInterpreter extends AstLoader {
 				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
 		}
 		
-		_graph_builder._gvpl_graph = mainFunction.getGraphBuilder()._gvpl_graph;
+		_graphBuilder._gvplGraph = mainFunction.getGraphBuilder()._gvplGraph;
 	}
 
 	private void addStruct(Struct structLoader) {
@@ -60,7 +60,7 @@ public class AstInterpreter extends AstLoader {
 	}
 
 	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl) {
-		Struct structLoader = new Struct(_graph_builder, this, _cppMaps, this, strDecl);
+		Struct structLoader = new Struct(_graphBuilder, this, _cppMaps, this, strDecl);
 
 		addStruct(structLoader);
 		addStructDecl(structLoader.getStructDecl());

@@ -22,7 +22,7 @@ public class ForLoop extends AstLoader {
 	public ForLoop(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		super(new GraphBuilder(), parent, cppMaps, astInterpreter);
-		_graph_builder._gvpl_graph.setName("ForLoop");
+		_graphBuilder._gvplGraph.setName("ForLoop");
 	}
 
 	public void load(IASTForStatement node, GraphBuilder graphBuilder) {
@@ -31,7 +31,7 @@ public class ForLoop extends AstLoader {
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
 		basicBlockLoader.load(body);
 
-		Map<GraphNode, GraphNode> map = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph, this);
+		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
 
 		for (Map.Entry<VarDecl, VarDecl> entry : _externalVars.entrySet()) {
 			VarDecl extVarDecl = entry.getKey();
@@ -41,7 +41,7 @@ public class ForLoop extends AstLoader {
 			GraphNode currentNode = map.get(intVarDecl.getCurrentNode());
 			
 			extVarDecl.getCurrentNode().addDependentNode(firstNode, null);
-			graphBuilder.add_assign(extVarDecl, NodeType.E_VARIABLE, currentNode, null);
+			graphBuilder.addAssign(extVarDecl, NodeType.E_VARIABLE, currentNode, null);
 		}
 	}
 
@@ -65,7 +65,7 @@ public class ForLoop extends AstLoader {
 			return intVarDecl;
 
 		String varName = id_expr.getName().toString();
-		intVarDecl = _graph_builder.new DirectVarDecl(varName , null);
+		intVarDecl = _graphBuilder.new DirectVarDecl(varName , null);
 		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;

@@ -16,7 +16,7 @@ public class BasicBlock extends AstLoader {
 	private Map<VarDecl, GraphNode> _writtenVar = new HashMap<VarDecl, GraphNode>();
 	
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {
-		super(parent._graph_builder, parent, parent._cppMaps, astInterpreter);
+		super(parent._graphBuilder, parent, parent._cppMaps, astInterpreter);
 		_conditionNode = conditionNode;
 	}
 
@@ -31,14 +31,14 @@ public class BasicBlock extends AstLoader {
 		}
 
 		for (IASTStatement statement : statements) {
-			InstructionLine instructionLine = new InstructionLine(_graph_builder, this, _cppMaps, _astInterpreter);
+			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
 			instructionLine.load(statement);
 		}
 		
 		if(_conditionNode != null) {
 			for (Map.Entry<VarDecl, GraphNode> entry : _writtenVar.entrySet()) {
 				VarDecl var = entry.getKey();
-				_graph_builder.addIf(var, var.getCurrentNode(), entry.getValue(), _conditionNode, null);
+				_graphBuilder.addIf(var, var.getCurrentNode(), entry.getValue(), _conditionNode, null);
 			}
 		}
 	}

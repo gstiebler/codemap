@@ -36,7 +36,7 @@ public class ParserExample {
 		GraphBuilder graph_builder = new GraphBuilder();
 		new AstInterpreter(graph_builder, translationUnit);
 
-		new gvpl.graphviz.FileDriver(graph_builder._gvpl_graph, File.examplesPath() + "first.dot");
+		new gvpl.graphviz.FileDriver(graph_builder._gvplGraph, File.examplesPath() + "first.dot");
 
 		Runtime rt = Runtime.getRuntime();
 		String command = File.examplesPath() + "\\execute.bat";

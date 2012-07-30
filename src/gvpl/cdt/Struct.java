@@ -24,14 +24,14 @@ public class Struct extends AstLoader {
 			AstInterpreter astInterpreter, IASTCompositeTypeSpecifier strDecl) {
 		super(graph_builder, parent, cppMaps, astInterpreter);
 
-		_typeId = _graph_builder.new TypeId();
+		_typeId = _graphBuilder.new TypeId();
 
 		IASTName name = strDecl.getName();
 		IASTDeclaration[] members = strDecl.getMembers();
 
 		_binding = name.resolveBinding();
 
-		_structDecl = _graph_builder.new StructDecl(_typeId, name.toString());
+		_structDecl = _graphBuilder.new StructDecl(_typeId, name.toString());
 		// load every field
 		for (IASTDeclaration member : members) {
 			if (!(member instanceof IASTSimpleDeclaration))
@@ -44,9 +44,9 @@ public class Struct extends AstLoader {
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
 				IASTName decl_name = declarator.getName();
-				MemberId member_id = _graph_builder.new MemberId();
+				MemberId member_id = _graphBuilder.new MemberId();
 
-				StructMember struct_member = _graph_builder.new StructMember(_structDecl,
+				StructMember struct_member = _graphBuilder.new StructMember(_structDecl,
 						member_id, decl_name.toString(), param_type);
 				_structDecl.addMember(struct_member);
 

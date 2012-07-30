@@ -73,7 +73,7 @@ public class GraphBuilder {
 		protected String _name;
 
 		public DirectVarDecl(String name, TypeId type) {
-			super(type, _gvpl_graph);
+			super(type, _gvplGraph);
 			_name = name;
 		}
 		
@@ -189,7 +189,7 @@ public class GraphBuilder {
 			eAssignBinOp.class);
 
 	/** Stores all the graph */
-	public Graph _gvpl_graph = new Graph();
+	public Graph _gvplGraph = new Graph();
 
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
@@ -216,11 +216,11 @@ public class GraphBuilder {
 	}
 
 	public GraphNode add_direct_val(eValueType type, String value) {
-		return _gvpl_graph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
+		return _gvplGraph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
 	}
 
-	public void add_assign_op(VarDecl var_decl_lhs, GraphNode rhs_node, AstLoader astLoader) {
-		add_assign(var_decl_lhs, NodeType.E_VARIABLE, rhs_node, astLoader);
+	public void addAssignOp(VarDecl var_decl_lhs, GraphNode rhs_node, AstLoader astLoader) {
+		addAssign(var_decl_lhs, NodeType.E_VARIABLE, rhs_node, astLoader);
 	}
 
 	/**
@@ -228,8 +228,8 @@ public class GraphBuilder {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode add_assign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node, AstLoader astLoader) {
-		GraphNode lhs_node = _gvpl_graph.add_graph_node(lhs_var_decl, lhs_type);
+	public GraphNode addAssign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node, AstLoader astLoader) {
+		GraphNode lhs_node = _gvplGraph.add_graph_node(lhs_var_decl, lhs_type);
 		rhs_node.addDependentNode(lhs_node, astLoader);
 		lhs_var_decl.updateNode(lhs_node);
 
@@ -237,7 +237,7 @@ public class GraphBuilder {
 	}
 
 	GraphNode add_un_op(eUnOp op, GraphNode val_node, AstLoader astLoader) {
-		GraphNode un_op_node = _gvpl_graph.add_graph_node(_un_op_strings.get(op),
+		GraphNode un_op_node = _gvplGraph.add_graph_node(_un_op_strings.get(op),
 				NodeType.E_OPERATION);
 
 		val_node.addDependentNode(un_op_node, astLoader);
@@ -246,14 +246,14 @@ public class GraphBuilder {
 	}
 
 	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader) {
-		GraphNode notOpNode = _gvpl_graph.add_graph_node("!", NodeType.E_OPERATION);
+		GraphNode notOpNode = _gvplGraph.add_graph_node("!", NodeType.E_OPERATION);
 		val_node.addDependentNode(notOpNode, astLoader);
 
 		return notOpNode;
 	} 
 
-	public GraphNode add_bin_op(eBinOp op, GraphNode val1_node, GraphNode val2_node, AstLoader astLoader) {
-		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_bin_op_strings.get(op),
+	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node, AstLoader astLoader) {
+		GraphNode bin_op_node = _gvplGraph.add_graph_node(_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
 		val1_node.addDependentNode(bin_op_node, astLoader);
@@ -264,13 +264,13 @@ public class GraphBuilder {
 
 	public GraphNode add_assign_bin_op(eAssignBinOp op, VarDecl lhs_var_decl, GraphNode lhs_node,
 			GraphNode rhs_node, AstLoader astLoader) {
-		GraphNode bin_op_node = _gvpl_graph.add_graph_node(_assign_bin_op_strings.get(op),
+		GraphNode bin_op_node = _gvplGraph.add_graph_node(_assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
 		lhs_node.addDependentNode(bin_op_node, astLoader);
 		rhs_node.addDependentNode(bin_op_node, astLoader);
 
-		return add_assign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
+		return addAssign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
 	}
 
 	public GraphNode add_var_ref(VarDecl var_decl) {
@@ -278,13 +278,13 @@ public class GraphBuilder {
 	}
 	
 	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition, AstLoader astLoader) {
-		GraphNode ifOpNode = _gvpl_graph.add_graph_node("If", NodeType.E_OPERATION);
+		GraphNode ifOpNode = _gvplGraph.add_graph_node("If", NodeType.E_OPERATION);
 
 		ifTrue.addDependentNode(ifOpNode, astLoader);
 		ifFalse.addDependentNode(ifOpNode, astLoader);
 		condition.addDependentNode(ifOpNode, astLoader);
 		
-		add_assign(var, NodeType.E_VARIABLE, ifOpNode, null);
+		addAssign(var, NodeType.E_VARIABLE, ifOpNode, null);
 	}
 
 }

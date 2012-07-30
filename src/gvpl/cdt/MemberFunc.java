@@ -23,7 +23,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 public class MemberFunc extends Function {
 
 	private Struct _parentLoadStruct;
-	private Map<MemberId, DirectVarDecl> _var_from_members_map = new HashMap<MemberId, DirectVarDecl>();
+	private Map<MemberId, DirectVarDecl> _varFromMembersMap = new HashMap<MemberId, DirectVarDecl>();
 	private Map<VarDecl, MemberId> _memberFromVar = new HashMap<VarDecl, MemberId>();
 	private Map<VarDecl, MemberId> _writtenMembers = new HashMap<VarDecl, MemberId>();
 	private Map<VarDecl, MemberId> _readMembers = new HashMap<VarDecl, MemberId>();
@@ -49,7 +49,7 @@ public class MemberFunc extends Function {
 	}
 	
 	private void addMember(DirectVarDecl var, MemberId id) {
-		_var_from_members_map.put(id, var);
+		_varFromMembersMap.put(id, var);
 		_memberFromVar.put(var, id);
 	}
 	
@@ -87,7 +87,7 @@ public class MemberFunc extends Function {
 		StructMember structMember = _parentLoadStruct.getMember(binding);
 		MemberId lhs_member_id = structMember.getMemberId();
 
-		DirectVarDecl direct_var_decl = _var_from_members_map.get(lhs_member_id);
+		DirectVarDecl direct_var_decl = _varFromMembersMap.get(lhs_member_id);
 
 		return direct_var_decl;
 	}
@@ -119,7 +119,7 @@ public class MemberFunc extends Function {
 	 */
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
 			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
-		Map<GraphNode, GraphNode> map = graphBuilder._gvpl_graph.addSubGraph(_graph_builder._gvpl_graph, this);
+		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
 
 		for (Map.Entry<VarDecl, MemberId> entry : _readMembers.entrySet()) {
 			VarDecl varDecl = entry.getKey();
@@ -134,7 +134,7 @@ public class MemberFunc extends Function {
 			GraphNode currNode = varDecl.getCurrentNode();
 			GraphNode currNodeInNewGraph = map.get(currNode);
 			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
-			graphBuilder.add_assign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph, null);
+			graphBuilder.addAssign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph, null);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map);
