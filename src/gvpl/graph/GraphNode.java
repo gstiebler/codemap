@@ -14,6 +14,7 @@ public class GraphNode {
 	public String _name;
 	public NodeType _type;
 	private VarDecl _parentVar = null;
+	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
 
@@ -41,12 +42,14 @@ public class GraphNode {
 	}
 	
 	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader) {
-		
 		if(_dependent_nodes.contains(dependentNode))
 			ErrorOutputter.fatalError("Already dependent!!");
 		
+		if(dependentNode == null)
+			ErrorOutputter.fatalError("Inserting null depending node");
 		
 		_dependent_nodes.add(dependentNode);
+		dependentNode._sourceNodes.add(this);
 		
 		if(astLoader == null)
 			return;
@@ -60,6 +63,16 @@ public class GraphNode {
 	
 	public Iterable<GraphNode> getDependentNodes() {
 		return _dependent_nodes;
+	}
+	
+	public Iterable<GraphNode> getSourceNodes() {
+		return _sourceNodes;
+	}
+	
+	public void updateDependents(GraphNode oldNode, GraphNode newNode) {
+		int oldNodeIndex = _dependent_nodes.indexOf(oldNode);
+		if(oldNodeIndex != -1)
+			_dependent_nodes.set(oldNodeIndex, newNode);
 	}
 	
 }

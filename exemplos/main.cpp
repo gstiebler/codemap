@@ -96,8 +96,10 @@ int main() {
 	int f = soma(d, e) + 4;
 	
 	int q = 3;
+	int s = 53;
 	for (int i = 0; i < 4; i++)
 	{
-		q = 29;
+		s = q;
+		q += s;
 	}
 }

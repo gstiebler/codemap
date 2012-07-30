@@ -127,7 +127,8 @@ public class InstructionLine {
 	}
 
 	private void load_for_stmt(IASTForStatement node) {
-		ErrorOutputter.fatalError("not implemented");
+		ForLoop forLoop = new ForLoop(_graphBuilder, _parentBasicBlock, _cppMaps, _astInterpreter);
+		forLoop.load(node, _graphBuilder); 
 	}
 
 	private void loadReturnStatement(IASTReturnStatement statement) {
@@ -152,8 +153,8 @@ public class InstructionLine {
 	 * @return The graph node of the result of the operation
 	 */
 	GraphNode load_assign_bin_op(IASTBinaryExpression node) {
-		IASTExpression expr = node.getOperand1();
-		VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(expr);
+		IASTExpression op1Expr = node.getOperand1();
+		VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
 
 		GraphNode rvalue = load_value(node.getOperand2());
 

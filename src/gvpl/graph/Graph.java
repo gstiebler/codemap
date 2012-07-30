@@ -74,7 +74,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader);
+			Graph copy = subgraph.getCopy(map, astLoader); 
 			graph._subgraphs.add(copy);
 		}
 
@@ -86,7 +86,7 @@ public class Graph {
 				newNode.addDependentNode(map.get(dependentNode), astLoader);
 			}
 		}
-
+		
 		return graph;
 	}
 	
