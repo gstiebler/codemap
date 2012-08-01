@@ -32,7 +32,9 @@ public class ForLoop extends AstLoader {
 
 	public void load(IASTForStatement node, GraphBuilder graphBuilder) {
 		IASTStatement body = node.getBody();
-
+		
+		//loadHeader(node);
+		
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
 		basicBlockLoader.load(body);
 
@@ -50,6 +52,19 @@ public class ForLoop extends AstLoader {
 			
 			if(_writtenExtVars.contains(intVarDecl))
 				graphBuilder.addAssign(extVarDecl, NodeType.E_VARIABLE, currentNode, null);
+		}
+	}
+	
+	private void loadHeader(IASTForStatement node) {
+		IASTStatement initializer = node.getInitializerStatement();
+		IASTExpression condition = node.getConditionExpression();
+		
+		ForLoopHeader header = new ForLoopHeader(_graphBuilder, this, _cppMaps, _astInterpreter);
+		header.load(initializer, condition);
+		
+		GraphNode headerNode = _graphBuilder._gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER);
+		for(VarDecl readVar : header.getReadVars()) {
+			readVar.getCurrentNode().addDependentNode(headerNode, null);
 		}
 	}
 

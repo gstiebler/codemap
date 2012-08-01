@@ -50,6 +50,9 @@ public class AstLoader {
 			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
 		}
 
+		if(_parent == null)
+			return null;
+		
 		if (varDecl != null)
 			return varDecl;
 		else

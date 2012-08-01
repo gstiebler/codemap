@@ -17,7 +17,8 @@ public class Graph {
 		E_OPERATION,
 		E_FOR_LOOP,
 		E_DECLARED_PARAMETER,
-		E_RETURN_VALUE
+		E_RETURN_VALUE,
+		E_LOOP_HEADER
 	}
 
 	private String _name;

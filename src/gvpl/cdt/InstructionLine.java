@@ -39,9 +39,9 @@ public class InstructionLine {
 	private GraphBuilder _graphBuilder;
 	private CppMaps _cppMaps;
 	private AstInterpreter _astInterpreter;
-	private BasicBlock _parentBasicBlock;
+	private AstLoader _parentBasicBlock;
 
-	public InstructionLine(GraphBuilder graph_builder, BasicBlock parent, CppMaps cppMaps,
+	public InstructionLine(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		_graphBuilder = graph_builder;
 		_cppMaps = cppMaps;
@@ -103,7 +103,7 @@ public class InstructionLine {
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
-	private GraphNode load_value(IASTExpression node) {
+	public GraphNode load_value(IASTExpression node) {
 
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {

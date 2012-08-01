@@ -97,7 +97,7 @@ int main() {
 	
 	int q = 3;
 	int s = 53;
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < l; i++)
 	{
 		s = q;
 		q += s - e;
