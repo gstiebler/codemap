@@ -6,6 +6,14 @@ import gvpl.graph.GraphBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.Tree;
+import org.cesta.parsers.dot.DotLexer;
+import org.cesta.parsers.dot.DotParser;
+import org.cesta.parsers.dot.DotTree;
+import org.cesta.parsers.dot.DotTree.Graph;
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage;
@@ -19,8 +27,11 @@ import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 public class ParserExample {
 
 	public static void main(String[] args) throws Exception {
+		
+        Graph graph = DotTree.getGraphFromDot("K:/Projetos/GVPL/exemplos/first.dot");
+       
 		IParserLogService log = new DefaultLogService();
-
+		
 		String code = File.readFileToString(File.examplesPath() + "main.cpp");
 
 		CodeReader reader = new CodeReader(code.toCharArray());

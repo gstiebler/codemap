@@ -28,5 +28,6 @@
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse-europa/plugins/org.eclipse.cdt.core_4.0.3.200802251018.jar"/>
+	<classpathentry kind="lib" path="lib/antlr-3.4-complete-no-antlrv2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
