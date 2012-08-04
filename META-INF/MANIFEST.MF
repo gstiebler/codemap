@@ -29,3 +29,4 @@ Bundle-ClassPath: JDTTest.jar,
  eclipse/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar
 Export-Package: .
 Import-Package: org.eclipse.jdt.core.dom
+Require-Bundle: org.junit

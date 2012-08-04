@@ -6,12 +6,6 @@ import gvpl.graph.GraphBuilder;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.antlr.runtime.ANTLRFileStream;
-import org.antlr.runtime.CommonTokenStream;
-import org.antlr.runtime.tree.CommonTreeNodeStream;
-import org.antlr.runtime.tree.Tree;
-import org.cesta.parsers.dot.DotLexer;
-import org.cesta.parsers.dot.DotParser;
 import org.cesta.parsers.dot.DotTree;
 import org.cesta.parsers.dot.DotTree.Graph;
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
