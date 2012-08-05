@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreter;
 import gvpl.common.File;
 import gvpl.graph.GraphBuilder;
+import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
@@ -28,12 +29,19 @@ import org.junit.Test;
 public class BasicTest {
 	
 	@Test
-	public void outroTeste() {
-		baseTest("K:/Projetos/GVPL/fixtures/", "func_call");
+	public void basic() {
+		baseTest("basic");
 	}
 	
-	private void baseTest(String fixturesPath, String testName) {
+	@Test
+	public void funcCall() {
+		baseTest("func_call");
+	}
+	
+	private void baseTest(String testName) {
+		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
+		GraphNode.resetCounter();
         
 		IParserLogService log = new DefaultLogService();
 		String code = "";

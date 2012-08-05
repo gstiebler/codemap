@@ -83,4 +83,8 @@ public class GraphNode {
 			_dependent_nodes.set(oldNodeIndex, newNode);
 	}
 	
+	public static void resetCounter() {
+		_counter = 1;
+	}
+	
 }
