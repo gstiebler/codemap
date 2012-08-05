@@ -55,8 +55,9 @@ public class GraphCompare {
 					gvNodeEdges.size());
 			for (GraphNode depNode : gvplNode.getDependentNodes()) {
 				String depNodeInternalName = FileDriver.nodeInternalName(depNode.getId());
-				assertTrue("Edge not found. Node " + nodeInternalName + " dep node "
-						+ depNodeInternalName, gvNodeEdges.contains(depNodeInternalName));
+				String msg = "Edge not found. Node " + nodeInternalName + " dep node "
+						+ depNodeInternalName;
+				assertTrue(msg, gvNodeEdges.contains(depNodeInternalName));
 			}
 		}
 
