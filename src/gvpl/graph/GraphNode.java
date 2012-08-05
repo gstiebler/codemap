@@ -41,6 +41,10 @@ public class GraphNode {
 		return _id;
 	}
 	
+	public String getName() {
+		return _name;
+	}
+	
 	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader) {
 		if(_dependent_nodes.contains(dependentNode))
 			ErrorOutputter.fatalError("Already dependent!!");

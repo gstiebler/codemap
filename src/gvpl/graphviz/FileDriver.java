@@ -3,17 +3,28 @@ package gvpl.graphviz;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 import gvpl.graph.Graph;
 
-public class FileDriver extends Visualizer {
+public class FileDriver implements IGraphOutput {
 
 	PrintWriter out;
 
 	static int subGraphCounter = 1;
 	
-	public FileDriver(Graph graph, String filename){
+	public class PropertyPair {
+		public String _key;
+		public String _value;
 		
+		public PropertyPair(String key, String value) {
+			_key = key;
+			_value = value;
+		}
+	}
+
+	public void print(Graph graph, String filename, Visualizer visualizer) {
 		FileWriter outFile = null;
 		try {
 			outFile = new FileWriter(filename);
@@ -25,50 +36,69 @@ public class FileDriver extends Visualizer {
 		out.println("digraph G\n{");
 		out.println("rankdir=LR;");
 		
-		print_graph(graph);
+		visualizer.print_graph(graph);
 		
 		out.println("}");
 		out.close();
 	}
+	
+	public void insertOperation(int node_id, String node_name) {
+		List<PropertyPair> properties = new ArrayList<PropertyPair>();
+		properties.add(new PropertyPair("shape", "invtriangle"));
+		properties.add(new PropertyPair("style", "filled"));
+		properties.add(new PropertyPair("fillcolor", "\"#E0E0E0\""));
+		insertNode(node_id, node_name, properties);
+	}
+	
+	public void insertValueNode(int node_id, String node_name) {
+		List<PropertyPair> properties = new ArrayList<PropertyPair>();
+		properties.add(new PropertyPair("style", "filled"));
+		properties.add(new PropertyPair("fillcolor", "\"#E9FFE9\""));
+		insertNode(node_id, node_name, properties);
+	}
 
-	void insertOperation(int node_id, String node_name) {
-		String properties = ", shape=invtriangle, style=filled, fillcolor=\"#E0E0E0\"";
+	public void insertDeclaredParameter(int node_id, String node_name) {
+		List<PropertyPair> properties = new ArrayList<PropertyPair>();
+		properties.add(new PropertyPair("style", "filled"));
+		properties.add(new PropertyPair("fillcolor", "\"#FFE9E9\""));
 		insertNode(node_id, node_name, properties);
 	}
 	
-	void insertValueNode(int node_id, String node_name) {
-		String properties = ", style=filled, fillcolor=\"#E9FFE9\"";
-		insertNode(node_id, node_name, properties);
-	}
-
-	void insertDeclaredParameter(int node_id, String node_name) {
-		String properties = ", style=filled, fillcolor=\"#FFE9E9\"";
+	public void insertReturnValue(int node_id, String node_name) {
+		List<PropertyPair> properties = new ArrayList<PropertyPair>();
+		properties.add(new PropertyPair("style", "filled"));
+		properties.add(new PropertyPair("fillcolor", "\"#FFFFD0\""));
 		insertNode(node_id, node_name, properties);
 	}
 	
-	void insertReturnValue(int node_id, String node_name) {
-		String properties = ", style=filled, fillcolor=\"#FFFFD0\"";
-		insertNode(node_id, node_name, properties);
+	public void insertVariable(int node_id, String node_name) {
+		insertNode(node_id, node_name, new ArrayList<PropertyPair>());
 	}
 	
-	void insertVariable(int node_id, String node_name) {
-		insertNode(node_id, node_name, "");
+	protected void insertNode(int node_id, String nodeLabel, List<PropertyPair> properties){
+		String internalName = nodeInternalName(node_id);
+		String propertiesString = "";
+		for(PropertyPair propertyPair : properties) {
+			propertiesString += ", " + propertyPair._key + "=" + propertyPair._value;
+		}
+		out.println("\t" + internalName + " [ label = \"" + nodeLabel + "\"" + propertiesString + " ]");
 	}
 	
-	void insertNode(int node_id, String node_name, String properties){
-		out.println("\tnode_" + node_id + " [ label = \"" + node_name + "\"" + properties + " ]");
-	}
-	
-    void insertSubGraphStart(String name) {
+    public void insertSubGraphStart(String name) {
     	out.println("subgraph cluster_" + subGraphCounter++ + " {");
     	out.println("label = \"" + name + "\";");
     }
     
-	void insertSubGraphEnd() {
+	public void insertSubGraphEnd() {
     	out.println("}");
     }
 	
-	void insertDependency(int node_id, int dep_node_id){
-		out.println("\tnode_" + node_id + " -> node_" + dep_node_id);
+	public void insertDependency(int node_id, int dep_node_id){
+		String internalName = nodeInternalName(node_id);
+		out.println("\t" + internalName + " -> node_" + dep_node_id);
+	}
+	
+	public static String nodeInternalName(int node_id) {
+		return "node_" + node_id;
 	}
 }

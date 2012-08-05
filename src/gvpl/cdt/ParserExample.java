@@ -2,12 +2,12 @@ package gvpl.cdt;
 
 import gvpl.common.File;
 import gvpl.graph.GraphBuilder;
+import gvpl.graphviz.FileDriver;
+import gvpl.graphviz.Visualizer;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.cesta.parsers.dot.DotTree;
-import org.cesta.parsers.dot.DotTree.Graph;
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage;
@@ -21,9 +21,6 @@ import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 public class ParserExample {
 
 	public static void main(String[] args) throws Exception {
-		
-        Graph graph = DotTree.getGraphFromDot("K:/Projetos/GVPL/exemplos/first.dot");
-       
 		IParserLogService log = new DefaultLogService();
 		
 		String code = File.readFileToString(File.examplesPath() + "main.cpp");
@@ -41,12 +38,8 @@ public class ParserExample {
 		GraphBuilder graph_builder = new GraphBuilder();
 		new AstInterpreter(graph_builder, translationUnit);
 
-		new gvpl.graphviz.FileDriver(graph_builder._gvplGraph, File.examplesPath() + "first.dot");
-
-		Runtime rt = Runtime.getRuntime();
-		String command = File.examplesPath() + "\\execute.bat";
-		Process pr = rt.exec(command);
-		int exitVal = pr.waitFor();
-		System.out.println("Exited with error code " + exitVal);
+		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
+		Visualizer visualizer = new Visualizer(fileDriver);
+		fileDriver.print(graph_builder._gvplGraph, File.examplesPath() + "first.dot", visualizer);
 	}
 }

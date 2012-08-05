@@ -272,6 +272,10 @@ public class DotTree extends TreeParser {
 			Graph g = (Graph) obj;
 			return (g.id != null && g.id.equals(id));
 		}
+		
+		public Node getNode(String nodeName) {
+			return nodes.get(nodeName);
+		}
 
 	};
 
@@ -335,6 +339,10 @@ public class DotTree extends TreeParser {
 		@Override
 		public String toString() {
 			return "Node " + id + (!attributes.isEmpty() ? " " + attributes : "");
+		}
+		
+		public String getAttribute(String key) {
+			return attributes.get(key);
 		}
 	}
 
