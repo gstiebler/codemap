@@ -1,0 +1,26 @@
+digraph G
+{
+rankdir=LR;
+	node_6 [ label = "3", style=filled, fillcolor="#E9FFE9" ]
+	node_7 [ label = "a" ]
+	node_8 [ label = "5", style=filled, fillcolor="#E9FFE9" ]
+	node_9 [ label = "b" ]
+	node_15 [ label = "c" ]
+subgraph cluster_1 {
+label = "soma";
+	node_10 [ label = "a", style=filled, fillcolor="#FFE9E9" ]
+	node_11 [ label = "b", style=filled, fillcolor="#FFE9E9" ]
+	node_12 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
+	node_13 [ label = "resultado" ]
+	node_14 [ label = "soma", style=filled, fillcolor="#FFFFD0" ]
+}
+	node_6 -> node_7
+	node_7 -> node_10
+	node_8 -> node_9
+	node_9 -> node_11
+	node_10 -> node_12
+	node_11 -> node_12
+	node_12 -> node_13
+	node_13 -> node_14
+	node_14 -> node_15
+}
