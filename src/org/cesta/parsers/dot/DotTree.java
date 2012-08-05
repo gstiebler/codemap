@@ -276,6 +276,10 @@ public class DotTree extends TreeParser {
 		public Node getNode(String nodeName) {
 			return nodes.get(nodeName);
 		}
+		
+		public Iterable<Edge> getEdges() {
+			return edges;
+		}
 
 	};
 

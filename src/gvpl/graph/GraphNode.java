@@ -73,6 +73,10 @@ public class GraphNode {
 		return _sourceNodes;
 	}
 	
+	public int getNumDependentNodes() {
+		return _dependent_nodes.size();
+	}
+	
 	public void updateDependents(GraphNode oldNode, GraphNode newNode) {
 		int oldNodeIndex = _dependent_nodes.indexOf(oldNode);
 		if(oldNodeIndex != -1)
