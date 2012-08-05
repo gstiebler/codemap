@@ -24,13 +24,24 @@ public class GraphCompare {
 	 * @return True if the graphs are equal
 	 */
 	static boolean isEqual(gvpl.graph.Graph gvplGraph, org.cesta.parsers.dot.DotTree.Graph gvGraph) {
-
+		Map<String, Set<String>> gvEdges = getEdges(gvGraph);
+		analyseSubGraph(gvplGraph, gvGraph, gvEdges);
+		
+		return true;
+	}
+	
+	static void analyseSubGraph(gvpl.graph.Graph gvplGraph, org.cesta.parsers.dot.DotTree.Graph gvGraph, Map<String, Set<String>> gvEdges) {
+		Map<String, org.cesta.parsers.dot.DotTree.Graph> subGraphs = subGraphsByLabel(gvGraph);
+		assertEquals("Number of subgraphs of " + gvplGraph.getName(), gvplGraph._subgraphs.size(), subGraphs.size());
+		for(gvpl.graph.Graph gvplSubGraph : gvplGraph._subgraphs) {
+			org.cesta.parsers.dot.DotTree.Graph gvSubGraph = subGraphs.get(gvplSubGraph.getName());
+			analyseSubGraph(gvplSubGraph, gvSubGraph, gvEdges);
+		}
+		
 		FileDriverTests fileDriver = new FileDriverTests();
 		int numNodes = gvplGraph.getNumNodes();
 		int numGvNodes = gvGraph.getNodes().size();
-		assertEquals("Number of nodes", numNodes, numGvNodes);
-
-		Map<String, Set<String>> gvEdges = getEdges(gvGraph);
+		//assertEquals("Number of nodes", numNodes, numGvNodes);
 		for (int i = 0; i < numNodes; i++) {
 			GraphNode gvplNode = gvplGraph.getNode(i);
 			String nodeInternalName = FileDriver.nodeInternalName(gvplNode.getId());
@@ -60,8 +71,6 @@ public class GraphCompare {
 				assertTrue(msg, gvNodeEdges.contains(depNodeInternalName));
 			}
 		}
-
-		return true;
 	}
 
 	static Map<String, Set<String>> getEdges(org.cesta.parsers.dot.DotTree.Graph gvGraph) {
@@ -83,5 +92,15 @@ public class GraphCompare {
 
 		return edges;
 	}
-
+	
+	static Map<String, org.cesta.parsers.dot.DotTree.Graph> subGraphsByLabel(org.cesta.parsers.dot.DotTree.Graph gvGraph) {
+		Map<String, org.cesta.parsers.dot.DotTree.Graph> subGraphs = new HashMap<String, org.cesta.parsers.dot.DotTree.Graph>();
+		
+		for(org.cesta.parsers.dot.DotTree.Graph subGraph : gvGraph.subGraphs) {
+			String label = subGraph.attributes.get("label").replace("\"", "");
+			subGraphs.put(label, subGraph);
+		}
+		
+		return subGraphs;
+	}
 }
