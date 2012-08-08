@@ -27,7 +27,7 @@ public class ForLoop extends AstLoader {
 	public ForLoop(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		super(new GraphBuilder(), parent, cppMaps, astInterpreter);
-		_graphBuilder._gvplGraph.setName("ForLoop");
+		_graphBuilder._gvplGraph.setLabel("ForLoop");
 	}
 
 	public void load(IASTForStatement node, GraphBuilder graphBuilder) {

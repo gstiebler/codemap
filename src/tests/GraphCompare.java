@@ -2,10 +2,12 @@ package tests;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.cesta.parsers.dot.DotTree;
 import org.cesta.parsers.dot.DotTree.NodePair;
 
 import gvpl.graph.GraphNode;
@@ -15,7 +17,7 @@ import gvpl.graphviz.Visualizer;
 import static org.junit.Assert.*;
 
 public class GraphCompare {
-
+	
 	/**
 	 * Returns true if the graphs are equal
 	 * 
@@ -23,34 +25,36 @@ public class GraphCompare {
 	 * @param gvGraph
 	 * @return True if the graphs are equal
 	 */
-	static boolean isEqual(gvpl.graph.Graph gvplGraph, org.cesta.parsers.dot.DotTree.Graph gvGraph) {
+	static boolean isEqual(gvpl.graph.Graph gvplGraph, DotTree.Graph gvGraph) {
 		Map<String, Set<String>> gvEdges = getEdges(gvGraph);
-		analyseSubGraph(gvplGraph, gvGraph, gvEdges);
-		
+		SubGraphNodes processedNodes = ProcessedNodes.process(gvGraph);
+		analyseSubGraph(gvplGraph, gvEdges, processedNodes);
+
 		return true;
 	}
-	
-	static void analyseSubGraph(gvpl.graph.Graph gvplGraph, org.cesta.parsers.dot.DotTree.Graph gvGraph, Map<String, Set<String>> gvEdges) {
-		Map<String, org.cesta.parsers.dot.DotTree.Graph> subGraphs = subGraphsByLabel(gvGraph);
-		assertEquals("Number of subgraphs of " + gvplGraph.getName(), gvplGraph._subgraphs.size(), subGraphs.size());
-		for(gvpl.graph.Graph gvplSubGraph : gvplGraph._subgraphs) {
-			org.cesta.parsers.dot.DotTree.Graph gvSubGraph = subGraphs.get(gvplSubGraph.getName());
-			analyseSubGraph(gvplSubGraph, gvSubGraph, gvEdges);
+
+	static void analyseSubGraph(gvpl.graph.Graph gvplGraph, 
+			Map<String, Set<String>> gvEdges, SubGraphNodes processedNodes) {
+		assertEquals("Number of subgraphs of " + gvplGraph.getName(), gvplGraph._subgraphs.size(),
+				processedNodes._subGraphs.size());
+		for (gvpl.graph.Graph gvplSubGraph : gvplGraph._subgraphs) {
+			SubGraphNodes gvSubGraphNodes = processedNodes._subGraphs.get(gvplSubGraph.getName());
+			analyseSubGraph(gvplSubGraph, gvEdges, gvSubGraphNodes);
 		}
-		
+
 		FileDriverTests fileDriver = new FileDriverTests();
 		int numNodes = gvplGraph.getNumNodes();
-		int numGvNodes = gvGraph.getNodes().size();
+		int numGvNodes = processedNodes._nodes.size();
+		
+		List<NodeMatch> nodesMatch = matchNodes(processedNodes._nodes, gvplGraph);
+		
 		//assertEquals("Number of nodes", numNodes, numGvNodes);
-		for (int i = 0; i < numNodes; i++) {
-			GraphNode gvplNode = gvplGraph.getNode(i);
-			String nodeInternalName = FileDriver.nodeInternalName(gvplNode.getId());
-			org.cesta.parsers.dot.DotTree.Node gvNode = gvGraph.getNode(nodeInternalName);
-			assertNotNull("Node: " + nodeInternalName, gvNode);
+		for (NodeMatch nodeMatch : nodesMatch) {
+			GraphNode gvplNode = nodeMatch._gvplNode;
+			DotTree.Node gvNode = nodeMatch._gvNode;
 
 			Visualizer.printNode(gvplNode, fileDriver);
 			String gvNodeLabel = gvNode.getAttribute("label");
-			assertNotNull("Node: " + nodeInternalName, gvNodeLabel);
 
 			gvNodeLabel = gvNodeLabel.replace("\"", "");
 			assertEquals("Node label", gvplNode.getName(), gvNodeLabel);
@@ -61,26 +65,44 @@ public class GraphCompare {
 			}
 
 			int numNodeEdges = gvplNode.getNumDependentNodes();
-			Set<String> gvNodeEdges = gvEdges.get(nodeInternalName);
-			assertEquals("Number of edges of node " + nodeInternalName, numNodeEdges,
+			Set<String> gvNodeEdges = gvEdges.get(gvNode.id);
+			assertEquals("Number of edges of node " + gvNode.id, numNodeEdges,
 					gvNodeEdges.size());
 			for (GraphNode depNode : gvplNode.getDependentNodes()) {
 				String depNodeInternalName = FileDriver.nodeInternalName(depNode.getId());
-				String msg = "Edge not found. Node " + nodeInternalName + " dep node "
+				String msg = "Edge not found. Node " + gvNode.id + " dep node "
 						+ depNodeInternalName;
 				assertTrue(msg, gvNodeEdges.contains(depNodeInternalName));
 			}
 		}
 	}
+	
+	static List<NodeMatch> matchNodes(Map<String, LinkedList<DotTree.Node>> gvNodes, gvpl.graph.Graph gvplGraph) {
+		List<NodeMatch> result = new LinkedList<NodeMatch>();
+		
+		int numNodes = gvplGraph.getNumNodes();
+		for (int i = 0; i < numNodes; i++) {
+			GraphNode gvplNode = gvplGraph.getNode(i);
+			String label = gvplNode.getName();
+			
+			LinkedList<DotTree.Node> list = gvNodes.get(label);
+			DotTree.Node gvNode = list.getFirst();
+			list.removeFirst();
+			
+			result.add(new NodeMatch(gvplNode, gvNode));
+		}
+		
+		return result;
+	}
 
-	static Map<String, Set<String>> getEdges(org.cesta.parsers.dot.DotTree.Graph gvGraph) {
+	static Map<String, Set<String>> getEdges(DotTree.Graph gvGraph) {
 		Map<String, Set<String>> edges = new HashMap<String, Set<String>>();
 
-		for (org.cesta.parsers.dot.DotTree.Node gvNode : gvGraph.getNodes()) {
+		for (DotTree.Node gvNode : gvGraph.getNodes()) {
 			edges.put(gvNode.id, new HashSet<String>());
 		}
 
-		for (org.cesta.parsers.dot.DotTree.Edge edge : gvGraph.getEdges()) {
+		for (DotTree.Edge edge : gvGraph.getEdges()) {
 			String node1, node2;
 			List<NodePair> nodePairs = edge.getNodePairs();
 			NodePair nodePair = nodePairs.get(0);
@@ -91,16 +113,5 @@ public class GraphCompare {
 		}
 
 		return edges;
-	}
-	
-	static Map<String, org.cesta.parsers.dot.DotTree.Graph> subGraphsByLabel(org.cesta.parsers.dot.DotTree.Graph gvGraph) {
-		Map<String, org.cesta.parsers.dot.DotTree.Graph> subGraphs = new HashMap<String, org.cesta.parsers.dot.DotTree.Graph>();
-		
-		for(org.cesta.parsers.dot.DotTree.Graph subGraph : gvGraph.subGraphs) {
-			String label = subGraph.attributes.get("label").replace("\"", "");
-			subGraphs.put(label, subGraph);
-		}
-		
-		return subGraphs;
 	}
 }

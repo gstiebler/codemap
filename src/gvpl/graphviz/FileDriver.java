@@ -35,6 +35,7 @@ public class FileDriver implements IGraphOutput {
 		out = new PrintWriter(outFile);
 		out.println("digraph G\n{");
 		out.println("rankdir=LR;");
+		out.println("label = \"root\";");
 		
 		visualizer.print_graph(graph);
 		
@@ -84,9 +85,12 @@ public class FileDriver implements IGraphOutput {
 		out.println("\t" + internalName + " [ label = \"" + nodeLabel + "\"" + propertiesString + " ]");
 	}
 	
-    public void insertSubGraphStart(String name) {
-    	out.println("subgraph cluster_" + subGraphCounter++ + " {");
+    public String  insertSubGraphStart(String name, String parent) {
+    	String clusterName = "cluster_" + subGraphCounter++;
+    	out.println("subgraph " + clusterName + " {");
     	out.println("label = \"" + name + "\";");
+    	out.println("parent = \"" + parent + "\";");
+    	return clusterName;
     }
     
 	public void insertSubGraphEnd() {
@@ -94,11 +98,12 @@ public class FileDriver implements IGraphOutput {
     }
 	
 	public void insertDependency(int node_id, int dep_node_id){
-		String internalName = nodeInternalName(node_id);
-		out.println("\t" + internalName + " -> node_" + dep_node_id);
+		String nodeInternalName = nodeInternalName(node_id);
+		String depNodeInternalName = nodeInternalName(dep_node_id);
+		out.println("\t" + nodeInternalName + " -> " + depNodeInternalName);
 	}
 	
 	public static String nodeInternalName(int node_id) {
-		return "node_" + node_id;
+		return "node_" + String.format("%06d", node_id);
 	}
 }

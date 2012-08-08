@@ -121,7 +121,7 @@ public class Function extends AstLoader {
 
 	private void setName(String name) {
 		_externalName = name;
-		_graphBuilder._gvplGraph.setName(name);
+		_graphBuilder._gvplGraph.setLabel(name);
 	}
 	
 	public String getName() {

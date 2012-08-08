@@ -7,7 +7,7 @@ public interface IGraphOutput {
 	void insertDeclaredParameter(int node_id, String node_name);
 	void insertReturnValue(int node_id, String node_name);
 	void insertVariable(int node_id, String node_name);
-	void insertSubGraphStart(String name);
+	String insertSubGraphStart(String name, String parent);
 	void insertSubGraphEnd();
 	
 	void insertDependency(int node_id, int dep_node_id);

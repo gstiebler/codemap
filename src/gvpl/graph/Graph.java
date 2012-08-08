@@ -21,13 +21,13 @@ public class Graph {
 		E_LOOP_HEADER
 	}
 
-	private String _name;
+	private String _label;
 
 	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	
-	public Graph(String name) {
-		_name = name;
+	public Graph(String label) {
+		_label = label;
 	}	
 	
 	public Graph() { }
@@ -63,7 +63,7 @@ public class Graph {
 			}
 		}
 		
-		Graph graph = new Graph(_name);
+		Graph graph = new Graph(_label);
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 		
 		// duplicate the nodes
@@ -105,10 +105,10 @@ public class Graph {
 	}
 	
 	public String getName() {
-		return _name;
+		return _label;
 	}
 	
-	public void setName(String name) {
-		_name = name;
+	public void setLabel(String label) {
+		_label = label;
 	}
 }

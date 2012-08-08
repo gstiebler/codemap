@@ -12,19 +12,19 @@ public class Visualizer {
 	}
 	
 	public void print_graph(Graph graph) {
-		printNodes(graph);
+		printNodes(graph, "root");
 		printEdges(graph);
 	}
 	
-	private void printNodes(Graph graph) {
+	private void printNodes(Graph graph, String parentName) {
 		int size = graph.getNumNodes();
 		for (int i = 0; i < size; ++i) {
 			printNode(graph.getNode(i), _graphOutput);
 		}
 		
 		for(Graph subgraph : graph._subgraphs) {
-			_graphOutput.insertSubGraphStart(subgraph.getName());
-			printNodes(subgraph);
+			_graphOutput.insertSubGraphStart(subgraph.getName(), parentName);
+			printNodes(subgraph, subgraph.getName());
 			_graphOutput.insertSubGraphEnd();
 		}
 	}

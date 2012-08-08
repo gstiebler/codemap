@@ -3,6 +3,7 @@
 package org.cesta.parsers.dot;
 
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.List;
 import java.util.LinkedList;
@@ -280,6 +281,10 @@ public class DotTree extends TreeParser {
 		public Iterable<Edge> getEdges() {
 			return edges;
 		}
+		
+		public String getLabel() {
+			return attributes.get("label").replace("\"", "");
+		}
 
 	};
 
@@ -304,7 +309,7 @@ public class DotTree extends TreeParser {
 	/**
 	 * Model simple node with id and attributes.
 	 */
-	public class Node {
+	public class Node  implements Comparable {
 		public String id;
 		public Map<String, String> attributes = new HashMap<String, String>();
 
@@ -347,6 +352,12 @@ public class DotTree extends TreeParser {
 		
 		public String getAttribute(String key) {
 			return attributes.get(key);
+		}
+
+		@Override
+		public int compareTo(Object other) {
+			// TODO Auto-generated method stub
+			return id.compareTo(((Node)other).id);
 		}
 	}
 

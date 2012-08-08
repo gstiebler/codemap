@@ -1,15 +1,15 @@
 digraph G
 {
 rankdir=LR;
-	node_1 [ label = "3", style=filled, fillcolor="#E9FFE9" ]
-	node_2 [ label = "a" ]
-	node_3 [ label = "5", style=filled, fillcolor="#E9FFE9" ]
-	node_4 [ label = "b" ]
-	node_5 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
-	node_6 [ label = "c" ]
-	node_1 -> node_2
-	node_2 -> node_5
-	node_3 -> node_4
-	node_4 -> node_5
-	node_5 -> node_6
+	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9" ]
+	node_000002 [ label = "a" ]
+	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9" ]
+	node_000004 [ label = "b" ]
+	node_000005 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
+	node_000006 [ label = "c" ]
+	node_000001 -> node_000002
+	node_000002 -> node_000005
+	node_000003 -> node_000004
+	node_000004 -> node_000005
+	node_000005 -> node_000006
 }
