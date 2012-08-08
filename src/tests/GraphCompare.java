@@ -1,5 +1,12 @@
 package tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import gvpl.graph.GraphNode;
+import gvpl.graphviz.FileDriver.PropertyPair;
+import gvpl.graphviz.Visualizer;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -9,12 +16,6 @@ import java.util.Set;
 
 import org.cesta.parsers.dot.DotTree;
 import org.cesta.parsers.dot.DotTree.NodePair;
-
-import gvpl.graph.GraphNode;
-import gvpl.graphviz.FileDriver;
-import gvpl.graphviz.FileDriver.PropertyPair;
-import gvpl.graphviz.Visualizer;
-import static org.junit.Assert.*;
 
 public class GraphCompare {
 	
@@ -28,27 +29,26 @@ public class GraphCompare {
 	static boolean isEqual(gvpl.graph.Graph gvplGraph, DotTree.Graph gvGraph) {
 		Map<String, Set<String>> gvEdges = getEdges(gvGraph);
 		SubGraphNodes processedNodes = ProcessedNodes.process(gvGraph);
-		analyseSubGraph(gvplGraph, gvEdges, processedNodes);
-
+		List<NodeMatch> completeNodesMatch = analyseSubGraph(gvplGraph, processedNodes);
+		compareEdges(gvplGraph, gvEdges, completeNodesMatch);
 		return true;
 	}
 
-	static void analyseSubGraph(gvpl.graph.Graph gvplGraph, 
-			Map<String, Set<String>> gvEdges, SubGraphNodes processedNodes) {
+	static List<NodeMatch> analyseSubGraph(gvpl.graph.Graph gvplGraph, SubGraphNodes processedNodes) {
+		List<NodeMatch> result = new ArrayList<NodeMatch>();
+		
 		assertEquals("Number of subgraphs of " + gvplGraph.getName(), gvplGraph._subgraphs.size(),
 				processedNodes._subGraphs.size());
 		for (gvpl.graph.Graph gvplSubGraph : gvplGraph._subgraphs) {
 			SubGraphNodes gvSubGraphNodes = processedNodes._subGraphs.get(gvplSubGraph.getName());
-			analyseSubGraph(gvplSubGraph, gvEdges, gvSubGraphNodes);
+			List<NodeMatch> sgNodesMatch = analyseSubGraph(gvplSubGraph, gvSubGraphNodes);
+			result.addAll(sgNodesMatch);
 		}
 
 		FileDriverTests fileDriver = new FileDriverTests();
-		int numNodes = gvplGraph.getNumNodes();
-		int numGvNodes = processedNodes._nodes.size();
 		
 		List<NodeMatch> nodesMatch = matchNodes(processedNodes._nodes, gvplGraph);
-		
-		//assertEquals("Number of nodes", numNodes, numGvNodes);
+		result.addAll(nodesMatch);
 		for (NodeMatch nodeMatch : nodesMatch) {
 			GraphNode gvplNode = nodeMatch._gvplNode;
 			DotTree.Node gvNode = nodeMatch._gvNode;
@@ -63,18 +63,36 @@ public class GraphCompare {
 				String value = gvNode.getAttribute(propertyPair._key);
 				assertEquals("Property " + propertyPair._key, propertyPair._value, value);
 			}
+		}
+		
+		return result;
+	}
+	
+	static void compareEdges(gvpl.graph.Graph gvplGraph, 
+			Map<String, Set<String>> gvEdges, List<NodeMatch> completeNodesMatch) {
+		
+		Map<GraphNode, DotTree.Node> gvplToGv = new HashMap<GraphNode, DotTree.Node>();
+
+		for (NodeMatch nodeMatch : completeNodesMatch) {
+			gvplToGv.put(nodeMatch._gvplNode, nodeMatch._gvNode);
+		}
+		
+		for (NodeMatch nodeMatch : completeNodesMatch) {
+			GraphNode gvplNode = nodeMatch._gvplNode;
+			DotTree.Node gvNode = nodeMatch._gvNode;	
 
 			int numNodeEdges = gvplNode.getNumDependentNodes();
 			Set<String> gvNodeEdges = gvEdges.get(gvNode.id);
 			assertEquals("Number of edges of node " + gvNode.id, numNodeEdges,
 					gvNodeEdges.size());
-			for (GraphNode depNode : gvplNode.getDependentNodes()) {
-				String depNodeInternalName = FileDriver.nodeInternalName(depNode.getId());
-				String msg = "Edge not found. Node " + gvNode.id + " dep node "
-						+ depNodeInternalName;
-				assertTrue(msg, gvNodeEdges.contains(depNodeInternalName));
+			
+			for (GraphNode gvplDepNode : gvplNode.getDependentNodes()) {
+				DotTree.Node gvDepNode = gvplToGv.get(gvplDepNode);
+
+				assertTrue(gvNodeEdges.contains(gvDepNode.id));
 			}
 		}
+		
 	}
 	
 	static List<NodeMatch> matchNodes(Map<String, LinkedList<DotTree.Node>> gvNodes, gvpl.graph.Graph gvplGraph) {
