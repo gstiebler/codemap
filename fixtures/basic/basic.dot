@@ -1,6 +1,7 @@
 digraph G
 {
 rankdir=LR;
+label = "root";
 	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9" ]
 	node_000002 [ label = "a" ]
 	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9" ]
