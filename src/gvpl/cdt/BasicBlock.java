@@ -4,7 +4,10 @@ import gvpl.common.VarDecl;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
@@ -12,8 +15,18 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class BasicBlock extends AstLoader {
 	
+	private class VarNodePair {
+		public VarDecl _varDecl;
+		public GraphNode _graphNode;
+		public VarNodePair(VarDecl varDecl, GraphNode graphNode) {
+			_varDecl = varDecl;
+			_graphNode = graphNode;
+		}
+	}
+	
 	private GraphNode _conditionNode;
-	private Map<VarDecl, GraphNode> _writtenVar = new HashMap<VarDecl, GraphNode>();
+	private LinkedList<VarNodePair> _writtenVar = new LinkedList<VarNodePair>();
+	private Set<VarDecl> _writtenVarSet = new HashSet<VarDecl>();
 	
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {
 		super(parent._graphBuilder, parent, parent._cppMaps, astInterpreter);
@@ -36,9 +49,9 @@ public class BasicBlock extends AstLoader {
 		}
 		
 		if(_conditionNode != null) {
-			for (Map.Entry<VarDecl, GraphNode> entry : _writtenVar.entrySet()) {
-				VarDecl var = entry.getKey();
-				_graphBuilder.addIf(var, var.getCurrentNode(), entry.getValue(), _conditionNode, null);
+			for (VarNodePair varNodePair : _writtenVar) {
+				VarDecl var = varNodePair._varDecl;
+				_graphBuilder.addIf(var, var.getCurrentNode(), varNodePair._graphNode, _conditionNode, null);
 			}
 		}
 	}
@@ -48,8 +61,10 @@ public class BasicBlock extends AstLoader {
 		if (_parent != null) 
 			_parent.varWrite(var);
 		
-		if(!_writtenVar.containsKey(var))
-			_writtenVar.put(var, var.getCurrentNode());
+		if(!_writtenVarSet.contains(var)) {
+			_writtenVarSet.add(var);
+			_writtenVar.add(new VarNodePair(var, var.getCurrentNode()));
+		}
 	}
 
 }
