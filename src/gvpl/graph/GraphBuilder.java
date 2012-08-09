@@ -11,47 +11,19 @@ import java.util.Map;
 public class GraphBuilder {
 
 	enum eUnOp {
-		E_INVALID_UN_OP,
-		E_PLUS_PLUS_OP
+		E_INVALID_UN_OP, E_PLUS_PLUS_OP
 	};
 
 	public enum eBinOp {
-		E_INVALID_BIN_OP,
-		E_ADD_OP,
-		E_SUB_OP,
-		E_MULT_OP,
-		E_DIV_OP,
-		E_LESS_THAN_OP,
-		E_GREATER_THAN_OP,
-		E_LESS_EQUAL_OP,
-		E_GREATER_EQUAL_OP
+		E_INVALID_BIN_OP, E_ADD_OP, E_SUB_OP, E_MULT_OP, E_DIV_OP, E_LESS_THAN_OP, E_GREATER_THAN_OP, E_LESS_EQUAL_OP, E_GREATER_EQUAL_OP
 	}
 
 	public enum eAssignBinOp {
-		E_INVALID_A_BIN_OP,
-		E_ASSIGN_OP,
-		E_PLUS_ASSIGN_OP,
-		E_SUB_ASSIGN_OP,
-		E_DIV_ASSIGN_OP,
-		E_MULT_ASSIGN_OP
+		E_INVALID_A_BIN_OP, E_ASSIGN_OP, E_PLUS_ASSIGN_OP, E_SUB_ASSIGN_OP, E_DIV_ASSIGN_OP, E_MULT_ASSIGN_OP
 	}
 
 	public enum eValueType {
-		E_INVALID_TYPE,
-		E_INT,
-		E_FLOAT,
-		E_DOUBLE,
-		E_STRING,
-		E_BOOL
-	}
-
-	enum eForLoopState {
-		E_INVALID_LOOP_STATE,
-		E_INIT,
-		E_CONDITION_EXPR,
-		E_POST_EXPR,
-		E_BASIC_BLOCK,
-		E_OUT_OF_LOOP
+		E_INVALID_TYPE, E_INT, E_FLOAT, E_DOUBLE, E_STRING, E_BOOL
 	}
 
 	/** typedef */
@@ -76,46 +48,50 @@ public class GraphBuilder {
 			super(type, _gvplGraph);
 			_name = name;
 		}
-		
+
 		public String getName() {
 			return _name;
 		}
 	}
-	
+
 	public class StructVarDecl extends DirectVarDecl {
-		
+
 		Map<MemberId, VarDecl> _memberInstances = new HashMap<MemberId, VarDecl>();
 
-		public StructVarDecl(String name, TypeId type, StructDecl structDecl, AstLoader parentAstLoader) {
+		public StructVarDecl(String name, TypeId type, StructDecl structDecl,
+				AstLoader parentAstLoader) {
 			super(name, type);
-			
-			//For each member of the struct, create a variable instance of the member
-			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes.entrySet()){
+
+			// For each member of the struct, create a variable instance of the
+			// member
+			for (Map.Entry<MemberId, StructMember> entry : structDecl._member_var_graph_nodes
+					.entrySet()) {
 				StructMember struct_member = entry.getValue();
-				
+
 				String memberName = name + "." + struct_member.getName();
-				VarDecl member_instance = parentAstLoader.addVarDecl(memberName, struct_member.getMemberType());
+				VarDecl member_instance = parentAstLoader.addVarDecl(memberName,
+						struct_member.getMemberType(), struct_member.getNumPointerOps());
 				_memberInstances.put(entry.getKey(), member_instance);
 			}
 		}
 
 		public VarDecl findMember(MemberId member_id) {
 			VarDecl varDecl = _memberInstances.get(member_id);
-			if(varDecl != null)
+			if (varDecl != null)
 				return varDecl;
-			
-			for (VarDecl var : _memberInstances.values()){
-				if (var instanceof StructVarDecl){
-					varDecl = ((StructVarDecl)var).findMember(member_id);
+
+			for (VarDecl var : _memberInstances.values()) {
+				if (var instanceof StructVarDecl) {
+					varDecl = ((StructVarDecl) var).findMember(member_id);
 					if (varDecl != null)
 						return varDecl;
 				}
-					
+
 			}
-			
+
 			return null;
 		}
-		
+
 		@Override
 		public void initializeGraphNode(NodeType type) {
 			super.initializeGraphNode(type);
@@ -123,43 +99,51 @@ public class GraphBuilder {
 			for (VarDecl var : _memberInstances.values())
 				var.initializeGraphNode(NodeType.E_VARIABLE);
 		}
-		
+
 		public Map<MemberId, VarDecl> getInternalVariables() {
 			Map<MemberId, VarDecl> internalVariables = new HashMap<MemberId, VarDecl>();
-			
+
 			internalVariables.putAll(_memberInstances);
-			
+
 			for (VarDecl var : _memberInstances.values())
 				if (var instanceof StructVarDecl)
-					internalVariables.putAll(((StructVarDecl)var)._memberInstances);
-			
+					internalVariables.putAll(((StructVarDecl) var)._memberInstances);
+
 			return internalVariables;
 		}
 	}
-	
-	public class StructMember{
+
+	public class StructMember {
 		private MemberId _id;
 		private String _name;
 		private TypeId _type;
-		//private StructDecl _parent;
-		
-		public StructMember(StructDecl parent, MemberId id, String name, TypeId type) {
-			//_parent = parent;
+		private int _numPointerOps;
+
+		// private StructDecl _parent;
+
+		public StructMember(StructDecl parent, MemberId id, String name, TypeId type,
+				int numPointerOps) {
+			// _parent = parent;
 			_id = id;
 			_name = name;
 			_type = type;
+			_numPointerOps = numPointerOps;
 		}
-		
+
 		public MemberId getMemberId() {
 			return _id;
 		}
-		
+
 		public TypeId getMemberType() {
 			return _type;
 		}
-		
+
 		public String getName() {
 			return _name;
+		}
+
+		public int getNumPointerOps() {
+			return _numPointerOps;
 		}
 	}
 
@@ -173,11 +157,11 @@ public class GraphBuilder {
 			_name = name;
 			_member_var_graph_nodes = new HashMap<MemberId, StructMember>();
 		}
-		
+
 		public void addMember(StructMember structMember) {
 			_member_var_graph_nodes.put(structMember._id, structMember);
 		}
-		
+
 		public String getName() {
 			return _name;
 		}
@@ -194,8 +178,7 @@ public class GraphBuilder {
 	/** Converts a ast node id to a VarDecl instance */
 	// Map<var_id, VarDecl> _ast_variables;
 
-	public GraphBuilder()
-	{
+	public GraphBuilder() {
 		// _bin_op_strings[E_ASSIGN_OP] = "=";
 
 		_bin_op_strings.put(eBinOp.E_ADD_OP, "+");
@@ -228,7 +211,8 @@ public class GraphBuilder {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode addAssign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node, AstLoader astLoader) {
+	public GraphNode addAssign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node,
+			AstLoader astLoader) {
 		GraphNode lhs_node = _gvplGraph.add_graph_node(lhs_var_decl, lhs_type);
 		rhs_node.addDependentNode(lhs_node, astLoader);
 		lhs_var_decl.updateNode(lhs_node);
@@ -250,9 +234,10 @@ public class GraphBuilder {
 		val_node.addDependentNode(notOpNode, astLoader);
 
 		return notOpNode;
-	} 
+	}
 
-	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node, AstLoader astLoader) {
+	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
+			AstLoader astLoader) {
 		GraphNode bin_op_node = _gvplGraph.add_graph_node(_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
 
@@ -276,14 +261,15 @@ public class GraphBuilder {
 	public GraphNode add_var_ref(VarDecl var_decl) {
 		return var_decl.getCurrentNode();
 	}
-	
-	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition, AstLoader astLoader) {
+
+	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
+			AstLoader astLoader) {
 		GraphNode ifOpNode = _gvplGraph.add_graph_node("If", NodeType.E_OPERATION);
 
 		ifTrue.addDependentNode(ifOpNode, astLoader);
 		ifFalse.addDependentNode(ifOpNode, astLoader);
 		condition.addDependentNode(ifOpNode, astLoader);
-		
+
 		addAssign(var, NodeType.E_VARIABLE, ifOpNode, null);
 	}
 

@@ -33,26 +33,28 @@ public class MemberFunc extends Function {
 		_parentLoadStruct = parent;
 
 		List<StructMember> members = _parentLoadStruct.getMembers();
-		//declare a variable for each member of the struct
+		// declare a variable for each member of the struct
 		for (StructMember member : members) {
-			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType());
+			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType(),
+					member.getNumPointerOps());
 			member_var.initializeGraphNode(NodeType.E_VARIABLE);
 			addMember(member_var, member.getMemberId());
-			
-			if (member_var instanceof StructVarDecl){
+
+			if (member_var instanceof StructVarDecl) {
 				StructVarDecl structVarDecl = (StructVarDecl) member_var;
-				for (Map.Entry<MemberId, VarDecl> entry : structVarDecl.getInternalVariables().entrySet()) {
+				for (Map.Entry<MemberId, VarDecl> entry : structVarDecl.getInternalVariables()
+						.entrySet()) {
 					addMember((DirectVarDecl) entry.getValue(), entry.getKey());
 				}
 			}
 		}
 	}
-	
+
 	private void addMember(DirectVarDecl var, MemberId id) {
 		_varFromMembersMap.put(id, var);
 		_memberFromVar.put(var, id);
 	}
-	
+
 	protected String calcName(String internalName) {
 		return _parentLoadStruct.getName() + "::" + internalName;
 	}
@@ -68,13 +70,13 @@ public class MemberFunc extends Function {
 	 * @return The VarDecl of the reference to a variable
 	 */
 	public VarDecl getVarDeclOfReference(IASTExpression expr) {
-		
+
 		IASTIdExpression id_expr = null;
-		if(expr instanceof IASTIdExpression)
+		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
 			ErrorOutputter.fatalError("problem here");
-		
+
 		// Check if the variable is declared inside the own block
 		VarDecl var_decl = getVarDeclOfLocalReference(id_expr);
 		if (var_decl != null)
@@ -91,22 +93,22 @@ public class MemberFunc extends Function {
 
 		return direct_var_decl;
 	}
-	
+
 	@Override
 	public void varWrite(VarDecl var) {
-		if (_parent != null) 
+		if (_parent != null)
 			_parent.varWrite(var);
-		
-		if(_memberFromVar.containsKey(var))
+
+		if (_memberFromVar.containsKey(var))
 			_writtenMembers.put(var, _memberFromVar.get(var));
 	}
-	
+
 	@Override
 	public void varRead(VarDecl var) {
-		if (_parent != null) 
+		if (_parent != null)
 			_parent.varRead(var);
-		
-		if(_memberFromVar.containsKey(var))
+
+		if (_memberFromVar.containsKey(var))
 			_readMembers.put(var, _memberFromVar.get(var));
 	}
 
@@ -119,7 +121,8 @@ public class MemberFunc extends Function {
 	 */
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
 			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
-		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
+		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
+				_graphBuilder._gvplGraph, this);
 
 		for (Map.Entry<VarDecl, MemberId> entry : _readMembers.entrySet()) {
 			VarDecl varDecl = entry.getKey();

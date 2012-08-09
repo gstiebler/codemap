@@ -78,18 +78,18 @@ public class AstLoader {
 
 	public DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
-		DirectVarDecl var_decl = addVarDecl(name.toString(), type);
+		DirectVarDecl var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators().length);
 		_direct_var_graph_nodes.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
 	}
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
-		DirectVarDecl var_decl = addVarDecl(functionName, type);
+		DirectVarDecl var_decl = addVarDecl(functionName, type, 0);
 		return _graphBuilder.addAssign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
 	}
 
-	public DirectVarDecl addVarDecl(String name, TypeId type) {
+	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
 		DirectVarDecl var_decl = null;
 
 		if (type == null) {
