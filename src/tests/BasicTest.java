@@ -39,4 +39,14 @@ public class BasicTest {
 		TestsUtil.baseTest("for_loop");
 	}
 	
+	@Test
+	public void operators() {
+		TestsUtil.baseTest("operators");
+	}
+	
+	@Test
+	public void pointer() {
+		TestsUtil.baseTest("pointer");
+	}
+	
 }
