@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
@@ -53,7 +54,7 @@ public class ForLoopHeader extends AstLoader {
 			return intVarDecl;
 
 		String varName = id_expr.getName().toString();
-		intVarDecl = _graphBuilder.new DirectVarDecl(varName , null);
+		intVarDecl = new DirectVarDecl(_graphBuilder, varName , null);
 		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;

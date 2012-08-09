@@ -1,10 +1,10 @@
 package gvpl.cdt;
 
+import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.DirectVarDecl;
-import gvpl.graph.GraphBuilder.StructVarDecl;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphBuilder.eAssignBinOp;
 import gvpl.graph.GraphBuilder.eBinOp;

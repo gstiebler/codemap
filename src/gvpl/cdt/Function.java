@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.TypeId;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;

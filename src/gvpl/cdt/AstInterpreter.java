@@ -1,10 +1,10 @@
 package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
+import gvpl.common.StructDecl;
+import gvpl.common.StructMember;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.StructDecl;
-import gvpl.graph.GraphBuilder.StructMember;
 import gvpl.graph.GraphBuilder.TypeId;
 
 import java.util.HashMap;

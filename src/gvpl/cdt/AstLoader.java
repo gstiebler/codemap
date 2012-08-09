@@ -1,12 +1,12 @@
 package gvpl.cdt;
 
+import gvpl.common.DirectVarDecl;
+import gvpl.common.StructDecl;
+import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.StructDecl;
-import gvpl.graph.GraphBuilder.StructVarDecl;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
 
@@ -92,11 +92,14 @@ public class AstLoader {
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
 		DirectVarDecl var_decl = null;
 
-		if (type == null) {
-			var_decl = _graphBuilder.new DirectVarDecl(name, type);
+		if(numPointerOps > 0){
+			
+		}
+		else if (type == null) {
+			var_decl = new DirectVarDecl(_graphBuilder, name, type);
 		} else {
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			var_decl = _graphBuilder.new StructVarDecl(name, type, structDecl, this);
+			var_decl = new StructVarDecl(_graphBuilder, name, type, structDecl, this);
 		}
 		return var_decl;
 	}

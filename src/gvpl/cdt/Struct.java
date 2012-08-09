@@ -1,5 +1,7 @@
 package gvpl.cdt;
 
+import gvpl.common.StructDecl;
+import gvpl.common.StructMember;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.*;
 
@@ -31,7 +33,7 @@ public class Struct extends AstLoader {
 
 		_binding = name.resolveBinding();
 
-		_structDecl = _graphBuilder.new StructDecl(_typeId, name.toString());
+		_structDecl = new StructDecl(_typeId, name.toString());
 		// load every field
 		for (IASTDeclaration member : members) {
 			if (!(member instanceof IASTSimpleDeclaration))
@@ -46,7 +48,7 @@ public class Struct extends AstLoader {
 				IASTName decl_name = declarator.getName();
 				MemberId member_id = _graphBuilder.new MemberId();
 
-				StructMember struct_member = _graphBuilder.new StructMember(_structDecl,
+				StructMember struct_member = new StructMember(_structDecl,
 						member_id, decl_name.toString(), param_type, declarator.getPointerOperators().length);
 				_structDecl.addMember(struct_member);
 

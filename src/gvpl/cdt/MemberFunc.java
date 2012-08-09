@@ -1,13 +1,13 @@
 package gvpl.cdt;
 
+import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.StructMember;
+import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.DirectVarDecl;
 import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.StructMember;
-import gvpl.graph.GraphBuilder.StructVarDecl;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
