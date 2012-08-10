@@ -92,7 +92,7 @@ public class AstLoader {
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
 		DirectVarDecl var_decl = null;
 
-		if(numPointerOps > 0){
+		if(numPointerOps > 0) {
 			
 		}
 		else if (type == null) {

@@ -27,7 +27,7 @@ public class GraphBuilder {
 		_cppMaps = cppMaps;
 	}
 
-	public GraphNode add_direct_val(eValueType type, String value) {
+	public GraphNode addDirectVal(eValueType type, String value) {
 		return _gvplGraph.add_graph_node(value, NodeType.E_DIRECT_VALUE);
 	}
 
@@ -49,7 +49,7 @@ public class GraphBuilder {
 		return lhs_node;
 	}
 
-	GraphNode add_un_op(eUnOp op, GraphNode val_node, AstLoader astLoader) {
+	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader) {
 		GraphNode un_op_node = _gvplGraph.add_graph_node(_cppMaps._un_op_strings.get(op),
 				NodeType.E_OPERATION);
 
@@ -76,7 +76,7 @@ public class GraphBuilder {
 		return bin_op_node;
 	}
 
-	public GraphNode add_assign_bin_op(eAssignBinOp op, VarDecl lhs_var_decl, GraphNode lhs_node,
+	public GraphNode addAssignBinOp(eAssignBinOp op, VarDecl lhs_var_decl, GraphNode lhs_node,
 			GraphNode rhs_node, AstLoader astLoader) {
 		GraphNode bin_op_node = _gvplGraph.add_graph_node(_cppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION);
@@ -87,7 +87,7 @@ public class GraphBuilder {
 		return addAssign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
 	}
 
-	public GraphNode add_var_ref(VarDecl var_decl) {
+	public GraphNode addVarRef(VarDecl var_decl) {
 		return var_decl.getCurrentNode();
 	}
 

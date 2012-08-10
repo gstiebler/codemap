@@ -108,7 +108,7 @@ public class InstructionLine {
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference((IASTIdExpression) node);
-			return _graphBuilder.add_var_ref(var_decl);
+			return _graphBuilder.addVarRef(var_decl);
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return load_bin_op((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
@@ -119,7 +119,7 @@ public class InstructionLine {
 		} else if (node instanceof IASTFieldReference) {// reference to field of
 														// a struct
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
-			return _graphBuilder.add_var_ref(var_decl);
+			return _graphBuilder.addVarRef(var_decl);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
 
@@ -165,7 +165,7 @@ public class InstructionLine {
 
 		GraphNode lvalue = load_value(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.add_assign_bin_op(op, var_decl, lvalue, rvalue, _parentBasicBlock);
+		return _graphBuilder.addAssignBinOp(op, var_decl, lvalue, rvalue, _parentBasicBlock);
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
@@ -202,7 +202,7 @@ public class InstructionLine {
 
 	GraphNode load_direct_value(IASTLiteralExpression node) {
 		String value = node.toString();
-		return _graphBuilder.add_direct_val(CppMaps.eValueType.E_INVALID_TYPE, value);
+		return _graphBuilder.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value);
 	}
 
 	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression func_call,
