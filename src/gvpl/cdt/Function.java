@@ -92,7 +92,7 @@ public class Function extends AstLoader {
 			IASTDeclarator parameter_var_decl = parameter.getDeclarator();
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(decl_spec);
-			DirectVarDecl var_decl = load_var_decl(parameter_var_decl, type);
+			DirectVarDecl var_decl = loadVarDecl(parameter_var_decl, type);
 			_parameters.add(var_decl);
 		}
 	}

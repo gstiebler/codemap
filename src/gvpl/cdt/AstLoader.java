@@ -76,7 +76,7 @@ public class AstLoader {
 		return owner_var_decl.findMember(member_id);
 	}
 
-	public DirectVarDecl load_var_decl(IASTDeclarator decl, TypeId type) {
+	public DirectVarDecl loadVarDecl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
 		DirectVarDecl var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators().length);
 		_direct_var_graph_nodes.put(name.resolveBinding(), var_decl);

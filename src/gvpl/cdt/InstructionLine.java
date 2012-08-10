@@ -65,7 +65,7 @@ public class InstructionLine {
 			IASTDeclarator[] declarators = simple_decl.getDeclarators();
 			for (IASTDeclarator declarator : declarators) {
 				// possibly more than one variable per line
-				DirectVarDecl var_decl = _parentBasicBlock.load_var_decl(declarator, type);
+				DirectVarDecl var_decl = _parentBasicBlock.loadVarDecl(declarator, type);
 				LoadVariableInitialization(var_decl, declarator);
 			}
 		} else if (statement instanceof IASTExpression)
