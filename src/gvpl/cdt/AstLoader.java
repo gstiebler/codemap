@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
+import gvpl.common.PointerVarDecl;
 import gvpl.common.StructDecl;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
@@ -90,18 +91,17 @@ public class AstLoader {
 	}
 
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
-		DirectVarDecl var_decl = null;
+		DirectVarDecl varDecl = null;
 
 		if(numPointerOps > 0) {
-			
-		}
-		else if (type == null) {
-			var_decl = new DirectVarDecl(_graphBuilder, name, type);
+			varDecl = new PointerVarDecl(_graphBuilder, name, type);
+		}  else if (type == null) {
+			varDecl = new DirectVarDecl(_graphBuilder, name, type);
 		} else {
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			var_decl = new StructVarDecl(_graphBuilder, name, type, structDecl, this);
+			varDecl = new StructVarDecl(_graphBuilder, name, type, structDecl, this);
 		}
-		return var_decl;
+		return varDecl;
 	}
 
 	public Function getFunction() {

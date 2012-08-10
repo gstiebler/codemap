@@ -31,7 +31,7 @@ public class ForLoopHeader extends AstLoader {
 		instructionLineInit.load(initializer);
 		
 		InstructionLine instructionLineCond = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
-		instructionLineCond.load_value(condition);
+		instructionLineCond.loadValue(condition);
 	}
 	
 	/**

@@ -69,14 +69,14 @@ public class InstructionLine {
 				LoadVariableInitialization(var_decl, declarator);
 			}
 		} else if (statement instanceof IASTExpression)
-			load_value((IASTExpression) statement);
+			loadValue((IASTExpression) statement);
 		else if (statement instanceof IASTForStatement)
-			load_for_stmt((IASTForStatement) statement);
+			loadForStmt((IASTForStatement) statement);
 		else if (statement instanceof IASTExpressionStatement) {
 			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
 			IASTExpression expr = expr_stat.getExpression();
 			if (expr instanceof IASTBinaryExpression)
-				load_assign_bin_op((IASTBinaryExpression) expr);
+				loadAssignBinOp((IASTBinaryExpression) expr);
 			else if (expr instanceof IASTFunctionCallExpression)
 				loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (statement instanceof IASTReturnStatement) {
@@ -96,23 +96,23 @@ public class InstructionLine {
 		if (init_exp == null)
 			return;
 
-		GraphNode val = load_value(init_exp.getExpression());
+		GraphNode val = loadValue(init_exp.getExpression());
 		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock);
 	}
 
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
-	public GraphNode load_value(IASTExpression node) {
+	public GraphNode loadValue(IASTExpression node) {
 
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference((IASTIdExpression) node);
 			return _graphBuilder.addVarRef(var_decl);
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
-			return load_bin_op((IASTBinaryExpression) node);
+			return loadBinOp((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
-			return load_direct_value((IASTLiteralExpression) node);
+			return loadDirectValue((IASTLiteralExpression) node);
 		} else if (node instanceof IASTFunctionCallExpression) {// Eh umachamada
 																// a funcao
 			return loadFunctionCall((IASTFunctionCallExpression) node);
@@ -126,7 +126,7 @@ public class InstructionLine {
 		return null;
 	}
 
-	private void load_for_stmt(IASTForStatement node) {
+	private void loadForStmt(IASTForStatement node) {
 		ForLoop forLoop = new ForLoop(_graphBuilder, _parentBasicBlock, _cppMaps, _astInterpreter);
 		forLoop.load(node, _graphBuilder); 
 	}
@@ -134,7 +134,7 @@ public class InstructionLine {
 	private void loadReturnStatement(IASTReturnStatement statement) {
 		IASTReturnStatement return_node = (IASTReturnStatement) statement;
 
-		GraphNode rvalue = load_value(return_node.getReturnValue());
+		GraphNode rvalue = loadValue(return_node.getReturnValue());
 
 		Function function = _parentBasicBlock.getFunction();
 
@@ -152,18 +152,18 @@ public class InstructionLine {
 	 *            The cpp node of this operation
 	 * @return The graph node of the result of the operation
 	 */
-	GraphNode load_assign_bin_op(IASTBinaryExpression node) {
+	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		IASTExpression op1Expr = node.getOperand1();
 		VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
 
-		GraphNode rvalue = load_value(node.getOperand2());
+		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
 			_graphBuilder.addAssignOp(var_decl, rvalue, _parentBasicBlock);
 			return null;
 		}
 
-		GraphNode lvalue = load_value(node.getOperand1());
+		GraphNode lvalue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
 		return _graphBuilder.addAssignBinOp(op, var_decl, lvalue, rvalue, _parentBasicBlock);
 	}
@@ -175,9 +175,9 @@ public class InstructionLine {
 			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
 			IASTExpression[] parameters = expr_list.getExpressions();
 			for (IASTExpression parameter : parameters)
-				parameter_values.add(load_value(parameter));
+				parameter_values.add(loadValue(parameter));
 		} else {
-			parameter_values.add(load_value(param_expr));
+			parameter_values.add(loadValue(param_expr));
 		}
 
 		IASTExpression name_expr = func_call.getFunctionNameExpression();
@@ -193,14 +193,14 @@ public class InstructionLine {
 		return null;
 	}
 
-	GraphNode load_bin_op(IASTBinaryExpression bin_op) {
+	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
 		eBinOp op = _cppMaps.getBinOpType(bin_op.getOperator());
-		GraphNode lvalue = load_value(bin_op.getOperand1());
-		GraphNode rvalue = load_value(bin_op.getOperand2());
+		GraphNode lvalue = loadValue(bin_op.getOperand1());
+		GraphNode rvalue = loadValue(bin_op.getOperand2());
 		return _graphBuilder.addBinOp(op, lvalue, rvalue, _parentBasicBlock);
 	}
 
-	GraphNode load_direct_value(IASTLiteralExpression node) {
+	GraphNode loadDirectValue(IASTLiteralExpression node) {
 		String value = node.toString();
 		return _graphBuilder.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value);
 	}
@@ -223,7 +223,7 @@ public class InstructionLine {
 	
 	public void loadIfStatement(IASTIfStatement ifStatement) {
 		IASTExpression condition = ifStatement.getConditionExpression();
-		GraphNode conditionNode = load_value(condition);
+		GraphNode conditionNode = loadValue(condition);
 			
 		IASTStatement thenClause = ifStatement.getThenClause();
 		{
