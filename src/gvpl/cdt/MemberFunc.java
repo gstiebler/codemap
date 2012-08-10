@@ -29,7 +29,7 @@ public class MemberFunc extends Function {
 	private Map<VarDecl, MemberId> _readMembers = new HashMap<VarDecl, MemberId>();
 
 	public MemberFunc(Struct parent) {
-		super(new GraphBuilder(), parent, parent._cppMaps, parent._astInterpreter);
+		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
 		_parentLoadStruct = parent;
 
 		List<StructMember> members = _parentLoadStruct.getMembers();

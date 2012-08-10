@@ -31,7 +31,7 @@ public class Function extends AstLoader {
 
 	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
-		super(new GraphBuilder(), parent, cppMaps, astInterpreter);
+		super(new GraphBuilder(cppMaps), parent, cppMaps, astInterpreter);
 
 		_parameters = new ArrayList<VarDecl>();
 		_return_node = null;

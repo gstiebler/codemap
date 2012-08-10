@@ -35,7 +35,7 @@ public class ParserExample {
 		IASTTranslationUnit translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(
 				reader, info, readerFactory, null, log);
 
-		GraphBuilder graph_builder = new GraphBuilder();
+		GraphBuilder graph_builder = new GraphBuilder(new CppMaps());
 		new AstInterpreter(graph_builder, translationUnit);
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();

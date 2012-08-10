@@ -1,6 +1,5 @@
 package gvpl.common;
 
-import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
 

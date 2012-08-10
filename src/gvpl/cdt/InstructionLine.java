@@ -1,13 +1,13 @@
 package gvpl.cdt;
 
+import gvpl.cdt.CppMaps.eAssignBinOp;
+import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.TypeId;
-import gvpl.graph.GraphBuilder.eAssignBinOp;
-import gvpl.graph.GraphBuilder.eBinOp;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
@@ -202,7 +202,7 @@ public class InstructionLine {
 
 	GraphNode load_direct_value(IASTLiteralExpression node) {
 		String value = node.toString();
-		return _graphBuilder.add_direct_val(GraphBuilder.eValueType.E_INVALID_TYPE, value);
+		return _graphBuilder.add_direct_val(CppMaps.eValueType.E_INVALID_TYPE, value);
 	}
 
 	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression func_call,

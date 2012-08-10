@@ -7,6 +7,7 @@ import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
+import gvpl.cdt.CppMaps;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -57,7 +58,7 @@ public class TestsUtil {
 			e.printStackTrace();
 		}
 
-		GraphBuilder graph_builder = new GraphBuilder();
+		GraphBuilder graph_builder = new GraphBuilder(new CppMaps());
 		new AstInterpreter(graph_builder, translationUnit);
 		
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
