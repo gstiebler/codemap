@@ -38,7 +38,7 @@ public class Graph {
 		return graph_node;
 	}
 
-	public GraphNode add_graph_node(VarDecl parentVar, NodeType type) {
+	public GraphNode addGraphNode(VarDecl parentVar, NodeType type) {
 		GraphNode graph_node = new GraphNode(parentVar, type);
 		_graph_nodes.add(graph_node);
 		return graph_node;

@@ -8,6 +8,7 @@ import gvpl.common.PointerVarDecl;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
 
@@ -136,8 +137,7 @@ public class InstructionLine {
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
 			return var_decl.getCurrentNode();
 		} else if (node instanceof IASTUnaryExpression) {
-			VarDecl varDecl = loadUnaryExpr((IASTUnaryExpression) node);
-			return varDecl.getCurrentNode();
+			return loadUnaryExpr((IASTUnaryExpression) node);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
 
@@ -173,17 +173,24 @@ public class InstructionLine {
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		IASTExpression op1Expr = node.getOperand1();
 		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
-		if(varDecl instanceof PointerVarDecl) {
-			PointerVarDecl pointer = (PointerVarDecl) varDecl;
-			VarDecl rhsPointer = loadVarInAddress(node.getOperand2());
-			pointer.setPointedVarDecl(rhsPointer);
-			return null;
-		}		
+		//check if we're trying to read a the instance of a pointer
+		if(op1Expr instanceof IASTUnaryExpression){
+			//rvalue = varDecl.getCurrentNode();
+			int x = 5;
+		} else {
+			//check if the operation is a assignment of a address to a pointer
+			if(varDecl instanceof PointerVarDecl) {
+				PointerVarDecl pointer = (PointerVarDecl) varDecl;
+				VarDecl rhsPointer = loadVarInAddress(node.getOperand2());
+				pointer.setPointedVarDecl(rhsPointer);
+				return null;
+			}	
+		}
 		
 		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			_graphBuilder.addAssignOp(varDecl, rvalue, _parentBasicBlock);
+			varDecl.addAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock);
 			return null;
 		}
 
@@ -285,13 +292,22 @@ public class InstructionLine {
 		return _parentBasicBlock.getVarDeclOfReference(op);
 	}
 	
-	VarDecl loadUnaryExpr(IASTUnaryExpression unExpr) {
+	/**
+	 * Currently used to read the value of "*b"
+	 * @param unExpr
+	 * @return
+	 */
+	GraphNode loadUnaryExpr(IASTUnaryExpression unExpr) {
 		//Check if the operator is a star
 		if(unExpr.getOperator() != CPPASTUnaryExpression.op_star)
 			ErrorOutputter.fatalError("not implemented");
 		
 		IASTExpression opExpr = unExpr.getOperand();
-		return loadPointedVar(opExpr, _parentBasicBlock);
+		VarDecl pointerVar = _parentBasicBlock.getVarDeclOfReference(opExpr);
+		if(!(pointerVar instanceof PointerVarDecl))
+			ErrorOutputter.fatalError("not expected here");
+		
+		return pointerVar.getCurrentNode();
 	}
 	
 	/**

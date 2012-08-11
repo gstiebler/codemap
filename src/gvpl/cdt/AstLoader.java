@@ -52,7 +52,8 @@ public class AstLoader {
 			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression)expr).getOperand();
-			return InstructionLine.loadPointedVar(opExpr, this);
+			varDecl = getVarDeclOfLocalReference((IASTIdExpression) opExpr);
+			//return InstructionLine.loadPointedVar(opExpr, this);
 		}
 
 		if(_parent == null)

@@ -8,14 +8,14 @@ import gvpl.graph.GraphNode;
 
 public abstract class VarDecl {
 	protected TypeId _type;
-	protected GraphNode _curr_graph_node = null;
-	protected GraphNode _first_graph_node = null;
+	protected GraphNode _currGraphNode = null;
+	protected GraphNode _firstGraphNode = null;
 	
-	private Graph _gvpl_graph;
+	protected Graph _gvplGraph;
 
 	public VarDecl(TypeId type, Graph graph) {
 		_type = type;
-		_gvpl_graph = graph;
+		_gvplGraph = graph;
 	}
 	
 	public TypeId getType() {
@@ -23,22 +23,22 @@ public abstract class VarDecl {
 	}
 	
 	public void updateNode(GraphNode node) {
-		if (_curr_graph_node == null)
-			_first_graph_node = node;
+		if (_currGraphNode == null)
+			_firstGraphNode = node;
 		
-		_curr_graph_node = node;
+		_currGraphNode = node;
 	}
 	
 	public GraphNode getFirstNode() {
-		return _first_graph_node;
+		return _firstGraphNode;
 	}
 	
 	public GraphNode getCurrentNode() {
-		return _curr_graph_node;
+		return _currGraphNode;
 	}
 	
 	public void initializeGraphNode(NodeType type) {
-		updateNode(_gvpl_graph.add_graph_node(this, type));
+		updateNode(_gvplGraph.addGraphNode(this, type));
 	}
 	
 	/**
@@ -48,7 +48,7 @@ public abstract class VarDecl {
 	 */
 	public GraphNode addAssign(NodeType lhs_type, GraphNode rhs_node,
 			AstLoader astLoader) {
-		GraphNode lhs_node = _gvpl_graph.add_graph_node(this, lhs_type);
+		GraphNode lhs_node = _gvplGraph.addGraphNode(this, lhs_type);
 		rhs_node.addDependentNode(lhs_node, astLoader);
 		updateNode(lhs_node);
 
