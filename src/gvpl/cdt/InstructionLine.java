@@ -105,7 +105,7 @@ public class InstructionLine {
 			if(!(var_decl instanceof PointerVarDecl))
 				ErrorOutputter.fatalError("not expected here");
 			
-			VarDecl pointedVar = loadVarInAddress(expr, _parentBasicBlock);
+			VarDecl pointedVar = loadPointedVar(expr, _parentBasicBlock);
 			
 			PointerVarDecl pointer = (PointerVarDecl) var_decl;
 			pointer.setPointedVarDecl(pointedVar);
@@ -175,7 +175,7 @@ public class InstructionLine {
 		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
 		if(varDecl instanceof PointerVarDecl) {
 			PointerVarDecl pointer = (PointerVarDecl) varDecl;
-			VarDecl rhsPointer = loadPointer(node.getOperand2());
+			VarDecl rhsPointer = loadVarInAddress(node.getOperand2());
 			pointer.setPointedVarDecl(rhsPointer);
 			return null;
 		}		
@@ -265,12 +265,18 @@ public class InstructionLine {
 		}
 	}
 	
-	public VarDecl loadPointer(IASTExpression pointerValue)
+	/**
+	 * Returns the var that is pointed by the address
+	 * For example, in "b = &d;" the function receives "&d" and returns the variable of "d"
+	 * @param address Address that contains the variable
+	 * @return The var that is pointed by the address
+	 */
+	public VarDecl loadVarInAddress(IASTExpression address)
 	{
-		if(!(pointerValue instanceof IASTUnaryExpression))
+		if(!(address instanceof IASTUnaryExpression))
 			ErrorOutputter.fatalError("not expected here!!");
 		
-		IASTUnaryExpression unaryExpr = (IASTUnaryExpression) pointerValue;
+		IASTUnaryExpression unaryExpr = (IASTUnaryExpression) address;
 		//Check if the operator is a reference
 		if(unaryExpr.getOperator() != IASTUnaryExpression.op_amper)
 			ErrorOutputter.fatalError("not expected here!!");
@@ -285,11 +291,19 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("not implemented");
 		
 		IASTExpression opExpr = unExpr.getOperand();
-		return loadVarInAddress(opExpr, _parentBasicBlock);
+		return loadPointedVar(opExpr, _parentBasicBlock);
 	}
 	
-	public static VarDecl loadVarInAddress(IASTExpression expr, AstLoader astLoader) {
-		VarDecl pointerVar = astLoader.getVarDeclOfReference(expr);
+	/**
+	 * Returns the variable that is currently pointed by the received pointer
+	 * For example, in "b = &d; c = *b;" in the second line, the function
+	 * will receive "b" as pointerExpr and will return the variable of "d"
+	 * @param pointerExpr Expression of a pointer variable
+	 * @param astLoader
+	 * @return The variable that is currently pointed by the received pointer
+	 */
+	public static VarDecl loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
+		VarDecl pointerVar = astLoader.getVarDeclOfReference(pointerExpr);
 		if(!(pointerVar instanceof PointerVarDecl))
 			ErrorOutputter.fatalError("not expected here");
 			

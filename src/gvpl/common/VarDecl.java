@@ -42,7 +42,7 @@ public abstract class VarDecl {
 	}
 	
 	/**
-	 * Creates an assignment
+	 * Creates an assignment to this variable
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
