@@ -105,7 +105,7 @@ public class InstructionLine {
 			if(!(var_decl instanceof PointerVarDecl))
 				ErrorOutputter.fatalError("not expected here");
 			
-			VarDecl pointedVar = loadAddress(expr);
+			VarDecl pointedVar = loadVarInAddress(expr, _parentBasicBlock);
 			
 			PointerVarDecl pointer = (PointerVarDecl) var_decl;
 			pointer.setPointedVarDecl(pointedVar);
@@ -285,15 +285,11 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("not implemented");
 		
 		IASTExpression opExpr = unExpr.getOperand();
-		VarDecl pointerVarDecl = _parentBasicBlock.getVarDeclOfReference(opExpr);
-		if(!(pointerVarDecl instanceof PointerVarDecl))
-			ErrorOutputter.fatalError("not expected");
-		
-		return ((PointerVarDecl)pointerVarDecl).getPointedVarDecl();
+		return loadVarInAddress(opExpr, _parentBasicBlock);
 	}
 	
-	VarDecl loadAddress(IASTExpression expr) {
-		VarDecl pointerVar = _parentBasicBlock.getVarDeclOfReference(expr);
+	public static VarDecl loadVarInAddress(IASTExpression expr, AstLoader astLoader) {
+		VarDecl pointerVar = astLoader.getVarDeclOfReference(expr);
 		if(!(pointerVar instanceof PointerVarDecl))
 			ErrorOutputter.fatalError("not expected here");
 			

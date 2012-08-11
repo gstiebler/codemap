@@ -53,11 +53,7 @@ public class AstLoader {
 			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression)expr).getOperand();
-			VarDecl pointerVarDecl = getVarDeclOfReference(opExpr);
-			if(!(pointerVarDecl instanceof PointerVarDecl))
-				ErrorOutputter.fatalError("not expected");
-			
-			return ((PointerVarDecl)pointerVarDecl).getPointedVarDecl();
+			return InstructionLine.loadVarInAddress(opExpr, this);
 		}
 
 		if(_parent == null)
