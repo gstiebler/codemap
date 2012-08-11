@@ -32,21 +32,7 @@ public class GraphBuilder {
 	}
 
 	public void addAssignOp(VarDecl var_decl_lhs, GraphNode rhs_node, AstLoader astLoader) {
-		addAssign(var_decl_lhs, NodeType.E_VARIABLE, rhs_node, astLoader);
-	}
-
-	/**
-	 * Creates an assignment
-	 * 
-	 * @return New node from assignment, the left from assignment
-	 */
-	public GraphNode addAssign(VarDecl lhs_var_decl, NodeType lhs_type, GraphNode rhs_node,
-			AstLoader astLoader) {
-		GraphNode lhs_node = _gvplGraph.add_graph_node(lhs_var_decl, lhs_type);
-		rhs_node.addDependentNode(lhs_node, astLoader);
-		lhs_var_decl.updateNode(lhs_node);
-
-		return lhs_node;
+		var_decl_lhs.addAssign(NodeType.E_VARIABLE, rhs_node, astLoader);
 	}
 
 	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader) {
@@ -84,7 +70,7 @@ public class GraphBuilder {
 		lhs_node.addDependentNode(bin_op_node, astLoader);
 		rhs_node.addDependentNode(bin_op_node, astLoader);
 
-		return addAssign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
+		return lhs_var_decl.addAssign(NodeType.E_VARIABLE, bin_op_node, astLoader);
 	}
 
 	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
@@ -95,7 +81,7 @@ public class GraphBuilder {
 		ifFalse.addDependentNode(ifOpNode, astLoader);
 		condition.addDependentNode(ifOpNode, astLoader);
 
-		addAssign(var, NodeType.E_VARIABLE, ifOpNode, null);
+		var.addAssign(NodeType.E_VARIABLE, ifOpNode, null);
 	}
 
 }

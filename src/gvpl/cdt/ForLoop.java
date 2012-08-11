@@ -52,7 +52,7 @@ public class ForLoop extends AstLoader {
 				extVarDecl.getCurrentNode().addDependentNode(firstNode, null);
 			
 			if(_writtenExtVars.contains(intVarDecl))
-				graphBuilder.addAssign(extVarDecl, NodeType.E_VARIABLE, currentNode, null);
+				extVarDecl.addAssign(NodeType.E_VARIABLE, currentNode, null);
 		}
 	}
 	

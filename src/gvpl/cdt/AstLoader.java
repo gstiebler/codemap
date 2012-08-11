@@ -91,7 +91,7 @@ public class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
 		DirectVarDecl var_decl = addVarDecl(functionName, type, 0);
-		return _graphBuilder.addAssign(var_decl, NodeType.E_RETURN_VALUE, rvalue, this);
+		return var_decl.addAssign(NodeType.E_RETURN_VALUE, rvalue, this);
 	}
 
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {

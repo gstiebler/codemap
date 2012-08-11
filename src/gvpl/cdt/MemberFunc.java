@@ -137,7 +137,7 @@ public class MemberFunc extends Function {
 			GraphNode currNode = varDecl.getCurrentNode();
 			GraphNode currNodeInNewGraph = map.get(currNode);
 			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
-			graphBuilder.addAssign(memberInstance, NodeType.E_VARIABLE, currNodeInNewGraph, null);
+			memberInstance.addAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map);
