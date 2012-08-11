@@ -87,10 +87,6 @@ public class GraphBuilder {
 		return addAssign(lhs_var_decl, NodeType.E_VARIABLE, bin_op_node, astLoader);
 	}
 
-	public GraphNode addVarRef(VarDecl var_decl) {
-		return var_decl.getCurrentNode();
-	}
-
 	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
 			AstLoader astLoader) {
 		GraphNode ifOpNode = _gvplGraph.add_graph_node("If", NodeType.E_OPERATION);

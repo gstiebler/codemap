@@ -1,7 +1,6 @@
 package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
-import gvpl.common.ErrorOutputter;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.StructDecl;
 import gvpl.common.StructVarDecl;

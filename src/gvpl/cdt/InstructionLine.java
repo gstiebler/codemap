@@ -123,7 +123,7 @@ public class InstructionLine {
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(node);
-			return _graphBuilder.addVarRef(var_decl);
+			return var_decl.getCurrentNode();
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
@@ -134,10 +134,10 @@ public class InstructionLine {
 		} else if (node instanceof IASTFieldReference) {// reference to field of
 														// a struct
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
-			return _graphBuilder.addVarRef(var_decl);
+			return var_decl.getCurrentNode();
 		} else if (node instanceof IASTUnaryExpression) {
 			VarDecl varDecl = loadUnaryExpr((IASTUnaryExpression) node);
-			return _graphBuilder.addVarRef(varDecl);
+			return varDecl.getCurrentNode();
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
 
