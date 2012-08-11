@@ -4,6 +4,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.PointerVarDecl;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
@@ -32,7 +33,9 @@ import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 
 public class InstructionLine {
 
@@ -71,7 +74,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTExpression)
 			loadValue((IASTExpression) statement);
 		else if (statement instanceof IASTForStatement)
-			loadForStmt((IASTForStatement) statement);
+			load_for_stmt((IASTForStatement) statement);
 		else if (statement instanceof IASTExpressionStatement) {
 			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
 			IASTExpression expr = expr_stat.getExpression();
@@ -96,7 +99,19 @@ public class InstructionLine {
 		if (init_exp == null)
 			return;
 
-		GraphNode val = loadValue(init_exp.getExpression());
+		IASTExpression expr = init_exp.getExpression();
+		
+		if(decl.getPointerOperators().length > 0) {
+			if(!(var_decl instanceof PointerVarDecl))
+				ErrorOutputter.fatalError("not expected here");
+			
+			VarDecl pointedVar = loadAddress(expr);
+			
+			PointerVarDecl pointer = (PointerVarDecl) var_decl;
+			pointer.setPointedVarDecl(pointedVar);
+		}
+
+		GraphNode val = loadValue(expr);
 		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock);
 	}
 
@@ -107,7 +122,7 @@ public class InstructionLine {
 
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
-			VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference((IASTIdExpression) node);
+			VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(node);
 			return _graphBuilder.addVarRef(var_decl);
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) node);
@@ -120,13 +135,16 @@ public class InstructionLine {
 														// a struct
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
 			return _graphBuilder.addVarRef(var_decl);
+		} else if (node instanceof IASTUnaryExpression) {
+			VarDecl varDecl = loadUnaryExpr((IASTUnaryExpression) node);
+			return _graphBuilder.addVarRef(varDecl);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
 
 		return null;
 	}
 
-	private void loadForStmt(IASTForStatement node) {
+	private void load_for_stmt(IASTForStatement node) {
 		ForLoop forLoop = new ForLoop(_graphBuilder, _parentBasicBlock, _cppMaps, _astInterpreter);
 		forLoop.load(node, _graphBuilder); 
 	}
@@ -154,18 +172,24 @@ public class InstructionLine {
 	 */
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		IASTExpression op1Expr = node.getOperand1();
-		VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
-
+		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
+		if(varDecl instanceof PointerVarDecl) {
+			PointerVarDecl pointer = (PointerVarDecl) varDecl;
+			VarDecl rhsPointer = loadPointer(node.getOperand2());
+			pointer.setPointedVarDecl(rhsPointer);
+			return null;
+		}		
+		
 		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			_graphBuilder.addAssignOp(var_decl, rvalue, _parentBasicBlock);
+			_graphBuilder.addAssignOp(varDecl, rvalue, _parentBasicBlock);
 			return null;
 		}
 
 		GraphNode lvalue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.addAssignBinOp(op, var_decl, lvalue, rvalue, _parentBasicBlock);
+		return _graphBuilder.addAssignBinOp(op, varDecl, lvalue, rvalue, _parentBasicBlock);
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
@@ -239,5 +263,40 @@ public class InstructionLine {
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, notCondition);
 			basicBlockLoader.load(elseClause);
 		}
+	}
+	
+	public VarDecl loadPointer(IASTExpression pointerValue)
+	{
+		if(!(pointerValue instanceof IASTUnaryExpression))
+			ErrorOutputter.fatalError("not expected here!!");
+		
+		IASTUnaryExpression unaryExpr = (IASTUnaryExpression) pointerValue;
+		//Check if the operator is a reference
+		if(unaryExpr.getOperator() != IASTUnaryExpression.op_amper)
+			ErrorOutputter.fatalError("not expected here!!");
+			
+		IASTExpression op = unaryExpr.getOperand();
+		return _parentBasicBlock.getVarDeclOfReference(op);
+	}
+	
+	VarDecl loadUnaryExpr(IASTUnaryExpression unExpr) {
+		//Check if the operator is a star
+		if(unExpr.getOperator() != CPPASTUnaryExpression.op_star)
+			ErrorOutputter.fatalError("not implemented");
+		
+		IASTExpression opExpr = unExpr.getOperand();
+		VarDecl pointerVarDecl = _parentBasicBlock.getVarDeclOfReference(opExpr);
+		if(!(pointerVarDecl instanceof PointerVarDecl))
+			ErrorOutputter.fatalError("not expected");
+		
+		return ((PointerVarDecl)pointerVarDecl).getPointedVarDecl();
+	}
+	
+	VarDecl loadAddress(IASTExpression expr) {
+		VarDecl pointerVar = _parentBasicBlock.getVarDeclOfReference(expr);
+		if(!(pointerVar instanceof PointerVarDecl))
+			ErrorOutputter.fatalError("not expected here");
+			
+		return ((PointerVarDecl)pointerVar).getPointedVarDecl();
 	}
 }

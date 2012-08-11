@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.StructDecl;
 import gvpl.common.StructVarDecl;
@@ -19,6 +20,7 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstLoader {
@@ -49,6 +51,13 @@ public class AstLoader {
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference){
 			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
+		} else if (expr instanceof IASTUnaryExpression) {
+			IASTExpression opExpr = ((IASTUnaryExpression)expr).getOperand();
+			VarDecl pointerVarDecl = getVarDeclOfReference(opExpr);
+			if(!(pointerVarDecl instanceof PointerVarDecl))
+				ErrorOutputter.fatalError("not expected");
+			
+			return ((PointerVarDecl)pointerVarDecl).getPointedVarDecl();
 		}
 
 		if(_parent == null)

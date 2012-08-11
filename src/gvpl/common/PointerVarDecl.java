@@ -30,5 +30,9 @@ public class PointerVarDecl extends DirectVarDecl {
 	public GraphNode getCurrentNode() {
 		return _pointedVarDecl.getCurrentNode();
 	}
+	
+	public VarDecl getPointedVarDecl() {
+		return _pointedVarDecl;
+	}
 
 }
