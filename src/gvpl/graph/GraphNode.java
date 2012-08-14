@@ -17,24 +17,28 @@ public class GraphNode {
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
+	private int _startingLine;
 
-	public GraphNode(String name, NodeType type) {
+	public GraphNode(String name, NodeType type, int startingLine) {
 		_id = _counter++;
 		_name = name;
 		_type = type;
+		_startingLine = startingLine;
 	}	
 	
-	public GraphNode(VarDecl parentVar, NodeType type) { 
+	public GraphNode(VarDecl parentVar, NodeType type, int startingLine) { 
 		_id = _counter++;
 		_parentVar = parentVar;
 		_name = parentVar.getName();
 		_type = type;
+		_startingLine = startingLine;
 	}
 	
 	public GraphNode(GraphNode other){
 		_id = _counter++;
 		_name = other._name;
 		_type = other._type;
+		_startingLine = other._startingLine;
 	}
 	
 	public int getId(){
@@ -45,7 +49,7 @@ public class GraphNode {
 		return _name;
 	}
 	
-	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader) {
+	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
 		if(_dependent_nodes.contains(dependentNode))
 			ErrorOutputter.fatalError("Already dependent!!");
 		
@@ -59,10 +63,13 @@ public class GraphNode {
 			return;
 		
 		if(_parentVar != null)
+		{
 			astLoader.varRead(_parentVar);
+			_parentVar.varRead(startingLine);
+		}
 		
 		if(dependentNode._parentVar != null)
-			astLoader.varWrite(dependentNode._parentVar);
+			astLoader.varWrite(dependentNode._parentVar, startingLine);
 	}
 	
 	public Iterable<GraphNode> getDependentNodes() {
@@ -85,6 +92,10 @@ public class GraphNode {
 	
 	public static void resetCounter() {
 		_counter = 1;
+	}
+	
+	public int getStartingLine() {
+		return _startingLine;
 	}
 	
 }

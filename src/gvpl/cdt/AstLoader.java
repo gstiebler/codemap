@@ -90,9 +90,9 @@ public class AstLoader {
 		return var_decl;
 	}
 
-	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
+	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, int startLine) {
 		DirectVarDecl var_decl = addVarDecl(functionName, type, 0);
-		return var_decl.addAssign(NodeType.E_RETURN_VALUE, rvalue, this);
+		return var_decl.addAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
 	}
 
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
@@ -117,9 +117,9 @@ public class AstLoader {
 		return _graphBuilder;
 	}
 
-	public void varWrite(VarDecl var) {
+	public void varWrite(VarDecl var, int startingLine) {
 		if (_parent != null)
-			_parent.varWrite(var);
+			_parent.varWrite(var, startingLine);
 	}
 
 	public void varRead(VarDecl var) {

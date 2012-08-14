@@ -28,7 +28,7 @@ public class MemberFunc extends Function {
 	private Map<VarDecl, MemberId> _writtenMembers = new HashMap<VarDecl, MemberId>();
 	private Map<VarDecl, MemberId> _readMembers = new HashMap<VarDecl, MemberId>();
 
-	public MemberFunc(Struct parent) {
+	public MemberFunc(Struct parent, int startingLine) {
 		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
 		_parentLoadStruct = parent;
 
@@ -37,7 +37,7 @@ public class MemberFunc extends Function {
 		for (StructMember member : members) {
 			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType(),
 					member.getNumPointerOps());
-			member_var.initializeGraphNode(NodeType.E_VARIABLE);
+			member_var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			addMember(member_var, member.getMemberId());
 
 			if (member_var instanceof StructVarDecl) {
@@ -95,9 +95,9 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	public void varWrite(VarDecl var) {
+	public void varWrite(VarDecl var, int startingLine) {
 		if (_parent != null)
-			_parent.varWrite(var);
+			_parent.varWrite(var, startingLine);
 
 		if (_memberFromVar.containsKey(var))
 			_writtenMembers.put(var, _memberFromVar.get(var));
@@ -120,7 +120,7 @@ public class MemberFunc extends Function {
 	 * @param graphBuilder
 	 */
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
-			List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
+			List<GraphNode> parameter_values, GraphBuilder graphBuilder, int startingLine) {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
 				_graphBuilder._gvplGraph, this);
 
@@ -129,15 +129,15 @@ public class MemberFunc extends Function {
 			GraphNode firstNode = varDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
 			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
-			memberInstance.getCurrentNode().addDependentNode(firstNodeInNewGraph, this);
+			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, this, startingLine);
 		}
 
 		for (Map.Entry<VarDecl, MemberId> entry : _writtenMembers.entrySet()) {
 			VarDecl varDecl = entry.getKey();
-			GraphNode currNode = varDecl.getCurrentNode();
+			GraphNode currNode = varDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
 			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
-			memberInstance.addAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null);
+			memberInstance.addAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map);

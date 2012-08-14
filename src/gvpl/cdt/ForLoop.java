@@ -41,18 +41,19 @@ public class ForLoop extends AstLoader {
 
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
 
+		int startingLine = node.getFileLocation().getStartingLineNumber();
 		for (Map.Entry<VarDecl, VarDecl> entry : _externalVars.entrySet()) {
 			VarDecl extVarDecl = entry.getKey();
 			VarDecl intVarDecl = entry.getValue();
 			
 			GraphNode firstNode = map.get(intVarDecl.getFirstNode());
-			GraphNode currentNode = map.get(intVarDecl.getCurrentNode());
+			GraphNode currentNode = map.get(intVarDecl.getCurrentNode(startingLine));
 			
 			if(_readExtVars.contains(intVarDecl))
-				extVarDecl.getCurrentNode().addDependentNode(firstNode, null);
+				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, null, startingLine);
 			
 			if(_writtenExtVars.contains(intVarDecl))
-				extVarDecl.addAssign(NodeType.E_VARIABLE, currentNode, null);
+				extVarDecl.addAssign(NodeType.E_VARIABLE, currentNode, null, startingLine);
 		}
 	}
 	
@@ -63,9 +64,10 @@ public class ForLoop extends AstLoader {
 		ForLoopHeader header = new ForLoopHeader(_graphBuilder, this, _cppMaps, _astInterpreter);
 		header.load(initializer, condition);
 		
-		GraphNode headerNode = _graphBuilder._gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER);
+		int startingLine = node.getFileLocation().getStartingLineNumber();
+		GraphNode headerNode = _graphBuilder._gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER, startingLine);
 		for(VarDecl readVar : header.getReadVars()) {
-			readVar.getCurrentNode().addDependentNode(headerNode, null);
+			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, null, startingLine);
 		}
 	}
 
@@ -90,15 +92,15 @@ public class ForLoop extends AstLoader {
 
 		String varName = id_expr.getName().toString();
 		intVarDecl = new DirectVarDecl(_graphBuilder, varName , null);
-		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE);
+		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, expr.getFileLocation().getStartingLineNumber());
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
 	}
 	
 	@Override
-	public void varWrite(VarDecl var) {
+	public void varWrite(VarDecl var, int startingLIne) {
 		if (_parent != null) 
-			_parent.varWrite(var);
+			_parent.varWrite(var, startingLIne);
 		
 		_writtenExtVars.add(var);
 	}

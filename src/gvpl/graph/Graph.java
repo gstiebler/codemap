@@ -32,14 +32,14 @@ public class Graph {
 	
 	public Graph() { }
 
-	public GraphNode add_graph_node(String name, NodeType type) {
-		GraphNode graph_node = new GraphNode(name, type);
+	public GraphNode add_graph_node(String name, NodeType type, int startingLine) {
+		GraphNode graph_node = new GraphNode(name, type, startingLine);
 		_graph_nodes.add(graph_node);
 		return graph_node;
 	}
 
-	public GraphNode addGraphNode(VarDecl parentVar, NodeType type) {
-		GraphNode graph_node = new GraphNode(parentVar, type);
+	public GraphNode addGraphNode(VarDecl parentVar, NodeType type, int startingLine) {
+		GraphNode graph_node = new GraphNode(parentVar, type, startingLine);
 		_graph_nodes.add(graph_node);
 		return graph_node;
 	}
@@ -84,7 +84,7 @@ public class Graph {
 			GraphNode oldNode = nodeChange._originalNode;
 			GraphNode newNode = nodeChange._newNode;
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
-				newNode.addDependentNode(map.get(dependentNode), astLoader);
+				newNode.addDependentNode(map.get(dependentNode), astLoader, oldNode.getStartingLine());
 			}
 		}
 		

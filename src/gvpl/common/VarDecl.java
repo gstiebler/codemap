@@ -33,12 +33,12 @@ public abstract class VarDecl {
 		return _firstGraphNode;
 	}
 	
-	public GraphNode getCurrentNode() {
+	public GraphNode getCurrentNode(int startingLine) {
 		return _currGraphNode;
 	}
 	
-	public void initializeGraphNode(NodeType type) {
-		updateNode(_gvplGraph.addGraphNode(this, type));
+	public void initializeGraphNode(NodeType type, int startingLine) {
+		updateNode(_gvplGraph.addGraphNode(this, type, startingLine));
 	}
 	
 	/**
@@ -47,13 +47,15 @@ public abstract class VarDecl {
 	 * @return New node from assignment, the left from assignment
 	 */
 	public GraphNode addAssign(NodeType lhs_type, GraphNode rhs_node,
-			AstLoader astLoader) {
-		GraphNode lhs_node = _gvplGraph.addGraphNode(this, lhs_type);
-		rhs_node.addDependentNode(lhs_node, astLoader);
+			AstLoader astLoader, int startingLine) {
+		GraphNode lhs_node = _gvplGraph.addGraphNode(this, lhs_type, startingLine);
+		rhs_node.addDependentNode(lhs_node, astLoader, startingLine);
 		updateNode(lhs_node);
 
 		return lhs_node;
 	}
+	
+	public void varRead(int startingLine) {}
 	
 	abstract public String getName();
 }

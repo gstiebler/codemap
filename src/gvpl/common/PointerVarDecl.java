@@ -30,14 +30,17 @@ public class PointerVarDecl extends DirectVarDecl {
 	}
 	
 	@Override
-	public GraphNode getCurrentNode() {
-		GraphNode currentPointedVarNode = _pointedVarDecl.getCurrentNode();
+	public GraphNode getCurrentNode(int startingLine) {
+		return _pointedVarDecl.getCurrentNode(startingLine);
+	}
+	
+	@Override
+	public void varRead(int startingLine) {
+		GraphNode currentPointedVarNode = _pointedVarDecl.getCurrentNode(startingLine);
 		if(currentPointedVarNode != _lastPointedVarNode) {
-			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE);
-			currentPointedVarNode.addDependentNode(_currGraphNode, null);
+			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
+			currentPointedVarNode.addDependentNode(_currGraphNode, null, startingLine);
 		}
-			
-		return _currGraphNode;
 	}
 	
 	@Override
@@ -47,9 +50,9 @@ public class PointerVarDecl extends DirectVarDecl {
 	
 	@Override
 	public GraphNode addAssign(NodeType lhs_type, GraphNode rhs_node,
-			AstLoader astLoader) {
-		GraphNode newNode = super.addAssign(lhs_type, rhs_node, astLoader);
-		return _pointedVarDecl.addAssign(lhs_type, newNode, astLoader);
+			AstLoader astLoader, int startLocation) {
+		GraphNode newNode = super.addAssign(lhs_type, rhs_node, astLoader, startLocation);
+		return _pointedVarDecl.addAssign(lhs_type, newNode, astLoader, startLocation);
 	}
 	
 	public VarDecl getPointedVarDecl() {

@@ -47,11 +47,11 @@ public class StructVarDecl extends DirectVarDecl {
 	}
 
 	@Override
-	public void initializeGraphNode(NodeType type) {
-		super.initializeGraphNode(type);
+	public void initializeGraphNode(NodeType type, int startingLine) {
+		super.initializeGraphNode(type, startingLine);
 
 		for (VarDecl var : _memberInstances.values())
-			var.initializeGraphNode(NodeType.E_VARIABLE);
+			var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 	}
 
 	public Map<MemberId, VarDecl> getInternalVariables() {

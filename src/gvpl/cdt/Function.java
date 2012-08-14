@@ -59,7 +59,7 @@ public class Function extends AstLoader {
 		loadFuncParameters(parameters);
 
 		for (VarDecl parameter : _parameters) {
-			parameter.initializeGraphNode(NodeType.E_DECLARED_PARAMETER);
+			parameter.initializeGraphNode(NodeType.E_DECLARED_PARAMETER, fd.getFileLocation().getStartingLineNumber());
 		}
 
 		IASTStatement body = fd.getBody();
@@ -113,7 +113,7 @@ public class Function extends AstLoader {
 					.getFirstNode());
 			GraphNode received_parameter = parameter_values.get(i);
 
-			received_parameter.addDependentNode(declParamNodeInMainGraph, this);
+			received_parameter.addDependentNode(declParamNodeInMainGraph, this, -3);
 		}
 
 		return internalToMainGraphMap.get(_return_node);

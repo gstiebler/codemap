@@ -46,16 +46,20 @@ public class Visualizer {
 		}
 	}
 	
+	private static String debugStr(GraphNode graph_node) {
+		return " (" + graph_node.getStartingLine() + ")";
+	}
+	
 	public static void printNode(GraphNode graph_node, IGraphOutput graphOutput) {
 		if (graph_node._type == Graph.NodeType.E_OPERATION)
-			graphOutput.insertOperation(graph_node.getId(), graph_node._name);
+			graphOutput.insertOperation(graph_node.getId(), graph_node._name + debugStr(graph_node));
 		else if (graph_node._type == Graph.NodeType.E_DIRECT_VALUE)
-			graphOutput.insertValueNode(graph_node.getId(), graph_node._name);
+			graphOutput.insertValueNode(graph_node.getId(), graph_node._name + debugStr(graph_node));
 		else if (graph_node._type == Graph.NodeType.E_DECLARED_PARAMETER)
-			graphOutput.insertDeclaredParameter(graph_node.getId(), graph_node._name);
+			graphOutput.insertDeclaredParameter(graph_node.getId(), graph_node._name + debugStr(graph_node));
 		else if (graph_node._type == Graph.NodeType.E_RETURN_VALUE)
-			graphOutput.insertReturnValue(graph_node.getId(), graph_node._name);
+			graphOutput.insertReturnValue(graph_node.getId(), graph_node._name + debugStr(graph_node));
 		else
-			graphOutput.insertVariable(graph_node.getId(), graph_node._name);
+			graphOutput.insertVariable(graph_node.getId(), graph_node._name + debugStr(graph_node));
 	}
 }

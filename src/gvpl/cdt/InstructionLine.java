@@ -113,7 +113,7 @@ public class InstructionLine {
 		}
 
 		GraphNode val = loadValue(expr);
-		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock);
+		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock, decl.getFileLocation().getStartingLineNumber());
 	}
 
 	/*
@@ -124,7 +124,7 @@ public class InstructionLine {
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(node);
-			return var_decl.getCurrentNode();
+			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
@@ -135,7 +135,7 @@ public class InstructionLine {
 		} else if (node instanceof IASTFieldReference) {// reference to field of
 														// a struct
 			VarDecl var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
-			return var_decl.getCurrentNode();
+			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
 		} else if (node instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) node);
 		} else
@@ -158,7 +158,7 @@ public class InstructionLine {
 
 		// TODO set the correct type of the return value
 		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, null,
-				function.getName());
+				function.getName(), statement.getFileLocation().getStartingLineNumber());
 
 		function.setReturnNode(returnNode);
 	}
@@ -176,7 +176,6 @@ public class InstructionLine {
 		//check if we're trying to read a the instance of a pointer
 		if(op1Expr instanceof IASTUnaryExpression){
 			//rvalue = varDecl.getCurrentNode();
-			int x = 5;
 		} else {
 			//check if the operation is a assignment of a address to a pointer
 			if(varDecl instanceof PointerVarDecl) {
@@ -190,13 +189,13 @@ public class InstructionLine {
 		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			varDecl.addAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock);
+			varDecl.addAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, node.getFileLocation().getStartingLineNumber());
 			return null;
 		}
 
 		GraphNode lvalue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.addAssignBinOp(op, varDecl, lvalue, rvalue, _parentBasicBlock);
+		return _graphBuilder.addAssignBinOp(op, varDecl, lvalue, rvalue, _parentBasicBlock, node.getFileLocation().getStartingLineNumber());
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
@@ -225,15 +224,16 @@ public class InstructionLine {
 	}
 
 	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
+		int startingLine = bin_op.getFileLocation().getStartingLineNumber();
 		eBinOp op = _cppMaps.getBinOpType(bin_op.getOperator());
 		GraphNode lvalue = loadValue(bin_op.getOperand1());
 		GraphNode rvalue = loadValue(bin_op.getOperand2());
-		return _graphBuilder.addBinOp(op, lvalue, rvalue, _parentBasicBlock);
+		return _graphBuilder.addBinOp(op, lvalue, rvalue, _parentBasicBlock, startingLine);
 	}
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
 		String value = node.toString();
-		return _graphBuilder.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value);
+		return _graphBuilder.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value, node.getFileLocation().getStartingLineNumber());
 	}
 
 	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression func_call,
@@ -249,7 +249,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("Work here.");
 
 		return member_func.loadMemberFuncRef((StructVarDecl) varDecl, parameter_values,
-				_graphBuilder);
+				_graphBuilder, func_call.getFileLocation().getStartingLineNumber());
 	}
 	
 	public void loadIfStatement(IASTIfStatement ifStatement) {
@@ -265,7 +265,7 @@ public class InstructionLine {
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null)
 		{
-			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode, _parentBasicBlock);
+			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode, _parentBasicBlock, ifStatement.getFileLocation().getStartingLineNumber());
 
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, notCondition);
 			basicBlockLoader.load(elseClause);
@@ -307,7 +307,7 @@ public class InstructionLine {
 		if(!(pointerVar instanceof PointerVarDecl))
 			ErrorOutputter.fatalError("not expected here");
 		
-		return pointerVar.getCurrentNode();
+		return pointerVar.getCurrentNode(unExpr.getFileLocation().getStartingLineNumber());
 	}
 	
 	/**

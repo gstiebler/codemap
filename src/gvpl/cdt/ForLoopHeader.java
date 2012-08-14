@@ -55,15 +55,15 @@ public class ForLoopHeader extends AstLoader {
 
 		String varName = id_expr.getName().toString();
 		intVarDecl = new DirectVarDecl(_graphBuilder, varName , null);
-		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE);
+		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, expr.getFileLocation().getStartingLineNumber());
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
 	}
 	
 	@Override
-	public void varWrite(VarDecl var) {
+	public void varWrite(VarDecl var, int startingLine) {
 		if (_parent != null) 
-			_parent.varWrite(var);
+			_parent.varWrite(var, startingLine);
 		
 		_writtenExtVars.add(var);
 	}

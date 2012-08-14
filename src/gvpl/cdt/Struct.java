@@ -61,7 +61,7 @@ public class Struct extends AstLoader {
 				continue;
 			
 			IASTFunctionDefinition func_def = (IASTFunctionDefinition) member;
-			MemberFunc memberFunc = new MemberFunc(this);
+			MemberFunc memberFunc = new MemberFunc(this, strDecl.getFileLocation().getStartingLineNumber());
 			IBinding member_func_binding = memberFunc.load(func_def);
 			
 			_member_func_id_map.put(member_func_binding, memberFunc);

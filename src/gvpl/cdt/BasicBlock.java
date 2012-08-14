@@ -46,22 +46,24 @@ public class BasicBlock extends AstLoader {
 			instructionLine.load(statement);
 		}
 		
+		int startingLine = baseStatement.getFileLocation().getStartingLineNumber();
+		
 		if(_conditionNode != null) {
 			for (VarNodePair varNodePair : _writtenVar) {
 				VarDecl var = varNodePair._varDecl;
-				_graphBuilder.addIf(var, var.getCurrentNode(), varNodePair._graphNode, _conditionNode, null);
+				_graphBuilder.addIf(var, var.getCurrentNode(startingLine), varNodePair._graphNode, _conditionNode, null, startingLine);
 			}
 		}
 	}
 	
 	@Override
-	public void varWrite(VarDecl var) {
+	public void varWrite(VarDecl var, int startingLine) {
 		if (_parent != null) 
-			_parent.varWrite(var);
+			_parent.varWrite(var, startingLine);
 		
 		if(!_writtenVarSet.contains(var)) {
 			_writtenVarSet.add(var);
-			_writtenVar.add(new VarNodePair(var, var.getCurrentNode()));
+			_writtenVar.add(new VarNodePair(var, var.getCurrentNode(startingLine)));
 		}
 	}
 
