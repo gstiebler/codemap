@@ -13,7 +13,7 @@ public class BasicTest {
 	public void funcCall() {
 		TestsUtil.baseTest("func_call");
 	}
-	
+	 
 	@Test
 	public void structure() {
 		TestsUtil.baseTest("structure");

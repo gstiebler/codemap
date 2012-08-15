@@ -15,26 +15,33 @@ label = "root";
 	node_000011 [ label = "d" ]
 	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
 	node_000013 [ label = "e" ]
-	node_000014 [ label = "*f" ]
-	node_000015 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
-	node_000016 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
-	node_000017 [ label = "e" ]
+	node_000014 [ label = "15", style=filled, fillcolor="#E9FFE9" ]
+	node_000015 [ label = "*g" ]
+	node_000016 [ label = "*g" ]
+	node_000017 [ label = "c" ]
+	node_000018 [ label = "*f" ]
+	node_000019 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
+	node_000020 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
+	node_000021 [ label = "e" ]
 	node_000001 -> node_000002
 	node_000002 -> node_000006
 	node_000002 -> node_000012
-	node_000002 -> node_000015
+	node_000002 -> node_000019
 	node_000003 -> node_000004
 	node_000004 -> node_000005
 	node_000004 -> node_000010
 	node_000005 -> node_000006
 	node_000006 -> node_000007
-	node_000007 -> node_000014
+	node_000007 -> node_000016
 	node_000008 -> node_000009
 	node_000009 -> node_000011
 	node_000011 -> node_000012
 	node_000012 -> node_000013
-	node_000013 -> node_000016
+	node_000013 -> node_000020
 	node_000014 -> node_000015
-	node_000015 -> node_000016
-	node_000016 -> node_000017
+	node_000015 -> node_000017
+	node_000017 -> node_000018
+	node_000018 -> node_000019
+	node_000019 -> node_000020
+	node_000020 -> node_000021
 }

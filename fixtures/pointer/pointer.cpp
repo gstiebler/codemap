@@ -13,5 +13,7 @@ int main()
 		int e = a + d;
 		b = &c;
 		int *f = b;
+		int *g = &c;
+		*g = 15;
 		e += a + *f;
 }

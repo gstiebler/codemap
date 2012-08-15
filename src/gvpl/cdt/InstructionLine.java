@@ -184,7 +184,7 @@ public class InstructionLine {
 			//check if the operation is a assignment of a address to a pointer
 			if(varDecl instanceof PointerVarDecl) {
 				PointerVarDecl pointer = (PointerVarDecl) varDecl;
-				VarDecl rhsPointer = loadVarInAddress(node.getOperand2());
+				VarDecl rhsPointer = loadVarInAddress(node.getOperand2(), _parentBasicBlock);
 				pointer.setPointedVarDecl(rhsPointer);
 				return null;
 			}	
@@ -282,7 +282,7 @@ public class InstructionLine {
 	 * @param address Address that contains the variable
 	 * @return The var that is pointed by the address
 	 */
-	public VarDecl loadVarInAddress(IASTExpression address)
+	public static VarDecl loadVarInAddress(IASTExpression address, AstLoader astLoader)
 	{
 		if(!(address instanceof IASTUnaryExpression))
 			ErrorOutputter.fatalError("not expected here!!");
@@ -293,7 +293,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("not expected here!!");
 			
 		IASTExpression op = unaryExpr.getOperand();
-		return _parentBasicBlock.getVarDeclOfReference(op);
+		return astLoader.getVarDeclOfReference(op);
 	}
 	
 	/**
@@ -324,9 +324,9 @@ public class InstructionLine {
 	 */
 	public static VarDecl loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
 		VarDecl pointerVar = astLoader.getVarDeclOfReference(pointerExpr);
-		if(!(pointerVar instanceof PointerVarDecl))
-			ErrorOutputter.fatalError("not expected here");
-			
-		return ((PointerVarDecl)pointerVar).getPointedVarDecl();
+		if(pointerVar instanceof PointerVarDecl)
+			return ((PointerVarDecl)pointerVar).getPointedVarDecl();
+		else
+			return loadVarInAddress(pointerExpr, astLoader);
 	}
 }
