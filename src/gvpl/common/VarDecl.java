@@ -55,7 +55,5 @@ public abstract class VarDecl {
 		return lhs_node;
 	}
 	
-	public void varRead(int startingLine) {}
-	
 	abstract public String getName();
 }

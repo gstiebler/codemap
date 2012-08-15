@@ -63,10 +63,7 @@ public class GraphNode {
 			return;
 		
 		if(_parentVar != null)
-		{
 			astLoader.varRead(_parentVar);
-			_parentVar.varRead(startingLine);
-		}
 		
 		if(dependentNode._parentVar != null)
 			astLoader.varWrite(dependentNode._parentVar, startingLine);

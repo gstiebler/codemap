@@ -31,16 +31,13 @@ public class PointerVarDecl extends DirectVarDecl {
 	
 	@Override
 	public GraphNode getCurrentNode(int startingLine) {
-		return _pointedVarDecl.getCurrentNode(startingLine);
-	}
-	
-	@Override
-	public void varRead(int startingLine) {
 		GraphNode currentPointedVarNode = _pointedVarDecl.getCurrentNode(startingLine);
 		if(currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
 			currentPointedVarNode.addDependentNode(_currGraphNode, null, startingLine);
 		}
+			
+		return _currGraphNode;
 	}
 	
 	@Override

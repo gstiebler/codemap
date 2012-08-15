@@ -95,6 +95,8 @@ public class InstructionLine {
 	}
 
 	public void LoadVariableInitialization(DirectVarDecl var_decl, IASTDeclarator decl) {
+		int startLine = decl.getFileLocation().getStartingLineNumber();
+		
 		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
 
 		if (init_exp == null)
@@ -110,10 +112,11 @@ public class InstructionLine {
 			
 			PointerVarDecl pointer = (PointerVarDecl) var_decl;
 			pointer.setPointedVarDecl(pointedVar);
+			return;
 		}
 
 		GraphNode val = loadValue(expr);
-		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock, decl.getFileLocation().getStartingLineNumber());
+		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock, startLine);
 	}
 
 	/*
@@ -171,6 +174,7 @@ public class InstructionLine {
 	 * @return The graph node of the result of the operation
 	 */
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
+		int startLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression op1Expr = node.getOperand1();
 		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
 		//check if we're trying to read a the instance of a pointer
@@ -189,13 +193,13 @@ public class InstructionLine {
 		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			varDecl.addAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, node.getFileLocation().getStartingLineNumber());
+			varDecl.addAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startLine);
 			return null;
 		}
 
 		GraphNode lvalue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.addAssignBinOp(op, varDecl, lvalue, rvalue, _parentBasicBlock, node.getFileLocation().getStartingLineNumber());
+		return _graphBuilder.addAssignBinOp(op, varDecl, lvalue, rvalue, _parentBasicBlock, startLine);
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
