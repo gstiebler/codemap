@@ -6,6 +6,8 @@ import java.util.Map;
 
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.FuncParameter;
+import gvpl.common.PointerVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
@@ -45,7 +47,8 @@ public class Function extends AstLoader {
 	 * @return The binding of the loaded function member
 	 */
 	public IBinding load(IASTFunctionDefinition fd) {
-
+		int startingLine = fd.getFileLocation().getStartingLineNumber();
+		
 		// The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
 		IASTParameterDeclaration[] parameters = decl.getParameters();
@@ -59,7 +62,7 @@ public class Function extends AstLoader {
 		loadFuncParameters(parameters);
 
 		for (VarDecl parameter : _parameters) {
-			parameter.initializeGraphNode(NodeType.E_DECLARED_PARAMETER, fd.getFileLocation().getStartingLineNumber());
+			parameter.initializeGraphNode(NodeType.E_DECLARED_PARAMETER, startingLine);
 		}
 
 		IASTStatement body = fd.getBody();
@@ -97,13 +100,13 @@ public class Function extends AstLoader {
 		}
 	}
 
-	public GraphNode addFuncRef(List<GraphNode> parameter_values, GraphBuilder graphBuilder) {
+	public GraphNode addFuncRef(List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
 		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
-		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap);
+		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap, startingLine);
 	}
 
-	protected GraphNode addParametersReferenceAndReturn(List<GraphNode> parameter_values,
-			Map<GraphNode, GraphNode> internalToMainGraphMap) {
+	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> parameter_values,
+			Map<GraphNode, GraphNode> internalToMainGraphMap, int startingLine) {
 		if (_parameters.size() != parameter_values.size())
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
@@ -111,10 +114,27 @@ public class Function extends AstLoader {
 			VarDecl declared_parameter = _parameters.get(i);
 			GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declared_parameter
 					.getFirstNode());
-			GraphNode received_parameter = parameter_values.get(i);
+			GraphNode received_parameter = parameter_values.get(i).getNode(startingLine);
 
-			received_parameter.addDependentNode(declParamNodeInMainGraph, this, -3);
+			//Point the received values to the received parameters ([in] parameters)
+			if(received_parameter != null) {
+				received_parameter.addDependentNode(declParamNodeInMainGraph, this, startingLine);
+			}
+
+			//Writes the written pointer parameter values to the pointed variables in the main graph
+			// ([out] parameters)
+			VarDecl varDecl = parameter_values.get(i).getVar();
+			if(varDecl != null) {
+				if(!(declared_parameter instanceof PointerVarDecl))
+					ErrorOutputter.fatalError("problem!");
+				
+				VarDecl pointedVar = ((PointerVarDecl)declared_parameter).getPointedVarDecl();
+				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
+				varDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
+			}
 		}
+		
+		
 
 		return internalToMainGraphMap.get(_return_node);
 	}

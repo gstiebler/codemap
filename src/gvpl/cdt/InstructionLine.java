@@ -4,6 +4,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.FuncParameter;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
@@ -13,6 +14,7 @@ import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
@@ -193,7 +195,7 @@ public class InstructionLine {
 		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			varDecl.addAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startLine);
+			varDecl.receiveAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startLine);
 			return null;
 		}
 
@@ -203,22 +205,37 @@ public class InstructionLine {
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
-		List<GraphNode> parameter_values = new ArrayList<GraphNode>();
+		int startingLine = func_call.getFileLocation().getStartingLineNumber();
+		List<FuncParameter> parameter_values = new LinkedList<FuncParameter>();
 		IASTExpression param_expr = func_call.getParameterExpression();
 		if (param_expr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
 			IASTExpression[] parameters = expr_list.getExpressions();
-			for (IASTExpression parameter : parameters)
-				parameter_values.add(loadValue(parameter));
+			for (IASTExpression parameter : parameters) {
+				FuncParameter funcParameter = null;
+				boolean pointer = false;
+				
+				//check if the parameter is a pointer
+				if(parameter instanceof IASTUnaryExpression)
+					if(((IASTUnaryExpression)parameter).getOperator() == IASTUnaryExpression.op_amper)
+						pointer = true;
+				
+				if(pointer) 
+					funcParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock));
+				else 
+					funcParameter = new FuncParameter(loadValue(parameter));
+				
+				parameter_values.add(funcParameter);
+			}
 		} else {
-			parameter_values.add(loadValue(param_expr));
+			parameter_values.add(new FuncParameter(loadValue(param_expr)));
 		}
 
 		IASTExpression name_expr = func_call.getFunctionNameExpression();
 		if (name_expr instanceof IASTIdExpression) {
 			IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
 			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-			return loadFunction.addFuncRef(parameter_values, _graphBuilder);
+			return loadFunction.addFuncRef(parameter_values, _graphBuilder, startingLine);
 		} else if (name_expr instanceof IASTFieldReference) {
 			return loadMemberFuncRef(func_call, parameter_values);
 		} else
@@ -241,7 +258,7 @@ public class InstructionLine {
 	}
 
 	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression func_call,
-			List<GraphNode> parameter_values) {
+			List<FuncParameter> parameter_values) {
 		IASTFieldReference field_ref = (IASTFieldReference) func_call.getFunctionNameExpression();
 
 		IBinding func_member_binding = field_ref.getFieldName().resolveBinding();
@@ -302,6 +319,7 @@ public class InstructionLine {
 	 * @return
 	 */
 	GraphNode loadUnaryExpr(IASTUnaryExpression unExpr) {
+		int startingLine = unExpr.getFileLocation().getStartingLineNumber();
 		//Check if the operator is a star
 		if(unExpr.getOperator() != CPPASTUnaryExpression.op_star)
 			ErrorOutputter.fatalError("not implemented");
@@ -311,7 +329,7 @@ public class InstructionLine {
 		if(!(pointerVar instanceof PointerVarDecl))
 			ErrorOutputter.fatalError("not expected here");
 		
-		return pointerVar.getCurrentNode(unExpr.getFileLocation().getStartingLineNumber());
+		return pointerVar.getCurrentNode(startingLine);
 	}
 	
 	/**

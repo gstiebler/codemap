@@ -46,7 +46,7 @@ public abstract class VarDecl {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode addAssign(NodeType lhs_type, GraphNode rhs_node,
+	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node,
 			AstLoader astLoader, int startingLine) {
 		GraphNode lhs_node = _gvplGraph.addGraphNode(this, lhs_type, startingLine);
 		rhs_node.addDependentNode(lhs_node, astLoader, startingLine);

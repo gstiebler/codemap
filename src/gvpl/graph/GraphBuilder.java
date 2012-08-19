@@ -32,7 +32,7 @@ public class GraphBuilder {
 	}
 
 	public void addAssignOp(VarDecl var_decl_lhs, GraphNode rhs_node, AstLoader astLoader, int startingLine) {
-		var_decl_lhs.addAssign(NodeType.E_VARIABLE, rhs_node, astLoader, startingLine);
+		var_decl_lhs.receiveAssign(NodeType.E_VARIABLE, rhs_node, astLoader, startingLine);
 	}
 
 	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
@@ -70,7 +70,7 @@ public class GraphBuilder {
 		lhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
 		rhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
 
-		return lhs_var_decl.addAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
+		return lhs_var_decl.receiveAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
 	}
 
 	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
@@ -81,7 +81,7 @@ public class GraphBuilder {
 		ifFalse.addDependentNode(ifOpNode, astLoader, startingLine);
 		condition.addDependentNode(ifOpNode, astLoader, startingLine);
 
-		var.addAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
+		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
 	}
 
 }

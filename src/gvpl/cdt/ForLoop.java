@@ -53,7 +53,7 @@ public class ForLoop extends AstLoader {
 				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, null, startingLine);
 			
 			if(_writtenExtVars.contains(intVarDecl))
-				extVarDecl.addAssign(NodeType.E_VARIABLE, currentNode, null, startingLine);
+				extVarDecl.receiveAssign(NodeType.E_VARIABLE, currentNode, null, startingLine);
 		}
 	}
 	
@@ -91,7 +91,7 @@ public class ForLoop extends AstLoader {
 			return intVarDecl;
 
 		String varName = id_expr.getName().toString();
-		intVarDecl = new DirectVarDecl(_graphBuilder, varName , null);
+		intVarDecl = new DirectVarDecl(_graphBuilder._gvplGraph, varName , null);
 		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, expr.getFileLocation().getStartingLineNumber());
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;

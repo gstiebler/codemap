@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.FuncParameter;
 import gvpl.common.StructMember;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
@@ -120,7 +121,7 @@ public class MemberFunc extends Function {
 	 * @param graphBuilder
 	 */
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
-			List<GraphNode> parameter_values, GraphBuilder graphBuilder, int startingLine) {
+			List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
 				_graphBuilder._gvplGraph, this);
 
@@ -137,10 +138,10 @@ public class MemberFunc extends Function {
 			GraphNode currNode = varDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
 			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
-			memberInstance.addAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
+			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
 		}
 
-		return addParametersReferenceAndReturn(parameter_values, map);
+		return addParametersReferenceAndReturn(parameter_values, map, startingLine);
 	}
 
 }

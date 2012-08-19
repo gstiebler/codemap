@@ -49,4 +49,9 @@ public class BasicTest {
 		TestsUtil.baseTest("pointer");
 	}
 	
+	@Test
+	public void pointerFunc() {
+		TestsUtil.baseTest("pointer_func");
+	}
+	
 }

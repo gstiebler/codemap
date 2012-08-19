@@ -15,7 +15,7 @@ public class StructVarDecl extends DirectVarDecl {
 
 	public StructVarDecl(GraphBuilder graphBuilder, String name, TypeId type, StructDecl structDecl,
 			AstLoader parentAstLoader) {
-		super(graphBuilder, name, type);
+		super(graphBuilder._gvplGraph, name, type);
 
 		// For each member of the struct, create a variable instance of the
 		// member

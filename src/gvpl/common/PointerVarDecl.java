@@ -1,7 +1,7 @@
 package gvpl.common;
 
 import gvpl.cdt.AstLoader;
-import gvpl.graph.GraphBuilder;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
@@ -11,8 +11,8 @@ public class PointerVarDecl extends DirectVarDecl {
 	private VarDecl _pointedVarDecl = null;
 	GraphNode _lastPointedVarNode = null;
 	
-	public PointerVarDecl(GraphBuilder graphBuilder, String name, TypeId type) {
-		super(graphBuilder, name, type);
+	public PointerVarDecl(Graph gvplGraph, String name, TypeId type) {
+		super(gvplGraph, name, type);
 	}
 	
 	public void setPointedVarDecl(VarDecl pointedVarDecl) {
@@ -46,10 +46,16 @@ public class PointerVarDecl extends DirectVarDecl {
 	}
 	
 	@Override
-	public GraphNode addAssign(NodeType lhs_type, GraphNode rhs_node,
+	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node,
 			AstLoader astLoader, int startLocation) {
-		GraphNode newNode = super.addAssign(lhs_type, rhs_node, astLoader, startLocation);
-		return _pointedVarDecl.addAssign(lhs_type, newNode, astLoader, startLocation);
+		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, astLoader, startLocation);
+		return _pointedVarDecl.receiveAssign(lhs_type, newNode, astLoader, startLocation);
+	}
+	
+	@Override
+	public void initializeGraphNode(NodeType type, int startingLine) {
+		_pointedVarDecl = new DirectVarDecl(_gvplGraph, _name + "_pointed", _type);
+		_pointedVarDecl.initializeGraphNode(type, startingLine);
 	}
 	
 	public VarDecl getPointedVarDecl() {

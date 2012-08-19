@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.graph.GraphBuilder;
+import gvpl.graph.Graph;
 import gvpl.graph.GraphBuilder.TypeId;
 
 /**
@@ -10,8 +10,8 @@ public class DirectVarDecl extends VarDecl {
 	
 	protected String _name;
 
-	public DirectVarDecl(GraphBuilder graphBuilder, String name, TypeId type) {
-		super(type, graphBuilder._gvplGraph);
+	public DirectVarDecl(Graph gvplGraph, String name, TypeId type) {
+		super(type, gvplGraph);
 		_name = name;
 	}
 

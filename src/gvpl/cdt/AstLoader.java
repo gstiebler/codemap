@@ -92,16 +92,16 @@ public class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, int startLine) {
 		DirectVarDecl var_decl = addVarDecl(functionName, type, 0);
-		return var_decl.addAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
+		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
 	}
 
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
 		DirectVarDecl varDecl = null;
 
 		if(numPointerOps > 0) {
-			varDecl = new PointerVarDecl(_graphBuilder, name, type);
+			varDecl = new PointerVarDecl(_graphBuilder._gvplGraph, name, type);
 		}  else if (type == null) {
-			varDecl = new DirectVarDecl(_graphBuilder, name, type);
+			varDecl = new DirectVarDecl(_graphBuilder._gvplGraph, name, type);
 		} else {
 			StructDecl structDecl = _astInterpreter.getStructDecl(type);
 			varDecl = new StructVarDecl(_graphBuilder, name, type, structDecl, this);
