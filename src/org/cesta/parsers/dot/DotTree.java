@@ -206,7 +206,7 @@ public class DotTree extends TreeParser {
 	 * Model of graph. Has own attributes and special graph, edge or node
 	 * attributes, nodes (even from subgraphs), edges, subgraphs etc.
 	 */
-	public class Graph {
+	public class Graph implements Comparable<Graph> {
 
 		public Map<String, String> attributes = new HashMap<String, String>();
 		public Map<String, String> graphAttributes = new HashMap<String, String>();
@@ -285,6 +285,18 @@ public class DotTree extends TreeParser {
 		public String getLabel() {
 			return attributes.get("label").replace("\"", "");
 		}
+		
+		public int getStartingLine() {
+			return Integer.parseInt(attributes.get("startingline").replace("\"", ""));
+		}
+
+		@Override
+		public int compareTo(Graph other) {
+			Integer thisSL = new Integer(getStartingLine());
+			Integer otherSL = new Integer(other.attributes.get("startingline"));
+			
+			return thisSL.compareTo(otherSL);
+		}
 
 	};
 
@@ -309,7 +321,7 @@ public class DotTree extends TreeParser {
 	/**
 	 * Model simple node with id and attributes.
 	 */
-	public class Node  implements Comparable {
+	public class Node implements Comparable {
 		public String id;
 		public Map<String, String> attributes = new HashMap<String, String>();
 

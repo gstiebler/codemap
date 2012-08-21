@@ -23,7 +23,7 @@ public class Visualizer {
 		}
 		
 		for(Graph subgraph : graph._subgraphs) {
-			_graphOutput.insertSubGraphStart(subgraph.getName(), parentName);
+			_graphOutput.insertSubGraphStart(subgraph.getName(), parentName, subgraph.getStartingLine());
 			printNodes(subgraph, subgraph.getName());
 			_graphOutput.insertSubGraphEnd();
 		}
@@ -47,20 +47,20 @@ public class Visualizer {
 	}
 	
 	private static String debugStr(GraphNode graph_node) {
-		return " (" + graph_node.getStartingLine() + ")";
-		//return "";
+		//return " (" + graph_node.getStartingLine() + ")";
+		return "";
 	}
 	
 	public static void printNode(GraphNode graph_node, IGraphOutput graphOutput) {
 		if (graph_node._type == Graph.NodeType.E_OPERATION)
-			graphOutput.insertOperation(graph_node.getId(), graph_node._name + debugStr(graph_node));
+			graphOutput.insertOperation(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
 		else if (graph_node._type == Graph.NodeType.E_DIRECT_VALUE)
-			graphOutput.insertValueNode(graph_node.getId(), graph_node._name + debugStr(graph_node));
+			graphOutput.insertValueNode(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
 		else if (graph_node._type == Graph.NodeType.E_DECLARED_PARAMETER)
-			graphOutput.insertDeclaredParameter(graph_node.getId(), graph_node._name + debugStr(graph_node));
+			graphOutput.insertDeclaredParameter(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
 		else if (graph_node._type == Graph.NodeType.E_RETURN_VALUE)
-			graphOutput.insertReturnValue(graph_node.getId(), graph_node._name + debugStr(graph_node));
+			graphOutput.insertReturnValue(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
 		else
-			graphOutput.insertVariable(graph_node.getId(), graph_node._name + debugStr(graph_node));
+			graphOutput.insertVariable(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
 	}
 }

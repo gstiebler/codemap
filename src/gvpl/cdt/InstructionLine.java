@@ -8,12 +8,12 @@ import gvpl.common.FuncParameter;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
-import gvpl.graph.GraphBuilder;
+import gvpl.common.FuncParameter.eParameterType;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -206,34 +206,32 @@ public class InstructionLine {
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
 		int startingLine = func_call.getFileLocation().getStartingLineNumber();
+		Function func = getFunction(func_call);
+		
 		List<FuncParameter> parameter_values = new LinkedList<FuncParameter>();
 		IASTExpression param_expr = func_call.getParameterExpression();
 		if (param_expr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
 			IASTExpression[] parameters = expr_list.getExpressions();
-			for (IASTExpression parameter : parameters) {
-				FuncParameter funcParameter = null;
-				boolean pointer = false;
+			for (int i = 0; i < parameters.length; i++) {
+				IASTExpression parameter = parameters[i];
+				FuncParameter localParameter = null;
+				FuncParameter insideFuncParameter = func._parameters.get(i);
 				
-				//check if the parameter is a pointer
-				if(parameter instanceof IASTUnaryExpression)
-					if(((IASTUnaryExpression)parameter).getOperator() == IASTUnaryExpression.op_amper)
-						pointer = true;
+				if(insideFuncParameter.getType() == eParameterType.E_POINTER) 
+					localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock), eParameterType.E_POINTER);
+				else if (insideFuncParameter.getType() == eParameterType.E_VARIABLE)
+					localParameter = new FuncParameter(loadValue(parameter), eParameterType.E_VARIABLE);
 				
-				if(pointer) 
-					funcParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock));
-				else 
-					funcParameter = new FuncParameter(loadValue(parameter));
-				
-				parameter_values.add(funcParameter);
+				parameter_values.add(localParameter);
 			}
 		} else {
-			parameter_values.add(new FuncParameter(loadValue(param_expr)));
+			parameter_values.add(new FuncParameter(loadValue(param_expr), eParameterType.E_VARIABLE));
 		}
 
 		IASTExpression name_expr = func_call.getFunctionNameExpression();
 		if (name_expr instanceof IASTIdExpression) {
-			IASTIdExpression expr = (IASTIdExpression) func_call.getFunctionNameExpression();
+			IASTIdExpression expr = (IASTIdExpression) name_expr;
 			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
 			return loadFunction.addFuncRef(parameter_values, _graphBuilder, startingLine);
 		} else if (name_expr instanceof IASTFieldReference) {
@@ -301,8 +299,12 @@ public class InstructionLine {
 	 */
 	public static VarDecl loadVarInAddress(IASTExpression address, AstLoader astLoader)
 	{
-		if(!(address instanceof IASTUnaryExpression))
-			ErrorOutputter.fatalError("not expected here!!");
+		if(!(address instanceof IASTUnaryExpression)) {
+			VarDecl varDecl = astLoader.getVarDeclOfReference(address);
+			if(!(varDecl instanceof PointerVarDecl))
+				ErrorOutputter.fatalError("not expected here!!");
+			return ((PointerVarDecl)varDecl).getPointedVarDecl();
+		}
 		
 		IASTUnaryExpression unaryExpr = (IASTUnaryExpression) address;
 		//Check if the operator is a reference
@@ -346,5 +348,21 @@ public class InstructionLine {
 			return ((PointerVarDecl)pointerVar).getPointedVarDecl();
 		else
 			return loadVarInAddress(pointerExpr, astLoader);
+	}
+	
+	private Function getFunction(IASTFunctionCallExpression func_call) {
+		IASTExpression name_expr = func_call.getFunctionNameExpression();
+		if (name_expr instanceof IASTIdExpression) {
+			IASTIdExpression expr = (IASTIdExpression) name_expr;
+			return _astInterpreter.getFuncId(expr.getName().resolveBinding());
+		} else if (name_expr instanceof IASTFieldReference) {
+			IASTFieldReference field_ref = (IASTFieldReference) func_call.getFunctionNameExpression();
+
+			IBinding func_member_binding = field_ref.getFieldName().resolveBinding();
+			return _astInterpreter.getMemberFunc(func_member_binding);
+		} else 
+			ErrorOutputter.fatalError("problem");
+		
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package tests;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,7 +17,7 @@ public class ProcessedNodes {
 		Map<String, DotTree.Node> nodesByName = new HashMap<String, DotTree.Node>();
 		nodesByName.putAll(gvGraph.nodes);
 
-		Map<String, LinkedList<DotTree.SubGraph>> subGraphsByParent = processSubGraphsByParent(gvGraph.subGraphs);
+		Map<String, List<DotTree.SubGraph>> subGraphsByParent = processSubGraphsByParent(gvGraph.subGraphs);
 		
 		SubGraphNodes graphNodes = new SubGraphNodes();
 		processRecursive(gvGraph, nodesByName, graphNodes, subGraphsByParent);
@@ -32,7 +33,7 @@ public class ProcessedNodes {
 	 * @param subGraphsByParent Maps the name of the the graph to a list of it's children
 	 */
 	private static void processRecursive(DotTree.Graph gvGraph,
-			Map<String, DotTree.Node> nodesByName, SubGraphNodes graphNodes, Map<String, LinkedList<DotTree.SubGraph>> subGraphsByParent) {
+			Map<String, DotTree.Node> nodesByName, SubGraphNodes graphNodes, Map<String, List<DotTree.SubGraph>> subGraphsByParent) {
 		processSubGraphs(gvGraph, nodesByName, graphNodes, subGraphsByParent);
 
 		LinkedList<DotTree.Node> intersection = getIntersection(nodesByName, gvGraph.nodes);
@@ -50,15 +51,17 @@ public class ProcessedNodes {
 
 	private static void processSubGraphs(DotTree.Graph gvGraph,
 			Map<String, DotTree.Node> nodesByName, SubGraphNodes graphNodes,
-			Map<String, LinkedList<DotTree.SubGraph>> subGraphsByParent) {
-		LinkedList<DotTree.SubGraph> subGraphs = subGraphsByParent.get(gvGraph.getLabel());
+			Map<String, List<DotTree.SubGraph>> subGraphsByParent) {
+		List<DotTree.SubGraph> subGraphs = subGraphsByParent.get(gvGraph.getLabel());
 		if(subGraphs == null)
 			return;
 		for (DotTree.SubGraph subGraph : subGraphs) {
 			SubGraphNodes subGraphNodes = new SubGraphNodes();
 			subGraphNodes._name = subGraph.getLabel();
+			subGraphNodes._startingLine = subGraph.getStartingLine();
 			processRecursive(subGraph, nodesByName, subGraphNodes, subGraphsByParent);
-			graphNodes._subGraphs.put(subGraphNodes._name, subGraphNodes);
+			NameLineKey key = new NameLineKey(subGraphNodes._name, subGraphNodes._startingLine);
+			graphNodes._subGraphs.put(key, subGraphNodes);
 		}
 	}
 
@@ -83,18 +86,22 @@ public class ProcessedNodes {
 			Collections.sort(list);
 		}
 	}
-	
-	private static Map<String, LinkedList<DotTree.SubGraph>> processSubGraphsByParent(Set<DotTree.SubGraph> allSubGraphs) {
-		Map<String, LinkedList<DotTree.SubGraph>> result = new HashMap<String, LinkedList<DotTree.SubGraph>>();
+
+	private static Map<String, List<DotTree.SubGraph>> processSubGraphsByParent(Set<DotTree.SubGraph> allSubGraphs) {
+		Map<String, List<DotTree.SubGraph>> result = new HashMap<String, List<DotTree.SubGraph>>();
 		
 		for (DotTree.SubGraph subGraph : allSubGraphs) {
 			String parentName = subGraph.attributes.get("parent").replace("\"", "");
 			
 			if(!result.containsKey(parentName)) {
-				result.put(parentName, new LinkedList<DotTree.SubGraph>());
+				result.put(parentName, new ArrayList<DotTree.SubGraph>());
 			}
 			
 			result.get(parentName).add(subGraph);
+		}
+		
+		for (List<DotTree.SubGraph> subGraphs : result.values()) {
+			Collections.sort(subGraphs);
 		}
 		
 		return result;

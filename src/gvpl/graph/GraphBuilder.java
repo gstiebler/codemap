@@ -20,7 +20,7 @@ public class GraphBuilder {
 	}
 
 	/** Stores all the graph */
-	public Graph _gvplGraph = new Graph();
+	public Graph _gvplGraph = new Graph(-1);
 	private CppMaps _cppMaps = null;
 
 	public GraphBuilder(CppMaps cppMaps) {

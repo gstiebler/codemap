@@ -123,7 +123,7 @@ public class MemberFunc extends Function {
 	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
 			List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
-				_graphBuilder._gvplGraph, this);
+				_graphBuilder._gvplGraph, this, startingLine);
 
 		for (Map.Entry<VarDecl, MemberId> entry : _readMembers.entrySet()) {
 			VarDecl varDecl = entry.getKey();

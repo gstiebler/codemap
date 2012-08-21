@@ -2,19 +2,20 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000006 [ label = "3", style=filled, fillcolor="#E9FFE9" ]
-	node_000007 [ label = "a" ]
-	node_000008 [ label = "5", style=filled, fillcolor="#E9FFE9" ]
-	node_000009 [ label = "b" ]
-	node_000015 [ label = "c" ]
+	node_000006 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=12 ]
+	node_000007 [ label = "a", startingline=12 ]
+	node_000008 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=13 ]
+	node_000009 [ label = "b", startingline=13 ]
+	node_000015 [ label = "c", startingline=14 ]
 subgraph cluster_1 {
 label = "soma";
 parent = "root";
-	node_000010 [ label = "a", style=filled, fillcolor="#FFE9E9" ]
-	node_000011 [ label = "b", style=filled, fillcolor="#FFE9E9" ]
-	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0" ]
-	node_000013 [ label = "resultado" ]
-	node_000014 [ label = "soma", style=filled, fillcolor="#FFFFD0" ]
+startingline = 14;
+	node_000010 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000011 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
+	node_000013 [ label = "resultado", startingline=5 ]
+	node_000014 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=6 ]
 }
 	node_000006 -> node_000007
 	node_000007 -> node_000010

@@ -15,8 +15,8 @@ int main()
 		int f = d;
 		
 		int *g = &a;
-		int *h = &a;
+		int *h = &c;
 		int *j = &b;
 		soma_sub(c, *j, g, h);
-		int k = *g + *h;
+		int k = *g + c;
 }

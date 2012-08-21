@@ -1,18 +1,19 @@
 package gvpl.cdt;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.VarDecl;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphNode;
+import gvpl.common.FuncParameter.eParameterType;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphNode;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
@@ -25,17 +26,17 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class Function extends AstLoader {
-
+	
 	private GraphNode _return_node;
 
 	private String _externalName = "";
-	public List<VarDecl> _parameters;
+	public List<FuncParameter> _parameters;
 
 	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
 		super(new GraphBuilder(cppMaps), parent, cppMaps, astInterpreter);
 
-		_parameters = new ArrayList<VarDecl>();
+		_parameters = new ArrayList<FuncParameter>();
 		_return_node = null;
 	}
 
@@ -61,8 +62,8 @@ public class Function extends AstLoader {
 
 		loadFuncParameters(parameters);
 
-		for (VarDecl parameter : _parameters) {
-			parameter.initializeGraphNode(NodeType.E_DECLARED_PARAMETER, startingLine);
+		for (FuncParameter parameter : _parameters) {
+			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, startingLine);
 		}
 
 		IASTStatement body = fd.getBody();
@@ -96,12 +97,18 @@ public class Function extends AstLoader {
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(decl_spec);
 			DirectVarDecl var_decl = loadVarDecl(parameter_var_decl, type);
-			_parameters.add(var_decl);
+			
+			FuncParameter.eParameterType parameterVarType = null;
+			if(parameter.getDeclarator().getPointerOperators().length > 0)
+				parameterVarType = eParameterType.E_POINTER;
+			else
+				parameterVarType = eParameterType.E_VARIABLE;
+			_parameters.add(new FuncParameter(var_decl, parameterVarType));
 		}
 	}
 
 	public GraphNode addFuncRef(List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
 		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap, startingLine);
 	}
 
@@ -111,10 +118,12 @@ public class Function extends AstLoader {
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < parameter_values.size(); ++i) {
-			VarDecl declared_parameter = _parameters.get(i);
+			VarDecl declared_parameter = _parameters.get(i).getVar();
 			GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declared_parameter
 					.getFirstNode());
-			GraphNode received_parameter = parameter_values.get(i).getNode(startingLine);
+			
+			FuncParameter funcParameter = parameter_values.get(i);
+			GraphNode received_parameter = funcParameter.getNode(startingLine);
 
 			//Point the received values to the received parameters ([in] parameters)
 			if(received_parameter != null) {
@@ -123,13 +132,14 @@ public class Function extends AstLoader {
 
 			//Writes the written pointer parameter values to the pointed variables in the main graph
 			// ([out] parameters)
-			VarDecl varDecl = parameter_values.get(i).getVar();
-			if(varDecl != null) {
+			if(funcParameter.getType() == eParameterType.E_POINTER) {
 				if(!(declared_parameter instanceof PointerVarDecl))
 					ErrorOutputter.fatalError("problem!");
 				
 				VarDecl pointedVar = ((PointerVarDecl)declared_parameter).getPointedVarDecl();
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
+
+				VarDecl varDecl = funcParameter.getVar();
 				varDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
 			}
 		}

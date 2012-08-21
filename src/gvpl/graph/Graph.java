@@ -25,12 +25,16 @@ public class Graph {
 
 	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
+	private int _startingLine = -1;
 	
-	public Graph(String label) {
+	public Graph(String label, int startingLine) {
 		_label = label;
+		_startingLine = startingLine;
 	}	
 	
-	public Graph() { }
+	public Graph(int startingLine) {
+		_startingLine = startingLine;
+	}
 
 	public GraphNode add_graph_node(String name, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(name, type, startingLine);
@@ -52,7 +56,7 @@ public class Graph {
 		return _graph_nodes.get(index);
 	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
 		
 		class NodeChange {
 			GraphNode _originalNode;
@@ -63,7 +67,7 @@ public class Graph {
 			}
 		}
 		
-		Graph graph = new Graph(_label);
+		Graph graph = new Graph(_label, startingLine);
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 		
 		// duplicate the nodes
@@ -75,7 +79,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader); 
+			Graph copy = subgraph.getCopy(map, astLoader, startingLine); 
 			graph._subgraphs.add(copy);
 		}
 
@@ -97,9 +101,9 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader){
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine){
 		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
-		Graph graphCopy = graph.getCopy(map, astLoader);
+		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
 		return map;
 	}
@@ -110,5 +114,9 @@ public class Graph {
 	
 	public void setLabel(String label) {
 		_label = label;
+	}
+	
+	public int getStartingLine() {
+		return _startingLine;
 	}
 }

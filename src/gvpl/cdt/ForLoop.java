@@ -39,9 +39,9 @@ public class ForLoop extends AstLoader {
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
 		basicBlockLoader.load(body);
 
-		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this);
-
 		int startingLine = node.getFileLocation().getStartingLineNumber();
+		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
+		
 		for (Map.Entry<VarDecl, VarDecl> entry : _externalVars.entrySet()) {
 			VarDecl extVarDecl = entry.getKey();
 			VarDecl intVarDecl = entry.getValue();

@@ -40,7 +40,8 @@ public class GraphCompare {
 		assertEquals("Number of subgraphs of " + gvplGraph.getName(), gvplGraph._subgraphs.size(),
 				processedNodes._subGraphs.size());
 		for (gvpl.graph.Graph gvplSubGraph : gvplGraph._subgraphs) {
-			SubGraphNodes gvSubGraphNodes = processedNodes._subGraphs.get(gvplSubGraph.getName());
+			NameLineKey key = new NameLineKey(gvplSubGraph.getName(), gvplSubGraph.getStartingLine());
+			SubGraphNodes gvSubGraphNodes = processedNodes._subGraphs.get(key);
 			List<NodeMatch> sgNodesMatch = analyseSubGraph(gvplSubGraph, gvSubGraphNodes);
 			result.addAll(sgNodesMatch);
 		}
