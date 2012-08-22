@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
+import gvpl.common.MemAddressVarDecl;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.common.FuncParameter.eParameterType;
@@ -27,6 +28,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.parser.ast.IASTReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 
 public class Function extends AstLoader {
 	
@@ -133,11 +135,11 @@ public class Function extends AstLoader {
 
 			//Writes the written pointer parameter values to the pointed variables in the main graph
 			// ([out] parameters)
-			if(funcParameter.getType() == eParameterType.E_POINTER) {
-				if(!(declared_parameter instanceof PointerVarDecl))
+			if(funcParameter.getType() == eParameterType.E_POINTER || funcParameter.getType() == eParameterType.E_REFERENCE) {
+				if(!(declared_parameter instanceof MemAddressVarDecl))
 					ErrorOutputter.fatalError("problem!");
 				
-				VarDecl pointedVar = ((PointerVarDecl)declared_parameter).getPointedVarDecl();
+				VarDecl pointedVar = ((MemAddressVarDecl)declared_parameter).getPointedVarDecl();
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
 				VarDecl varDecl = funcParameter.getVar();
@@ -174,12 +176,12 @@ public class Function extends AstLoader {
 		if(pointerOps.length > 0) {
 			if(pointerOps[0] instanceof IASTPointer)
 				return eParameterType.E_POINTER;
-			else if (pointerOps[0] instanceof IASTReference)
+			else if (pointerOps[0] instanceof CPPASTReferenceOperator)
 				return eParameterType.E_REFERENCE;
 		}
 		else
 			return eParameterType.E_VARIABLE;
-		
+		ErrorOutputter.fatalError("error not expected");
 		return null;
 	}
 
