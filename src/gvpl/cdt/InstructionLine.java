@@ -14,6 +14,7 @@ import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -208,7 +209,7 @@ public class InstructionLine {
 		int startingLine = func_call.getFileLocation().getStartingLineNumber();
 		Function func = getFunction(func_call);
 		
-		List<FuncParameter> parameter_values = new LinkedList<FuncParameter>();
+		List<FuncParameter> parameter_values = new ArrayList<FuncParameter>();
 		IASTExpression param_expr = func_call.getParameterExpression();
 		if (param_expr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
@@ -220,6 +221,10 @@ public class InstructionLine {
 				
 				if(insideFuncParameter.getType() == eParameterType.E_POINTER) 
 					localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock), eParameterType.E_POINTER);
+				else if(insideFuncParameter.getType() == eParameterType.E_REFERENCE) {
+					VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(parameter);
+					localParameter = new FuncParameter(varDecl, eParameterType.E_REFERENCE);
+				}
 				else if (insideFuncParameter.getType() == eParameterType.E_VARIABLE)
 					localParameter = new FuncParameter(loadValue(parameter), eParameterType.E_VARIABLE);
 				else
