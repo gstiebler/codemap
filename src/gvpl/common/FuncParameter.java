@@ -5,7 +5,7 @@ import gvpl.graph.GraphNode;
 public class FuncParameter {
 	
 	public enum eParameterType {
-		E_VARIABLE, E_POINTER
+		E_VARIABLE, E_POINTER, E_REFERENCE
 	};
 	
 	private VarDecl _varDecl = null;

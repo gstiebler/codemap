@@ -21,8 +21,11 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTPointer;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.parser.ast.IASTReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class Function extends AstLoader {
@@ -99,10 +102,8 @@ public class Function extends AstLoader {
 			DirectVarDecl var_decl = loadVarDecl(parameter_var_decl, type);
 			
 			FuncParameter.eParameterType parameterVarType = null;
-			if(parameter.getDeclarator().getPointerOperators().length > 0)
-				parameterVarType = eParameterType.E_POINTER;
-			else
-				parameterVarType = eParameterType.E_VARIABLE;
+			parameterVarType = getFuncParameterType(parameter.getDeclarator().getPointerOperators());
+			
 			_parameters.add(new FuncParameter(var_decl, parameterVarType));
 		}
 	}
@@ -164,6 +165,22 @@ public class Function extends AstLoader {
 
 	public Function getFunction() {
 		return this;
+	}
+	
+	public static eParameterType getFuncParameterType(IASTPointerOperator[] pointerOps) {
+		if(pointerOps == null)
+			return eParameterType.E_VARIABLE;
+		
+		if(pointerOps.length > 0) {
+			if(pointerOps[0] instanceof IASTPointer)
+				return eParameterType.E_POINTER;
+			else if (pointerOps[0] instanceof IASTReference)
+				return eParameterType.E_REFERENCE;
+		}
+		else
+			return eParameterType.E_VARIABLE;
+		
+		return null;
 	}
 
 }

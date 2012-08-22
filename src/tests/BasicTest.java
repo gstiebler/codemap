@@ -54,4 +54,9 @@ public class BasicTest {
 		TestsUtil.baseTest("pointer_func");
 	}
 	
+	@Test
+	public void reference() {
+		TestsUtil.baseTest("reference");
+	}
+	
 }

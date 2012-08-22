@@ -177,15 +177,15 @@ public class InstructionLine {
 	 */
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		int startLine = node.getFileLocation().getStartingLineNumber();
-		IASTExpression op1Expr = node.getOperand1();
-		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(op1Expr);
+		IASTExpression lhsOp = node.getOperand1();
+		VarDecl lhsVarDecl = _parentBasicBlock.getVarDeclOfReference(lhsOp);
 		//check if we're trying to read a the instance of a pointer
-		if(op1Expr instanceof IASTUnaryExpression){
+		if(lhsOp instanceof IASTUnaryExpression){
 			//rvalue = varDecl.getCurrentNode();
 		} else {
 			//check if the operation is a assignment of a address to a pointer
-			if(varDecl instanceof PointerVarDecl) {
-				PointerVarDecl pointer = (PointerVarDecl) varDecl;
+			if(lhsVarDecl instanceof PointerVarDecl) {
+				PointerVarDecl pointer = (PointerVarDecl) lhsVarDecl;
 				VarDecl rhsPointer = loadVarInAddress(node.getOperand2(), _parentBasicBlock);
 				pointer.setPointedVarDecl(rhsPointer);
 				return null;
@@ -195,13 +195,13 @@ public class InstructionLine {
 		GraphNode rvalue = loadValue(node.getOperand2());
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			varDecl.receiveAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startLine);
+			lhsVarDecl.receiveAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startLine);
 			return null;
 		}
 
 		GraphNode lvalue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.addAssignBinOp(op, varDecl, lvalue, rvalue, _parentBasicBlock, startLine);
+		return _graphBuilder.addAssignBinOp(op, lhsVarDecl, lvalue, rvalue, _parentBasicBlock, startLine);
 	}
 
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
@@ -222,6 +222,8 @@ public class InstructionLine {
 					localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock), eParameterType.E_POINTER);
 				else if (insideFuncParameter.getType() == eParameterType.E_VARIABLE)
 					localParameter = new FuncParameter(loadValue(parameter), eParameterType.E_VARIABLE);
+				else
+					ErrorOutputter.fatalError("Work here ");
 				
 				parameter_values.add(localParameter);
 			}

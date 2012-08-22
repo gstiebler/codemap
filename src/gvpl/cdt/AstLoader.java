@@ -1,7 +1,10 @@
 package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
+import gvpl.common.FuncParameter;
+import gvpl.common.FuncParameter.eParameterType;
 import gvpl.common.PointerVarDecl;
+import gvpl.common.ReferenceVarDecl;
 import gvpl.common.StructDecl;
 import gvpl.common.StructVarDecl;
 import gvpl.common.VarDecl;
@@ -19,6 +22,7 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
@@ -84,7 +88,7 @@ public class AstLoader {
 
 	public DirectVarDecl loadVarDecl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
-		DirectVarDecl var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators().length);
+		DirectVarDecl var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
 		_direct_var_graph_nodes.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
@@ -95,6 +99,7 @@ public class AstLoader {
 		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
 	}
 
+	
 	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
 		DirectVarDecl varDecl = null;
 
@@ -107,6 +112,28 @@ public class AstLoader {
 			varDecl = new StructVarDecl(_graphBuilder, name, type, structDecl, this);
 		}
 		return varDecl;
+	}
+	
+	public DirectVarDecl addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
+		FuncParameter.eParameterType parameterVarType = null;
+		parameterVarType = Function.getFuncParameterType(pointerOps);
+		return instanceVarDecl(parameterVarType, name, type);
+	}
+	
+	private DirectVarDecl instanceVarDecl(eParameterType parameterType, String name, TypeId type) {
+		switch(parameterType) {
+		case E_VARIABLE:
+			if(type == null)
+				return new DirectVarDecl(_graphBuilder._gvplGraph, name, type);
+			
+			StructDecl structDecl = _astInterpreter.getStructDecl(type);
+			return new StructVarDecl(_graphBuilder, name, type, structDecl, this);
+		case E_POINTER: 
+			return new PointerVarDecl(_graphBuilder._gvplGraph, name, type);
+		case E_REFERENCE: 
+			return new ReferenceVarDecl(_graphBuilder._gvplGraph, name, type);
+		}
+		return null;
 	}
 
 	public Function getFunction() {
