@@ -135,10 +135,7 @@ public class Function extends AstLoader {
 
 			//Writes the written pointer parameter values to the pointed variables in the main graph
 			// ([out] parameters)
-			if(funcParameter.getType() == eParameterType.E_POINTER || funcParameter.getType() == eParameterType.E_REFERENCE) {
-				if(!(declared_parameter instanceof MemAddressVarDecl))
-					ErrorOutputter.fatalError("problem!");
-				
+			if(declared_parameter instanceof MemAddressVarDecl) {
 				VarDecl pointedVar = ((MemAddressVarDecl)declared_parameter).getPointedVarDecl();
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
