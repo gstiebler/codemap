@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="GVPL_JDT">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="C:/Programas/eclipse"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <path id="Plug-in Dependencies.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.core_3.7.1.v_B76_R37x.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.compiler.apt_1.0.400.v0110816-0800.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_B76_R37x.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.eclipse.wb.jdt.fragment_1.2.0.r37x201110191514.jar"/>
+    </path>
+    <path id="GVPL_JDT.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.equinox.weaving.hook_1.0.0.v20100503.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505/runtime_registry_compatibility.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.equinox.registry_3.5.101.R37x_v20110810-1611.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.equinox.preferences_3.4.1.R37x_v20110725.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.contenttype_3.4.100.v20110423-0524.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.equinox.app_1.3.100.v20110321.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.jdt_3.7.1.v201109091335.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.jdt.compiler.apt_1.0.400.v0110816-0800.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.jdt.compiler.tool_1.0.100.v_B76_R37x.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.wb.jdt.fragment_1.2.0.r37x201110191514.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.ui_3.7.0.I20110602-0100.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.swt_3.7.1.v3738a.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.swt.win32.win32.x86_64_3.7.1.v3738a.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.jface_3.7.0.I20110522-1430.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.commands_3.6.0.I20110111-0800.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.ui.workbench_3.7.0.I20110519-0100.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.text_3.5.101.r371_v20110810-0800.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.filebuffers_3.5.200.v20110505-0800.jar"/>
+        <pathelement location="C:/Programas/eclipse/plugins/org.eclipse.core.resources_3.7.100.v20110510-0712.jar"/>
+        <path refid="Plug-in Dependencies.libraryclasspath"/>
+        <pathelement location="C:/Programas/eclipse-europa/plugins/org.eclipse.cdt.core_4.0.3.200802251018.jar"/>
+        <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="GVPL_JDT.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="BasicTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="tests.BasicTest" todir="${junit.output.dir}"/>
+            <classpath refid="GVPL_JDT.classpath"/>
+        </junit>
+    </target>
+    <target name="ParserExample">
+        <java classname="gvpl.cdt.ParserExample" failonerror="true" fork="yes">
+            <classpath refid="GVPL_JDT.classpath"/>
+        </java>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+</project>
