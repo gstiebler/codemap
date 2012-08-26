@@ -1,0 +1,44 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+	node_000001 [ label = "23.4", style=filled, fillcolor="#E9FFE9", startingline=25 ]
+	node_000002 [ label = "str1.a", startingline=25 ]
+	node_000003 [ label = "589.45", style=filled, fillcolor="#E9FFE9", startingline=26 ]
+	node_000004 [ label = "str1.h", startingline=26 ]
+	node_000005 [ label = "45.98", style=filled, fillcolor="#E9FFE9", startingline=28 ]
+	node_000006 [ label = "str2.a", startingline=28 ]
+	node_000007 [ label = "9099.0", style=filled, fillcolor="#E9FFE9", startingline=29 ]
+	node_000008 [ label = "str2.h", startingline=29 ]
+	node_000009 [ label = "15", style=filled, fillcolor="#E9FFE9", startingline=31 ]
+	node_000010 [ label = "str2.seg.m1", startingline=31 ]
+	node_000011 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startingline=32 ]
+	node_000012 [ label = "str2.seg.si.soEsse", startingline=32 ]
+	node_000013 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=34 ]
+	node_000014 [ label = "r", startingline=34 ]
+	node_000015 [ label = "/", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=35 ]
+	node_000016 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=35 ]
+	node_000017 [ label = "p", startingline=35 ]
+	node_000018 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=37 ]
+	node_000019 [ label = "g", startingline=37 ]
+	node_000020 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=38 ]
+	node_000021 [ label = "k", startingline=38 ]
+	node_000001 -> node_000002
+	node_000002 -> node_000018
+	node_000003 -> node_000004
+	node_000004 -> node_000018
+	node_000005 -> node_000006
+	node_000006 -> node_000020
+	node_000007 -> node_000008
+	node_000008 -> node_000020
+	node_000009 -> node_000010
+	node_000010 -> node_000015
+	node_000011 -> node_000012
+	node_000012 -> node_000016
+	node_000013 -> node_000014
+	node_000014 -> node_000015
+	node_000015 -> node_000016
+	node_000016 -> node_000017
+	node_000018 -> node_000019
+	node_000020 -> node_000021
+}
