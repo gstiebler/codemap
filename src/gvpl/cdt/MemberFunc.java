@@ -35,8 +35,7 @@ public class MemberFunc extends Function {
 		List<ClassMember> members = _parentLoadStruct.getMembers();
 		// declare a variable for each member of the struct
 		for (ClassMember member : members) {
-			Var member_var = addVarDecl(member.getName(), member.getMemberType(),
-					member.getNumPointerOps());
+			Var member_var = addVarDecl(member.getName(), member.getMemberType(), null);
 			member_var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			addMember(member_var, member.getMemberId());
 

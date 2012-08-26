@@ -7,17 +7,14 @@ public class ClassMember {
 	MemberId _id;
 	private String _name;
 	private TypeId _type;
-	private int _numPointerOps;
 
 	// private StructDecl _parent;
 
-	public ClassMember(Class parent, MemberId id, String name, TypeId type,
-			int numPointerOps) {
+	public ClassMember(Class parent, MemberId id, String name, TypeId type) {
 		// _parent = parent;
 		_id = id;
 		_name = name;
 		_type = type;
-		_numPointerOps = numPointerOps;
 	}
 
 	public MemberId getMemberId() {
@@ -30,9 +27,5 @@ public class ClassMember {
 
 	public String getName() {
 		return _name;
-	}
-
-	public int getNumPointerOps() {
-		return _numPointerOps;
 	}
 }

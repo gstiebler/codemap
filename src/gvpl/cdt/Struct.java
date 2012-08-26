@@ -49,7 +49,7 @@ public class Struct extends AstLoader {
 				MemberId member_id = _graphBuilder.new MemberId();
 
 				ClassMember struct_member = new ClassMember(_structDecl,
-						member_id, decl_name.toString(), param_type, declarator.getPointerOperators().length);
+						member_id, decl_name.toString(), param_type);
 				_structDecl.addMember(struct_member);
 
 				_member_id_map.put(decl_name.resolveBinding(), struct_member);

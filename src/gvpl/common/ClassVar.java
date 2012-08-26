@@ -3,7 +3,6 @@ package gvpl.common;
 import gvpl.cdt.AstLoader;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
 
@@ -25,7 +24,7 @@ public class ClassVar extends Var {
 
 			String memberName = name + "." + struct_member.getName();
 			Var member_instance = parentAstLoader.addVarDecl(memberName,
-					struct_member.getMemberType(), struct_member.getNumPointerOps());
+					struct_member.getMemberType(), null);
 			_memberInstances.put(entry.getKey(), member_instance);
 		}
 	}
