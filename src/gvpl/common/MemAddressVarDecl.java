@@ -8,7 +8,7 @@ import gvpl.graph.GraphBuilder.TypeId;
 
 public class MemAddressVarDecl extends DirectVarDecl {
 
-	private VarDecl _pointedVarDecl = null;
+	private DirectVarDecl _pointedVarDecl = null;
 	GraphNode _lastPointedVarNode = null;
 	
 	public MemAddressVarDecl(Graph gvplGraph, String name, TypeId type) {
@@ -16,7 +16,7 @@ public class MemAddressVarDecl extends DirectVarDecl {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void setPointedVarDecl(VarDecl pointedVarDecl) {
+	public void setPointedVarDecl(DirectVarDecl pointedVarDecl) {
 		_pointedVarDecl = pointedVarDecl;
 	}
 	
@@ -54,7 +54,7 @@ public class MemAddressVarDecl extends DirectVarDecl {
 		_pointedVarDecl.initializeGraphNode(type, startingLine);
 	}
 	
-	public VarDecl getPointedVarDecl() {
+	public DirectVarDecl getPointedVarDecl() {
 		return _pointedVarDecl;
 	}
 

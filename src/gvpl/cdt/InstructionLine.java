@@ -208,7 +208,7 @@ public class InstructionLine {
 			lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			return;
 		} else {
-			VarDecl rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
+			DirectVarDecl rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
 			lhsPointer.setPointedVarDecl(rhsPointer);
 			return;
 		}
@@ -313,7 +313,7 @@ public class InstructionLine {
 	 * @param address Address that contains the variable
 	 * @return The var that is pointed by the address
 	 */
-	public static VarDecl loadVarInAddress(IASTExpression address, AstLoader astLoader)
+	public static DirectVarDecl loadVarInAddress(IASTExpression address, AstLoader astLoader)
 	{
 		if(!(address instanceof IASTUnaryExpression)) {
 			//it's receiving the address from another pointer, like "int *b; int *a = b;" 
@@ -361,7 +361,7 @@ public class InstructionLine {
 	 * @param astLoader
 	 * @return The variable that is currently pointed by the received pointer
 	 */
-	public static VarDecl loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
+	public static DirectVarDecl loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
 		VarDecl pointerVar = astLoader.getVarDeclOfReference(pointerExpr);
 		if(pointerVar instanceof PointerVarDecl)
 			return ((PointerVarDecl)pointerVar).getPointedVarDecl();

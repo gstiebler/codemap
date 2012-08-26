@@ -70,7 +70,7 @@ public class MemberFunc extends Function {
 	 * Returns the VarDecl of the reference to a variable
 	 * @return The VarDecl of the reference to a variable
 	 */
-	public VarDecl getVarDeclOfReference(IASTExpression expr) {
+	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
 
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
@@ -79,7 +79,7 @@ public class MemberFunc extends Function {
 			ErrorOutputter.fatalError("problem here");
 
 		// Check if the variable is declared inside the own block
-		VarDecl var_decl = getVarDeclOfLocalReference(id_expr);
+		DirectVarDecl var_decl = getVarDeclOfLocalReference(id_expr);
 		if (var_decl != null)
 			return var_decl;
 		// Ok, if the function did not returned until here, the variable is a

@@ -43,13 +43,13 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 
-	protected VarDecl getVarDeclOfLocalReference(IASTIdExpression id_expr) {
+	protected DirectVarDecl getVarDeclOfLocalReference(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		return _direct_var_graph_nodes.get(binding);
 	}
 
-	protected VarDecl getVarDeclOfReference(IASTExpression expr) {
-		VarDecl varDecl = null;
+	protected DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
+		DirectVarDecl varDecl = null;
 		if (expr instanceof IASTIdExpression)
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference){
@@ -74,7 +74,7 @@ public class AstLoader {
 		return owner_var_decl.getType();
 	}
 
-	protected VarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref) {
+	protected DirectVarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref) {
 		IASTExpression owner = field_ref.getFieldOwner();
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();

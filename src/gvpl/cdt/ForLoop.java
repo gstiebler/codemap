@@ -20,7 +20,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 public class ForLoop extends AstLoader {
 
 	/** Maps the external variables (from external graph) to internal generated variables */
-	private Map<VarDecl, VarDecl> _externalVars = new HashMap<VarDecl, VarDecl>();	
+	private Map<DirectVarDecl, DirectVarDecl> _externalVars = new HashMap<DirectVarDecl, DirectVarDecl>();	
 	
 	private Set<VarDecl> _writtenExtVars = new HashSet<VarDecl>();
 	private Set<VarDecl> _readExtVars = new HashSet<VarDecl>();
@@ -42,7 +42,7 @@ public class ForLoop extends AstLoader {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
 		
-		for (Map.Entry<VarDecl, VarDecl> entry : _externalVars.entrySet()) {
+		for (Map.Entry<DirectVarDecl, DirectVarDecl> entry : _externalVars.entrySet()) {
 			VarDecl extVarDecl = entry.getKey();
 			VarDecl intVarDecl = entry.getValue();
 			
@@ -77,16 +77,16 @@ public class ForLoop extends AstLoader {
 	 * @return The VarDecl of the reference to a variable
 	 */
 	@Override
-	public VarDecl getVarDeclOfReference(IASTExpression expr) {
+	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
 			ErrorOutputter.fatalError("problem here");
 
-		VarDecl extVarDecl = _parent.getVarDeclOfReference(expr);
+		DirectVarDecl extVarDecl = _parent.getVarDeclOfReference(expr);
 
-		VarDecl intVarDecl = _externalVars.get(extVarDecl);
+		DirectVarDecl intVarDecl = _externalVars.get(extVarDecl);
 		if (intVarDecl != null)
 			return intVarDecl;
 

@@ -20,7 +20,7 @@ public class ForLoopHeader extends AstLoader {
 	private Set<VarDecl> _writtenExtVars = new HashSet<VarDecl>();
 	private Set<VarDecl> _readExtVars = new HashSet<VarDecl>();
 	/** Maps the external variables (from external graph) to internal generated variables */
-	private Map<VarDecl, VarDecl> _externalVars = new HashMap<VarDecl, VarDecl>();	
+	private Map<DirectVarDecl, DirectVarDecl> _externalVars = new HashMap<DirectVarDecl, DirectVarDecl>();	
 	
 	public ForLoopHeader(GraphBuilder graphBuilder, AstLoader parent, CppMaps cppMaps, AstInterpreter astInterpreter) {
 		super(graphBuilder, parent, cppMaps, astInterpreter);
@@ -40,16 +40,16 @@ public class ForLoopHeader extends AstLoader {
 	 * @return The VarDecl of the reference to a variable
 	 */
 	@Override
-	public VarDecl getVarDeclOfReference(IASTExpression expr) {
+	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
 			ErrorOutputter.fatalError("problem here");
 
-		VarDecl extVarDecl = _parent.getVarDeclOfReference(expr);
+		DirectVarDecl extVarDecl = _parent.getVarDeclOfReference(expr);
 
-		VarDecl intVarDecl = _externalVars.get(extVarDecl);
+		DirectVarDecl intVarDecl = _externalVars.get(extVarDecl);
 		if (intVarDecl != null)
 			return intVarDecl;
 

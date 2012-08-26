@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class ClassVarDecl extends DirectVarDecl {
 
-	Map<MemberId, VarDecl> _memberInstances = new HashMap<MemberId, VarDecl>();
+	Map<MemberId, DirectVarDecl> _memberInstances = new HashMap<MemberId, DirectVarDecl>();
 
 	public ClassVarDecl(GraphBuilder graphBuilder, String name, TypeId type, ClassDecl structDecl,
 			AstLoader parentAstLoader) {
@@ -23,14 +23,14 @@ public class ClassVarDecl extends DirectVarDecl {
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			VarDecl member_instance = parentAstLoader.addVarDecl(memberName,
+			DirectVarDecl member_instance = parentAstLoader.addVarDecl(memberName,
 					struct_member.getMemberType(), struct_member.getNumPointerOps());
 			_memberInstances.put(entry.getKey(), member_instance);
 		}
 	}
 
-	public VarDecl findMember(MemberId member_id) {
-		VarDecl varDecl = _memberInstances.get(member_id);
+	public DirectVarDecl findMember(MemberId member_id) {
+		DirectVarDecl varDecl = _memberInstances.get(member_id);
 		if (varDecl != null)
 			return varDecl;
 
