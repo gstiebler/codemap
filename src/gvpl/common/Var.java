@@ -9,7 +9,7 @@ import gvpl.graph.GraphBuilder.TypeId;
 /**
  * Structure that holds variable declaration parameters
  */
-public class DirectVarDecl {
+public class Var {
 	
 	protected String _name;
 	
@@ -20,7 +20,7 @@ public class DirectVarDecl {
 	
 	protected Graph _gvplGraph;
 
-	public DirectVarDecl(Graph graph, String name, TypeId type) {
+	public Var(Graph graph, String name, TypeId type) {
 		_type = type;
 		_gvplGraph = graph;
 		_name = name;

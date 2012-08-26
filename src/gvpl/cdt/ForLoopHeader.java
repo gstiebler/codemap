@@ -1,8 +1,8 @@
 package gvpl.cdt;
 
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 
@@ -17,10 +17,10 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class ForLoopHeader extends AstLoader {
 	
-	private Set<DirectVarDecl> _writtenExtVars = new HashSet<DirectVarDecl>();
-	private Set<DirectVarDecl> _readExtVars = new HashSet<DirectVarDecl>();
+	private Set<Var> _writtenExtVars = new HashSet<Var>();
+	private Set<Var> _readExtVars = new HashSet<Var>();
 	/** Maps the external variables (from external graph) to internal generated variables */
-	private Map<DirectVarDecl, DirectVarDecl> _externalVars = new HashMap<DirectVarDecl, DirectVarDecl>();	
+	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();	
 	
 	public ForLoopHeader(GraphBuilder graphBuilder, AstLoader parent, CppMaps cppMaps, AstInterpreter astInterpreter) {
 		super(graphBuilder, parent, cppMaps, astInterpreter);
@@ -40,28 +40,28 @@ public class ForLoopHeader extends AstLoader {
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	@Override
-	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
+	public Var getVarDeclOfReference(IASTExpression expr) {
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
 			ErrorOutputter.fatalError("problem here");
 
-		DirectVarDecl extVarDecl = _parent.getVarDeclOfReference(expr);
+		Var extVarDecl = _parent.getVarDeclOfReference(expr);
 
-		DirectVarDecl intVarDecl = _externalVars.get(extVarDecl);
+		Var intVarDecl = _externalVars.get(extVarDecl);
 		if (intVarDecl != null)
 			return intVarDecl;
 
 		String varName = id_expr.getName().toString();
-		intVarDecl = new DirectVarDecl(_graphBuilder._gvplGraph, varName , null);
+		intVarDecl = new Var(_graphBuilder._gvplGraph, varName , null);
 		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, expr.getFileLocation().getStartingLineNumber());
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
 	}
 	
 	@Override
-	public void varWrite(DirectVarDecl var, int startingLine) {
+	public void varWrite(Var var, int startingLine) {
 		if (_parent != null) 
 			_parent.varWrite(var, startingLine);
 		
@@ -69,18 +69,18 @@ public class ForLoopHeader extends AstLoader {
 	}
 	
 	@Override
-	public void varRead(DirectVarDecl var) {
+	public void varRead(Var var) {
 		if (_parent != null) 
 			_parent.varRead(var);
 		
 		_readExtVars.add(var);
 	}
 	
-	public Iterable<DirectVarDecl> getWrittenVars() {
+	public Iterable<Var> getWrittenVars() {
 		return _writtenExtVars;
 	}
 	
-	public Iterable<DirectVarDecl> getReadVars() {
+	public Iterable<Var> getReadVars() {
 		return _readExtVars;
 	}
 	

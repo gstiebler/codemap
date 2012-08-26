@@ -2,7 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassVarDecl;
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.eParameterType;
 import gvpl.common.PointerVarDecl;
@@ -32,7 +32,7 @@ public class AstLoader {
 	protected CppMaps _cppMaps;
 	protected AstInterpreter _astInterpreter;
 
-	private Map<IBinding, DirectVarDecl> _direct_var_graph_nodes = new HashMap<IBinding, DirectVarDecl>();
+	private Map<IBinding, Var> _direct_var_graph_nodes = new HashMap<IBinding, Var>();
 
 	public AstLoader(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
@@ -42,13 +42,13 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 
-	protected DirectVarDecl getVarDeclOfLocalReference(IASTIdExpression id_expr) {
+	protected Var getVarDeclOfLocalReference(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		return _direct_var_graph_nodes.get(binding);
 	}
 
-	protected DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
-		DirectVarDecl varDecl = null;
+	protected Var getVarDeclOfReference(IASTExpression expr) {
+		Var varDecl = null;
 		if (expr instanceof IASTIdExpression)
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference){
@@ -69,11 +69,11 @@ public class AstLoader {
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
-		DirectVarDecl owner_var_decl = _direct_var_graph_nodes.get(binding);
+		Var owner_var_decl = _direct_var_graph_nodes.get(binding);
 		return owner_var_decl.getType();
 	}
 
-	protected DirectVarDecl getVarDeclOfFieldRef(IASTFieldReference field_ref) {
+	protected Var getVarDeclOfFieldRef(IASTFieldReference field_ref) {
 		IASTExpression owner = field_ref.getFieldOwner();
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
@@ -85,27 +85,27 @@ public class AstLoader {
 		return owner_var_decl.findMember(member_id);
 	}
 
-	public DirectVarDecl loadVarDecl(IASTDeclarator decl, TypeId type) {
+	public Var loadVarDecl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
-		DirectVarDecl var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
+		Var var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
 		_direct_var_graph_nodes.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
 	}
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, int startLine) {
-		DirectVarDecl var_decl = addVarDecl(functionName, type, 0);
+		Var var_decl = addVarDecl(functionName, type, 0);
 		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
 	}
 
 	
-	public DirectVarDecl addVarDecl(String name, TypeId type, int numPointerOps) {
-		DirectVarDecl varDecl = null;
+	public Var addVarDecl(String name, TypeId type, int numPointerOps) {
+		Var varDecl = null;
 
 		if(numPointerOps > 0) {
 			varDecl = new PointerVarDecl(_graphBuilder._gvplGraph, name, type);
 		}  else if (type == null) {
-			varDecl = new DirectVarDecl(_graphBuilder._gvplGraph, name, type);
+			varDecl = new Var(_graphBuilder._gvplGraph, name, type);
 		} else {
 			ClassDecl structDecl = _astInterpreter.getStructDecl(type);
 			varDecl = new ClassVarDecl(_graphBuilder, name, type, structDecl, this);
@@ -113,17 +113,17 @@ public class AstLoader {
 		return varDecl;
 	}
 	
-	public DirectVarDecl addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
+	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
 		FuncParameter.eParameterType parameterVarType = null;
 		parameterVarType = Function.getFuncParameterType(pointerOps);
 		return instanceVarDecl(parameterVarType, name, type);
 	}
 	
-	private DirectVarDecl instanceVarDecl(eParameterType parameterType, String name, TypeId type) {
+	private Var instanceVarDecl(eParameterType parameterType, String name, TypeId type) {
 		switch(parameterType) {
 		case E_VARIABLE:
 			if(type == null)
-				return new DirectVarDecl(_graphBuilder._gvplGraph, name, type);
+				return new Var(_graphBuilder._gvplGraph, name, type);
 			
 			ClassDecl structDecl = _astInterpreter.getStructDecl(type);
 			return new ClassVarDecl(_graphBuilder, name, type, structDecl, this);
@@ -143,12 +143,12 @@ public class AstLoader {
 		return _graphBuilder;
 	}
 
-	public void varWrite(DirectVarDecl var, int startingLine) {
+	public void varWrite(Var var, int startingLine) {
 		if (_parent != null)
 			_parent.varWrite(var, startingLine);
 	}
 
-	public void varRead(DirectVarDecl var) {
+	public void varRead(Var var) {
 		if (_parent != null)
 			_parent.varRead(var);
 	}

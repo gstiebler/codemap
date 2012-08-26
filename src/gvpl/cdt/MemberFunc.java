@@ -2,7 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVarDecl;
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.graph.Graph.NodeType;
@@ -23,10 +23,10 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 public class MemberFunc extends Function {
 
 	private Struct _parentLoadStruct;
-	private Map<MemberId, DirectVarDecl> _varFromMembersMap = new HashMap<MemberId, DirectVarDecl>();
-	private Map<DirectVarDecl, MemberId> _memberFromVar = new HashMap<DirectVarDecl, MemberId>();
-	private Map<DirectVarDecl, MemberId> _writtenMembers = new HashMap<DirectVarDecl, MemberId>();
-	private Map<DirectVarDecl, MemberId> _readMembers = new HashMap<DirectVarDecl, MemberId>();
+	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
+	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
+	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
+	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
 
 	public MemberFunc(Struct parent, int startingLine) {
 		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
@@ -35,22 +35,22 @@ public class MemberFunc extends Function {
 		List<ClassMember> members = _parentLoadStruct.getMembers();
 		// declare a variable for each member of the struct
 		for (ClassMember member : members) {
-			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType(),
+			Var member_var = addVarDecl(member.getName(), member.getMemberType(),
 					member.getNumPointerOps());
 			member_var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			addMember(member_var, member.getMemberId());
 
 			if (member_var instanceof ClassVarDecl) {
 				ClassVarDecl structVarDecl = (ClassVarDecl) member_var;
-				for (Map.Entry<MemberId, DirectVarDecl> entry : structVarDecl.getInternalVariables()
+				for (Map.Entry<MemberId, Var> entry : structVarDecl.getInternalVariables()
 						.entrySet()) {
-					addMember((DirectVarDecl) entry.getValue(), entry.getKey());
+					addMember((Var) entry.getValue(), entry.getKey());
 				}
 			}
 		}
 	}
 
-	private void addMember(DirectVarDecl var, MemberId id) {
+	private void addMember(Var var, MemberId id) {
 		_varFromMembersMap.put(id, var);
 		_memberFromVar.put(var, id);
 	}
@@ -69,7 +69,7 @@ public class MemberFunc extends Function {
 	 * Returns the DirectVarDecl of the reference to a variable
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
-	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
+	public Var getVarDeclOfReference(IASTExpression expr) {
 
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
@@ -78,7 +78,7 @@ public class MemberFunc extends Function {
 			ErrorOutputter.fatalError("problem here");
 
 		// Check if the variable is declared inside the own block
-		DirectVarDecl var_decl = getVarDeclOfLocalReference(id_expr);
+		Var var_decl = getVarDeclOfLocalReference(id_expr);
 		if (var_decl != null)
 			return var_decl;
 		// Ok, if the function did not returned until here, the variable is a
@@ -89,13 +89,13 @@ public class MemberFunc extends Function {
 		ClassMember structMember = _parentLoadStruct.getMember(binding);
 		MemberId lhs_member_id = structMember.getMemberId();
 
-		DirectVarDecl direct_var_decl = _varFromMembersMap.get(lhs_member_id);
+		Var direct_var_decl = _varFromMembersMap.get(lhs_member_id);
 
 		return direct_var_decl;
 	}
 
 	@Override
-	public void varWrite(DirectVarDecl var, int startingLine) {
+	public void varWrite(Var var, int startingLine) {
 		if (_parent != null)
 			_parent.varWrite(var, startingLine);
 
@@ -104,7 +104,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	public void varRead(DirectVarDecl var) {
+	public void varRead(Var var) {
 		if (_parent != null)
 			_parent.varRead(var);
 
@@ -124,19 +124,19 @@ public class MemberFunc extends Function {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
 				_graphBuilder._gvplGraph, this, startingLine);
 
-		for (Map.Entry<DirectVarDecl, MemberId> entry : _readMembers.entrySet()) {
-			DirectVarDecl DirectVarDecl = entry.getKey();
+		for (Map.Entry<Var, MemberId> entry : _readMembers.entrySet()) {
+			Var DirectVarDecl = entry.getKey();
 			GraphNode firstNode = DirectVarDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			DirectVarDecl memberInstance = structVarDecl.findMember(entry.getValue());
+			Var memberInstance = structVarDecl.findMember(entry.getValue());
 			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, this, startingLine);
 		}
 
-		for (Map.Entry<DirectVarDecl, MemberId> entry : _writtenMembers.entrySet()) {
-			DirectVarDecl DirectVarDecl = entry.getKey();
+		for (Map.Entry<Var, MemberId> entry : _writtenMembers.entrySet()) {
+			Var DirectVarDecl = entry.getKey();
 			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
-			DirectVarDecl memberInstance = structVarDecl.findMember(entry.getValue());
+			Var memberInstance = structVarDecl.findMember(entry.getValue());
 			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
 		}
 

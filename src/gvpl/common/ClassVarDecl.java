@@ -9,9 +9,9 @@ import gvpl.graph.GraphBuilder.TypeId;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassVarDecl extends DirectVarDecl {
+public class ClassVarDecl extends Var {
 
-	Map<MemberId, DirectVarDecl> _memberInstances = new HashMap<MemberId, DirectVarDecl>();
+	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
 
 	public ClassVarDecl(GraphBuilder graphBuilder, String name, TypeId type, ClassDecl structDecl,
 			AstLoader parentAstLoader) {
@@ -23,18 +23,18 @@ public class ClassVarDecl extends DirectVarDecl {
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			DirectVarDecl member_instance = parentAstLoader.addVarDecl(memberName,
+			Var member_instance = parentAstLoader.addVarDecl(memberName,
 					struct_member.getMemberType(), struct_member.getNumPointerOps());
 			_memberInstances.put(entry.getKey(), member_instance);
 		}
 	}
 
-	public DirectVarDecl findMember(MemberId member_id) {
-		DirectVarDecl varDecl = _memberInstances.get(member_id);
+	public Var findMember(MemberId member_id) {
+		Var varDecl = _memberInstances.get(member_id);
 		if (varDecl != null)
 			return varDecl;
 
-		for (DirectVarDecl var : _memberInstances.values()) {
+		for (Var var : _memberInstances.values()) {
 			if (var instanceof ClassVarDecl) {
 				varDecl = ((ClassVarDecl) var).findMember(member_id);
 				if (varDecl != null)
@@ -50,16 +50,16 @@ public class ClassVarDecl extends DirectVarDecl {
 	public void initializeGraphNode(NodeType type, int startingLine) {
 		super.initializeGraphNode(type, startingLine);
 
-		for (DirectVarDecl var : _memberInstances.values())
+		for (Var var : _memberInstances.values())
 			var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 	}
 
-	public Map<MemberId, DirectVarDecl> getInternalVariables() {
-		Map<MemberId, DirectVarDecl> internalVariables = new HashMap<MemberId, DirectVarDecl>();
+	public Map<MemberId, Var> getInternalVariables() {
+		Map<MemberId, Var> internalVariables = new HashMap<MemberId, Var>();
 
 		internalVariables.putAll(_memberInstances);
 
-		for (DirectVarDecl var : _memberInstances.values())
+		for (Var var : _memberInstances.values())
 			if (var instanceof ClassVarDecl)
 				internalVariables.putAll(((ClassVarDecl) var)._memberInstances);
 

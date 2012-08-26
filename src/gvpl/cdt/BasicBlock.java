@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.graph.GraphNode;
 
 import java.util.HashSet;
@@ -14,9 +14,9 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 public class BasicBlock extends AstLoader {
 	
 	private class VarNodePair {
-		public DirectVarDecl _varDecl;
+		public Var _varDecl;
 		public GraphNode _graphNode;
-		public VarNodePair(DirectVarDecl varDecl, GraphNode graphNode) {
+		public VarNodePair(Var varDecl, GraphNode graphNode) {
 			_varDecl = varDecl;
 			_graphNode = graphNode;
 		}
@@ -24,7 +24,7 @@ public class BasicBlock extends AstLoader {
 	
 	private GraphNode _conditionNode;
 	private LinkedList<VarNodePair> _writtenVar = new LinkedList<VarNodePair>();
-	private Set<DirectVarDecl> _writtenVarSet = new HashSet<DirectVarDecl>();
+	private Set<Var> _writtenVarSet = new HashSet<Var>();
 	
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {
 		super(parent._graphBuilder, parent, parent._cppMaps, astInterpreter);
@@ -50,14 +50,14 @@ public class BasicBlock extends AstLoader {
 		
 		if(_conditionNode != null) {
 			for (VarNodePair varNodePair : _writtenVar) {
-				DirectVarDecl var = varNodePair._varDecl;
+				Var var = varNodePair._varDecl;
 				_graphBuilder.addIf(var, var.getCurrentNode(startingLine), varNodePair._graphNode, _conditionNode, null, startingLine);
 			}
 		}
 	}
 	
 	@Override
-	public void varWrite(DirectVarDecl var, int startingLine) {
+	public void varWrite(Var var, int startingLine) {
 		if (_parent != null) 
 			_parent.varWrite(var, startingLine);
 		

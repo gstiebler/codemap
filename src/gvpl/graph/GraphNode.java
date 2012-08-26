@@ -1,7 +1,7 @@
 package gvpl.graph;
 
 import gvpl.cdt.AstLoader;
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.graph.Graph.NodeType;
 
@@ -13,7 +13,7 @@ public class GraphNode {
 	private int _id;
 	public String _name;
 	public NodeType _type;
-	private DirectVarDecl _parentVar = null;
+	private Var _parentVar = null;
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
@@ -26,7 +26,7 @@ public class GraphNode {
 		_startingLine = startingLine;
 	}	
 	
-	public GraphNode(DirectVarDecl parentVar, NodeType type, int startingLine) { 
+	public GraphNode(Var parentVar, NodeType type, int startingLine) { 
 		_id = _counter++;
 		_parentVar = parentVar;
 		_name = parentVar.getName();

@@ -3,7 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.ClassVarDecl;
-import gvpl.common.DirectVarDecl;
+import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.eParameterType;
@@ -71,7 +71,7 @@ public class InstructionLine {
 			IASTDeclarator[] declarators = simple_decl.getDeclarators();
 			for (IASTDeclarator declarator : declarators) {
 				// possibly more than one variable per line
-				DirectVarDecl var_decl = _parentBasicBlock.loadVarDecl(declarator, type);
+				Var var_decl = _parentBasicBlock.loadVarDecl(declarator, type);
 				LoadVariableInitialization(var_decl, declarator);
 			}
 		} else if (statement instanceof IASTExpression)
@@ -101,7 +101,7 @@ public class InstructionLine {
 	 * @param lhsVarDecl The variable to be initialized
 	 * @param decl Code with the declaration
 	 */
-	public void LoadVariableInitialization(DirectVarDecl lhsVarDecl, IASTDeclarator decl) {
+	public void LoadVariableInitialization(Var lhsVarDecl, IASTDeclarator decl) {
 		int startingLine = decl.getFileLocation().getStartingLineNumber();
 		
 		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
@@ -127,7 +127,7 @@ public class InstructionLine {
 
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
-			DirectVarDecl var_decl = _parentBasicBlock.getVarDeclOfReference(node);
+			Var var_decl = _parentBasicBlock.getVarDeclOfReference(node);
 			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) node);
@@ -138,7 +138,7 @@ public class InstructionLine {
 			return loadFunctionCall((IASTFunctionCallExpression) node);
 		} else if (node instanceof IASTFieldReference) {// reference to field of
 														// a struct
-			DirectVarDecl var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
+			Var var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
 			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
 		} else if (node instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) node);
@@ -177,7 +177,7 @@ public class InstructionLine {
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression lhsOp = node.getOperand1();
-		DirectVarDecl lhsVarDecl = _parentBasicBlock.getVarDeclOfReference(lhsOp);
+		Var lhsVarDecl = _parentBasicBlock.getVarDeclOfReference(lhsOp);
 		IASTExpression rhsExpr = node.getOperand2();
 		
 		//check if we're trying to read a the instance of a pointer
@@ -206,7 +206,7 @@ public class InstructionLine {
 			lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			return;
 		} else {
-			DirectVarDecl rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
+			Var rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
 			lhsPointer.setPointedVarDecl(rhsPointer);
 			return;
 		}
@@ -229,7 +229,7 @@ public class InstructionLine {
 				if(insideFuncParameter.getType() == eParameterType.E_POINTER) 
 					localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock), eParameterType.E_POINTER);
 				else if(insideFuncParameter.getType() == eParameterType.E_REFERENCE) {
-					DirectVarDecl DirectVarDecl = _parentBasicBlock.getVarDeclOfReference(parameter);
+					Var DirectVarDecl = _parentBasicBlock.getVarDeclOfReference(parameter);
 					localParameter = new FuncParameter(DirectVarDecl, eParameterType.E_REFERENCE);
 				}
 				else if (insideFuncParameter.getType() == eParameterType.E_VARIABLE)
@@ -277,7 +277,7 @@ public class InstructionLine {
 		MemberFunc member_func = _astInterpreter.getMemberFunc(func_member_binding);
 
 		IASTExpression expr = field_ref.getFieldOwner();
-		DirectVarDecl DirectVarDecl = _parentBasicBlock.getVarDeclOfReference(expr);
+		Var DirectVarDecl = _parentBasicBlock.getVarDeclOfReference(expr);
 		if (!(DirectVarDecl instanceof ClassVarDecl))
 			ErrorOutputter.fatalError("Work here.");
 
@@ -311,11 +311,11 @@ public class InstructionLine {
 	 * @param address Address that contains the variable
 	 * @return The var that is pointed by the address
 	 */
-	public static DirectVarDecl loadVarInAddress(IASTExpression address, AstLoader astLoader)
+	public static Var loadVarInAddress(IASTExpression address, AstLoader astLoader)
 	{
 		if(!(address instanceof IASTUnaryExpression)) {
 			//it's receiving the address from another pointer, like "int *b; int *a = b;" 
-			DirectVarDecl DirectVarDecl = astLoader.getVarDeclOfReference(address);
+			Var DirectVarDecl = astLoader.getVarDeclOfReference(address);
 			if(!(DirectVarDecl instanceof PointerVarDecl))
 				ErrorOutputter.fatalError("not expected here!!");
 			return ((PointerVarDecl)DirectVarDecl).getPointedVarDecl();
@@ -344,7 +344,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("not implemented");
 		
 		IASTExpression opExpr = unExpr.getOperand();
-		DirectVarDecl pointerVar = _parentBasicBlock.getVarDeclOfReference(opExpr);
+		Var pointerVar = _parentBasicBlock.getVarDeclOfReference(opExpr);
 		if(!(pointerVar instanceof PointerVarDecl))
 			ErrorOutputter.fatalError("not expected here");
 		
@@ -359,8 +359,8 @@ public class InstructionLine {
 	 * @param astLoader
 	 * @return The variable that is currently pointed by the received pointer
 	 */
-	public static DirectVarDecl loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
-		DirectVarDecl pointerVar = astLoader.getVarDeclOfReference(pointerExpr);
+	public static Var loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
+		Var pointerVar = astLoader.getVarDeclOfReference(pointerExpr);
 		if(pointerVar instanceof PointerVarDecl)
 			return ((PointerVarDecl)pointerVar).getPointedVarDecl();
 		else
