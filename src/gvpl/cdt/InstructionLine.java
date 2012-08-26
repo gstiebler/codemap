@@ -100,10 +100,10 @@ public class InstructionLine {
 
 	/**
 	 * Loads the value of the variable, like in "int a = b;"
-	 * @param var_decl The variable to be initialized
+	 * @param lhsVarDecl The variable to be initialized
 	 * @param decl Code with the declaration
 	 */
-	public void LoadVariableInitialization(DirectVarDecl var_decl, IASTDeclarator decl) {
+	public void LoadVariableInitialization(DirectVarDecl lhsVarDecl, IASTDeclarator decl) {
 		int startingLine = decl.getFileLocation().getStartingLineNumber();
 		
 		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
@@ -111,15 +111,15 @@ public class InstructionLine {
 		if (init_exp == null)
 			return;
 
-		IASTExpression expr = init_exp.getExpression();
+		IASTExpression rhsExpr = init_exp.getExpression();
 		
-		if(var_decl instanceof PointerVarDecl) {
-			loadRhsPointer((PointerVarDecl) var_decl, expr);
+		if(lhsVarDecl instanceof PointerVarDecl) {
+			loadRhsPointer((PointerVarDecl) lhsVarDecl, rhsExpr);
 			return;
 		}
 
-		GraphNode val = loadValue(expr);
-		_graphBuilder.addAssignOp(var_decl, val, _parentBasicBlock, startingLine);
+		GraphNode rhsValue = loadValue(rhsExpr);
+		lhsVarDecl.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
 	}
 
 	/*
@@ -180,25 +180,26 @@ public class InstructionLine {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression lhsOp = node.getOperand1();
 		VarDecl lhsVarDecl = _parentBasicBlock.getVarDeclOfReference(lhsOp);
-		//check if we're trying to read a the instance of a pointer
 		IASTExpression rhsOp = node.getOperand2();
+		
+		//check if we're trying to read a the instance of a pointer
 		if(lhsOp instanceof IASTUnaryExpression){
-			//rvalue = varDecl.getCurrentNode();
+			
 		} else if(lhsVarDecl instanceof PointerVarDecl) {
 			loadRhsPointer((PointerVarDecl) lhsVarDecl, rhsOp);
 			return null;
 		}
 		
-		GraphNode rvalue = loadValue(rhsOp);
+		GraphNode rhsValue = loadValue(rhsOp);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			lhsVarDecl.receiveAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startingLine);
+			lhsVarDecl.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
 			return null;
 		}
 
-		GraphNode lvalue = loadValue(node.getOperand1());
+		GraphNode lhsValue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.addAssignBinOp(op, lhsVarDecl, lvalue, rvalue, _parentBasicBlock, startingLine);
+		return _graphBuilder.addAssignBinOp(op, lhsVarDecl, lhsValue, rhsValue, _parentBasicBlock, startingLine);
 	}
 
 	void loadRhsPointer(PointerVarDecl lhsPointer, IASTExpression rhsOp) {

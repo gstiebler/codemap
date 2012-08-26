@@ -31,10 +31,6 @@ public class GraphBuilder {
 		return _gvplGraph.add_graph_node(value, NodeType.E_DIRECT_VALUE, startingLine);
 	}
 
-	public void addAssignOp(VarDecl var_decl_lhs, GraphNode rhs_node, AstLoader astLoader, int startingLine) {
-		var_decl_lhs.receiveAssign(NodeType.E_VARIABLE, rhs_node, astLoader, startingLine);
-	}
-
 	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
 		GraphNode un_op_node = _gvplGraph.add_graph_node(_cppMaps._un_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
