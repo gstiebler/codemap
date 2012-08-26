@@ -59,4 +59,9 @@ public class BasicTest {
 		TestsUtil.baseTest("reference");
 	}
 	
+	@Test
+	public void newOp() {
+		TestsUtil.baseTest("new_op");
+	}
+	
 }
