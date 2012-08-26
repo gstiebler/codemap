@@ -1,6 +1,7 @@
 package gvpl.common;
 
 import gvpl.cdt.AstLoader;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -13,9 +14,9 @@ public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
 
-	public ClassVar(GraphBuilder graphBuilder, String name, TypeId type, Class structDecl,
+	public ClassVar(Graph graph, String name, TypeId type, Class structDecl,
 			AstLoader parentAstLoader) {
-		super(graphBuilder._gvplGraph, name, type);
+		super(graph, name, type);
 
 		// For each member of the struct, create a variable instance of the
 		// member

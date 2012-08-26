@@ -7,6 +7,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -108,7 +109,7 @@ public class AstLoader {
 			varDecl = new Var(_graphBuilder._gvplGraph, name, type);
 		} else {
 			Class structDecl = _astInterpreter.getStructDecl(type);
-			varDecl = new ClassVar(_graphBuilder, name, type, structDecl, this);
+			varDecl = new ClassVar(_graphBuilder._gvplGraph, name, type, structDecl, this);
 		}
 		return varDecl;
 	}
@@ -116,21 +117,22 @@ public class AstLoader {
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
 		FuncParameter.IndirectionType parameterVarType = null;
 		parameterVarType = Function.getIndirectionType(pointerOps);
-		return instanceVarDecl(parameterVarType, name, type);
+		return instanceVarDecl(parameterVarType, name, type, _graphBuilder._gvplGraph, _astInterpreter);
 	}
 	
-	private Var instanceVarDecl(IndirectionType parameterType, String name, TypeId type) {
+	public Var instanceVarDecl(IndirectionType parameterType, String name, TypeId type, 
+				Graph graph, AstInterpreter astInterpreter) {
 		switch(parameterType) {
 		case E_VARIABLE:
 			if(type == null)
-				return new Var(_graphBuilder._gvplGraph, name, type);
+				return new Var(graph, name, type);
 			
-			Class structDecl = _astInterpreter.getStructDecl(type);
-			return new ClassVar(_graphBuilder, name, type, structDecl, this);
+			Class structDecl = astInterpreter.getStructDecl(type);
+			return new ClassVar(graph, name, type, structDecl, this);
 		case E_POINTER: 
-			return new PointerVar(_graphBuilder._gvplGraph, name, type);
+			return new PointerVar(graph, name, type);
 		case E_REFERENCE: 
-			return new ReferenceVar(_graphBuilder._gvplGraph, name, type);
+			return new ReferenceVar(graph, name, type);
 		}
 		return null;
 	}
