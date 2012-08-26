@@ -6,7 +6,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
-import gvpl.common.FuncParameter.eParameterType;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.PointerVar;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -226,21 +226,21 @@ public class InstructionLine {
 				FuncParameter localParameter = null;
 				FuncParameter insideFuncParameter = func._parameters.get(i);
 				
-				if(insideFuncParameter.getType() == eParameterType.E_POINTER) 
-					localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock), eParameterType.E_POINTER);
-				else if(insideFuncParameter.getType() == eParameterType.E_REFERENCE) {
+				if(insideFuncParameter.getType() == IndirectionType.E_POINTER) 
+					localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock), IndirectionType.E_POINTER);
+				else if(insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
 					Var var = _parentBasicBlock.getVarOfReference(parameter);
-					localParameter = new FuncParameter(var, eParameterType.E_REFERENCE);
+					localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
 				}
-				else if (insideFuncParameter.getType() == eParameterType.E_VARIABLE)
-					localParameter = new FuncParameter(loadValue(parameter), eParameterType.E_VARIABLE);
+				else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
+					localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
 				else
 					ErrorOutputter.fatalError("Work here ");
 				
 				parameter_values.add(localParameter);
 			}
 		} else {
-			parameter_values.add(new FuncParameter(loadValue(param_expr), eParameterType.E_VARIABLE));
+			parameter_values.add(new FuncParameter(loadValue(param_expr), IndirectionType.E_VARIABLE));
 		}
 
 		IASTExpression name_expr = func_call.getFunctionNameExpression();

@@ -1,12 +1,10 @@
 package gvpl.cdt;
 
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
-import gvpl.common.PointerVar;
 import gvpl.common.Var;
-import gvpl.common.FuncParameter.eParameterType;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.TypeId;
@@ -26,7 +24,6 @@ import org.eclipse.cdt.core.dom.ast.IASTPointer;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.parser.ast.IASTReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 
@@ -103,8 +100,8 @@ public class Function extends AstLoader {
 			TypeId type = _astInterpreter.getType(decl_spec);
 			Var var_decl = loadVarDecl(parameter_var_decl, type);
 			
-			FuncParameter.eParameterType parameterVarType = null;
-			parameterVarType = getFuncParameterType(parameter.getDeclarator().getPointerOperators());
+			FuncParameter.IndirectionType parameterVarType = null;
+			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
 			
 			_parameters.add(new FuncParameter(var_decl, parameterVarType));
 		}
@@ -166,18 +163,18 @@ public class Function extends AstLoader {
 		return this;
 	}
 	
-	public static eParameterType getFuncParameterType(IASTPointerOperator[] pointerOps) {
+	public static IndirectionType getIndirectionType(IASTPointerOperator[] pointerOps) {
 		if(pointerOps == null)
-			return eParameterType.E_VARIABLE;
+			return IndirectionType.E_VARIABLE;
 		
 		if(pointerOps.length > 0) {
 			if(pointerOps[0] instanceof IASTPointer)
-				return eParameterType.E_POINTER;
+				return IndirectionType.E_POINTER;
 			else if (pointerOps[0] instanceof CPPASTReferenceOperator)
-				return eParameterType.E_REFERENCE;
+				return IndirectionType.E_REFERENCE;
 		}
 		else
-			return eParameterType.E_VARIABLE;
+			return IndirectionType.E_VARIABLE;
 		ErrorOutputter.fatalError("error not expected");
 		return null;
 	}

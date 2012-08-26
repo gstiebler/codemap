@@ -4,7 +4,7 @@ import gvpl.common.Class;
 import gvpl.common.ClassVar;
 import gvpl.common.Var;
 import gvpl.common.FuncParameter;
-import gvpl.common.FuncParameter.eParameterType;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
 import gvpl.graph.Graph.NodeType;
@@ -114,12 +114,12 @@ public class AstLoader {
 	}
 	
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
-		FuncParameter.eParameterType parameterVarType = null;
-		parameterVarType = Function.getFuncParameterType(pointerOps);
+		FuncParameter.IndirectionType parameterVarType = null;
+		parameterVarType = Function.getIndirectionType(pointerOps);
 		return instanceVarDecl(parameterVarType, name, type);
 	}
 	
-	private Var instanceVarDecl(eParameterType parameterType, String name, TypeId type) {
+	private Var instanceVarDecl(IndirectionType parameterType, String name, TypeId type) {
 		switch(parameterType) {
 		case E_VARIABLE:
 			if(type == null)

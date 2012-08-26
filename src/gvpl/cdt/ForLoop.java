@@ -1,6 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
