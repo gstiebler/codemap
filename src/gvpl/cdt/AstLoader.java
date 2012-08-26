@@ -1,12 +1,12 @@
 package gvpl.cdt;
 
-import gvpl.common.ClassDecl;
-import gvpl.common.ClassVarDecl;
+import gvpl.common.Class;
+import gvpl.common.ClassVar;
 import gvpl.common.Var;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.eParameterType;
-import gvpl.common.PointerVarDecl;
-import gvpl.common.ReferenceVarDecl;
+import gvpl.common.PointerVar;
+import gvpl.common.ReferenceVar;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -47,7 +47,7 @@ public class AstLoader {
 		return _direct_var_graph_nodes.get(binding);
 	}
 
-	protected Var getVarDeclOfReference(IASTExpression expr) {
+	protected Var getVarOfReference(IASTExpression expr) {
 		Var varDecl = null;
 		if (expr instanceof IASTIdExpression)
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
@@ -65,7 +65,7 @@ public class AstLoader {
 		if (varDecl != null)
 			return varDecl;
 		else
-			return _parent.getVarDeclOfReference(expr);
+			return _parent.getVarOfReference(expr);
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
@@ -78,7 +78,7 @@ public class AstLoader {
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
 
-		ClassVarDecl owner_var_decl = (ClassVarDecl) getVarDeclOfReference(owner);
+		ClassVar owner_var_decl = (ClassVar) getVarOfReference(owner);
 
 		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
 
@@ -103,12 +103,12 @@ public class AstLoader {
 		Var varDecl = null;
 
 		if(numPointerOps > 0) {
-			varDecl = new PointerVarDecl(_graphBuilder._gvplGraph, name, type);
+			varDecl = new PointerVar(_graphBuilder._gvplGraph, name, type);
 		}  else if (type == null) {
 			varDecl = new Var(_graphBuilder._gvplGraph, name, type);
 		} else {
-			ClassDecl structDecl = _astInterpreter.getStructDecl(type);
-			varDecl = new ClassVarDecl(_graphBuilder, name, type, structDecl, this);
+			Class structDecl = _astInterpreter.getStructDecl(type);
+			varDecl = new ClassVar(_graphBuilder, name, type, structDecl, this);
 		}
 		return varDecl;
 	}
@@ -125,12 +125,12 @@ public class AstLoader {
 			if(type == null)
 				return new Var(_graphBuilder._gvplGraph, name, type);
 			
-			ClassDecl structDecl = _astInterpreter.getStructDecl(type);
-			return new ClassVarDecl(_graphBuilder, name, type, structDecl, this);
+			Class structDecl = _astInterpreter.getStructDecl(type);
+			return new ClassVar(_graphBuilder, name, type, structDecl, this);
 		case E_POINTER: 
-			return new PointerVarDecl(_graphBuilder._gvplGraph, name, type);
+			return new PointerVar(_graphBuilder._gvplGraph, name, type);
 		case E_REFERENCE: 
-			return new ReferenceVarDecl(_graphBuilder._gvplGraph, name, type);
+			return new ReferenceVar(_graphBuilder._gvplGraph, name, type);
 		}
 		return null;
 	}

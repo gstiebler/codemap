@@ -6,33 +6,33 @@ import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
 
-public class MemAddressVarDecl extends Var {
+public class MemAddressVar extends Var {
 
-	private Var _pointedVarDecl = null;
+	private Var _pointedVar = null;
 	GraphNode _lastPointedVarNode = null;
 	
-	public MemAddressVarDecl(Graph gvplGraph, String name, TypeId type) {
+	public MemAddressVar(Graph gvplGraph, String name, TypeId type) {
 		super(gvplGraph, name, type);
 		// TODO Auto-generated constructor stub
 	}
 
 	public void setPointedVarDecl(Var pointedVarDecl) {
-		_pointedVarDecl = pointedVarDecl;
+		_pointedVar = pointedVarDecl;
 	}
 	
 	@Override
 	public void updateNode(GraphNode node) {
-		_pointedVarDecl.updateNode(node);
+		_pointedVar.updateNode(node);
 	}
 	
 	@Override
 	public GraphNode getFirstNode() {
-		return _pointedVarDecl.getFirstNode();
+		return _pointedVar.getFirstNode();
 	}
 	
 	@Override
 	public GraphNode getCurrentNode(int startingLine) {
-		GraphNode currentPointedVarNode = _pointedVarDecl.getCurrentNode(startingLine);
+		GraphNode currentPointedVarNode = _pointedVar.getCurrentNode(startingLine);
 		if(currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
 			currentPointedVarNode.addDependentNode(_currGraphNode, null, startingLine);
@@ -45,17 +45,17 @@ public class MemAddressVarDecl extends Var {
 	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node,
 			AstLoader astLoader, int startLocation) {
 		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, astLoader, startLocation);
-		return _pointedVarDecl.receiveAssign(lhs_type, newNode, astLoader, startLocation);
+		return _pointedVar.receiveAssign(lhs_type, newNode, astLoader, startLocation);
 	}
 	
 	@Override
 	public void initializeGraphNode(NodeType type, int startingLine) {
-		_pointedVarDecl = new Var(_gvplGraph, _name + "_pointed", _type);
-		_pointedVarDecl.initializeGraphNode(type, startingLine);
+		_pointedVar = new Var(_gvplGraph, _name + "_pointed", _type);
+		_pointedVar.initializeGraphNode(type, startingLine);
 	}
 	
-	public Var getPointedVarDecl() {
-		return _pointedVarDecl;
+	public Var getPointedVar() {
+		return _pointedVar;
 	}
 
 }

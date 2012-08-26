@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassMember;
-import gvpl.common.ClassVarDecl;
+import gvpl.common.ClassVar;
 import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
@@ -40,8 +40,8 @@ public class MemberFunc extends Function {
 			member_var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			addMember(member_var, member.getMemberId());
 
-			if (member_var instanceof ClassVarDecl) {
-				ClassVarDecl structVarDecl = (ClassVarDecl) member_var;
+			if (member_var instanceof ClassVar) {
+				ClassVar structVarDecl = (ClassVar) member_var;
 				for (Map.Entry<MemberId, Var> entry : structVarDecl.getInternalVariables()
 						.entrySet()) {
 					addMember((Var) entry.getValue(), entry.getKey());
@@ -69,7 +69,7 @@ public class MemberFunc extends Function {
 	 * Returns the DirectVarDecl of the reference to a variable
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
-	public Var getVarDeclOfReference(IASTExpression expr) {
+	public Var getVarOfReference(IASTExpression expr) {
 
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
@@ -119,7 +119,7 @@ public class MemberFunc extends Function {
 	 * @param structVarDecl
 	 * @param graphBuilder
 	 */
-	public GraphNode loadMemberFuncRef(ClassVarDecl structVarDecl,
+	public GraphNode loadMemberFuncRef(ClassVar structVarDecl,
 			List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
 				_graphBuilder._gvplGraph, this, startingLine);

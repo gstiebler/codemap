@@ -40,14 +40,14 @@ public class ForLoopHeader extends AstLoader {
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	@Override
-	public Var getVarDeclOfReference(IASTExpression expr) {
+	public Var getVarOfReference(IASTExpression expr) {
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
 			ErrorOutputter.fatalError("problem here");
 
-		Var extVarDecl = _parent.getVarDeclOfReference(expr);
+		Var extVarDecl = _parent.getVarOfReference(expr);
 
 		Var intVarDecl = _externalVars.get(extVarDecl);
 		if (intVarDecl != null)

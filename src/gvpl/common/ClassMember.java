@@ -11,7 +11,7 @@ public class ClassMember {
 
 	// private StructDecl _parent;
 
-	public ClassMember(ClassDecl parent, MemberId id, String name, TypeId type,
+	public ClassMember(Class parent, MemberId id, String name, TypeId type,
 			int numPointerOps) {
 		// _parent = parent;
 		_id = id;

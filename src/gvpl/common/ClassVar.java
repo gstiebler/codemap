@@ -9,11 +9,11 @@ import gvpl.graph.GraphBuilder.TypeId;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassVarDecl extends Var {
+public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
 
-	public ClassVarDecl(GraphBuilder graphBuilder, String name, TypeId type, ClassDecl structDecl,
+	public ClassVar(GraphBuilder graphBuilder, String name, TypeId type, Class structDecl,
 			AstLoader parentAstLoader) {
 		super(graphBuilder._gvplGraph, name, type);
 
@@ -35,8 +35,8 @@ public class ClassVarDecl extends Var {
 			return varDecl;
 
 		for (Var var : _memberInstances.values()) {
-			if (var instanceof ClassVarDecl) {
-				varDecl = ((ClassVarDecl) var).findMember(member_id);
+			if (var instanceof ClassVar) {
+				varDecl = ((ClassVar) var).findMember(member_id);
 				if (varDecl != null)
 					return varDecl;
 			}
@@ -60,8 +60,8 @@ public class ClassVarDecl extends Var {
 		internalVariables.putAll(_memberInstances);
 
 		for (Var var : _memberInstances.values())
-			if (var instanceof ClassVarDecl)
-				internalVariables.putAll(((ClassVarDecl) var)._memberInstances);
+			if (var instanceof ClassVar)
+				internalVariables.putAll(((ClassVar) var)._memberInstances);
 
 		return internalVariables;
 	}

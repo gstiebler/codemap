@@ -6,12 +6,12 @@ import gvpl.graph.GraphBuilder.TypeId;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClassDecl {
+public class Class {
 	public TypeId _id;
 	private String _name;
 	private Map<MemberId, ClassMember> _member_var_graph_nodes;
 
-	public ClassDecl(TypeId id, String name) {
+	public Class(TypeId id, String name) {
 		_id = id;
 		_name = name;
 		_member_var_graph_nodes = new HashMap<MemberId, ClassMember>();

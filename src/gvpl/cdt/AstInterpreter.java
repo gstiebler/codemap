@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
-import gvpl.common.ClassDecl;
+import gvpl.common.Class;
 import gvpl.common.ClassMember;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -26,7 +26,7 @@ public class AstInterpreter extends AstLoader {
 	private Map<IBinding, Function> _func_id_map = new HashMap<IBinding, Function>();
 	
 
-	private Map<TypeId, ClassDecl> _struct_graph_nodes = new HashMap<TypeId, ClassDecl>();
+	private Map<TypeId, Class> _struct_graph_nodes = new HashMap<TypeId, Class>();
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
 		super(graph_builder, null, new CppMaps(), null);
@@ -103,11 +103,11 @@ public class AstInterpreter extends AstLoader {
 		return null;
 	}
 
-	public void addStructDecl(ClassDecl struct_decl) {
+	public void addStructDecl(Class struct_decl) {
 		_struct_graph_nodes.put(struct_decl._id, struct_decl);
 	}
 	
-	public ClassDecl getStructDecl(TypeId type) {
+	public Class getStructDecl(TypeId type) {
 		return _struct_graph_nodes.get(type);
 	}
 

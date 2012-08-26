@@ -3,8 +3,8 @@ package gvpl.cdt;
 import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
-import gvpl.common.MemAddressVarDecl;
-import gvpl.common.PointerVarDecl;
+import gvpl.common.MemAddressVar;
+import gvpl.common.PointerVar;
 import gvpl.common.Var;
 import gvpl.common.FuncParameter.eParameterType;
 import gvpl.graph.Graph.NodeType;
@@ -135,8 +135,8 @@ public class Function extends AstLoader {
 
 			//Writes the written pointer parameter values to the pointed variables in the main graph
 			// ([out] parameters)
-			if(declared_parameter instanceof MemAddressVarDecl) {
-				Var pointedVar = ((MemAddressVarDecl)declared_parameter).getPointedVarDecl();
+			if(declared_parameter instanceof MemAddressVar) {
+				Var pointedVar = ((MemAddressVar)declared_parameter).getPointedVar();
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
 				Var DirectVarDecl = funcParameter.getVar();

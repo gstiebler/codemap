@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.ClassDecl;
+import gvpl.common.Class;
 import gvpl.common.ClassMember;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.*;
@@ -15,7 +15,7 @@ import org.eclipse.cdt.core.dom.ast.*;
 public class Struct extends AstLoader {
 
 	private TypeId _typeId;
-	private ClassDecl _structDecl;
+	private Class _structDecl;
 	private IBinding _binding;
 
 	private Map<IBinding, ClassMember> _member_id_map = new HashMap<IBinding, ClassMember>();
@@ -33,7 +33,7 @@ public class Struct extends AstLoader {
 
 		_binding = name.resolveBinding();
 
-		_structDecl = new ClassDecl(_typeId, name.toString());
+		_structDecl = new Class(_typeId, name.toString());
 		// load every field
 		for (IASTDeclaration member : members) {
 			if (!(member instanceof IASTSimpleDeclaration))
@@ -76,7 +76,7 @@ public class Struct extends AstLoader {
 		return _binding;
 	}
 
-	public ClassDecl getStructDecl() {
+	public Class getStructDecl() {
 		return _structDecl;
 	}
 
