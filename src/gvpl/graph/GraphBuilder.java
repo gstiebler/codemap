@@ -6,7 +6,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
 import gvpl.cdt.CppMaps.eValueType;
-import gvpl.common.VarDecl;
+import gvpl.common.DirectVarDecl;
 import gvpl.graph.Graph.NodeType;
 
 public class GraphBuilder {
@@ -58,7 +58,7 @@ public class GraphBuilder {
 		return bin_op_node;
 	}
 
-	public GraphNode addAssignBinOp(eAssignBinOp op, VarDecl lhs_var_decl, GraphNode lhs_node,
+	public GraphNode addAssignBinOp(eAssignBinOp op, DirectVarDecl lhs_var_decl, GraphNode lhs_node,
 			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
 		GraphNode bin_op_node = _gvplGraph.add_graph_node(_cppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
@@ -69,7 +69,7 @@ public class GraphBuilder {
 		return lhs_var_decl.receiveAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
 	}
 
-	public void addIf(VarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
+	public void addIf(DirectVarDecl var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
 			AstLoader astLoader, int startingLine) {
 		GraphNode ifOpNode = _gvplGraph.add_graph_node("If", NodeType.E_OPERATION, startingLine);
 

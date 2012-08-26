@@ -34,7 +34,7 @@ public class ClassVarDecl extends DirectVarDecl {
 		if (varDecl != null)
 			return varDecl;
 
-		for (VarDecl var : _memberInstances.values()) {
+		for (DirectVarDecl var : _memberInstances.values()) {
 			if (var instanceof ClassVarDecl) {
 				varDecl = ((ClassVarDecl) var).findMember(member_id);
 				if (varDecl != null)
@@ -50,16 +50,16 @@ public class ClassVarDecl extends DirectVarDecl {
 	public void initializeGraphNode(NodeType type, int startingLine) {
 		super.initializeGraphNode(type, startingLine);
 
-		for (VarDecl var : _memberInstances.values())
+		for (DirectVarDecl var : _memberInstances.values())
 			var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 	}
 
-	public Map<MemberId, VarDecl> getInternalVariables() {
-		Map<MemberId, VarDecl> internalVariables = new HashMap<MemberId, VarDecl>();
+	public Map<MemberId, DirectVarDecl> getInternalVariables() {
+		Map<MemberId, DirectVarDecl> internalVariables = new HashMap<MemberId, DirectVarDecl>();
 
 		internalVariables.putAll(_memberInstances);
 
-		for (VarDecl var : _memberInstances.values())
+		for (DirectVarDecl var : _memberInstances.values())
 			if (var instanceof ClassVarDecl)
 				internalVariables.putAll(((ClassVarDecl) var)._memberInstances);
 

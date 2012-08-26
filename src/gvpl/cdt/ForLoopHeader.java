@@ -2,7 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
-import gvpl.common.VarDecl;
+import gvpl.common.DirectVarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 
@@ -17,8 +17,8 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class ForLoopHeader extends AstLoader {
 	
-	private Set<VarDecl> _writtenExtVars = new HashSet<VarDecl>();
-	private Set<VarDecl> _readExtVars = new HashSet<VarDecl>();
+	private Set<DirectVarDecl> _writtenExtVars = new HashSet<DirectVarDecl>();
+	private Set<DirectVarDecl> _readExtVars = new HashSet<DirectVarDecl>();
 	/** Maps the external variables (from external graph) to internal generated variables */
 	private Map<DirectVarDecl, DirectVarDecl> _externalVars = new HashMap<DirectVarDecl, DirectVarDecl>();	
 	
@@ -35,9 +35,9 @@ public class ForLoopHeader extends AstLoader {
 	}
 	
 	/**
-	 * Returns the VarDecl of the reference to a variable
+	 * Returns the DirectVarDecl of the reference to a variable
 	 * 
-	 * @return The VarDecl of the reference to a variable
+	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	@Override
 	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
@@ -61,7 +61,7 @@ public class ForLoopHeader extends AstLoader {
 	}
 	
 	@Override
-	public void varWrite(VarDecl var, int startingLine) {
+	public void varWrite(DirectVarDecl var, int startingLine) {
 		if (_parent != null) 
 			_parent.varWrite(var, startingLine);
 		
@@ -69,18 +69,18 @@ public class ForLoopHeader extends AstLoader {
 	}
 	
 	@Override
-	public void varRead(VarDecl var) {
+	public void varRead(DirectVarDecl var) {
 		if (_parent != null) 
 			_parent.varRead(var);
 		
 		_readExtVars.add(var);
 	}
 	
-	public Iterable<VarDecl> getWrittenVars() {
+	public Iterable<DirectVarDecl> getWrittenVars() {
 		return _writtenExtVars;
 	}
 	
-	public Iterable<VarDecl> getReadVars() {
+	public Iterable<DirectVarDecl> getReadVars() {
 		return _readExtVars;
 	}
 	

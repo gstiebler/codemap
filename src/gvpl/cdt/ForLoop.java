@@ -2,7 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
-import gvpl.common.VarDecl;
+import gvpl.common.DirectVarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
@@ -22,8 +22,8 @@ public class ForLoop extends AstLoader {
 	/** Maps the external variables (from external graph) to internal generated variables */
 	private Map<DirectVarDecl, DirectVarDecl> _externalVars = new HashMap<DirectVarDecl, DirectVarDecl>();	
 	
-	private Set<VarDecl> _writtenExtVars = new HashSet<VarDecl>();
-	private Set<VarDecl> _readExtVars = new HashSet<VarDecl>();
+	private Set<DirectVarDecl> _writtenExtVars = new HashSet<DirectVarDecl>();
+	private Set<DirectVarDecl> _readExtVars = new HashSet<DirectVarDecl>();
 
 	public ForLoop(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
@@ -43,8 +43,8 @@ public class ForLoop extends AstLoader {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
 		
 		for (Map.Entry<DirectVarDecl, DirectVarDecl> entry : _externalVars.entrySet()) {
-			VarDecl extVarDecl = entry.getKey();
-			VarDecl intVarDecl = entry.getValue();
+			DirectVarDecl extVarDecl = entry.getKey();
+			DirectVarDecl intVarDecl = entry.getValue();
 			
 			GraphNode firstNode = map.get(intVarDecl.getFirstNode());
 			GraphNode currentNode = map.get(intVarDecl.getCurrentNode(startingLine));
@@ -66,15 +66,15 @@ public class ForLoop extends AstLoader {
 		
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		GraphNode headerNode = _graphBuilder._gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER, startingLine);
-		for(VarDecl readVar : header.getReadVars()) {
+		for(DirectVarDecl readVar : header.getReadVars()) {
 			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, null, startingLine);
 		}
 	}
 
 	/**
-	 * Returns the VarDecl of the reference to a variable
+	 * Returns the DirectVarDecl of the reference to a variable
 	 * 
-	 * @return The VarDecl of the reference to a variable
+	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	@Override
 	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
@@ -98,7 +98,7 @@ public class ForLoop extends AstLoader {
 	}
 	
 	@Override
-	public void varWrite(VarDecl var, int startingLIne) {
+	public void varWrite(DirectVarDecl var, int startingLIne) {
 		if (_parent != null) 
 			_parent.varWrite(var, startingLIne);
 		
@@ -106,7 +106,7 @@ public class ForLoop extends AstLoader {
 	}
 	
 	@Override
-	public void varRead(VarDecl var) {
+	public void varRead(DirectVarDecl var) {
 		if (_parent != null) 
 			_parent.varRead(var);
 		

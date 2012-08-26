@@ -1,13 +1,12 @@
 package gvpl.cdt;
 
+import gvpl.common.ClassDecl;
+import gvpl.common.ClassVarDecl;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.eParameterType;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.ReferenceVarDecl;
-import gvpl.common.ClassDecl;
-import gvpl.common.ClassVarDecl;
-import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -70,7 +69,7 @@ public class AstLoader {
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
-		VarDecl owner_var_decl = _direct_var_graph_nodes.get(binding);
+		DirectVarDecl owner_var_decl = _direct_var_graph_nodes.get(binding);
 		return owner_var_decl.getType();
 	}
 
@@ -144,12 +143,12 @@ public class AstLoader {
 		return _graphBuilder;
 	}
 
-	public void varWrite(VarDecl var, int startingLine) {
+	public void varWrite(DirectVarDecl var, int startingLine) {
 		if (_parent != null)
 			_parent.varWrite(var, startingLine);
 	}
 
-	public void varRead(VarDecl var) {
+	public void varRead(DirectVarDecl var) {
 		if (_parent != null)
 			_parent.varRead(var);
 	}

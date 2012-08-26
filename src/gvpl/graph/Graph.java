@@ -1,7 +1,7 @@
 package gvpl.graph;
 
 import gvpl.cdt.AstLoader;
-import gvpl.common.VarDecl;
+import gvpl.common.DirectVarDecl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +42,7 @@ public class Graph {
 		return graph_node;
 	}
 
-	public GraphNode addGraphNode(VarDecl parentVar, NodeType type, int startingLine) {
+	public GraphNode addGraphNode(DirectVarDecl parentVar, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(parentVar, type, startingLine);
 		_graph_nodes.add(graph_node);
 		return graph_node;

@@ -5,7 +5,7 @@ import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemAddressVarDecl;
 import gvpl.common.PointerVarDecl;
-import gvpl.common.VarDecl;
+import gvpl.common.DirectVarDecl;
 import gvpl.common.FuncParameter.eParameterType;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -121,7 +121,7 @@ public class Function extends AstLoader {
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < parameter_values.size(); ++i) {
-			VarDecl declared_parameter = _parameters.get(i).getVar();
+			DirectVarDecl declared_parameter = _parameters.get(i).getVar();
 			GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declared_parameter
 					.getFirstNode());
 			
@@ -136,11 +136,11 @@ public class Function extends AstLoader {
 			//Writes the written pointer parameter values to the pointed variables in the main graph
 			// ([out] parameters)
 			if(declared_parameter instanceof MemAddressVarDecl) {
-				VarDecl pointedVar = ((MemAddressVarDecl)declared_parameter).getPointedVarDecl();
+				DirectVarDecl pointedVar = ((MemAddressVarDecl)declared_parameter).getPointedVarDecl();
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
-				VarDecl varDecl = funcParameter.getVar();
-				varDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
+				DirectVarDecl DirectVarDecl = funcParameter.getVar();
+				DirectVarDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
 			}
 		}
 		

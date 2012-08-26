@@ -1,11 +1,10 @@
 package gvpl.cdt;
 
+import gvpl.common.ClassMember;
+import gvpl.common.ClassVarDecl;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
-import gvpl.common.ClassMember;
-import gvpl.common.ClassVarDecl;
-import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -25,9 +24,9 @@ public class MemberFunc extends Function {
 
 	private Struct _parentLoadStruct;
 	private Map<MemberId, DirectVarDecl> _varFromMembersMap = new HashMap<MemberId, DirectVarDecl>();
-	private Map<VarDecl, MemberId> _memberFromVar = new HashMap<VarDecl, MemberId>();
-	private Map<VarDecl, MemberId> _writtenMembers = new HashMap<VarDecl, MemberId>();
-	private Map<VarDecl, MemberId> _readMembers = new HashMap<VarDecl, MemberId>();
+	private Map<DirectVarDecl, MemberId> _memberFromVar = new HashMap<DirectVarDecl, MemberId>();
+	private Map<DirectVarDecl, MemberId> _writtenMembers = new HashMap<DirectVarDecl, MemberId>();
+	private Map<DirectVarDecl, MemberId> _readMembers = new HashMap<DirectVarDecl, MemberId>();
 
 	public MemberFunc(Struct parent, int startingLine) {
 		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
@@ -43,7 +42,7 @@ public class MemberFunc extends Function {
 
 			if (member_var instanceof ClassVarDecl) {
 				ClassVarDecl structVarDecl = (ClassVarDecl) member_var;
-				for (Map.Entry<MemberId, VarDecl> entry : structVarDecl.getInternalVariables()
+				for (Map.Entry<MemberId, DirectVarDecl> entry : structVarDecl.getInternalVariables()
 						.entrySet()) {
 					addMember((DirectVarDecl) entry.getValue(), entry.getKey());
 				}
@@ -67,8 +66,8 @@ public class MemberFunc extends Function {
 
 	@Override
 	/**
-	 * Returns the VarDecl of the reference to a variable
-	 * @return The VarDecl of the reference to a variable
+	 * Returns the DirectVarDecl of the reference to a variable
+	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	public DirectVarDecl getVarDeclOfReference(IASTExpression expr) {
 
@@ -96,7 +95,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	public void varWrite(VarDecl var, int startingLine) {
+	public void varWrite(DirectVarDecl var, int startingLine) {
 		if (_parent != null)
 			_parent.varWrite(var, startingLine);
 
@@ -105,7 +104,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	public void varRead(VarDecl var) {
+	public void varRead(DirectVarDecl var) {
 		if (_parent != null)
 			_parent.varRead(var);
 
@@ -125,19 +124,19 @@ public class MemberFunc extends Function {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
 				_graphBuilder._gvplGraph, this, startingLine);
 
-		for (Map.Entry<VarDecl, MemberId> entry : _readMembers.entrySet()) {
-			VarDecl varDecl = entry.getKey();
-			GraphNode firstNode = varDecl.getFirstNode();
+		for (Map.Entry<DirectVarDecl, MemberId> entry : _readMembers.entrySet()) {
+			DirectVarDecl DirectVarDecl = entry.getKey();
+			GraphNode firstNode = DirectVarDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
+			DirectVarDecl memberInstance = structVarDecl.findMember(entry.getValue());
 			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, this, startingLine);
 		}
 
-		for (Map.Entry<VarDecl, MemberId> entry : _writtenMembers.entrySet()) {
-			VarDecl varDecl = entry.getKey();
-			GraphNode currNode = varDecl.getCurrentNode(startingLine);
+		for (Map.Entry<DirectVarDecl, MemberId> entry : _writtenMembers.entrySet()) {
+			DirectVarDecl DirectVarDecl = entry.getKey();
+			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
-			VarDecl memberInstance = structVarDecl.findMember(entry.getValue());
+			DirectVarDecl memberInstance = structVarDecl.findMember(entry.getValue());
 			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
 		}
 

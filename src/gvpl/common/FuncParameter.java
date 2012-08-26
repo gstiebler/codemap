@@ -8,11 +8,11 @@ public class FuncParameter {
 		E_VARIABLE, E_POINTER, E_REFERENCE
 	};
 	
-	private VarDecl _varDecl = null;
+	private DirectVarDecl _varDecl = null;
 	private GraphNode _node = null;
 	eParameterType _type = null;
 	
-	public FuncParameter(VarDecl varDecl, eParameterType type) {
+	public FuncParameter(DirectVarDecl varDecl, eParameterType type) {
 		_varDecl = varDecl;
 		_type = type;
 	}
@@ -29,7 +29,7 @@ public class FuncParameter {
 		return _node;
 	}
 	
-	public VarDecl getVar() {
+	public DirectVarDecl getVar() {
 		return _varDecl;
 	}
 	
