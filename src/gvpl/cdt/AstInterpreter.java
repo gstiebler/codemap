@@ -1,8 +1,8 @@
 package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
-import gvpl.common.StructDecl;
-import gvpl.common.StructMember;
+import gvpl.common.ClassDecl;
+import gvpl.common.ClassMember;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
@@ -26,7 +26,7 @@ public class AstInterpreter extends AstLoader {
 	private Map<IBinding, Function> _func_id_map = new HashMap<IBinding, Function>();
 	
 
-	private Map<TypeId, StructDecl> _struct_graph_nodes = new HashMap<TypeId, StructDecl>();
+	private Map<TypeId, ClassDecl> _struct_graph_nodes = new HashMap<TypeId, ClassDecl>();
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
 		super(graph_builder, null, new CppMaps(), null);
@@ -81,13 +81,13 @@ public class AstInterpreter extends AstLoader {
 
 	public MemberId getMemberId(IBinding member_binding, IBinding type_binding) {
 		Struct loadStruct = _typeBindingToStruct.get(type_binding);
-		StructMember structMember = loadStruct.getMember(member_binding);
+		ClassMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
 	}
 
 	public MemberId getMemberId(TypeId type_id, IBinding member_binding) {
 		Struct loadStruct = _typeIdToStruct.get(type_id);
-		StructMember structMember = loadStruct.getMember(member_binding);
+		ClassMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
 	}
 
@@ -103,11 +103,11 @@ public class AstInterpreter extends AstLoader {
 		return null;
 	}
 
-	public void addStructDecl(StructDecl struct_decl) {
+	public void addStructDecl(ClassDecl struct_decl) {
 		_struct_graph_nodes.put(struct_decl._id, struct_decl);
 	}
 	
-	public StructDecl getStructDecl(TypeId type) {
+	public ClassDecl getStructDecl(TypeId type) {
 		return _struct_graph_nodes.get(type);
 	}
 

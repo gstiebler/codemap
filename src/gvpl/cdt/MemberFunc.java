@@ -3,8 +3,8 @@ package gvpl.cdt;
 import gvpl.common.DirectVarDecl;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
-import gvpl.common.StructMember;
-import gvpl.common.StructVarDecl;
+import gvpl.common.ClassMember;
+import gvpl.common.ClassVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -33,16 +33,16 @@ public class MemberFunc extends Function {
 		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
 		_parentLoadStruct = parent;
 
-		List<StructMember> members = _parentLoadStruct.getMembers();
+		List<ClassMember> members = _parentLoadStruct.getMembers();
 		// declare a variable for each member of the struct
-		for (StructMember member : members) {
+		for (ClassMember member : members) {
 			DirectVarDecl member_var = addVarDecl(member.getName(), member.getMemberType(),
 					member.getNumPointerOps());
 			member_var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
 			addMember(member_var, member.getMemberId());
 
-			if (member_var instanceof StructVarDecl) {
-				StructVarDecl structVarDecl = (StructVarDecl) member_var;
+			if (member_var instanceof ClassVarDecl) {
+				ClassVarDecl structVarDecl = (ClassVarDecl) member_var;
 				for (Map.Entry<MemberId, VarDecl> entry : structVarDecl.getInternalVariables()
 						.entrySet()) {
 					addMember((DirectVarDecl) entry.getValue(), entry.getKey());
@@ -87,7 +87,7 @@ public class MemberFunc extends Function {
 
 		IASTName name = id_expr.getName();
 		IBinding binding = name.resolveBinding();
-		StructMember structMember = _parentLoadStruct.getMember(binding);
+		ClassMember structMember = _parentLoadStruct.getMember(binding);
 		MemberId lhs_member_id = structMember.getMemberId();
 
 		DirectVarDecl direct_var_decl = _varFromMembersMap.get(lhs_member_id);
@@ -120,7 +120,7 @@ public class MemberFunc extends Function {
 	 * @param structVarDecl
 	 * @param graphBuilder
 	 */
-	public GraphNode loadMemberFuncRef(StructVarDecl structVarDecl,
+	public GraphNode loadMemberFuncRef(ClassVarDecl structVarDecl,
 			List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
 				_graphBuilder._gvplGraph, this, startingLine);

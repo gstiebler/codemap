@@ -13,11 +13,6 @@ public class BasicTest {
 	public void funcCall() {
 		TestsUtil.baseTest("func_call");
 	}
-	 
-	@Test
-	public void structure() {
-		TestsUtil.baseTest("structure");
-	}
 	
 	@Test
 	public void memberFunc() {
@@ -62,6 +57,11 @@ public class BasicTest {
 	@Test
 	public void newOp() {
 		TestsUtil.baseTest("new_op");
+	}
+	
+	@Test
+	public void classStructure() {
+		TestsUtil.baseTest("class_structure");
 	}
 	
 }

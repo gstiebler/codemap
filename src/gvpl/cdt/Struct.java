@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
-import gvpl.common.StructDecl;
-import gvpl.common.StructMember;
+import gvpl.common.ClassDecl;
+import gvpl.common.ClassMember;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.*;
 
@@ -15,10 +15,10 @@ import org.eclipse.cdt.core.dom.ast.*;
 public class Struct extends AstLoader {
 
 	private TypeId _typeId;
-	private StructDecl _structDecl;
+	private ClassDecl _structDecl;
 	private IBinding _binding;
 
-	private Map<IBinding, StructMember> _member_id_map = new HashMap<IBinding, StructMember>();
+	private Map<IBinding, ClassMember> _member_id_map = new HashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _member_func_id_map = new HashMap<IBinding, MemberFunc>();
 	//private Map<IBinding, LoadMemberFunc> _
 
@@ -33,7 +33,7 @@ public class Struct extends AstLoader {
 
 		_binding = name.resolveBinding();
 
-		_structDecl = new StructDecl(_typeId, name.toString());
+		_structDecl = new ClassDecl(_typeId, name.toString());
 		// load every field
 		for (IASTDeclaration member : members) {
 			if (!(member instanceof IASTSimpleDeclaration))
@@ -48,7 +48,7 @@ public class Struct extends AstLoader {
 				IASTName decl_name = declarator.getName();
 				MemberId member_id = _graphBuilder.new MemberId();
 
-				StructMember struct_member = new StructMember(_structDecl,
+				ClassMember struct_member = new ClassMember(_structDecl,
 						member_id, decl_name.toString(), param_type, declarator.getPointerOperators().length);
 				_structDecl.addMember(struct_member);
 
@@ -76,11 +76,11 @@ public class Struct extends AstLoader {
 		return _binding;
 	}
 
-	public StructDecl getStructDecl() {
+	public ClassDecl getStructDecl() {
 		return _structDecl;
 	}
 
-	public StructMember getMember(IBinding binding) {
+	public ClassMember getMember(IBinding binding) {
 		return _member_id_map.get(binding);
 	}
 
@@ -88,8 +88,8 @@ public class Struct extends AstLoader {
 		return _member_func_id_map.get(binding);
 	}
 	
-	public List<StructMember> getMembers() {
-		return new ArrayList<StructMember>(_member_id_map.values());
+	public List<ClassMember> getMembers() {
+		return new ArrayList<ClassMember>(_member_id_map.values());
 	}
 
 	public String getName() {

@@ -5,8 +5,8 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.eParameterType;
 import gvpl.common.PointerVarDecl;
 import gvpl.common.ReferenceVarDecl;
-import gvpl.common.StructDecl;
-import gvpl.common.StructVarDecl;
+import gvpl.common.ClassDecl;
+import gvpl.common.ClassVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -79,7 +79,7 @@ public class AstLoader {
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
 
-		StructVarDecl owner_var_decl = (StructVarDecl) getVarDeclOfReference(owner);
+		ClassVarDecl owner_var_decl = (ClassVarDecl) getVarDeclOfReference(owner);
 
 		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
 
@@ -108,8 +108,8 @@ public class AstLoader {
 		}  else if (type == null) {
 			varDecl = new DirectVarDecl(_graphBuilder._gvplGraph, name, type);
 		} else {
-			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			varDecl = new StructVarDecl(_graphBuilder, name, type, structDecl, this);
+			ClassDecl structDecl = _astInterpreter.getStructDecl(type);
+			varDecl = new ClassVarDecl(_graphBuilder, name, type, structDecl, this);
 		}
 		return varDecl;
 	}
@@ -126,8 +126,8 @@ public class AstLoader {
 			if(type == null)
 				return new DirectVarDecl(_graphBuilder._gvplGraph, name, type);
 			
-			StructDecl structDecl = _astInterpreter.getStructDecl(type);
-			return new StructVarDecl(_graphBuilder, name, type, structDecl, this);
+			ClassDecl structDecl = _astInterpreter.getStructDecl(type);
+			return new ClassVarDecl(_graphBuilder, name, type, structDecl, this);
 		case E_POINTER: 
 			return new PointerVarDecl(_graphBuilder._gvplGraph, name, type);
 		case E_REFERENCE: 

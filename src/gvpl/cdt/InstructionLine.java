@@ -7,7 +7,7 @@ import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.eParameterType;
 import gvpl.common.PointerVarDecl;
-import gvpl.common.StructVarDecl;
+import gvpl.common.ClassVarDecl;
 import gvpl.common.VarDecl;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -284,10 +284,10 @@ public class InstructionLine {
 
 		IASTExpression expr = field_ref.getFieldOwner();
 		VarDecl varDecl = _parentBasicBlock.getVarDeclOfReference(expr);
-		if (!(varDecl instanceof StructVarDecl))
+		if (!(varDecl instanceof ClassVarDecl))
 			ErrorOutputter.fatalError("Work here.");
 
-		return member_func.loadMemberFuncRef((StructVarDecl) varDecl, parameter_values,
+		return member_func.loadMemberFuncRef((ClassVarDecl) varDecl, parameter_values,
 				_graphBuilder, func_call.getFileLocation().getStartingLineNumber());
 	}
 	
