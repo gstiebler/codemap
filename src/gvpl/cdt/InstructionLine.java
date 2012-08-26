@@ -98,6 +98,11 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
 
+	/**
+	 * Loads the value of the variable, like in "int a = b;"
+	 * @param var_decl The variable to be initialized
+	 * @param decl Code with the declaration
+	 */
 	public void LoadVariableInitialization(DirectVarDecl var_decl, IASTDeclarator decl) {
 		int startingLine = decl.getFileLocation().getStartingLineNumber();
 		
@@ -108,19 +113,8 @@ public class InstructionLine {
 
 		IASTExpression expr = init_exp.getExpression();
 		
-		if(decl.getPointerOperators().length > 0) {
-			if(!(var_decl instanceof PointerVarDecl))
-				ErrorOutputter.fatalError("not expected here");
-
-			PointerVarDecl pointer = (PointerVarDecl) var_decl;
-			
-			if(expr instanceof CPPASTNewExpression) {
-				pointer.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
-				return;
-			}
-
-			VarDecl pointedVar = loadPointedVar(expr, _parentBasicBlock);			
-			pointer.setPointedVarDecl(pointedVar);
+		if(var_decl instanceof PointerVarDecl) {
+			loadRhsPointer((PointerVarDecl) var_decl, expr);
 			return;
 		}
 
@@ -187,26 +181,15 @@ public class InstructionLine {
 		IASTExpression lhsOp = node.getOperand1();
 		VarDecl lhsVarDecl = _parentBasicBlock.getVarDeclOfReference(lhsOp);
 		//check if we're trying to read a the instance of a pointer
+		IASTExpression rhsOp = node.getOperand2();
 		if(lhsOp instanceof IASTUnaryExpression){
 			//rvalue = varDecl.getCurrentNode();
-		} else {
-			//check if the operation is a assignment of a address to a pointer
-			if(lhsVarDecl instanceof PointerVarDecl) {
-				PointerVarDecl pointer = (PointerVarDecl) lhsVarDecl;
-				
-				IASTExpression rhsOp = node.getOperand2();
-				if(rhsOp instanceof CPPASTNewExpression){
-					pointer.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
-					return null;
-				} else {
-					VarDecl rhsPointer = loadVarInAddress(rhsOp, _parentBasicBlock);
-					pointer.setPointedVarDecl(rhsPointer);
-					return null;
-				}
-			}	
+		} else if(lhsVarDecl instanceof PointerVarDecl) {
+			loadRhsPointer((PointerVarDecl) lhsVarDecl, rhsOp);
+			return null;
 		}
 		
-		GraphNode rvalue = loadValue(node.getOperand2());
+		GraphNode rvalue = loadValue(rhsOp);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
 			lhsVarDecl.receiveAssign(NodeType.E_VARIABLE, rvalue, _parentBasicBlock, startingLine);
@@ -218,6 +201,18 @@ public class InstructionLine {
 		return _graphBuilder.addAssignBinOp(op, lhsVarDecl, lvalue, rvalue, _parentBasicBlock, startingLine);
 	}
 
+	void loadRhsPointer(PointerVarDecl lhsPointer, IASTExpression rhsOp) {
+		int startingLine = rhsOp.getFileLocation().getStartingLineNumber();
+		if(rhsOp instanceof CPPASTNewExpression){
+			lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
+			return;
+		} else {
+			VarDecl rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
+			lhsPointer.setPointedVarDecl(rhsPointer);
+			return;
+		}
+	}
+	
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
 		int startingLine = func_call.getFileLocation().getStartingLineNumber();
 		Function func = getFunction(func_call);
