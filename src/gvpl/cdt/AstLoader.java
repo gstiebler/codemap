@@ -79,7 +79,9 @@ public class AstLoader {
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
 
-		ClassVar owner_var_decl = (ClassVar) getVarOfReference(owner);
+		Var varOfRef = getVarOfReference(owner);
+		Var varInMem = varOfRef.getVarInMem();
+		ClassVar owner_var_decl = (ClassVar) varInMem;
 
 		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
 

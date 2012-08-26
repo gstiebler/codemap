@@ -61,5 +61,10 @@ public class MemAddressVar extends Var {
 	public Var getPointedVar() {
 		return _pointedVar;
 	}
+	
+	@Override
+	public Var getVarInMem() {
+		return _pointedVar;
+	}
 
 }

@@ -2,11 +2,10 @@ package gvpl.common;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphNode;
 
 /**
  * This class is used to represent variables of primitive types
@@ -68,5 +67,9 @@ public class Var {
 
 	public String getName() {
 		return _name;
+	}
+	
+	public Var getVarInMem() {
+		return this;
 	}
 }
