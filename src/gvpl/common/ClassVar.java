@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -47,11 +48,12 @@ public class ClassVar extends Var {
 	}
 
 	@Override
-	public void initializeGraphNode(NodeType type, int startingLine) {
-		super.initializeGraphNode(type, startingLine);
+	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
+			AstInterpreter astInterpreter, int startingLine) {
+		super.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 
 		for (Var var : _memberInstances.values())
-			var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
+			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 	}
 
 	public Map<MemberId, Var> getInternalVariables() {

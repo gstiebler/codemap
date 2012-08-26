@@ -36,7 +36,7 @@ public class MemberFunc extends Function {
 		// declare a variable for each member of the struct
 		for (ClassMember member : members) {
 			Var member_var = addVarDecl(member.getName(), member.getMemberType(), null);
-			member_var.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
+			member_var.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
 			addMember(member_var, member.getMemberId());
 
 			if (member_var instanceof ClassVar) {

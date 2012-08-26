@@ -1,6 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
@@ -41,6 +40,7 @@ public class ForLoopHeader extends AstLoader {
 	 */
 	@Override
 	public Var getVarOfReference(IASTExpression expr) {
+		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
@@ -55,7 +55,7 @@ public class ForLoopHeader extends AstLoader {
 
 		String varName = id_expr.getName().toString();
 		intVarDecl = new Var(_graphBuilder._gvplGraph, varName , null);
-		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, expr.getFileLocation().getStartingLineNumber());
+		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
 	}

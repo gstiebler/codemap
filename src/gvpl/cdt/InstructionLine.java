@@ -203,7 +203,7 @@ public class InstructionLine {
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
 		int startingLine = rhsOp.getFileLocation().getStartingLineNumber();
 		if(rhsOp instanceof CPPASTNewExpression){
-			lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, startingLine);
+			lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, _parentBasicBlock, _astInterpreter, startingLine);
 			return;
 		} else {
 			Var rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);

@@ -1,13 +1,15 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
 
 /**
- * Structure that holds variable declaration parameters
+ * This class is used to represent variables of primitive types
  */
 public class Var {
 	
@@ -45,8 +47,9 @@ public class Var {
 		return _currGraphNode;
 	}
 	
-	public void initializeGraphNode(NodeType type, int startingLine) {
-		updateNode(_gvplGraph.addGraphNode(this, type, startingLine));
+	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
+			AstInterpreter astInterpreter, int startingLine) {
+		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
 	}
 	
 	/**

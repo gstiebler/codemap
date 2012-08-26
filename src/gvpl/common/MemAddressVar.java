@@ -1,10 +1,12 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.graph.GraphNode;
 
 public class MemAddressVar extends Var {
 
@@ -49,9 +51,11 @@ public class MemAddressVar extends Var {
 	}
 	
 	@Override
-	public void initializeGraphNode(NodeType type, int startingLine) {
-		_pointedVar = new Var(_gvplGraph, _name + "_pointed", _type);
-		_pointedVar.initializeGraphNode(type, startingLine);
+	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, AstInterpreter astInterpreter, 
+			int startingLine) {
+		//_pointedVar = new Var(_gvplGraph, _name + "_pointed", _type);
+		_pointedVar = AstLoader.instanceVarDecl(IndirectionType.E_VARIABLE, _name + "_pointed", _type, graph, astLoader, astInterpreter);
+		_pointedVar.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}
 	
 	public Var getPointedVar() {

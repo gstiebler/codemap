@@ -65,7 +65,7 @@ public class Function extends AstLoader {
 		loadFuncParameters(parameters);
 
 		for (FuncParameter parameter : _parameters) {
-			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, startingLine);
+			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
 		}
 
 		IASTStatement body = fd.getBody();
