@@ -180,17 +180,17 @@ public class InstructionLine {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression lhsOp = node.getOperand1();
 		VarDecl lhsVarDecl = _parentBasicBlock.getVarDeclOfReference(lhsOp);
-		IASTExpression rhsOp = node.getOperand2();
+		IASTExpression rhsExpr = node.getOperand2();
 		
 		//check if we're trying to read a the instance of a pointer
 		if(lhsOp instanceof IASTUnaryExpression){
 			
 		} else if(lhsVarDecl instanceof PointerVarDecl) {
-			loadRhsPointer((PointerVarDecl) lhsVarDecl, rhsOp);
+			loadRhsPointer((PointerVarDecl) lhsVarDecl, rhsExpr);
 			return null;
 		}
 		
-		GraphNode rhsValue = loadValue(rhsOp);
+		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
 			lhsVarDecl.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
