@@ -30,6 +30,7 @@ import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
+import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
@@ -37,6 +38,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 
@@ -104,7 +106,22 @@ public class InstructionLine {
 	public void LoadVariableInitialization(Var lhsVar, IASTDeclarator decl) {
 		int startingLine = decl.getFileLocation().getStartingLineNumber();
 		
-		IASTInitializerExpression init_exp = (IASTInitializerExpression) decl.getInitializer();
+		IASTInitializer initializer = decl.getInitializer();
+		IASTInitializerExpression init_exp = null;
+		if(initializer instanceof IASTInitializerExpression) {//format: int a = b;
+			init_exp = (IASTInitializerExpression) initializer;
+		} else if(initializer instanceof CPPASTConstructorInitializer) { //format: int a(5);
+			CPPASTConstructorInitializer constructorInit = (CPPASTConstructorInitializer) initializer;
+			IASTExpression expr = constructorInit.getExpression();
+			if(expr instanceof IASTExpressionList) {
+				IASTExpressionList exprList = (IASTExpressionList) expr;
+				for(IASTExpression expression : exprList.getExpressions()) {
+					expression.getClass();
+				}
+			} else
+				ErrorOutputter.fatalError("work here");
+		} else
+			ErrorOutputter.fatalError("not expected");
 
 		if (init_exp == null)
 			return;

@@ -104,10 +104,10 @@ public class AstLoader {
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
 		FuncParameter.IndirectionType parameterVarType = null;
 		parameterVarType = Function.getIndirectionType(pointerOps);
-		return instanceVarDecl(parameterVarType, name, type, _graphBuilder._gvplGraph, this, _astInterpreter);
+		return instanceVar(parameterVarType, name, type, _graphBuilder._gvplGraph, this, _astInterpreter);
 	}
 	
-	public static Var instanceVarDecl(IndirectionType indirectionType, String name, TypeId typeId, 
+	public static Var instanceVar(IndirectionType indirectionType, String name, TypeId typeId, 
 				Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		switch(indirectionType) {
 		case E_VARIABLE:

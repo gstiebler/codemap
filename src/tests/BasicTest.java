@@ -69,4 +69,9 @@ public class BasicTest {
 		TestsUtil.baseTest("class_new");
 	}
 	
+	@Test
+	public void constructor() {
+		TestsUtil.baseTest("constructor");
+	}
+	
 }

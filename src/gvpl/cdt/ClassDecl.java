@@ -12,17 +12,17 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.*;
 
-public class Struct extends AstLoader {
+public class ClassDecl extends AstLoader {
 
 	private TypeId _typeId;
-	private Class _structDecl;
+	private Class _class;
 	private IBinding _binding;
 
 	private Map<IBinding, ClassMember> _member_id_map = new HashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _member_func_id_map = new HashMap<IBinding, MemberFunc>();
 	//private Map<IBinding, LoadMemberFunc> _
 
-	public Struct(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
+	public ClassDecl(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter, IASTCompositeTypeSpecifier strDecl) {
 		super(graph_builder, parent, cppMaps, astInterpreter);
 
@@ -33,7 +33,7 @@ public class Struct extends AstLoader {
 
 		_binding = name.resolveBinding();
 
-		_structDecl = new Class(_typeId, name.toString());
+		_class = new Class(_typeId, name.toString());
 		// load every field
 		for (IASTDeclaration member : members) {
 			if (!(member instanceof IASTSimpleDeclaration))
@@ -48,9 +48,9 @@ public class Struct extends AstLoader {
 				IASTName decl_name = declarator.getName();
 				MemberId member_id = _graphBuilder.new MemberId();
 
-				ClassMember struct_member = new ClassMember(_structDecl,
+				ClassMember struct_member = new ClassMember(_class,
 						member_id, decl_name.toString(), param_type);
-				_structDecl.addMember(struct_member);
+				_class.addMember(struct_member);
 
 				_member_id_map.put(decl_name.resolveBinding(), struct_member);
 			}
@@ -77,7 +77,7 @@ public class Struct extends AstLoader {
 	}
 
 	public Class getStructDecl() {
-		return _structDecl;
+		return _class;
 	}
 
 	public ClassMember getMember(IBinding binding) {
@@ -93,6 +93,6 @@ public class Struct extends AstLoader {
 	}
 
 	public String getName() {
-		return _structDecl.getName();
+		return _class.getName();
 	}
 }

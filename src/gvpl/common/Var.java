@@ -51,6 +51,11 @@ public class Var {
 		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
 	}
 	
+	public void constructor(NodeType nodeType, Graph graph, AstLoader astLoader, 
+			AstInterpreter astInterpreter, int startingLine) {
+		initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+	}
+	
 	/**
 	 * Creates an assignment to this variable
 	 * 

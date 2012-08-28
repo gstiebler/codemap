@@ -14,13 +14,13 @@ public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
 
-	public ClassVar(Graph graph, String name, TypeId type, Class structDecl,
+	public ClassVar(Graph graph, String name, TypeId type, Class classDecl,
 			AstLoader parentAstLoader) {
 		super(graph, name, type);
 
 		// For each member of the struct, create a variable instance of the
 		// member
-		for (Map.Entry<MemberId, ClassMember> entry : structDecl.getMemberVarGraphNodes()) {
+		for (Map.Entry<MemberId, ClassMember> entry : classDecl.getMemberVarGraphNodes()) {
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
@@ -47,6 +47,9 @@ public class ClassVar extends Var {
 		return null;
 	}
 
+	/**
+	 * It is used mainly to be used in function parameters
+	 */
 	@Override
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
 			AstInterpreter astInterpreter, int startingLine) {
@@ -54,6 +57,15 @@ public class ClassVar extends Var {
 
 		for (Var var : _memberInstances.values())
 			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+	}
+	
+	@Override
+	public void constructor(NodeType nodeType, Graph graph, AstLoader astLoader, 
+			AstInterpreter astInterpreter, int startingLine) {
+		for (Var var : _memberInstances.values())
+			var.constructor(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+		
+		//execConstructorFunction();
 	}
 
 	public Map<MemberId, Var> getInternalVariables() {

@@ -22,13 +22,13 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class MemberFunc extends Function {
 
-	private Struct _parentLoadStruct;
+	private ClassDecl _parentLoadStruct;
 	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
 	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
 	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
 	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
 
-	public MemberFunc(Struct parent, int startingLine) {
+	public MemberFunc(ClassDecl parent, int startingLine) {
 		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
 		_parentLoadStruct = parent;
 
