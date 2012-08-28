@@ -1,12 +1,11 @@
 package gvpl.cdt;
 
-import gvpl.common.Class;
 import gvpl.common.ClassVar;
-import gvpl.common.Var;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
+import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
@@ -114,8 +113,8 @@ public class AstLoader {
 			if(typeId == null)
 				return new Var(graph, name, typeId);
 			
-			Class structDecl = astInterpreter.getStructDecl(typeId);
-			return new ClassVar(graph, name, typeId, structDecl, astLoader);
+			ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
+			return new ClassVar(graph, name, typeId, classDecl, astLoader);
 		case E_POINTER: 
 			return new PointerVar(graph, name, typeId);
 		case E_REFERENCE: 

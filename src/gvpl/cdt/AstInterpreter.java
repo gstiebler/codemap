@@ -1,8 +1,7 @@
 package gvpl.cdt;
 
-import gvpl.common.ErrorOutputter;
-import gvpl.common.Class;
 import gvpl.common.ClassMember;
+import gvpl.common.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
@@ -21,12 +20,9 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstInterpreter extends AstLoader {
 
-	private Map<IBinding, ClassDecl> _typeBindingToStruct = new HashMap<IBinding, ClassDecl>();
-	private Map<TypeId, ClassDecl> _typeIdToStruct = new HashMap<TypeId, ClassDecl>();
-	private Map<IBinding, Function> _func_id_map = new HashMap<IBinding, Function>();
-	
-
-	private Map<TypeId, Class> _struct_graph_nodes = new HashMap<TypeId, Class>();
+	private Map<IBinding, ClassDecl> _typeBindingToClass = new HashMap<IBinding, ClassDecl>();
+	private Map<TypeId, ClassDecl> _typeIdToClass = new HashMap<TypeId, ClassDecl>();
+	private Map<IBinding, Function> _funcIdMap = new HashMap<IBinding, Function>();
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
 		super(graph_builder, null, new CppMaps(), null);
@@ -39,7 +35,7 @@ public class AstInterpreter extends AstLoader {
 			if (declaration instanceof IASTFunctionDefinition) {
 				Function loadFunction = new Function(_graphBuilder, this, _cppMaps, this);
 				IBinding binding = loadFunction.load((IASTFunctionDefinition) declaration);
-				_func_id_map.put(binding, loadFunction);
+				_funcIdMap.put(binding, loadFunction);
 				
 				if(loadFunction.getName().equals("main"))
 					mainFunction = loadFunction;
@@ -54,45 +50,44 @@ public class AstInterpreter extends AstLoader {
 		_graphBuilder._gvplGraph = mainFunction.getGraphBuilder()._gvplGraph;
 	}
 
-	private void addStruct(ClassDecl structLoader) {
-		_typeBindingToStruct.put(structLoader.getBinding(), structLoader);
-		_typeIdToStruct.put(structLoader.getTypeId(), structLoader);
+	private void addClass(ClassDecl classDecl) {
+		_typeBindingToClass.put(classDecl.getBinding(), classDecl);
+		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
 	}
 
 	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl) {
-		ClassDecl structLoader = new ClassDecl(_graphBuilder, this, _cppMaps, this, strDecl);
+		ClassDecl classDecl = new ClassDecl(_graphBuilder, this, _cppMaps, this, strDecl);
 
-		addStruct(structLoader);
-		addStructDecl(structLoader.getStructDecl());
+		addClass(classDecl);
 	}
 
 	public TypeId getType(IASTDeclSpecifier decl_spec) {
 		if (decl_spec instanceof IASTNamedTypeSpecifier) {
 			IASTNamedTypeSpecifier named_type = (IASTNamedTypeSpecifier) decl_spec;
-			return _typeBindingToStruct.get(named_type.getName().resolveBinding()).getTypeId();
+			return _typeBindingToClass.get(named_type.getName().resolveBinding()).getTypeId();
 		}
 
 		return null;
 	}
 
 	public Function getFuncId(IBinding binding) {
-		return _func_id_map.get(binding);
+		return _funcIdMap.get(binding);
 	}
 
 	public MemberId getMemberId(IBinding member_binding, IBinding type_binding) {
-		ClassDecl loadStruct = _typeBindingToStruct.get(type_binding);
+		ClassDecl loadStruct = _typeBindingToClass.get(type_binding);
 		ClassMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
 	}
 
 	public MemberId getMemberId(TypeId type_id, IBinding member_binding) {
-		ClassDecl loadStruct = _typeIdToStruct.get(type_id);
+		ClassDecl loadStruct = _typeIdToClass.get(type_id);
 		ClassMember structMember = loadStruct.getMember(member_binding);
 		return structMember.getMemberId();
 	}
 
 	public MemberFunc getMemberFunc(IBinding func_member_binding) {
-		for (Map.Entry<TypeId, ClassDecl> entry : _typeIdToStruct.entrySet()) {
+		for (Map.Entry<TypeId, ClassDecl> entry : _typeIdToClass.entrySet()) {
 			ClassDecl loadStruct = entry.getValue();
 			MemberFunc member_func = loadStruct.getMemberFunc(func_member_binding);
 			if (member_func != null)
@@ -102,13 +97,9 @@ public class AstInterpreter extends AstLoader {
 		ErrorOutputter.fatalError("Problem here.");
 		return null;
 	}
-
-	public void addStructDecl(Class struct_decl) {
-		_struct_graph_nodes.put(struct_decl._id, struct_decl);
-	}
 	
-	public Class getStructDecl(TypeId type) {
-		return _struct_graph_nodes.get(type);
+	public ClassDecl getClassDecl(TypeId type) {
+		return _typeIdToClass.get(type);
 	}
 
 }

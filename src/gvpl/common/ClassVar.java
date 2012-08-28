@@ -2,6 +2,7 @@ package gvpl.common;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.cdt.ClassDecl;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -10,11 +11,15 @@ import gvpl.graph.GraphBuilder.TypeId;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Variable (instance) of a class
+ *
+ */
 public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
 
-	public ClassVar(Graph graph, String name, TypeId type, Class classDecl,
+	public ClassVar(Graph graph, String name, TypeId type, ClassDecl classDecl,
 			AstLoader parentAstLoader) {
 		super(graph, name, type);
 

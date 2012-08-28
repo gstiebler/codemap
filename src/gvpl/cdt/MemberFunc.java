@@ -28,8 +28,8 @@ public class MemberFunc extends Function {
 	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
 	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
 
-	public MemberFunc(ClassDecl parent, int startingLine) {
-		super(new GraphBuilder(parent._cppMaps), parent, parent._cppMaps, parent._astInterpreter);
+	public MemberFunc(ClassDecl parent, CppMaps cppMaps, AstInterpreter astInterpreter, int startingLine) {
+		super(new GraphBuilder(cppMaps), null, cppMaps, astInterpreter);
 		_parentLoadStruct = parent;
 
 		List<ClassMember> members = _parentLoadStruct.getMembers();

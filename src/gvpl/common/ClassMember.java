@@ -3,15 +3,15 @@ package gvpl.common;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
 
+/**
+ * Class member. Unique per class declaration
+ */
 public class ClassMember {
-	MemberId _id;
+	private MemberId _id;
 	private String _name;
 	private TypeId _type;
 
-	// private StructDecl _parent;
-
-	public ClassMember(Class parent, MemberId id, String name, TypeId type) {
-		// _parent = parent;
+	public ClassMember(MemberId id, String name, TypeId type) {
 		_id = id;
 		_name = name;
 		_type = type;
