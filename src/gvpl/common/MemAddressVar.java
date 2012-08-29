@@ -10,7 +10,7 @@ import gvpl.graph.GraphNode;
 
 public class MemAddressVar extends Var {
 
-	private Var _pointedVar = null;
+	protected Var _pointedVar = null;
 	GraphNode _lastPointedVarNode = null;
 	
 	public MemAddressVar(Graph gvplGraph, String name, TypeId type) {
@@ -53,7 +53,6 @@ public class MemAddressVar extends Var {
 	@Override
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, AstInterpreter astInterpreter, 
 			int startingLine) {
-		//_pointedVar = new Var(_gvplGraph, _name + "_pointed", _type);
 		_pointedVar = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type, graph, astLoader, astInterpreter);
 		_pointedVar.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}

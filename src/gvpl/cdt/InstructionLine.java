@@ -220,8 +220,22 @@ public class InstructionLine {
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
 		int startingLine = rhsOp.getFileLocation().getStartingLineNumber();
-		if(rhsOp instanceof CPPASTNewExpression){
-			lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, _parentBasicBlock, _astInterpreter, startingLine);
+		if(rhsOp instanceof CPPASTNewExpression){	
+			ClassDecl classDecl = _astInterpreter.getClassDecl(lhsPointer.getType());		
+			if(classDecl == null)
+			{
+				lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, _parentBasicBlock, 
+						_astInterpreter, startingLine);
+				return;
+			}
+			
+			Function constructorFunc = classDecl.getConstructorFunc();
+
+			IASTExpression expr = ((CPPASTNewExpression)rhsOp).getNewInitializer();
+			IASTExpressionList exprList = (IASTExpressionList) expr;
+			List<FuncParameter> parameterValues = loadFunctionParameters(constructorFunc, exprList);
+			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _graphBuilder._gvplGraph,
+					_parentBasicBlock, _astInterpreter, startingLine);
 			return;
 		} else {
 			Var rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
