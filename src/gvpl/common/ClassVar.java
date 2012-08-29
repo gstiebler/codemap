@@ -6,9 +6,9 @@ import gvpl.cdt.ClassDecl;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.TypeId;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,10 +18,12 @@ import java.util.Map;
 public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
+	ClassDecl _classDecl;
 
-	public ClassVar(Graph graph, String name, TypeId type, ClassDecl classDecl,
+	public ClassVar(Graph graph, String name, ClassDecl classDecl,
 			AstLoader parentAstLoader) {
-		super(graph, name, type);
+		super(graph, name, classDecl.getTypeId());
+		_classDecl = classDecl;
 
 		// For each member of the struct, create a variable instance of the
 		// member
@@ -65,12 +67,12 @@ public class ClassVar extends Var {
 	}
 	
 	@Override
-	public void constructor(NodeType nodeType, Graph graph, AstLoader astLoader, 
-			AstInterpreter astInterpreter, int startingLine) {
+	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
+			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		for (Var var : _memberInstances.values())
-			var.constructor(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.constructor(parameter_values, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 		
-		//execConstructorFunction();
+		_classDecl.getConstructorFunc().loadMemberFuncRef(this, parameter_values, _gvplGraph, startingLine);
 	}
 
 	public Map<MemberId, Var> getInternalVariables() {

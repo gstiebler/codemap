@@ -28,6 +28,8 @@ public class ClassDecl {
 	private Map<IBinding, ClassMember> _memberIdMap = new HashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap = new HashMap<IBinding, MemberFunc>();
 	private Map<MemberId, ClassMember> _memberVarGraphNodes;
+	
+	private MemberFunc _constructorFunc = null;
 
 	public ClassDecl(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter, IASTCompositeTypeSpecifier classDecl) {
@@ -75,7 +77,7 @@ public class ClassDecl {
 		}
 	}
 
-	TypeId getTypeId() {
+	public TypeId getTypeId() {
 		return _typeId;
 	}
 
@@ -105,5 +107,13 @@ public class ClassDecl {
 	
 	public Iterable<Map.Entry<MemberId, ClassMember>> getMemberVarGraphNodes() {
 		return _memberVarGraphNodes.entrySet();
+	}
+	
+	public void setConstructorFunc(MemberFunc constructorFunc) {
+		_constructorFunc = constructorFunc;
+	}
+	
+	public MemberFunc getConstructorFunc() {
+		return _constructorFunc;
 	}
 }

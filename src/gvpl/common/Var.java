@@ -1,5 +1,7 @@
 package gvpl.common;
 
+import java.util.List;
+
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.graph.Graph;
@@ -51,8 +53,8 @@ public class Var {
 		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
 	}
 	
-	public void constructor(NodeType nodeType, Graph graph, AstLoader astLoader, 
-			AstInterpreter astInterpreter, int startingLine) {
+	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
+			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}
 	

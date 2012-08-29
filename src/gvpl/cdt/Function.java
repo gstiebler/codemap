@@ -33,6 +33,7 @@ public class Function extends AstLoader {
 
 	private String _externalName = "";
 	public List<FuncParameter> _parameters;
+	protected String _funcName;
 
 	public Function(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
@@ -57,10 +58,10 @@ public class Function extends AstLoader {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
 		// Gets the name of the function
-		String function_name = name_binding.toString();
+		_funcName = name_binding.toString();
 
 		IBinding member_func_binding = name_binding.resolveBinding();
-		setName(calcName(function_name));
+		setName(calcName());
 
 		loadFuncParameters(parameters);
 
@@ -79,8 +80,8 @@ public class Function extends AstLoader {
 		return member_func_binding;
 	}
 
-	protected String calcName(String internalName) {
-		return internalName;
+	protected String calcName() {
+		return _funcName;
 	}
 	
 	/**

@@ -114,7 +114,7 @@ public class AstLoader {
 				return new Var(graph, name, typeId);
 			
 			ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
-			return new ClassVar(graph, name, typeId, classDecl, astLoader);
+			return new ClassVar(graph, name, classDecl, astLoader);
 		case E_POINTER: 
 			return new PointerVar(graph, name, typeId);
 		case E_REFERENCE: 

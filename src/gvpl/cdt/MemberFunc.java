@@ -5,6 +5,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -22,7 +23,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class MemberFunc extends Function {
 
-	private ClassDecl _parentLoadStruct;
+	private ClassDecl _parentClass;
 	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
 	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
 	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
@@ -30,9 +31,9 @@ public class MemberFunc extends Function {
 
 	public MemberFunc(ClassDecl parent, CppMaps cppMaps, AstInterpreter astInterpreter, int startingLine) {
 		super(new GraphBuilder(cppMaps), null, cppMaps, astInterpreter);
-		_parentLoadStruct = parent;
+		_parentClass = parent;
 
-		List<ClassMember> members = _parentLoadStruct.getMembers();
+		List<ClassMember> members = _parentClass.getMembers();
 		// declare a variable for each member of the struct
 		for (ClassMember member : members) {
 			Var member_var = addVarDecl(member.getName(), member.getMemberType(), null);
@@ -54,13 +55,16 @@ public class MemberFunc extends Function {
 		_memberFromVar.put(var, id);
 	}
 
-	protected String calcName(String internalName) {
-		return _parentLoadStruct.getName() + "::" + internalName;
+	protected String calcName() {
+		return _parentClass.getName() + "::" + _funcName;
 	}
 
 	@Override
 	public IBinding load(IASTFunctionDefinition fd) {
-		return super.load(fd);
+		IBinding result = super.load(fd);
+		if(_funcName.equals(_parentClass.getName()))
+			_parentClass.setConstructorFunc(this);
+		return result;
 	}
 
 	@Override
@@ -85,7 +89,7 @@ public class MemberFunc extends Function {
 
 		IASTName name = id_expr.getName();
 		IBinding binding = name.resolveBinding();
-		ClassMember structMember = _parentLoadStruct.getMember(binding);
+		ClassMember structMember = _parentClass.getMember(binding);
 		MemberId lhs_member_id = structMember.getMemberId();
 
 		Var direct_var_decl = _varFromMembersMap.get(lhs_member_id);
@@ -115,19 +119,19 @@ public class MemberFunc extends Function {
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function
 	 * 
-	 * @param structVarDecl
+	 * @param classVar
 	 * @param graphBuilder
 	 */
-	public GraphNode loadMemberFuncRef(ClassVar structVarDecl,
-			List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
-		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(
+	public GraphNode loadMemberFuncRef(ClassVar classVar,
+			List<FuncParameter> parameter_values, Graph graph, int startingLine) {
+		Map<GraphNode, GraphNode> map = graph.addSubGraph(
 				_graphBuilder._gvplGraph, this, startingLine);
 
 		for (Map.Entry<Var, MemberId> entry : _readMembers.entrySet()) {
 			Var DirectVarDecl = entry.getKey();
 			GraphNode firstNode = DirectVarDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			Var memberInstance = structVarDecl.findMember(entry.getValue());
+			Var memberInstance = classVar.findMember(entry.getValue());
 			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, this, startingLine);
 		}
 
@@ -135,7 +139,7 @@ public class MemberFunc extends Function {
 			Var DirectVarDecl = entry.getKey();
 			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
-			Var memberInstance = structVarDecl.findMember(entry.getValue());
+			Var memberInstance = classVar.findMember(entry.getValue());
 			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
 		}
 

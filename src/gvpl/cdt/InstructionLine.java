@@ -117,11 +117,14 @@ public class InstructionLine {
 				IASTExpressionList exprList = (IASTExpressionList) expr;
 				for(IASTExpression expression : exprList.getExpressions()) {
 					expression.getClass();
+					ErrorOutputter.fatalError("work here");
 				}
 			} else
 				ErrorOutputter.fatalError("work here");
-		} else
+			
+			//lhsVar.constructor(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, _parentBasicBlock, _astInterpreter, startingLine);
 			ErrorOutputter.fatalError("not expected");
+		}
 
 		if (init_exp == null)
 			return;
@@ -272,6 +275,10 @@ public class InstructionLine {
 
 		return null;
 	}
+	
+	void loadFunctionParameters() {
+		
+	}
 
 	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
 		int startingLine = bin_op.getFileLocation().getStartingLineNumber();
@@ -299,7 +306,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("Work here.");
 
 		return member_func.loadMemberFuncRef((ClassVar) var, parameter_values,
-				_graphBuilder, func_call.getFileLocation().getStartingLineNumber());
+				_graphBuilder._gvplGraph, func_call.getFileLocation().getStartingLineNumber());
 	}
 	
 	public void loadIfStatement(IASTIfStatement ifStatement) {
