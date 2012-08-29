@@ -3,6 +3,7 @@ package gvpl.common;
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.cdt.ClassDecl;
+import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder.MemberId;
@@ -72,7 +73,15 @@ public class ClassVar extends Var {
 		for (Var var : _memberInstances.values())
 			var.constructor(parameter_values, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 		
-		_classDecl.getConstructorFunc().loadMemberFuncRef(this, parameter_values, _gvplGraph, startingLine);
+		MemberFunc constructorFunc = _classDecl.getConstructorFunc();
+		if(constructorFunc == null)
+			return;
+		
+		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, startingLine);
+	}
+	
+	public ClassDecl getClassDecl() {
+		return _classDecl;
 	}
 
 	public Map<MemberId, Var> getInternalVariables() {

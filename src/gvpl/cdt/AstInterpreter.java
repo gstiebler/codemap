@@ -82,8 +82,8 @@ public class AstInterpreter extends AstLoader {
 
 	public MemberId getMemberId(TypeId type_id, IBinding member_binding) {
 		ClassDecl loadStruct = _typeIdToClass.get(type_id);
-		ClassMember structMember = loadStruct.getMember(member_binding);
-		return structMember.getMemberId();
+		ClassMember classMember = loadStruct.getMember(member_binding);
+		return classMember.getMemberId();
 	}
 
 	public MemberFunc getMemberFunc(IBinding func_member_binding) {

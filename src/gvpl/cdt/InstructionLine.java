@@ -114,16 +114,14 @@ public class InstructionLine {
 			CPPASTConstructorInitializer constructorInit = (CPPASTConstructorInitializer) initializer;
 			IASTExpression expr = constructorInit.getExpression();
 			if(expr instanceof IASTExpressionList) {
+				ClassVar classVar = (ClassVar) lhsVar;
+				Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
 				IASTExpressionList exprList = (IASTExpressionList) expr;
-				for(IASTExpression expression : exprList.getExpressions()) {
-					expression.getClass();
-					ErrorOutputter.fatalError("work here");
-				}
+				List<FuncParameter> parameterValues = loadFunctionParameters(constructorFunc, exprList);
+				classVar.constructor(parameterValues, NodeType.E_VARIABLE, _graphBuilder._gvplGraph,
+						_parentBasicBlock, _astInterpreter, startingLine);
 			} else
 				ErrorOutputter.fatalError("work here");
-			
-			//lhsVar.constructor(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, _parentBasicBlock, _astInterpreter, startingLine);
-			ErrorOutputter.fatalError("not expected");
 		}
 
 		if (init_exp == null)
@@ -235,11 +233,26 @@ public class InstructionLine {
 	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
 		int startingLine = func_call.getFileLocation().getStartingLineNumber();
 		Function func = getFunction(func_call);
+		IASTExpression paramExpr = func_call.getParameterExpression();
 		
+		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+		IASTExpression name_expr = func_call.getFunctionNameExpression();
+		if (name_expr instanceof IASTIdExpression) {
+			IASTIdExpression expr = (IASTIdExpression) name_expr;
+			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
+			return loadFunction.addFuncRef(parameterValues, _graphBuilder, startingLine);
+		} else if (name_expr instanceof IASTFieldReference) {
+			return loadMemberFuncRef(func_call, parameterValues);
+		} else
+			ErrorOutputter.fatalError("Not treated. " + name_expr.getClass());
+
+		return null;
+	}
+	
+	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
 		List<FuncParameter> parameter_values = new ArrayList<FuncParameter>();
-		IASTExpression param_expr = func_call.getParameterExpression();
-		if (param_expr instanceof IASTExpressionList) {
-			IASTExpressionList expr_list = (IASTExpressionList) param_expr;
+		if (paramExpr instanceof IASTExpressionList) {
+			IASTExpressionList expr_list = (IASTExpressionList) paramExpr;
 			IASTExpression[] parameters = expr_list.getExpressions();
 			for (int i = 0; i < parameters.length; i++) {
 				IASTExpression parameter = parameters[i];
@@ -260,24 +273,9 @@ public class InstructionLine {
 				parameter_values.add(localParameter);
 			}
 		} else {
-			parameter_values.add(new FuncParameter(loadValue(param_expr), IndirectionType.E_VARIABLE));
+			parameter_values.add(new FuncParameter(loadValue(paramExpr), IndirectionType.E_VARIABLE));
 		}
-
-		IASTExpression name_expr = func_call.getFunctionNameExpression();
-		if (name_expr instanceof IASTIdExpression) {
-			IASTIdExpression expr = (IASTIdExpression) name_expr;
-			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-			return loadFunction.addFuncRef(parameter_values, _graphBuilder, startingLine);
-		} else if (name_expr instanceof IASTFieldReference) {
-			return loadMemberFuncRef(func_call, parameter_values);
-		} else
-			ErrorOutputter.fatalError("Not treated. " + name_expr.getClass());
-
-		return null;
-	}
-	
-	void loadFunctionParameters() {
-		
+		return parameter_values;
 	}
 
 	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
