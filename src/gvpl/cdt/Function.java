@@ -25,6 +25,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 
 public class Function extends AstLoader {
@@ -58,7 +59,11 @@ public class Function extends AstLoader {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
 		// Gets the name of the function
-		_funcName = name_binding.toString();
+		if(name_binding instanceof CPPASTQualifiedName) {
+			_funcName = ((CPPASTQualifiedName)name_binding).getNames()[1].toString();
+		} else {
+			_funcName = name_binding.toString();
+		}
 
 		IBinding member_func_binding = name_binding.resolveBinding();
 		setName(calcName());

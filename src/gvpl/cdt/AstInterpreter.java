@@ -12,11 +12,15 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 
 public class AstInterpreter extends AstLoader {
 
@@ -33,12 +37,9 @@ public class AstInterpreter extends AstLoader {
 
 		for (IASTDeclaration declaration : declarations) {
 			if (declaration instanceof IASTFunctionDefinition) {
-				Function loadFunction = new Function(_graphBuilder, this, _cppMaps, this);
-				IBinding binding = loadFunction.load((IASTFunctionDefinition) declaration);
-				_funcIdMap.put(binding, loadFunction);
-				
-				if(loadFunction.getName().equals("main"))
-					mainFunction = loadFunction;
+				Function func = loadFunction((IASTFunctionDefinition) declaration);
+				if(func != null)
+					mainFunction = func;
 			}
 			else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
@@ -48,6 +49,31 @@ public class AstInterpreter extends AstLoader {
 		}
 		
 		_graphBuilder._gvplGraph = mainFunction.getGraphBuilder()._gvplGraph;
+	}
+	
+	private Function loadFunction(IASTFunctionDefinition declaration) {
+		IASTDeclarator declarator = declaration.getDeclarator();
+		IASTName name = declarator.getName();
+		
+		if(name instanceof CPPASTQualifiedName) {
+			int startingLine = declaration.getFileLocation().getStartingLineNumber();
+			CPPASTQualifiedName qn = (CPPASTQualifiedName) name;
+			IASTName[] names = qn.getNames();
+			IASTName className = names[0];
+			IBinding classBinding = className.resolveBinding();
+			ClassDecl classDecl = _typeBindingToClass.get(classBinding);
+			classDecl.loadMemberFunc(declaration, _cppMaps, this, startingLine);
+		} else if (name instanceof CPPASTName) {	
+			Function loadFunction = new Function(_graphBuilder, this, _cppMaps, this);
+			IBinding binding = loadFunction.load(declaration);
+			_funcIdMap.put(binding, loadFunction);
+			
+			if(loadFunction.getName().equals("main"))
+				return loadFunction;
+		} else
+			ErrorOutputter.fatalError("Problem");
+		
+		return null;
 	}
 
 	private void addClass(ClassDecl classDecl) {

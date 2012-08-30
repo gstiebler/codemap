@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassMember;
+import gvpl.common.ErrorOutputter;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphBuilder.TypeId;
@@ -14,6 +15,7 @@ import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
@@ -55,6 +57,11 @@ public class ClassDecl {
 			IASTDeclarator[] declarators = simple_decl.getDeclarators();
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
+				if(declarator instanceof IASTFunctionDeclarator) {
+					ErrorOutputter.warning("work here?");
+					continue;
+				}
+				
 				IASTName decl_name = declarator.getName();
 				MemberId member_id = graph_builder.new MemberId();
 
@@ -69,12 +76,17 @@ public class ClassDecl {
 			if (!(member instanceof IASTFunctionDefinition))
 				continue;
 			
-			IASTFunctionDefinition func_def = (IASTFunctionDefinition) member;
-			MemberFunc memberFunc = new MemberFunc(this, cppMaps, astInterpreter, startingLine);
-			IBinding member_func_binding = memberFunc.load(func_def);
-			
-			_memberFuncIdMap.put(member_func_binding, memberFunc);
+			loadMemberFunc(member, cppMaps, astInterpreter, startingLine);
 		}
+	}
+	
+	public void loadMemberFunc(IASTDeclaration member, CppMaps cppMaps,
+			AstInterpreter astInterpreter, int startingLine) {		
+		IASTFunctionDefinition func_def = (IASTFunctionDefinition) member;
+		MemberFunc memberFunc = new MemberFunc(this, cppMaps, astInterpreter, startingLine);
+		IBinding member_func_binding = memberFunc.load(func_def);
+		
+		_memberFuncIdMap.put(member_func_binding, memberFunc);
 	}
 
 	public TypeId getTypeId() {

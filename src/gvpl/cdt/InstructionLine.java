@@ -231,9 +231,12 @@ public class InstructionLine {
 			
 			Function constructorFunc = classDecl.getConstructorFunc();
 
+			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((CPPASTNewExpression)rhsOp).getNewInitializer();
-			IASTExpressionList exprList = (IASTExpressionList) expr;
-			List<FuncParameter> parameterValues = loadFunctionParameters(constructorFunc, exprList);
+			if(expr != null) {
+				IASTExpressionList exprList = (IASTExpressionList) expr;
+				parameterValues = loadFunctionParameters(constructorFunc, exprList);
+			}
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _graphBuilder._gvplGraph,
 					_parentBasicBlock, _astInterpreter, startingLine);
 			return;
