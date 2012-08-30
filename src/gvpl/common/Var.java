@@ -55,7 +55,15 @@ public class Var {
 	
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
-		initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+		if(parameter_values != null){
+			if(parameter_values.size() > 1)
+				ErrorOutputter.fatalError("Primitive type receiving more than 1 parameter in initialization");
+			
+			GraphNode parameterNode = parameter_values.get(0).getNode(startingLine);
+			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, astLoader, startingLine);
+		}
+		else
+			initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}
 	
 	/**

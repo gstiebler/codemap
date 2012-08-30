@@ -20,6 +20,7 @@ import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 
 public class MemberFunc extends Function {
 
@@ -49,7 +50,7 @@ public class MemberFunc extends Function {
 			}
 		}
 	}
-
+	
 	private void addMember(Var var, MemberId id) {
 		_varFromMembersMap.put(id, var);
 		_memberFromVar.put(var, id);
@@ -66,7 +67,24 @@ public class MemberFunc extends Function {
 			_parentClass.setConstructorFunc(this);
 		return result;
 	}
+	
+	@Override
+	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
+		for(ICPPASTConstructorChainInitializer initializer : constructorInit) {
+			int startingLine = initializer.getFileLocation().getStartingLineNumber();
+			IASTExpression expr = initializer.getInitializerValue();
+			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
+			List<FuncParameter> parameters = instructionLine.loadFunctionParameters(this, expr);
 
+			IBinding member_binding = initializer.getMemberInitializerId().resolveBinding();
+			ClassMember classMember = _parentClass.getMember(member_binding);
+			MemberId memberId = classMember.getMemberId();
+			Var var = _varFromMembersMap.get(memberId);
+			var.constructor(parameters, NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, 
+					_astInterpreter, startingLine);
+		}
+	}
+	
 	@Override
 	/**
 	 * Returns the DirectVarDecl of the reference to a variable

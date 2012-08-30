@@ -24,6 +24,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointer;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
@@ -74,8 +75,9 @@ public class Function extends AstLoader {
 			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
 		}
 
+		loadConstructorChain(decl.getConstructorChain());
+		
 		IASTStatement body = fd.getBody();
-
 		if (body instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
 			basicBlockLoader.load(body);
@@ -84,6 +86,8 @@ public class Function extends AstLoader {
 
 		return member_func_binding;
 	}
+	
+	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {}
 
 	protected String calcName() {
 		return _funcName;

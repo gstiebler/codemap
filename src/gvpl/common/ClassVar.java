@@ -71,10 +71,13 @@ public class ClassVar extends Var {
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		for (Var var : _memberInstances.values())
-			var.constructor(parameter_values, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 		
 		MemberFunc constructorFunc = _classDecl.getConstructorFunc();
 		if(constructorFunc == null)
+			return;
+		
+		if(parameter_values == null)
 			return;
 		
 		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, startingLine);

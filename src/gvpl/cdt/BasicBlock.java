@@ -32,6 +32,8 @@ public class BasicBlock extends AstLoader {
 	}
 
 	public void load(IASTStatement baseStatement) {
+		int startingLine = baseStatement.getFileLocation().getStartingLineNumber();
+		
 		IASTStatement[] statements = null;
 		if(baseStatement instanceof IASTCompoundStatement)
 			statements = ((IASTCompoundStatement)baseStatement).getStatements();
@@ -45,8 +47,6 @@ public class BasicBlock extends AstLoader {
 			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
 			instructionLine.load(statement);
 		}
-		
-		int startingLine = baseStatement.getFileLocation().getStartingLineNumber();
 		
 		if(_conditionNode != null) {
 			for (VarNodePair varNodePair : _writtenVar) {
