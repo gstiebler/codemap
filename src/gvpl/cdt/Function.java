@@ -151,8 +151,6 @@ public class Function extends AstLoader {
 			}
 		}
 		
-		
-
 		return internalToMainGraphMap.get(_return_node);
 	}
 

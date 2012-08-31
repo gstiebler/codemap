@@ -70,6 +70,7 @@ public class ClassVar extends Var {
 	@Override
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
+		//TODO só chamar para as variáveis que não foram escritas em constructorFunc.loadMemberFuncRef
 		for (Var var : _memberInstances.values())
 			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 		

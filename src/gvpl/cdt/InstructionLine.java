@@ -142,11 +142,11 @@ public class InstructionLine {
 	 * @brief Alguma coisa que retorna um valor
 	 */
 	public GraphNode loadValue(IASTExpression node) {
-
+		int startingLine = node.getFileLocation().getStartingLineNumber();
 		// Eh uma variavel
 		if (node instanceof IASTIdExpression) {
 			Var var_decl = _parentBasicBlock.getVarOfReference(node);
-			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
+			return var_decl.getCurrentNode(startingLine);
 		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) node);
 		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto

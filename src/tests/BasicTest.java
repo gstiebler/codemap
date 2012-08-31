@@ -20,6 +20,11 @@ public class BasicTest {
 	}
 	
 	@Test
+	public void memberFuncInsideMemberFunc() {
+		TestsUtil.baseTest("member_func_inside_member_func");
+	}
+	
+	@Test
 	public void funcInsideFunc() {
 		TestsUtil.baseTest("func_inside_func");
 	}
@@ -72,6 +77,11 @@ public class BasicTest {
 	@Test
 	public void constructor() {
 		TestsUtil.baseTest("constructor");
+	}
+	
+	@Test
+	public void constructorChain() {
+		TestsUtil.baseTest("constructor_chain");
 	}
 	
 }

@@ -47,8 +47,8 @@ public class Visualizer {
 	}
 	
 	private static String debugStr(GraphNode graph_node) {
-		//return " (" + graph_node.getStartingLine() + ")";
-		return "";
+		return " (" + graph_node.getStartingLine() + ")";
+		//return "";
 	}
 	
 	public static void printNode(GraphNode graph_node, IGraphOutput graphOutput) {
