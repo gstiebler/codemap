@@ -1,6 +1,5 @@
 package gvpl.graph;
 
-import gvpl.cdt.AstLoader;
 import gvpl.cdt.CppMaps;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
@@ -31,53 +30,53 @@ public class GraphBuilder {
 		return _gvplGraph.add_graph_node(value, NodeType.E_DIRECT_VALUE, startingLine);
 	}
 
-	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
+	GraphNode addUnOp(eUnOp op, GraphNode val_node, int startingLine) {
 		GraphNode un_op_node = _gvplGraph.add_graph_node(_cppMaps._un_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		val_node.addDependentNode(un_op_node, astLoader, startingLine);
+		val_node.addDependentNode(un_op_node, startingLine);
 
 		return un_op_node;
 	}
 
-	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
+	public GraphNode addNotOp(GraphNode val_node, int startingLine) {
 		GraphNode notOpNode = _gvplGraph.add_graph_node("!", NodeType.E_OPERATION, startingLine);
-		val_node.addDependentNode(notOpNode, astLoader, startingLine);
+		val_node.addDependentNode(notOpNode, startingLine);
 
 		return notOpNode;
 	}
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
-			AstLoader astLoader, int startingLine) {
+			int startingLine) {
 		GraphNode bin_op_node = _gvplGraph.add_graph_node(_cppMaps._bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		val1_node.addDependentNode(bin_op_node, astLoader, startingLine);
-		val2_node.addDependentNode(bin_op_node, astLoader, startingLine);
+		val1_node.addDependentNode(bin_op_node, startingLine);
+		val2_node.addDependentNode(bin_op_node, startingLine);
 
 		return bin_op_node;
 	}
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_var_decl, GraphNode lhs_node,
-			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
+			GraphNode rhs_node, int startingLine) {
 		GraphNode bin_op_node = _gvplGraph.add_graph_node(_cppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		lhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
-		rhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
+		lhs_node.addDependentNode(bin_op_node, startingLine);
+		rhs_node.addDependentNode(bin_op_node, startingLine);
 
-		return lhs_var_decl.receiveAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
+		return lhs_var_decl.receiveAssign(NodeType.E_VARIABLE, bin_op_node, startingLine);
 	}
 
 	public void addIf(Var var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
-			AstLoader astLoader, int startingLine) {
+			int startingLine) {
 		GraphNode ifOpNode = _gvplGraph.add_graph_node("If", NodeType.E_OPERATION, startingLine);
 
-		ifTrue.addDependentNode(ifOpNode, astLoader, startingLine);
-		ifFalse.addDependentNode(ifOpNode, astLoader, startingLine);
-		condition.addDependentNode(ifOpNode, astLoader, startingLine);
+		ifTrue.addDependentNode(ifOpNode, startingLine);
+		ifFalse.addDependentNode(ifOpNode, startingLine);
+		condition.addDependentNode(ifOpNode, startingLine);
 
-		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
+		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, startingLine);
 	}
 
 }

@@ -3,12 +3,12 @@ package gvpl.cdt;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.Graph;
 import gvpl.graph.GraphBuilder;
 
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
@@ -16,8 +16,6 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class ForLoopHeader extends AstLoader {
 	
-	private Set<Var> _writtenExtVars = new HashSet<Var>();
-	private Set<Var> _readExtVars = new HashSet<Var>();
 	/** Maps the external variables (from external graph) to internal generated variables */
 	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();	
 	
@@ -60,29 +58,11 @@ public class ForLoopHeader extends AstLoader {
 		return intVarDecl;
 	}
 	
-	@Override
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null) 
-			_parent.varWrite(var, startingLine);
-		
-		_writtenExtVars.add(var);
-	}
-	
-	@Override
-	public void varRead(Var var) {
-		if (_parent != null) 
-			_parent.varRead(var);
-		
-		_readExtVars.add(var);
-	}
-	
-	public Iterable<Var> getWrittenVars() {
-		return _writtenExtVars;
-	}
-	
 	public Iterable<Var> getReadVars() {
-		return _readExtVars;
+		LinkedList<Var> writtenVars = new LinkedList<Var>();
+		LinkedList<Var> readVars = new LinkedList<Var>();
+		Graph.getAccessedVars(_graphBuilder._gvplGraph, writtenVars, readVars);
+		return readVars;
 	}
-	
 	
 }

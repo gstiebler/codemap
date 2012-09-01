@@ -3,11 +3,13 @@ package gvpl.cdt;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.Graph;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -20,9 +22,6 @@ public class ForLoop extends AstLoader {
 
 	/** Maps the external variables (from external graph) to internal generated variables */
 	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();	
-	
-	private Set<Var> _writtenExtVars = new HashSet<Var>();
-	private Set<Var> _readExtVars = new HashSet<Var>();
 
 	public ForLoop(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
 			AstInterpreter astInterpreter) {
@@ -39,7 +38,14 @@ public class ForLoop extends AstLoader {
 		basicBlockLoader.load(body);
 
 		int startingLine = node.getFileLocation().getStartingLineNumber();
-		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
+		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, startingLine);
+		
+		LinkedList<Var> writtenVars = new LinkedList<Var>();
+		LinkedList<Var> readVars = new LinkedList<Var>();
+		Graph.getAccessedVars(_graphBuilder._gvplGraph, writtenVars, readVars);
+		
+		Set<Var> readExtVars = new HashSet<Var>(readVars);
+		Set<Var> writtenExtVars = new HashSet<Var>(writtenVars);
 		
 		for (Map.Entry<Var, Var> entry : _externalVars.entrySet()) {
 			Var extVarDecl = entry.getKey();
@@ -48,11 +54,11 @@ public class ForLoop extends AstLoader {
 			GraphNode firstNode = map.get(intVarDecl.getFirstNode());
 			GraphNode currentNode = map.get(intVarDecl.getCurrentNode(startingLine));
 			
-			if(_readExtVars.contains(intVarDecl))
-				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, null, startingLine);
+			if(readExtVars.contains(intVarDecl))
+				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, startingLine);
 			
-			if(_writtenExtVars.contains(intVarDecl))
-				extVarDecl.receiveAssign(NodeType.E_VARIABLE, currentNode, null, startingLine);
+			if(writtenExtVars.contains(intVarDecl))
+				extVarDecl.receiveAssign(NodeType.E_VARIABLE, currentNode, startingLine);
 		}
 	}
 	
@@ -66,7 +72,7 @@ public class ForLoop extends AstLoader {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		GraphNode headerNode = _graphBuilder._gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER, startingLine);
 		for(Var readVar : header.getReadVars()) {
-			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, null, startingLine);
+			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, startingLine);
 		}
 	}
 
@@ -95,22 +101,6 @@ public class ForLoop extends AstLoader {
 		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
-	}
-	
-	@Override
-	public void varWrite(Var var, int startingLIne) {
-		if (_parent != null) 
-			_parent.varWrite(var, startingLIne);
-		
-		_writtenExtVars.add(var);
-	}
-	
-	@Override
-	public void varRead(Var var) {
-		if (_parent != null) 
-			_parent.varRead(var);
-		
-		_readExtVars.add(var);
 	}
 
 }

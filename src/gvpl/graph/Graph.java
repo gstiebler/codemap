@@ -1,10 +1,10 @@
 package gvpl.graph;
 
-import gvpl.cdt.AstLoader;
 import gvpl.common.Var;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,8 +55,12 @@ public class Graph {
 	public GraphNode getNode(int index) {
 		return _graph_nodes.get(index);
 	}
+	
+	public Iterable<GraphNode> getNodes() {
+		return _graph_nodes;
+	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, int startingLine) {
 		
 		class NodeChange {
 			GraphNode _originalNode;
@@ -79,7 +83,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader, startingLine); 
+			Graph copy = subgraph.getCopy(map, startingLine); 
 			graph._subgraphs.add(copy);
 		}
 
@@ -88,7 +92,7 @@ public class Graph {
 			GraphNode oldNode = nodeChange._originalNode;
 			GraphNode newNode = nodeChange._newNode;
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
-				newNode.addDependentNode(map.get(dependentNode), astLoader, oldNode.getStartingLine());
+				newNode.addDependentNode(map.get(dependentNode), oldNode.getStartingLine());
 			}
 		}
 		
@@ -101,11 +105,15 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine){
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, int startingLine){
 		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
-		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
+		Graph graphCopy = graph.getCopy(map, startingLine);
 		_subgraphs.add(graphCopy);
 		return map;
+	}
+	
+	public Iterable<Graph> getSubgraphs() {
+		return _subgraphs;
 	}
 	
 	public String getName() {
@@ -118,5 +126,30 @@ public class Graph {
 	
 	public int getStartingLine() {
 		return _startingLine;
+	}
+	
+	public static void getAccessedVars(Graph graph, List<Var> writtenVars, List<Var> readVars) {
+		for(GraphNode graphNode : graph.getNodes()) {
+			if(graphNode.hasSourceNodes()) {
+				Var parentVar = graphNode.getParentVar();
+				if(parentVar != null)
+					writtenVars.add(parentVar);
+			}
+		
+			if(graphNode.hasDependentNodes()) {
+				Var parentVar = graphNode.getParentVar();
+				if(parentVar != null)
+					readVars.add(parentVar);
+			}
+		}
+		
+		for(Graph subGraph : graph.getSubgraphs()) {
+			LinkedList<Var> subGraphWrittenVars = new LinkedList<Var>();
+			LinkedList<Var> subGraphReadVars = new LinkedList<Var>();
+			getAccessedVars(subGraph, subGraphWrittenVars, subGraphReadVars);
+			
+			writtenVars.addAll(subGraphWrittenVars);
+			readVars.addAll(subGraphReadVars);
+		}
 	}
 }

@@ -1,11 +1,10 @@
 package gvpl.cdt;
 
 import gvpl.common.Var;
+import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
-import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
@@ -13,18 +12,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class BasicBlock extends AstLoader {
 	
-	private class VarNodePair {
-		public Var _varDecl;
-		public GraphNode _graphNode;
-		public VarNodePair(Var varDecl, GraphNode graphNode) {
-			_varDecl = varDecl;
-			_graphNode = graphNode;
-		}
-	}
-	
 	private GraphNode _conditionNode;
-	private LinkedList<VarNodePair> _writtenVar = new LinkedList<VarNodePair>();
-	private Set<Var> _writtenVarSet = new HashSet<Var>();
 	
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {
 		super(parent._graphBuilder, parent, parent._cppMaps, astInterpreter);
@@ -48,23 +36,32 @@ public class BasicBlock extends AstLoader {
 			instructionLine.load(statement);
 		}
 		
+		LinkedList<VarNodePair> writtenVars = getWrittenVars(_graphBuilder._gvplGraph);
+		
 		if(_conditionNode != null) {
-			for (VarNodePair varNodePair : _writtenVar) {
-				Var var = varNodePair._varDecl;
-				_graphBuilder.addIf(var, var.getCurrentNode(startingLine), varNodePair._graphNode, _conditionNode, null, startingLine);
+			for (VarNodePair varNodePair : writtenVars) {
+				Var var = varNodePair._var;
+				_graphBuilder.addIf(var, var.getCurrentNode(startingLine), varNodePair._graphNode, _conditionNode, startingLine);
 			}
 		}
 	}
 	
-	@Override
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null) 
-			_parent.varWrite(var, startingLine);
-		
-		if(!_writtenVarSet.contains(var)) {
-			_writtenVarSet.add(var);
-			_writtenVar.add(new VarNodePair(var, var.getCurrentNode(startingLine)));
+	private static LinkedList<VarNodePair> getWrittenVars(Graph graph) {
+		LinkedList<VarNodePair> result = new LinkedList<VarNodePair>();
+		for(GraphNode graphNode : graph.getNodes()) {
+			if(!graphNode.hasSourceNodes())
+				continue;
+			
+			Var var = graphNode.getParentVar();
+			result.add(new VarNodePair(var, graphNode));
 		}
+		
+		for(Graph subGraph : graph.getSubgraphs()) {
+			LinkedList<VarNodePair> writtenFromSubgraph = getWrittenVars(subGraph);
+			result.addAll(writtenFromSubgraph);
+		}
+		
+		return result;
 	}
 
 }

@@ -97,7 +97,7 @@ public class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, int startLine) {
 		Var var_decl = addVarDecl(functionName, type, null);
-		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
+		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, startLine);
 	}
 	
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
@@ -129,15 +129,5 @@ public class AstLoader {
 
 	public GraphBuilder getGraphBuilder() {
 		return _graphBuilder;
-	}
-
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null)
-			_parent.varWrite(var, startingLine);
-	}
-
-	public void varRead(Var var) {
-		if (_parent != null)
-			_parent.varRead(var);
 	}
 }

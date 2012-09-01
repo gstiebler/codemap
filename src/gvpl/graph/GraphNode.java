@@ -1,8 +1,7 @@
 package gvpl.graph;
 
-import gvpl.cdt.AstLoader;
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class GraphNode {
 	private Var _parentVar = null;
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
-	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
+	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
 	private int _startingLine;
 
 	public GraphNode(String name, NodeType type, int startingLine) {
@@ -49,42 +48,46 @@ public class GraphNode {
 		return _name;
 	}
 	
-	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
-		if(_dependent_nodes.contains(dependentNode))
+	public void addDependentNode(GraphNode dependentNode, int startingLine) {
+		if(_dependentNodes.contains(dependentNode))
 			ErrorOutputter.fatalError("Already dependent!!");
 		
 		if(dependentNode == null)
 			ErrorOutputter.fatalError("Inserting null depending node");
 		
-		_dependent_nodes.add(dependentNode);
+		_dependentNodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);
-		
-		if(astLoader == null)
-			return;
-		
-		if(_parentVar != null)
-			astLoader.varRead(_parentVar);
-		
-		if(dependentNode._parentVar != null)
-			astLoader.varWrite(dependentNode._parentVar, startingLine);
 	}
 	
 	public Iterable<GraphNode> getDependentNodes() {
-		return _dependent_nodes;
+		return _dependentNodes;
 	}
 	
 	public Iterable<GraphNode> getSourceNodes() {
 		return _sourceNodes;
 	}
 	
+	public boolean hasSourceNodes() {
+		boolean result =_sourceNodes.size() > 0;
+		return result;
+	}
+	
+	public boolean hasDependentNodes() {
+		return _dependentNodes.size() > 0;
+	}
+	
 	public int getNumDependentNodes() {
-		return _dependent_nodes.size();
+		return _dependentNodes.size();
+	}
+	
+	public Var getParentVar() {
+		return _parentVar;
 	}
 	
 	public void updateDependents(GraphNode oldNode, GraphNode newNode) {
-		int oldNodeIndex = _dependent_nodes.indexOf(oldNode);
+		int oldNodeIndex = _dependentNodes.indexOf(oldNode);
 		if(oldNodeIndex != -1)
-			_dependent_nodes.set(oldNodeIndex, newNode);
+			_dependentNodes.set(oldNodeIndex, newNode);
 	}
 	
 	public static void resetCounter() {

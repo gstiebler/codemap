@@ -118,7 +118,7 @@ public class Function extends AstLoader {
 	}
 
 	public GraphNode addFuncRef(List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, startingLine);
 		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap, startingLine);
 	}
 
@@ -137,7 +137,7 @@ public class Function extends AstLoader {
 
 			//Point the received values to the received parameters ([in] parameters)
 			if(received_parameter != null) {
-				received_parameter.addDependentNode(declParamNodeInMainGraph, this, startingLine);
+				received_parameter.addDependentNode(declParamNodeInMainGraph, startingLine);
 			}
 
 			//Writes the written pointer parameter values to the pointed variables in the main graph
@@ -147,7 +147,7 @@ public class Function extends AstLoader {
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
 				Var DirectVarDecl = funcParameter.getVar();
-				DirectVarDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
+				DirectVarDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, startingLine);
 			}
 		}
 		

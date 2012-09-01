@@ -37,7 +37,7 @@ public class MemAddressVar extends Var {
 		GraphNode currentPointedVarNode = _pointedVar.getCurrentNode(startingLine);
 		if(currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
-			currentPointedVarNode.addDependentNode(_currGraphNode, null, startingLine);
+			currentPointedVarNode.addDependentNode(_currGraphNode, startingLine);
 		}
 			
 		return _currGraphNode;
@@ -45,9 +45,9 @@ public class MemAddressVar extends Var {
 	
 	@Override
 	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node,
-			AstLoader astLoader, int startLocation) {
-		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, astLoader, startLocation);
-		return _pointedVar.receiveAssign(lhs_type, newNode, astLoader, startLocation);
+			int startLocation) {
+		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, startLocation);
+		return _pointedVar.receiveAssign(lhs_type, newNode, startLocation);
 	}
 	
 	@Override

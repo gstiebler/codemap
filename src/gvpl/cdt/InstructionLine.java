@@ -124,8 +124,12 @@ public class InstructionLine {
 				ErrorOutputter.fatalError("work here");
 		}
 
-		if (init_exp == null)
+		if (init_exp == null) {
+			if(lhsVar instanceof ClassVar)
+				lhsVar.constructor(null, NodeType.E_VARIABLE, _graphBuilder._gvplGraph, 
+						_parentBasicBlock, _astInterpreter, startingLine);
 			return;
+		}
 
 		IASTExpression rhsExpr = init_exp.getExpression();
 		
@@ -135,7 +139,7 @@ public class InstructionLine {
 		}
 
 		GraphNode rhsValue = loadValue(rhsExpr);
-		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
+		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
 	}
 
 	/*
@@ -209,13 +213,13 @@ public class InstructionLine {
 		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
+			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
 			return null;
 		}
 
 		GraphNode lhsValue = loadValue(node.getOperand1());
 		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
-		return _graphBuilder.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentBasicBlock, startingLine);
+		return _graphBuilder.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, startingLine);
 	}
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
@@ -300,7 +304,7 @@ public class InstructionLine {
 		eBinOp op = _cppMaps.getBinOpType(bin_op.getOperator());
 		GraphNode lvalue = loadValue(bin_op.getOperand1());
 		GraphNode rvalue = loadValue(bin_op.getOperand2());
-		return _graphBuilder.addBinOp(op, lvalue, rvalue, _parentBasicBlock, startingLine);
+		return _graphBuilder.addBinOp(op, lvalue, rvalue, startingLine);
 	}
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
@@ -337,7 +341,7 @@ public class InstructionLine {
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null)
 		{
-			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode, _parentBasicBlock, ifStatement.getFileLocation().getStartingLineNumber());
+			GraphNode notCondition = _graphBuilder.addNotOp(conditionNode, ifStatement.getFileLocation().getStartingLineNumber());
 
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, notCondition);
 			basicBlockLoader.load(elseClause);

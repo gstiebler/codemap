@@ -2,15 +2,16 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
+import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +28,8 @@ public class MemberFunc extends Function {
 	private ClassDecl _parentClass;
 	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
 	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
-	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
-	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
+	private List<Var> _writtenVars = new ArrayList<Var>();
+	private List<Var> _readVars = new ArrayList<Var>();
 
 	public MemberFunc(ClassDecl parent, CppMaps cppMaps, AstInterpreter astInterpreter, int startingLine) {
 		super(new GraphBuilder(cppMaps), null, cppMaps, astInterpreter);
@@ -65,6 +66,9 @@ public class MemberFunc extends Function {
 		IBinding result = super.load(fd);
 		if(_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
+
+		Graph.getAccessedVars(_graphBuilder._gvplGraph, _writtenVars, _readVars);
+		
 		return result;
 	}
 	
@@ -115,24 +119,6 @@ public class MemberFunc extends Function {
 		return direct_var_decl;
 	}
 
-	@Override
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null)
-			_parent.varWrite(var, startingLine);
-
-		if (_memberFromVar.containsKey(var))
-			_writtenMembers.put(var, _memberFromVar.get(var));
-	}
-
-	@Override
-	public void varRead(Var var) {
-		if (_parent != null)
-			_parent.varRead(var);
-
-		if (_memberFromVar.containsKey(var))
-			_readMembers.put(var, _memberFromVar.get(var));
-	}
-
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function
@@ -143,22 +129,27 @@ public class MemberFunc extends Function {
 	public GraphNode loadMemberFuncRef(ClassVar classVar,
 			List<FuncParameter> parameter_values, Graph graph, int startingLine) {
 		Map<GraphNode, GraphNode> map = graph.addSubGraph(
-				_graphBuilder._gvplGraph, this, startingLine);
-
-		for (Map.Entry<Var, MemberId> entry : _readMembers.entrySet()) {
-			Var DirectVarDecl = entry.getKey();
-			GraphNode firstNode = DirectVarDecl.getFirstNode();
-			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			Var memberInstance = classVar.findMember(entry.getValue());
-			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, this, startingLine);
+				_graphBuilder._gvplGraph, startingLine);
+		
+		for (Var readVar : _readVars) {
+			GraphNode firstNode = readVar.getFirstNode();
+			GraphNode firstNodeInExtGraph = map.get(firstNode);
+			MemberId memberId = _memberFromVar.get(readVar);
+			Var memberInstance = classVar.findMember(memberId);
+			if(memberInstance == null)
+				continue;
+			GraphNode miNode = memberInstance.getCurrentNode(startingLine);
+			miNode.addDependentNode(firstNodeInExtGraph, startingLine);
 		}
 
-		for (Map.Entry<Var, MemberId> entry : _writtenMembers.entrySet()) {
-			Var DirectVarDecl = entry.getKey();
-			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
-			GraphNode currNodeInNewGraph = map.get(currNode);
-			Var memberInstance = classVar.findMember(entry.getValue());
-			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
+		for (Var writtenVar : _writtenVars) {
+			GraphNode currNode = writtenVar.getCurrentNode(startingLine);
+			GraphNode currNodeInExtGraph = map.get(currNode);
+			MemberId memberId = _memberFromVar.get(writtenVar);
+			Var memberInstance = classVar.findMember(memberId);
+			if(memberInstance == null)
+				continue;
+			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInExtGraph, startingLine);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);
