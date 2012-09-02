@@ -157,5 +157,6 @@ public class Graph {
 	
 	public void append(Graph graph) {
 		_graphNodes.addAll(graph._graphNodes);
+		_subgraphs.addAll(graph._subgraphs);
 	}
 }
