@@ -2,14 +2,13 @@ package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
-import gvpl.graph.Graph.NodeType;
 import gvpl.graph.Graph;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,8 +39,8 @@ public class ForLoop extends AstLoader {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, startingLine);
 		
-		LinkedList<Var> writtenVars = new LinkedList<Var>();
-		LinkedList<Var> readVars = new LinkedList<Var>();
+		Set<Var> writtenVars = new HashSet<Var>();
+		Set<Var> readVars = new HashSet<Var>();
 		Graph.getAccessedVars(_graphBuilder._gvplGraph, writtenVars, readVars);
 		
 		Set<Var> readExtVars = new HashSet<Var>(readVars);
@@ -58,7 +57,7 @@ public class ForLoop extends AstLoader {
 				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, startingLine);
 			
 			if(writtenExtVars.contains(intVarDecl))
-				extVarDecl.receiveAssign(NodeType.E_VARIABLE, currentNode, startingLine);
+				extVarDecl.receiveAssign(graphBuilder._gvplGraph, NodeType.E_VARIABLE, currentNode, startingLine);
 		}
 	}
 	

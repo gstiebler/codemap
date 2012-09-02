@@ -11,37 +11,33 @@ label = "root";
 	node_000007 [ label = "c", startingline=11 ]
 	node_000008 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=12 ]
 	node_000009 [ label = "*b", startingline=12 ]
-	node_000010 [ label = "*b", startingline=12 ]
-	node_000011 [ label = "d", startingline=12 ]
-	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=13 ]
-	node_000013 [ label = "e", startingline=13 ]
-	node_000014 [ label = "15", style=filled, fillcolor="#E9FFE9", startingline=17 ]
-	node_000015 [ label = "*g", startingline=17 ]
-	node_000016 [ label = "*g", startingline=17 ]
-	node_000017 [ label = "c", startingline=17 ]
-	node_000018 [ label = "*f", startingline=18 ]
-	node_000019 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
-	node_000020 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
-	node_000021 [ label = "e", startingline=18 ]
+	node_000010 [ label = "d", startingline=12 ]
+	node_000011 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=13 ]
+	node_000012 [ label = "e", startingline=13 ]
+	node_000013 [ label = "15", style=filled, fillcolor="#E9FFE9", startingline=17 ]
+	node_000014 [ label = "*g", startingline=17 ]
+	node_000015 [ label = "c", startingline=17 ]
+	node_000016 [ label = "*f", startingline=18 ]
+	node_000017 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
+	node_000018 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
+	node_000019 [ label = "e", startingline=18 ]
 	node_000001 -> node_000002
 	node_000002 -> node_000006
-	node_000002 -> node_000012
-	node_000002 -> node_000019
+	node_000002 -> node_000011
+	node_000002 -> node_000017
 	node_000003 -> node_000004
 	node_000004 -> node_000005
-	node_000004 -> node_000010
 	node_000005 -> node_000006
 	node_000006 -> node_000007
-	node_000007 -> node_000016
 	node_000008 -> node_000009
-	node_000009 -> node_000011
+	node_000009 -> node_000010
+	node_000010 -> node_000011
 	node_000011 -> node_000012
-	node_000012 -> node_000013
-	node_000013 -> node_000020
+	node_000012 -> node_000018
+	node_000013 -> node_000014
 	node_000014 -> node_000015
-	node_000015 -> node_000017
+	node_000015 -> node_000016
+	node_000016 -> node_000017
 	node_000017 -> node_000018
 	node_000018 -> node_000019
-	node_000019 -> node_000020
-	node_000020 -> node_000021
 }

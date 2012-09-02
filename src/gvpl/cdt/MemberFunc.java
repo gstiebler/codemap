@@ -11,10 +11,11 @@ import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
@@ -28,8 +29,8 @@ public class MemberFunc extends Function {
 	private ClassDecl _parentClass;
 	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
 	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
-	private List<Var> _writtenVars = new ArrayList<Var>();
-	private List<Var> _readVars = new ArrayList<Var>();
+	private Set<Var> _writtenVars = new HashSet<Var>();
+	private Set<Var> _readVars = new HashSet<Var>();
 
 	public MemberFunc(ClassDecl parent, CppMaps cppMaps, AstInterpreter astInterpreter, int startingLine) {
 		super(new GraphBuilder(cppMaps), null, cppMaps, astInterpreter);
@@ -149,7 +150,7 @@ public class MemberFunc extends Function {
 			Var memberInstance = classVar.findMember(memberId);
 			if(memberInstance == null)
 				continue;
-			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInExtGraph, startingLine);
+			memberInstance.receiveAssign(graph, NodeType.E_VARIABLE, currNodeInExtGraph, startingLine);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);

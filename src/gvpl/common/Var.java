@@ -49,7 +49,7 @@ public class Var {
 	
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
 			AstInterpreter astInterpreter, int startingLine) {
-		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
+		updateNode(graph.addGraphNode(this, nodeType, startingLine));
 	}
 	
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
@@ -59,7 +59,7 @@ public class Var {
 				ErrorOutputter.fatalError("Primitive type receiving more than 1 parameter in initialization");
 			
 			GraphNode parameterNode = parameter_values.get(0).getNode(startingLine);
-			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, startingLine);
+			receiveAssign(graph, NodeType.E_DECLARED_PARAMETER, parameterNode, startingLine);
 		}
 		else
 			initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
@@ -70,9 +70,9 @@ public class Var {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node,
+	public GraphNode receiveAssign(Graph graph, NodeType lhs_type, GraphNode rhs_node,
 			int startingLine) {
-		GraphNode lhs_node = _gvplGraph.addGraphNode(this, lhs_type, startingLine);
+		GraphNode lhs_node = graph.addGraphNode(this, lhs_type, startingLine);
 		rhs_node.addDependentNode(lhs_node, startingLine);
 		updateNode(lhs_node);
 

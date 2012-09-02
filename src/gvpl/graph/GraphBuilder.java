@@ -65,7 +65,7 @@ public class GraphBuilder {
 		lhs_node.addDependentNode(bin_op_node, startingLine);
 		rhs_node.addDependentNode(bin_op_node, startingLine);
 
-		return lhs_var_decl.receiveAssign(NodeType.E_VARIABLE, bin_op_node, startingLine);
+		return lhs_var_decl.receiveAssign(_gvplGraph, NodeType.E_VARIABLE, bin_op_node, startingLine);
 	}
 
 	public void addIf(Var var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
@@ -76,7 +76,7 @@ public class GraphBuilder {
 		ifFalse.addDependentNode(ifOpNode, startingLine);
 		condition.addDependentNode(ifOpNode, startingLine);
 
-		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, startingLine);
+		var.receiveAssign(_gvplGraph, NodeType.E_VARIABLE, ifOpNode, startingLine);
 	}
 
 }

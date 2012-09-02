@@ -44,10 +44,10 @@ public class MemAddressVar extends Var {
 	}
 	
 	@Override
-	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node,
+	public GraphNode receiveAssign(Graph graph, NodeType lhs_type, GraphNode rhs_node,
 			int startLocation) {
-		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, startLocation);
-		return _pointedVar.receiveAssign(lhs_type, newNode, startLocation);
+		GraphNode newNode = super.receiveAssign(graph, lhs_type, rhs_node, startLocation);
+		return _pointedVar.receiveAssign(graph, lhs_type, newNode, startLocation);
 	}
 	
 	@Override

@@ -97,7 +97,7 @@ public class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, int startLine) {
 		Var var_decl = addVarDecl(functionName, type, null);
-		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, startLine);
+		return var_decl.receiveAssign(_graphBuilder._gvplGraph, NodeType.E_RETURN_VALUE, rvalue, startLine);
 	}
 	
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {

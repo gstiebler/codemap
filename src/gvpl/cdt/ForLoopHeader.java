@@ -2,13 +2,14 @@ package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
-import gvpl.graph.Graph.NodeType;
 import gvpl.graph.Graph;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
@@ -59,8 +60,8 @@ public class ForLoopHeader extends AstLoader {
 	}
 	
 	public Iterable<Var> getReadVars() {
-		LinkedList<Var> writtenVars = new LinkedList<Var>();
-		LinkedList<Var> readVars = new LinkedList<Var>();
+		Set<Var> writtenVars = new HashSet<Var>();
+		Set<Var> readVars = new HashSet<Var>();
 		Graph.getAccessedVars(_graphBuilder._gvplGraph, writtenVars, readVars);
 		return readVars;
 	}

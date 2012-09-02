@@ -139,7 +139,7 @@ public class InstructionLine {
 		}
 
 		GraphNode rhsValue = loadValue(rhsExpr);
-		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
+		lhsVar.receiveAssign(_graphBuilder._gvplGraph, NodeType.E_VARIABLE, rhsValue, startingLine);
 	}
 
 	/*
@@ -213,7 +213,7 @@ public class InstructionLine {
 		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
+			lhsVar.receiveAssign(_graphBuilder._gvplGraph, NodeType.E_VARIABLE, rhsValue, startingLine);
 			return null;
 		}
 
@@ -261,7 +261,7 @@ public class InstructionLine {
 		if (name_expr instanceof IASTIdExpression) {
 			IASTIdExpression expr = (IASTIdExpression) name_expr;
 			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-			return loadFunction.addFuncRef(parameterValues, _graphBuilder, startingLine);
+			return loadFunction.addFuncRef(parameterValues, _graphBuilder._gvplGraph, startingLine);
 		} else if (name_expr instanceof IASTFieldReference) {
 			return loadMemberFuncRef(func_call, parameterValues);
 		} else

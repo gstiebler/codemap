@@ -5,6 +5,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
 import gvpl.common.Var;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphBuilder.TypeId;
@@ -117,8 +118,8 @@ public class Function extends AstLoader {
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, startingLine);
+	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph graph, int startingLine) {
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_graphBuilder._gvplGraph, startingLine);
 		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap, startingLine);
 	}
 
@@ -147,7 +148,7 @@ public class Function extends AstLoader {
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
 				Var DirectVarDecl = funcParameter.getVar();
-				DirectVarDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, startingLine);
+				DirectVarDecl.receiveAssign(_graphBuilder._gvplGraph, NodeType.E_VARIABLE, pointedNode, startingLine);
 			}
 		}
 		

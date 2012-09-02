@@ -4,9 +4,10 @@ import gvpl.common.Var;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Graph {
 
@@ -23,7 +24,7 @@ public class Graph {
 
 	private String _label;
 
-	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
+	private List<GraphNode> _graphNodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = -1;
 	
@@ -38,26 +39,26 @@ public class Graph {
 
 	public GraphNode add_graph_node(String name, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(name, type, startingLine);
-		_graph_nodes.add(graph_node);
+		_graphNodes.add(graph_node);
 		return graph_node;
 	}
 
 	public GraphNode addGraphNode(Var parentVar, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(parentVar, type, startingLine);
-		_graph_nodes.add(graph_node);
+		_graphNodes.add(graph_node);
 		return graph_node;
 	}
 
 	public int getNumNodes() {
-		return _graph_nodes.size();
+		return _graphNodes.size();
 	}
 
 	public GraphNode getNode(int index) {
-		return _graph_nodes.get(index);
+		return _graphNodes.get(index);
 	}
 	
 	public Iterable<GraphNode> getNodes() {
-		return _graph_nodes;
+		return _graphNodes;
 	}
 
 	public Graph getCopy(Map<GraphNode, GraphNode> map, int startingLine) {
@@ -75,10 +76,10 @@ public class Graph {
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 		
 		// duplicate the nodes
-		for (GraphNode node : _graph_nodes) {
+		for (GraphNode node : _graphNodes) {
 			GraphNode newNode = new GraphNode(node);
 			map.put(node, newNode);
-			graph._graph_nodes.add(newNode);
+			graph._graphNodes.add(newNode);
 			nodesList.add(new NodeChange(node, newNode));
 		}
 
@@ -128,12 +129,13 @@ public class Graph {
 		return _startingLine;
 	}
 	
-	public static void getAccessedVars(Graph graph, List<Var> writtenVars, List<Var> readVars) {
+	public static void getAccessedVars(Graph graph, Set<Var> writtenVars, Set<Var> readVars) {
 		for(GraphNode graphNode : graph.getNodes()) {
 			if(graphNode.hasSourceNodes()) {
 				Var parentVar = graphNode.getParentVar();
-				if(parentVar != null)
+				if(parentVar != null) {
 					writtenVars.add(parentVar);
+				}
 			}
 		
 			if(graphNode.hasDependentNodes()) {
@@ -144,12 +146,16 @@ public class Graph {
 		}
 		
 		for(Graph subGraph : graph.getSubgraphs()) {
-			LinkedList<Var> subGraphWrittenVars = new LinkedList<Var>();
-			LinkedList<Var> subGraphReadVars = new LinkedList<Var>();
+			Set<Var> subGraphWrittenVars = new HashSet<Var>();
+			Set<Var> subGraphReadVars = new HashSet<Var>();
 			getAccessedVars(subGraph, subGraphWrittenVars, subGraphReadVars);
 			
 			writtenVars.addAll(subGraphWrittenVars);
 			readVars.addAll(subGraphReadVars);
 		}
+	}
+	
+	public void append(Graph graph) {
+		_graphNodes.addAll(graph._graphNodes);
 	}
 }
