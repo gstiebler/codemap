@@ -120,10 +120,10 @@ public class Function extends AstLoader {
 
 	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph graph, int startingLine) {
 		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_graphBuilder._gvplGraph, startingLine);
-		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap, startingLine);
+		return addParametersReferenceAndReturn(parameter_values, graph, internalToMainGraphMap, startingLine);
 	}
 
-	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> parameter_values,
+	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> parameter_values, Graph extGraph,
 			Map<GraphNode, GraphNode> internalToMainGraphMap, int startingLine) {
 		if (_parameters.size() != parameter_values.size())
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
@@ -148,7 +148,7 @@ public class Function extends AstLoader {
 				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
 
 				Var DirectVarDecl = funcParameter.getVar();
-				DirectVarDecl.receiveAssign(_graphBuilder._gvplGraph, NodeType.E_VARIABLE, pointedNode, startingLine);
+				DirectVarDecl.receiveAssign(extGraph, NodeType.E_VARIABLE, pointedNode, startingLine);
 			}
 		}
 		

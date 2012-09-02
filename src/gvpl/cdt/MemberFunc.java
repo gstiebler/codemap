@@ -153,7 +153,7 @@ public class MemberFunc extends Function {
 			memberInstance.receiveAssign(graph, NodeType.E_VARIABLE, currNodeInExtGraph, startingLine);
 		}
 
-		return addParametersReferenceAndReturn(parameter_values, map, startingLine);
+		return addParametersReferenceAndReturn(parameter_values, graph, map, startingLine);
 	}
 
 }
