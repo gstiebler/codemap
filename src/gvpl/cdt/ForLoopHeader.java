@@ -21,15 +21,15 @@ public class ForLoopHeader extends AstLoader {
 	/** Maps the external variables (from external graph) to internal generated variables */
 	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();	
 	
-	public ForLoopHeader(GraphBuilder graphBuilder, AstLoader parent, CppMaps cppMaps, AstInterpreter astInterpreter) {
-		super(graphBuilder, parent, cppMaps, astInterpreter);
+	public ForLoopHeader(GraphBuilder graphBuilder, AstLoader parent, AstInterpreter astInterpreter) {
+		super(graphBuilder, parent, astInterpreter);
 	}
 	
 	public void load(IASTStatement initializer, IASTExpression condition) {
-		InstructionLine instructionLineInit = new InstructionLine(_graphBuilder, _parent, _cppMaps, _astInterpreter);
+		InstructionLine instructionLineInit = new InstructionLine(_graphBuilder, _parent, _astInterpreter);
 		instructionLineInit.load(initializer);
 		
-		InstructionLine instructionLineCond = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
+		InstructionLine instructionLineCond = new InstructionLine(_graphBuilder, this, _astInterpreter);
 		instructionLineCond.loadValue(condition);
 	}
 	

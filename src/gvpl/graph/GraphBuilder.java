@@ -21,18 +21,13 @@ public class GraphBuilder {
 
 	/** Stores all the graph */
 	public Graph _gvplGraph = new Graph(-1);
-	private CppMaps _cppMaps = null;
-
-	public GraphBuilder(CppMaps cppMaps) {
-		_cppMaps = cppMaps;
-	}
 
 	public GraphNode addDirectVal(eValueType type, String value, int startingLine) {
 		return _gvplGraph.add_graph_node(value, NodeType.E_DIRECT_VALUE, startingLine);
 	}
 
 	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
-		GraphNode un_op_node = _gvplGraph.add_graph_node(_cppMaps._un_op_strings.get(op),
+		GraphNode un_op_node = _gvplGraph.add_graph_node(CppMaps._un_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
 		val_node.addDependentNode(un_op_node, astLoader, startingLine);
@@ -49,7 +44,7 @@ public class GraphBuilder {
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
 			AstLoader astLoader, int startingLine) {
-		GraphNode bin_op_node = _gvplGraph.add_graph_node(_cppMaps._bin_op_strings.get(op),
+		GraphNode bin_op_node = _gvplGraph.add_graph_node(CppMaps._bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
 		val1_node.addDependentNode(bin_op_node, astLoader, startingLine);
@@ -60,7 +55,7 @@ public class GraphBuilder {
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_var_decl, GraphNode lhs_node,
 			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
-		GraphNode bin_op_node = _gvplGraph.add_graph_node(_cppMaps._assign_bin_op_strings.get(op),
+		GraphNode bin_op_node = _gvplGraph.add_graph_node(CppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
 		lhs_node.addDependentNode(bin_op_node, astLoader, startingLine);

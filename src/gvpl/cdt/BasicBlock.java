@@ -28,7 +28,7 @@ public class BasicBlock extends AstLoader {
 	private Set<Var> _writtenVarSet = new HashSet<Var>();
 	
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {
-		super(parent._graphBuilder, parent, parent._cppMaps, astInterpreter);
+		super(parent._graphBuilder, parent, astInterpreter);
 		_conditionNode = conditionNode;
 	}
 
@@ -45,7 +45,7 @@ public class BasicBlock extends AstLoader {
 		}
 
 		for (IASTStatement statement : statements) {
-			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
+			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _astInterpreter);
 			instructionLine.load(statement);
 		}
 		

@@ -29,16 +29,14 @@ public class AstLoader {
 
 	protected GraphBuilder _graphBuilder;
 	protected AstLoader _parent;
-	protected CppMaps _cppMaps;
 	protected AstInterpreter _astInterpreter;
 
 	private Map<IBinding, Var> _direct_var_graph_nodes = new HashMap<IBinding, Var>();
 
-	public AstLoader(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
+	public AstLoader(GraphBuilder graph_builder, AstLoader parent, 
 			AstInterpreter astInterpreter) {
 		_graphBuilder = graph_builder;
 		_parent = parent;
-		_cppMaps = cppMaps;
 		_astInterpreter = astInterpreter;
 	}
 

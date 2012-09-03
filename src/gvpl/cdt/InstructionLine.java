@@ -45,14 +45,12 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 public class InstructionLine {
 
 	private GraphBuilder _graphBuilder;
-	private CppMaps _cppMaps;
 	private AstInterpreter _astInterpreter;
 	private AstLoader _parentBasicBlock;
 
-	public InstructionLine(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
+	public InstructionLine(GraphBuilder graph_builder, AstLoader parent, 
 			AstInterpreter astInterpreter) {
 		_graphBuilder = graph_builder;
-		_cppMaps = cppMaps;
 		_astInterpreter = astInterpreter;
 		_parentBasicBlock = parent;
 	}
@@ -167,7 +165,7 @@ public class InstructionLine {
 	}
 
 	private void load_for_stmt(IASTForStatement node) {
-		ForLoop forLoop = new ForLoop(_graphBuilder, _parentBasicBlock, _cppMaps, _astInterpreter);
+		ForLoop forLoop = new ForLoop(_graphBuilder, _parentBasicBlock, _astInterpreter);
 		forLoop.load(node, _graphBuilder); 
 	}
 
@@ -214,7 +212,7 @@ public class InstructionLine {
 		}
 
 		GraphNode lhsValue = loadValue(node.getOperand1());
-		eAssignBinOp op = _cppMaps.getAssignBinOpTypes(node.getOperator());
+		eAssignBinOp op = CppMaps.getAssignBinOpTypes(node.getOperator());
 		return _graphBuilder.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentBasicBlock, startingLine);
 	}
 
@@ -297,7 +295,7 @@ public class InstructionLine {
 
 	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
 		int startingLine = bin_op.getFileLocation().getStartingLineNumber();
-		eBinOp op = _cppMaps.getBinOpType(bin_op.getOperator());
+		eBinOp op = CppMaps.getBinOpType(bin_op.getOperator());
 		GraphNode lvalue = loadValue(bin_op.getOperand1());
 		GraphNode rvalue = loadValue(bin_op.getOperand2());
 		return _graphBuilder.addBinOp(op, lvalue, rvalue, _parentBasicBlock, startingLine);

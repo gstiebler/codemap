@@ -30,8 +30,8 @@ public class MemberFunc extends Function {
 	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
 	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
 
-	public MemberFunc(ClassDecl parent, CppMaps cppMaps, AstInterpreter astInterpreter, int startingLine) {
-		super(new GraphBuilder(cppMaps), null, cppMaps, astInterpreter);
+	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
+		super(new GraphBuilder(), null, astInterpreter);
 		_parentClass = parent;
 
 		List<ClassMember> members = _parentClass.getMembers();
@@ -73,7 +73,7 @@ public class MemberFunc extends Function {
 		for(ICPPASTConstructorChainInitializer initializer : constructorInit) {
 			int startingLine = initializer.getFileLocation().getStartingLineNumber();
 			IASTExpression expr = initializer.getInitializerValue();
-			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _cppMaps, _astInterpreter);
+			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _astInterpreter);
 			List<FuncParameter> parameters = instructionLine.loadFunctionParameters(this, expr);
 
 			IBinding member_binding = initializer.getMemberInitializerId().resolveBinding();

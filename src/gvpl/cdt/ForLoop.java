@@ -24,9 +24,9 @@ public class ForLoop extends AstLoader {
 	private Set<Var> _writtenExtVars = new HashSet<Var>();
 	private Set<Var> _readExtVars = new HashSet<Var>();
 
-	public ForLoop(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
+	public ForLoop(GraphBuilder graph_builder, AstLoader parent, 
 			AstInterpreter astInterpreter) {
-		super(new GraphBuilder(cppMaps), parent, cppMaps, astInterpreter);
+		super(new GraphBuilder(), parent, astInterpreter);
 		_graphBuilder._gvplGraph.setLabel("ForLoop");
 	}
 
@@ -60,7 +60,7 @@ public class ForLoop extends AstLoader {
 		IASTStatement initializer = node.getInitializerStatement();
 		IASTExpression condition = node.getConditionExpression();
 		
-		ForLoopHeader header = new ForLoopHeader(_graphBuilder, this, _cppMaps, _astInterpreter);
+		ForLoopHeader header = new ForLoopHeader(_graphBuilder, this, _astInterpreter);
 		header.load(initializer, condition);
 		
 		int startingLine = node.getFileLocation().getStartingLineNumber();

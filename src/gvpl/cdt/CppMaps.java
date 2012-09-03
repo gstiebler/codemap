@@ -6,7 +6,7 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 
-public class CppMaps {
+public abstract class CppMaps {
 	
 	public enum eUnOp {
 		E_INVALID_UN_OP, E_PLUS_PLUS_OP
@@ -24,15 +24,17 @@ public class CppMaps {
 		E_INVALID_TYPE, E_INT, E_FLOAT, E_DOUBLE, E_STRING, E_BOOL
 	}
 	
-	private Map<Integer, eBinOp> _bin_op_types = new HashMap<Integer, eBinOp>();
-	private Map<Integer, eAssignBinOp> _assign_bin_op_types = new HashMap<Integer, eAssignBinOp>();
+	static private Map<Integer, eBinOp> _bin_op_types = new HashMap<Integer, eBinOp>();
+	static private Map<Integer, eAssignBinOp> _assign_bin_op_types = new HashMap<Integer, eAssignBinOp>();
 	
-	public Map<eBinOp, String> _bin_op_strings = new EnumMap<eBinOp, String>(eBinOp.class);
-	public Map<eUnOp, String> _un_op_strings = new EnumMap<eUnOp, String>(eUnOp.class);
-	public Map<eAssignBinOp, String> _assign_bin_op_strings = new EnumMap<eAssignBinOp, String>(
+	static public Map<eBinOp, String> _bin_op_strings = new EnumMap<eBinOp, String>(eBinOp.class);
+	static public Map<eUnOp, String> _un_op_strings = new EnumMap<eUnOp, String>(eUnOp.class);
+	static public Map<eAssignBinOp, String> _assign_bin_op_strings = new EnumMap<eAssignBinOp, String>(
 			eAssignBinOp.class);
 	
-	public CppMaps() {
+	public CppMaps(int nada) {}
+	
+	public static void initialize() {
 		_bin_op_types.put(IASTBinaryExpression.op_plus, eBinOp.E_ADD_OP);
 		_bin_op_types.put(IASTBinaryExpression.op_minus, eBinOp.E_SUB_OP);
 		_bin_op_types.put(IASTBinaryExpression.op_multiply, eBinOp.E_MULT_OP);
@@ -65,11 +67,11 @@ public class CppMaps {
 		_assign_bin_op_strings.put(eAssignBinOp.E_MULT_ASSIGN_OP, "*");
 	}
 	
-	public eBinOp getBinOpType(Integer op) {
+	public static eBinOp getBinOpType(Integer op) {
 		return _bin_op_types.get(op);
 	}
 	
-	public eAssignBinOp getAssignBinOpTypes(Integer op) {
+	public static eAssignBinOp getAssignBinOpTypes(Integer op) {
 		return _assign_bin_op_types.get(op);
 	}
 }

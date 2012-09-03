@@ -29,7 +29,8 @@ public class AstInterpreter extends AstLoader {
 	private Map<IBinding, Function> _funcIdMap = new HashMap<IBinding, Function>();
 
 	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
-		super(graph_builder, null, new CppMaps(), null);
+		super(graph_builder, null, null);
+		CppMaps.initialize();
 		
 		IASTDeclaration[] declarations = root.getDeclarations();
 		
@@ -62,9 +63,9 @@ public class AstInterpreter extends AstLoader {
 			IASTName className = names[0];
 			IBinding classBinding = className.resolveBinding();
 			ClassDecl classDecl = _typeBindingToClass.get(classBinding);
-			classDecl.loadMemberFunc(declaration, _cppMaps, this, startingLine);
+			classDecl.loadMemberFunc(declaration, this, startingLine);
 		} else if (name instanceof CPPASTName) {	
-			Function loadFunction = new Function(_graphBuilder, this, _cppMaps, this);
+			Function loadFunction = new Function(_graphBuilder, this, this);
 			IBinding binding = loadFunction.load(declaration);
 			_funcIdMap.put(binding, loadFunction);
 			
@@ -82,7 +83,7 @@ public class AstInterpreter extends AstLoader {
 	}
 
 	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl) {
-		ClassDecl classDecl = new ClassDecl(_graphBuilder, this, _cppMaps, this, strDecl);
+		ClassDecl classDecl = new ClassDecl(_graphBuilder, this, this, strDecl);
 
 		addClass(classDecl);
 	}

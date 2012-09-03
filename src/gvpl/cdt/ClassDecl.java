@@ -33,7 +33,7 @@ public class ClassDecl {
 	
 	private MemberFunc _constructorFunc = null;
 
-	public ClassDecl(GraphBuilder graph_builder, AstLoader parent, CppMaps cppMaps,
+	public ClassDecl(GraphBuilder graph_builder, AstLoader parent, 
 			AstInterpreter astInterpreter, IASTCompositeTypeSpecifier classDecl) {
 		int startingLine = classDecl.getFileLocation().getStartingLineNumber();
 		
@@ -76,14 +76,14 @@ public class ClassDecl {
 			if (!(member instanceof IASTFunctionDefinition))
 				continue;
 			
-			loadMemberFunc(member, cppMaps, astInterpreter, startingLine);
+			loadMemberFunc(member, astInterpreter, startingLine);
 		}
 	}
 	
-	public void loadMemberFunc(IASTDeclaration member, CppMaps cppMaps,
+	public void loadMemberFunc(IASTDeclaration member, 
 			AstInterpreter astInterpreter, int startingLine) {		
 		IASTFunctionDefinition func_def = (IASTFunctionDefinition) member;
-		MemberFunc memberFunc = new MemberFunc(this, cppMaps, astInterpreter, startingLine);
+		MemberFunc memberFunc = new MemberFunc(this, astInterpreter, startingLine);
 		IBinding member_func_binding = memberFunc.load(func_def);
 		
 		_memberFuncIdMap.put(member_func_binding, memberFunc);
