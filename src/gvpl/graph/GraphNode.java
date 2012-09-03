@@ -24,76 +24,76 @@ public class GraphNode {
 		_name = name;
 		_type = type;
 		_startingLine = startingLine;
-	}	
-	
-	public GraphNode(Var parentVar, NodeType type, int startingLine) { 
+	}
+
+	public GraphNode(Var parentVar, NodeType type, int startingLine) {
 		_id = _counter++;
 		_parentVar = parentVar;
 		_name = parentVar.getName();
 		_type = type;
 		_startingLine = startingLine;
 	}
-	
-	public GraphNode(GraphNode other){
+
+	public GraphNode(GraphNode other) {
 		_id = _counter++;
 		_name = other._name;
 		_type = other._type;
 		_startingLine = other._startingLine;
 		_parentVar = other._parentVar;
 	}
-	
-	public int getId(){
+
+	public int getId() {
 		return _id;
 	}
-	
+
 	public String getName() {
 		return _name;
 	}
-	
+
 	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
-		if(_dependent_nodes.contains(dependentNode))
+		if (_dependent_nodes.contains(dependentNode))
 			ErrorOutputter.fatalError("Already dependent!!");
-		
-		if(dependentNode == null)
+
+		if (dependentNode == null)
 			ErrorOutputter.fatalError("Inserting null depending node");
-		
+
 		_dependent_nodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);
-		
-		if(astLoader == null)
+
+		if (astLoader == null)
 			return;
-		
-		if(_parentVar != null)
+
+		if (_parentVar != null)
 			astLoader.varRead(_parentVar);
-		
-		if(dependentNode._parentVar != null)
+
+		if (dependentNode._parentVar != null)
 			astLoader.varWrite(dependentNode._parentVar, startingLine);
 	}
-	
+
 	public Iterable<GraphNode> getDependentNodes() {
 		return _dependent_nodes;
 	}
-	
+
 	public Iterable<GraphNode> getSourceNodes() {
 		return _sourceNodes;
 	}
-	
+
 	public int getNumDependentNodes() {
 		return _dependent_nodes.size();
 	}
-	
+
 	public void updateDependents(GraphNode oldNode, GraphNode newNode) {
 		int oldNodeIndex = _dependent_nodes.indexOf(oldNode);
-		if(oldNodeIndex != -1)
+		if (oldNodeIndex != -1)
 			_dependent_nodes.set(oldNodeIndex, newNode);
 	}
-	
+
 	public static void resetCounter() {
 		_counter = 1;
 	}
-	
+
 	public int getStartingLine() {
 		return _startingLine;
 	}
-	
+
 }

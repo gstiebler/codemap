@@ -4,10 +4,10 @@ import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
+import gvpl.common.TypeId;
 import gvpl.common.Var;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.TypeId;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
@@ -30,16 +30,15 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 
 public class Function extends AstLoader {
-	
+
 	private GraphNode _return_node;
 
 	private String _externalName = "";
 	public List<FuncParameter> _parameters;
 	protected String _funcName;
 
-	public Function(GraphBuilder graph_builder, AstLoader parent, 
-			AstInterpreter astInterpreter) {
-		super(new GraphBuilder(), parent, astInterpreter);
+	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
+		super(new Graph(-1), parent, astInterpreter);
 
 		_parameters = new ArrayList<FuncParameter>();
 		_return_node = null;
@@ -54,14 +53,14 @@ public class Function extends AstLoader {
 	 */
 	public IBinding load(IASTFunctionDefinition fd) {
 		int startingLine = fd.getFileLocation().getStartingLineNumber();
-		
+
 		// The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
 		// Gets the name of the function
-		if(name_binding instanceof CPPASTQualifiedName) {
-			_funcName = ((CPPASTQualifiedName)name_binding).getNames()[1].toString();
+		if (name_binding instanceof CPPASTQualifiedName) {
+			_funcName = ((CPPASTQualifiedName) name_binding).getNames()[1].toString();
 		} else {
 			_funcName = name_binding.toString();
 		}
@@ -72,11 +71,12 @@ public class Function extends AstLoader {
 		loadFuncParameters(parameters);
 
 		for (FuncParameter parameter : _parameters) {
-			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
+			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
+					_astInterpreter, startingLine);
 		}
 
 		loadConstructorChain(decl.getConstructorChain());
-		
+
 		IASTStatement body = fd.getBody();
 		if (body instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
@@ -86,13 +86,14 @@ public class Function extends AstLoader {
 
 		return member_func_binding;
 	}
-	
-	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {}
+
+	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
+	}
 
 	protected String calcName() {
 		return _funcName;
 	}
-	
+
 	/**
 	 * Reads the parameters from a function declaration
 	 * 
@@ -109,17 +110,20 @@ public class Function extends AstLoader {
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(decl_spec);
 			Var var_decl = loadVarDecl(parameter_var_decl, type);
-			
+
 			FuncParameter.IndirectionType parameterVarType = null;
 			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
-			
+
 			_parameters.add(new FuncParameter(var_decl, parameterVarType));
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameter_values, GraphBuilder graphBuilder, int startingLine) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
-		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap, startingLine);
+	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph,
+			int startingLine) {
+		Map<GraphNode, GraphNode> internalToMainGraphMap = gvplGraph.addSubGraph(_gvplGraph, this,
+				startingLine);
+		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap,
+				startingLine);
 	}
 
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> parameter_values,
@@ -131,34 +135,37 @@ public class Function extends AstLoader {
 			Var declared_parameter = _parameters.get(i).getVar();
 			GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declared_parameter
 					.getFirstNode());
-			
+
 			FuncParameter funcParameter = parameter_values.get(i);
 			GraphNode received_parameter = funcParameter.getNode(startingLine);
 
-			//Point the received values to the received parameters ([in] parameters)
-			if(received_parameter != null) {
+			// Point the received values to the received parameters ([in]
+			// parameters)
+			if (received_parameter != null) {
 				received_parameter.addDependentNode(declParamNodeInMainGraph, this, startingLine);
 			}
 
-			//Writes the written pointer parameter values to the pointed variables in the main graph
+			// Writes the written pointer parameter values to the pointed
+			// variables in the main graph
 			// ([out] parameters)
-			if(declared_parameter instanceof MemAddressVar) {
-				Var pointedVar = ((MemAddressVar)declared_parameter).getPointedVar();
-				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar.getCurrentNode(startingLine));
+			if (declared_parameter instanceof MemAddressVar) {
+				Var pointedVar = ((MemAddressVar) declared_parameter).getPointedVar();
+				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar
+						.getCurrentNode(startingLine));
 
 				Var DirectVarDecl = funcParameter.getVar();
 				DirectVarDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
 			}
 		}
-		
+
 		return internalToMainGraphMap.get(_return_node);
 	}
 
 	private void setName(String name) {
 		_externalName = name;
-		_graphBuilder._gvplGraph.setLabel(name);
+		_gvplGraph.setLabel(name);
 	}
-	
+
 	public String getName() {
 		return _externalName;
 	}
@@ -170,18 +177,17 @@ public class Function extends AstLoader {
 	public Function getFunction() {
 		return this;
 	}
-	
+
 	public static IndirectionType getIndirectionType(IASTPointerOperator[] pointerOps) {
-		if(pointerOps == null)
+		if (pointerOps == null)
 			return IndirectionType.E_VARIABLE;
-		
-		if(pointerOps.length > 0) {
-			if(pointerOps[0] instanceof IASTPointer)
+
+		if (pointerOps.length > 0) {
+			if (pointerOps[0] instanceof IASTPointer)
 				return IndirectionType.E_POINTER;
 			else if (pointerOps[0] instanceof CPPASTReferenceOperator)
 				return IndirectionType.E_REFERENCE;
-		}
-		else
+		} else
 			return IndirectionType.E_VARIABLE;
 		ErrorOutputter.fatalError("error not expected");
 		return null;

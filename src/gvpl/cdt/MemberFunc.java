@@ -2,13 +2,12 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
+import gvpl.common.MemberId;
+import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.MemberId;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
@@ -31,14 +30,15 @@ public class MemberFunc extends Function {
 	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
 
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
-		super(new GraphBuilder(), null, astInterpreter);
+		super(new Graph(startingLine), null, astInterpreter);
 		_parentClass = parent;
 
 		List<ClassMember> members = _parentClass.getMembers();
 		// declare a variable for each member of the struct
 		for (ClassMember member : members) {
 			Var member_var = addVarDecl(member.getName(), member.getMemberType(), null);
-			member_var.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
+			member_var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
+					startingLine);
 			addMember(member_var, member.getMemberId());
 
 			if (member_var instanceof ClassVar) {
@@ -50,7 +50,7 @@ public class MemberFunc extends Function {
 			}
 		}
 	}
-	
+
 	private void addMember(Var var, MemberId id) {
 		_varFromMembersMap.put(id, var);
 		_memberFromVar.put(var, id);
@@ -63,28 +63,28 @@ public class MemberFunc extends Function {
 	@Override
 	public IBinding load(IASTFunctionDefinition fd) {
 		IBinding result = super.load(fd);
-		if(_funcName.equals(_parentClass.getName()))
+		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
 		return result;
 	}
-	
+
 	@Override
 	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
-		for(ICPPASTConstructorChainInitializer initializer : constructorInit) {
+		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
 			int startingLine = initializer.getFileLocation().getStartingLineNumber();
 			IASTExpression expr = initializer.getInitializerValue();
-			InstructionLine instructionLine = new InstructionLine(_graphBuilder, this, _astInterpreter);
+			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			List<FuncParameter> parameters = instructionLine.loadFunctionParameters(this, expr);
 
 			IBinding member_binding = initializer.getMemberInitializerId().resolveBinding();
 			ClassMember classMember = _parentClass.getMember(member_binding);
 			MemberId memberId = classMember.getMemberId();
 			Var var = _varFromMembersMap.get(memberId);
-			var.constructor(parameters, NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, 
-					_astInterpreter, startingLine);
+			var.constructor(parameters, NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
+					startingLine);
 		}
 	}
-	
+
 	@Override
 	/**
 	 * Returns the DirectVarDecl of the reference to a variable
@@ -140,17 +140,17 @@ public class MemberFunc extends Function {
 	 * @param classVar
 	 * @param graphBuilder
 	 */
-	public GraphNode loadMemberFuncRef(ClassVar classVar,
-			List<FuncParameter> parameter_values, Graph graph, AstLoader astLoader, int startingLine) {
-		Map<GraphNode, GraphNode> map = graph.addSubGraph(
-				_graphBuilder._gvplGraph, this, startingLine);
+	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameter_values,
+			Graph graph, AstLoader astLoader, int startingLine) {
+		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
 
 		for (Map.Entry<Var, MemberId> entry : _readMembers.entrySet()) {
 			Var DirectVarDecl = entry.getKey();
 			GraphNode firstNode = DirectVarDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
 			Var memberInstance = classVar.findMember(entry.getValue());
-			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, astLoader, startingLine);
+			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
+					astLoader, startingLine);
 		}
 
 		for (Map.Entry<Var, MemberId> entry : _writtenMembers.entrySet()) {
@@ -158,7 +158,8 @@ public class MemberFunc extends Function {
 			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
 			Var memberInstance = classVar.findMember(entry.getValue());
-			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader, startingLine);
+			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
+					startingLine);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);

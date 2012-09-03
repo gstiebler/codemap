@@ -2,8 +2,8 @@ package gvpl.cdt;
 
 import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
@@ -18,54 +18,58 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class ForLoop extends AstLoader {
 
-	/** Maps the external variables (from external graph) to internal generated variables */
-	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();	
-	
+	/**
+	 * Maps the external variables (from external graph) to internal generated
+	 * variables
+	 */
+	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();
+
 	private Set<Var> _writtenExtVars = new HashSet<Var>();
 	private Set<Var> _readExtVars = new HashSet<Var>();
 
-	public ForLoop(GraphBuilder graph_builder, AstLoader parent, 
-			AstInterpreter astInterpreter) {
-		super(new GraphBuilder(), parent, astInterpreter);
-		_graphBuilder._gvplGraph.setLabel("ForLoop");
+	public ForLoop(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
+		super(new Graph(-1), parent, astInterpreter);
+		_gvplGraph.setLabel("ForLoop");
 	}
 
-	public void load(IASTForStatement node, GraphBuilder graphBuilder) {
+	public void load(IASTForStatement node, Graph gvplGraph) {
 		IASTStatement body = node.getBody();
-		
-		//loadHeader(node);
-		
+
+		// loadHeader(node);
+
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
 		basicBlockLoader.load(body);
 
 		int startingLine = node.getFileLocation().getStartingLineNumber();
-		Map<GraphNode, GraphNode> map = graphBuilder._gvplGraph.addSubGraph(_graphBuilder._gvplGraph, this, startingLine);
-		
+		Map<GraphNode, GraphNode> map = gvplGraph.addSubGraph(_gvplGraph, this, startingLine);
+
 		for (Map.Entry<Var, Var> entry : _externalVars.entrySet()) {
 			Var extVarDecl = entry.getKey();
 			Var intVarDecl = entry.getValue();
-			
+
 			GraphNode firstNode = map.get(intVarDecl.getFirstNode());
 			GraphNode currentNode = map.get(intVarDecl.getCurrentNode(startingLine));
-			
-			if(_readExtVars.contains(intVarDecl))
-				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, null, startingLine);
-			
-			if(_writtenExtVars.contains(intVarDecl))
+
+			if (_readExtVars.contains(intVarDecl))
+				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, null,
+						startingLine);
+
+			if (_writtenExtVars.contains(intVarDecl))
 				extVarDecl.receiveAssign(NodeType.E_VARIABLE, currentNode, null, startingLine);
 		}
 	}
-	
+
 	private void loadHeader(IASTForStatement node) {
 		IASTStatement initializer = node.getInitializerStatement();
 		IASTExpression condition = node.getConditionExpression();
-		
-		ForLoopHeader header = new ForLoopHeader(_graphBuilder, this, _astInterpreter);
+
+		ForLoopHeader header = new ForLoopHeader(_gvplGraph, this, _astInterpreter);
 		header.load(initializer, condition);
-		
+
 		int startingLine = node.getFileLocation().getStartingLineNumber();
-		GraphNode headerNode = _graphBuilder._gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER, startingLine);
-		for(Var readVar : header.getReadVars()) {
+		GraphNode headerNode = _gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER,
+				startingLine);
+		for (Var readVar : header.getReadVars()) {
 			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, null, startingLine);
 		}
 	}
@@ -91,25 +95,26 @@ public class ForLoop extends AstLoader {
 			return intVarDecl;
 
 		String varName = id_expr.getName().toString();
-		intVarDecl = new Var(_graphBuilder._gvplGraph, varName , null);
-		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, _graphBuilder._gvplGraph, this, _astInterpreter, startingLine);
+		intVarDecl = new Var(_gvplGraph, varName, null);
+		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
+				startingLine);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
 	}
-	
+
 	@Override
 	public void varWrite(Var var, int startingLIne) {
-		if (_parent != null) 
+		if (_parent != null)
 			_parent.varWrite(var, startingLIne);
-		
+
 		_writtenExtVars.add(var);
 	}
-	
+
 	@Override
 	public void varRead(Var var) {
-		if (_parent != null) 
+		if (_parent != null)
 			_parent.varRead(var);
-		
+
 		_readExtVars.add(var);
 	}
 

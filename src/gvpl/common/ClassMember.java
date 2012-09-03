@@ -1,7 +1,5 @@
 package gvpl.common;
 
-import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.TypeId;
 
 /**
  * Class member. Unique per class declaration

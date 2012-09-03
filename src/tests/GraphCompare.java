@@ -48,6 +48,8 @@ public class GraphCompare {
 
 		FileDriverTests fileDriver = new FileDriverTests();
 		
+		//assertEquals("Number of nodes", processedNodes._nodes.size(), gvplGraph.getNumNodes());
+		
 		List<NodeMatch> nodesMatch = matchNodes(processedNodes._nodes, gvplGraph);
 		result.addAll(nodesMatch);
 		for (NodeMatch nodeMatch : nodesMatch) {

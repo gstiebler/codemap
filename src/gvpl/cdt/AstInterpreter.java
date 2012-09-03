@@ -2,9 +2,9 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ErrorOutputter;
-import gvpl.graph.GraphBuilder;
-import gvpl.graph.GraphBuilder.MemberId;
-import gvpl.graph.GraphBuilder.TypeId;
+import gvpl.common.MemberId;
+import gvpl.common.TypeId;
+import gvpl.graph.Graph;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,35 +28,34 @@ public class AstInterpreter extends AstLoader {
 	private Map<TypeId, ClassDecl> _typeIdToClass = new HashMap<TypeId, ClassDecl>();
 	private Map<IBinding, Function> _funcIdMap = new HashMap<IBinding, Function>();
 
-	public AstInterpreter(GraphBuilder graph_builder, IASTTranslationUnit root) {
-		super(graph_builder, null, null);
+	public AstInterpreter(Graph gvplGraph, IASTTranslationUnit root) {
+		super(gvplGraph, null, null);
 		CppMaps.initialize();
-		
+
 		IASTDeclaration[] declarations = root.getDeclarations();
-		
+
 		Function mainFunction = null;
 
 		for (IASTDeclaration declaration : declarations) {
 			if (declaration instanceof IASTFunctionDefinition) {
 				Function func = loadFunction((IASTFunctionDefinition) declaration);
-				if(func != null)
+				if (func != null)
 					mainFunction = func;
-			}
-			else if (declaration instanceof IASTSimpleDeclaration) {
+			} else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
 				loadStructureDecl((IASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
 				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
 		}
-		
-		_graphBuilder._gvplGraph = mainFunction.getGraphBuilder()._gvplGraph;
+
+		_gvplGraph = mainFunction.getGraph();
 	}
-	
+
 	private Function loadFunction(IASTFunctionDefinition declaration) {
 		IASTDeclarator declarator = declaration.getDeclarator();
 		IASTName name = declarator.getName();
-		
-		if(name instanceof CPPASTQualifiedName) {
+
+		if (name instanceof CPPASTQualifiedName) {
 			int startingLine = declaration.getFileLocation().getStartingLineNumber();
 			CPPASTQualifiedName qn = (CPPASTQualifiedName) name;
 			IASTName[] names = qn.getNames();
@@ -64,16 +63,16 @@ public class AstInterpreter extends AstLoader {
 			IBinding classBinding = className.resolveBinding();
 			ClassDecl classDecl = _typeBindingToClass.get(classBinding);
 			classDecl.loadMemberFunc(declaration, this, startingLine);
-		} else if (name instanceof CPPASTName) {	
-			Function loadFunction = new Function(_graphBuilder, this, this);
+		} else if (name instanceof CPPASTName) {
+			Function loadFunction = new Function(_gvplGraph, this, this);
 			IBinding binding = loadFunction.load(declaration);
 			_funcIdMap.put(binding, loadFunction);
-			
-			if(loadFunction.getName().equals("main"))
+
+			if (loadFunction.getName().equals("main"))
 				return loadFunction;
 		} else
 			ErrorOutputter.fatalError("Problem");
-		
+
 		return null;
 	}
 
@@ -83,7 +82,7 @@ public class AstInterpreter extends AstLoader {
 	}
 
 	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl) {
-		ClassDecl classDecl = new ClassDecl(_graphBuilder, this, this, strDecl);
+		ClassDecl classDecl = new ClassDecl(_gvplGraph, this, this, strDecl);
 
 		addClass(classDecl);
 	}
@@ -124,7 +123,7 @@ public class AstInterpreter extends AstLoader {
 		ErrorOutputter.fatalError("Problem here.");
 		return null;
 	}
-	
+
 	public ClassDecl getClassDecl(TypeId type) {
 		return _typeIdToClass.get(type);
 	}

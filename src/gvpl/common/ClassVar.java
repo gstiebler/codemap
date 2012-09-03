@@ -6,7 +6,6 @@ import gvpl.cdt.ClassDecl;
 import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphBuilder.MemberId;
 
 import java.util.HashMap;
 import java.util.List;

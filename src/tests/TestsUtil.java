@@ -3,7 +3,6 @@ package tests;
 import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreter;
 import gvpl.common.File;
-import gvpl.graph.GraphBuilder;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
@@ -57,14 +56,13 @@ public class TestsUtil {
 			e.printStackTrace();
 		}
 
-		GraphBuilder graph_builder = new GraphBuilder();
-		new AstInterpreter(graph_builder, translationUnit);
+		AstInterpreter astInterpreter = new AstInterpreter(new gvpl.graph.Graph(-1), translationUnit);
 		
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
-		fileDriver.print(graph_builder._gvplGraph, examplePath + "generated.dot", visualizer);
+		fileDriver.print(astInterpreter.getGraph(), examplePath + "generated.dot", visualizer);
 
         Graph gvGraph = DotTree.getGraphFromDot(examplePath + testName + ".dot");
-		assertTrue(GraphCompare.isEqual(graph_builder._gvplGraph, gvGraph));
+		assertTrue(GraphCompare.isEqual(astInterpreter.getGraph(), gvGraph));
 	}
 }

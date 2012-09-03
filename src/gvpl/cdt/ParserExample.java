@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.File;
-import gvpl.graph.GraphBuilder;
+import gvpl.graph.Graph;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
@@ -35,11 +35,11 @@ public class ParserExample {
 		IASTTranslationUnit translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(
 				reader, info, readerFactory, null, log);
 
-		GraphBuilder graph_builder = new GraphBuilder();
-		new AstInterpreter(graph_builder, translationUnit);
+		Graph gvplGraph = new Graph(-1);
+		new AstInterpreter(gvplGraph, translationUnit);
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
-		fileDriver.print(graph_builder._gvplGraph, File.examplesPath() + "first.dot", visualizer);
+		fileDriver.print(gvplGraph, File.examplesPath() + "first.dot", visualizer);
 	}
 }

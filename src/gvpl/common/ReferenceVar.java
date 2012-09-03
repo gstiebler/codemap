@@ -1,7 +1,6 @@
 package gvpl.common;
 
 import gvpl.graph.Graph;
-import gvpl.graph.GraphBuilder.TypeId;
 
 public class ReferenceVar extends MemAddressVar {
 

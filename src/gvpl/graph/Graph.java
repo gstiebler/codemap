@@ -1,6 +1,11 @@
 package gvpl.graph;
 
 import gvpl.cdt.AstLoader;
+import gvpl.cdt.CppMaps;
+import gvpl.cdt.CppMaps.eAssignBinOp;
+import gvpl.cdt.CppMaps.eBinOp;
+import gvpl.cdt.CppMaps.eUnOp;
+import gvpl.cdt.CppMaps.eValueType;
 import gvpl.common.Var;
 
 import java.util.ArrayList;
@@ -11,14 +16,7 @@ import java.util.Map;
 public class Graph {
 
 	public enum NodeType {
-		E_INVALID_NODE_TYPE,
-		E_DIRECT_VALUE,
-		E_VARIABLE,
-		E_OPERATION,
-		E_FOR_LOOP,
-		E_DECLARED_PARAMETER,
-		E_RETURN_VALUE,
-		E_LOOP_HEADER
+		E_INVALID_NODE_TYPE, E_DIRECT_VALUE, E_VARIABLE, E_OPERATION, E_FOR_LOOP, E_DECLARED_PARAMETER, E_RETURN_VALUE, E_LOOP_HEADER
 	}
 
 	private String _label;
@@ -26,12 +24,12 @@ public class Graph {
 	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = -1;
-	
+
 	public Graph(String label, int startingLine) {
 		_label = label;
 		_startingLine = startingLine;
-	}	
-	
+	}
+
 	public Graph(int startingLine) {
 		_startingLine = startingLine;
 	}
@@ -57,19 +55,20 @@ public class Graph {
 	}
 
 	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
-		
+
 		class NodeChange {
 			GraphNode _originalNode;
 			GraphNode _newNode;
+
 			NodeChange(GraphNode originalNode, GraphNode newNode) {
 				_originalNode = originalNode;
 				_newNode = newNode;
 			}
 		}
-		
+
 		Graph graph = new Graph(_label, startingLine);
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
-		
+
 		// duplicate the nodes
 		for (GraphNode node : _graph_nodes) {
 			GraphNode newNode = new GraphNode(node);
@@ -79,7 +78,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader, startingLine); 
+			Graph copy = subgraph.getCopy(map, astLoader, startingLine);
 			graph._subgraphs.add(copy);
 		}
 
@@ -88,35 +87,91 @@ public class Graph {
 			GraphNode oldNode = nodeChange._originalNode;
 			GraphNode newNode = nodeChange._newNode;
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
-				newNode.addDependentNode(map.get(dependentNode), astLoader, oldNode.getStartingLine());
+				newNode.addDependentNode(map.get(dependentNode), astLoader,
+						oldNode.getStartingLine());
 			}
 		}
-		
+
 		return graph;
 	}
-	
+
 	/**
 	 * Adds one graph into another
+	 * 
 	 * @param graph
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine){
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
 		return map;
 	}
-	
+
 	public String getName() {
 		return _label;
 	}
-	
+
 	public void setLabel(String label) {
 		_label = label;
 	}
-	
+
 	public int getStartingLine() {
 		return _startingLine;
+	}
+
+	public GraphNode addDirectVal(eValueType type, String value, int startingLine) {
+		return add_graph_node(value, NodeType.E_DIRECT_VALUE, startingLine);
+	}
+
+	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
+		GraphNode un_op_node = add_graph_node(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
+				startingLine);
+
+		val_node.addDependentNode(un_op_node, astLoader, startingLine);
+
+		return un_op_node;
+	}
+
+	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
+		GraphNode notOpNode = add_graph_node("!", NodeType.E_OPERATION, startingLine);
+		val_node.addDependentNode(notOpNode, astLoader, startingLine);
+
+		return notOpNode;
+	}
+
+	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
+			AstLoader astLoader, int startingLine) {
+		GraphNode bin_op_node = add_graph_node(CppMaps._bin_op_strings.get(op),
+				NodeType.E_OPERATION, startingLine);
+
+		val1_node.addDependentNode(bin_op_node, astLoader, startingLine);
+		val2_node.addDependentNode(bin_op_node, astLoader, startingLine);
+
+		return bin_op_node;
+	}
+
+	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_var_decl, GraphNode lhs_node,
+			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
+		GraphNode bin_op_node = add_graph_node(CppMaps._assign_bin_op_strings.get(op),
+				NodeType.E_OPERATION, startingLine);
+
+		lhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
+		rhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
+
+		return lhs_var_decl
+				.receiveAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
+	}
+
+	public void addIf(Var var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
+			AstLoader astLoader, int startingLine) {
+		GraphNode ifOpNode = add_graph_node("If", NodeType.E_OPERATION, startingLine);
+
+		ifTrue.addDependentNode(ifOpNode, astLoader, startingLine);
+		ifFalse.addDependentNode(ifOpNode, astLoader, startingLine);
+		condition.addDependentNode(ifOpNode, astLoader, startingLine);
+
+		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
 	}
 }
