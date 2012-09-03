@@ -27,7 +27,7 @@ class sPri
 public:
 	sPri(float add, int dummy) : 
 		earlyInit(15.0, 1),
-		sint(80.0, 81)
+		sint(dummy, 81)
 	{
 		a = 23.4 + add;
 		earlyInit.addSoEsse(90.0);
