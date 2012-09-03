@@ -321,7 +321,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("Work here.");
 
 		return member_func.loadMemberFuncRef((ClassVar) var, parameter_values,
-				_graphBuilder._gvplGraph, func_call.getFileLocation().getStartingLineNumber());
+				_graphBuilder._gvplGraph, _parentBasicBlock, func_call.getFileLocation().getStartingLineNumber());
 	}
 	
 	public void loadIfStatement(IASTIfStatement ifStatement) {

@@ -81,7 +81,7 @@ public class ClassVar extends Var {
 		if(parameter_values == null)
 			return;
 		
-		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, startingLine);
+		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, astLoader, startingLine);
 	}
 	
 	public ClassDecl getClassDecl() {

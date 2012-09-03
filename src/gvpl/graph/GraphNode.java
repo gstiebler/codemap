@@ -39,6 +39,7 @@ public class GraphNode {
 		_name = other._name;
 		_type = other._type;
 		_startingLine = other._startingLine;
+		_parentVar = other._parentVar;
 	}
 	
 	public int getId(){

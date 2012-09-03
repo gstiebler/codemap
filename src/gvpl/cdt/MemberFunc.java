@@ -141,7 +141,7 @@ public class MemberFunc extends Function {
 	 * @param graphBuilder
 	 */
 	public GraphNode loadMemberFuncRef(ClassVar classVar,
-			List<FuncParameter> parameter_values, Graph graph, int startingLine) {
+			List<FuncParameter> parameter_values, Graph graph, AstLoader astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> map = graph.addSubGraph(
 				_graphBuilder._gvplGraph, this, startingLine);
 
@@ -150,7 +150,7 @@ public class MemberFunc extends Function {
 			GraphNode firstNode = DirectVarDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
 			Var memberInstance = classVar.findMember(entry.getValue());
-			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, this, startingLine);
+			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, astLoader, startingLine);
 		}
 
 		for (Map.Entry<Var, MemberId> entry : _writtenMembers.entrySet()) {
@@ -158,7 +158,7 @@ public class MemberFunc extends Function {
 			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
 			Var memberInstance = classVar.findMember(entry.getValue());
-			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, null, startingLine);
+			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader, startingLine);
 		}
 
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);

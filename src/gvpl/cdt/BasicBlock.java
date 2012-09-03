@@ -3,8 +3,9 @@ package gvpl.cdt;
 import gvpl.common.Var;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -23,7 +24,7 @@ public class BasicBlock extends AstLoader {
 	}
 	
 	private GraphNode _conditionNode;
-	private LinkedList<VarNodePair> _writtenVar = new LinkedList<VarNodePair>();
+	private List<VarNodePair> _writtenVar = new ArrayList<VarNodePair>();
 	private Set<Var> _writtenVarSet = new HashSet<Var>();
 	
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {

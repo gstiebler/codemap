@@ -26,13 +26,10 @@ struct sPri
 	
 	float inc_a5(float w)
 	{
-		float inc;
-		inc = 5.0;
-		a -= inc;
-		h = = 3.0;
+		a -= 5.0;
+		h += 3.0;
 		seg.setM1(16);
 		seg.si.soEsse += 18.20;
-		return 7 * h;
 	}
 };
 
@@ -43,9 +40,10 @@ int main() {
 	str2.h = 9099.0;
 	
 	str2.seg.setM1(15);
+	float b = str2.seg.m1;
 	str2.seg.si.soEsse = 17.15;
 	
-	float r = str2.inc_a5(6.0);
+	str2.inc_a5(6.0);
 	
-	float p = r / str2.seg.m1 * str2.seg.si.soEsse;
+	float p = str2.seg.m1 * str2.seg.si.soEsse;
 }
