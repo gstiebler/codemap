@@ -272,6 +272,9 @@ public class InstructionLine {
 
 	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
 		List<FuncParameter> parameter_values = new ArrayList<FuncParameter>();
+		if(paramExpr == null)
+			return parameter_values;
+		
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) paramExpr;
 			IASTExpression[] parameters = expr_list.getExpressions();
