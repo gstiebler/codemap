@@ -90,7 +90,6 @@ public class AstLoader {
 		MemberId member_id = _astInterpreter.getMemberId(ownerVar.getType(), field_binding);
 		Var childVar = ownerVar.findMember(member_id);
 
-		varStack.addLast(ownerVar);
 		varStack.addLast(childVar);
 	}
 
