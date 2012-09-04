@@ -14,6 +14,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
@@ -160,7 +161,9 @@ public class InstructionLine {
 			return loadFunctionCall((IASTFunctionCallExpression) node);
 		} else if (node instanceof IASTFieldReference) {// reference to field of
 														// a struct
-			Var var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
+			LinkedList<Var> varStack = new LinkedList<Var>();
+			_parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node, varStack);
+			Var var_decl = varStack.getLast();
 			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
 		} else if (node instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) node);

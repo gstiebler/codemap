@@ -13,6 +13,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -44,11 +45,23 @@ public class AstLoader {
 	}
 
 	protected Var getVarOfReference(IASTExpression expr) {
+		LinkedList<Var> varStack = new LinkedList<Var>();
+		getVarOfReference(expr, varStack);
+		if(varStack.size() > 0)
+			return varStack.getLast();
+		else
+			return null;
+	}
+	
+	private void getVarOfReference(IASTExpression expr, LinkedList<Var> varStack) {
 		Var varDecl = null;
 		if (expr instanceof IASTIdExpression)
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference) {
-			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
+			int size = varStack.size();
+			getVarDeclOfFieldRef((IASTFieldReference) expr, varStack);
+			if(size != varStack.size())
+				varDecl = varStack.getLast();
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) opExpr);
@@ -56,31 +69,34 @@ public class AstLoader {
 		}
 
 		if (_parent == null)
-			return null;
+			return;
 
-		if (varDecl != null)
-			return varDecl;
-		else
-			return _parent.getVarOfReference(expr);
+		if (varDecl == null)
+			varDecl = _parent.getVarOfReference(expr);
+		
+		varStack.addLast(varDecl);
+	}
+
+	protected void getVarDeclOfFieldRef(IASTFieldReference field_ref, LinkedList<Var> varStack) {
+		IASTExpression owner = field_ref.getFieldOwner();
+
+		IBinding field_binding = field_ref.getFieldName().resolveBinding();
+		
+		getVarOfReference(owner, varStack);
+		Var varOfRef = varStack.getLast();
+		Var varInMem = varOfRef.getVarInMem();
+		ClassVar ownerVar = (ClassVar) varInMem;
+
+		MemberId member_id = _astInterpreter.getMemberId(ownerVar.getType(), field_binding);
+		Var childVar = ownerVar.findMember(member_id);
+
+		varStack.addLast(ownerVar);
+		varStack.addLast(childVar);
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
 		Var owner_var_decl = _direct_var_graph_nodes.get(binding);
 		return owner_var_decl.getType();
-	}
-
-	protected Var getVarDeclOfFieldRef(IASTFieldReference field_ref) {
-		IASTExpression owner = field_ref.getFieldOwner();
-
-		IBinding field_binding = field_ref.getFieldName().resolveBinding();
-
-		Var varOfRef = getVarOfReference(owner);
-		Var varInMem = varOfRef.getVarInMem();
-		ClassVar owner_var_decl = (ClassVar) varInMem;
-
-		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
-
-		return owner_var_decl.findMember(member_id);
 	}
 
 	public Var loadVarDecl(IASTDeclarator decl, TypeId type) {
