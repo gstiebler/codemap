@@ -61,7 +61,7 @@ public class AstLoader {
 			int size = varStack.size();
 			getVarDeclOfFieldRef((IASTFieldReference) expr, varStack);
 			if(size != varStack.size())
-				varDecl = varStack.getLast();
+				return;
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
 			varDecl = getVarDeclOfLocalReference((IASTIdExpression) opExpr);
