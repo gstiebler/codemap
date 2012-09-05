@@ -18,6 +18,8 @@ import java.util.Map;
 public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
+	Map<Var, MemberId> _memberIdFromInstace = new HashMap<Var, MemberId>();
+	
 	ClassDecl _classDecl;
 
 	public ClassVar(Graph graph, String name, ClassDecl classDecl,
@@ -33,25 +35,21 @@ public class ClassVar extends Var {
 			String memberName = name + "." + struct_member.getName();
 			Var member_instance = parentAstLoader.addVarDecl(memberName,
 					struct_member.getMemberType(), null);
-			_memberInstances.put(entry.getKey(), member_instance);
+			addMember(entry.getKey(), member_instance);
 		}
+	}
+	
+	private void addMember(MemberId id, Var var) {
+		_memberInstances.put(id, var);
+		_memberIdFromInstace.put(var, id);
 	}
 
 	public Var findMember(MemberId member_id) {
-		Var varDecl = _memberInstances.get(member_id);
-		if (varDecl != null)
-			return varDecl;
-
-		for (Var var : _memberInstances.values()) {
-			if (var instanceof ClassVar) {
-				varDecl = ((ClassVar) var).findMember(member_id);
-				if (varDecl != null)
-					return varDecl;
-			}
-
-		}
-
-		return null;
+		return _memberInstances.get(member_id);
+	}
+	
+	public MemberId findMember(Var memberInstance) {
+		return _memberIdFromInstace.get(memberInstance);
 	}
 
 	/**
@@ -62,16 +60,20 @@ public class ClassVar extends Var {
 			AstInterpreter astInterpreter, int startingLine) {
 		super.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 
-		for (Var var : _memberInstances.values())
+		for (Var var : _memberInstances.values()) {
 			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.setOwner(this);
+		}
 	}
 	
 	@Override
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		//TODO só chamar para as variáveis que não foram escritas em constructorFunc.loadMemberFuncRef
-		for (Var var : _memberInstances.values())
+		for (Var var : _memberInstances.values()) {
 			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.setOwner(this);
+		}
 		
 		MemberFunc constructorFunc = _classDecl.getConstructorFunc();
 		if(constructorFunc == null)

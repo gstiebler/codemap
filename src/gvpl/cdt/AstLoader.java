@@ -76,11 +76,12 @@ public class AstLoader {
 
 		Var varOfRef = getVarOfReference(owner);
 		Var varInMem = varOfRef.getVarInMem();
-		ClassVar owner_var_decl = (ClassVar) varInMem;
+		ClassVar ownerVar = (ClassVar) varInMem;
 
-		MemberId member_id = _astInterpreter.getMemberId(owner_var_decl.getType(), field_binding);
-
-		return owner_var_decl.findMember(member_id);
+		MemberId member_id = _astInterpreter.getMemberId(ownerVar.getType(), field_binding);
+		Var childVar = ownerVar.findMember(member_id);
+		
+		return childVar;
 	}
 
 	public Var loadVarDecl(IASTDeclarator decl, TypeId type) {

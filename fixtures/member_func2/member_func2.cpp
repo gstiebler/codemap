@@ -20,6 +20,6 @@ int main() {
 	sPri str1;
 	str1.func1();
 	
-	//float x = str1.sIntA.soEsse;
-	//float y = str1.sIntB.soEsse;
+	float x = str1.sIntA.soEsse;
+	float y = str1.sIntB.soEsse;
 }

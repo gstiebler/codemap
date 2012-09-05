@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import gvpl.cdt.AstInterpreter;
@@ -18,6 +19,7 @@ public class Var {
 	protected TypeId _type;
 	protected GraphNode _currGraphNode = null;
 	protected GraphNode _firstGraphNode = null;
+	protected Var _owner = null;
 
 	protected Graph _gvplGraph;
 
@@ -84,5 +86,20 @@ public class Var {
 
 	public Var getVarInMem() {
 		return this;
+	}
+	
+	public void setOwner(Var owner) {
+		_owner = owner;
+	}
+	
+	public List<Var> getOwnersStack() {
+		List<Var> stack = new ArrayList<Var>();
+		
+		Var currVar = this;
+		while (currVar != null) {
+			stack.add(currVar);
+			currVar = currVar._owner;
+		}
+		return stack;
 	}
 }

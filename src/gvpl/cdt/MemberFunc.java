@@ -10,6 +10,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,8 @@ public class MemberFunc extends Function {
 	private ClassDecl _parentClass;
 	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
 	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
-	private Map<Var, MemberId> _writtenMembers = new HashMap<Var, MemberId>();
-	private Map<Var, MemberId> _readMembers = new HashMap<Var, MemberId>();
+	private Map<Var, List<MemberId>> _writtenMembers = new HashMap<Var, List<MemberId>>();
+	private Map<Var, List<MemberId>> _readMembers = new HashMap<Var, List<MemberId>>();
 
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter);
@@ -41,13 +42,13 @@ public class MemberFunc extends Function {
 					startingLine);
 			addMember(member_var, member.getMemberId());
 
-			if (member_var instanceof ClassVar) {
+			/*if (member_var instanceof ClassVar) {
 				ClassVar structVarDecl = (ClassVar) member_var;
 				for (Map.Entry<MemberId, Var> entry : structVarDecl.getInternalVariables()
 						.entrySet()) {
 					addMember((Var) entry.getValue(), entry.getKey());
 				}
-			}
+			}*/
 		}
 	}
 
@@ -120,8 +121,12 @@ public class MemberFunc extends Function {
 		if (_parent != null)
 			_parent.varWrite(var, startingLine);
 
-		if (_memberFromVar.containsKey(var))
-			_writtenMembers.put(var, _memberFromVar.get(var));
+		List<Var> stack = var.getOwnersStack();
+		Var masterOwner = stack.get(stack.size() - 1);
+		if (_memberFromVar.containsKey(masterOwner)) {
+			List<MemberId> ids = memberIdsFromVarStack(stack);
+			_writtenMembers.put(var, ids);
+		}
 	}
 
 	@Override
@@ -129,8 +134,35 @@ public class MemberFunc extends Function {
 		if (_parent != null)
 			_parent.varRead(var);
 
-		if (_memberFromVar.containsKey(var))
-			_readMembers.put(var, _memberFromVar.get(var));
+		List<Var> stack = var.getOwnersStack();
+		Var masterOwner = stack.get(stack.size() - 1);
+		if (_memberFromVar.containsKey(masterOwner)) {
+			List<MemberId> ids = memberIdsFromVarStack(stack);
+			_readMembers.put(var, ids);
+		}
+	}
+	
+	private List<MemberId> memberIdsFromVarStack(List<Var> stack) {
+		List<MemberId> ids = new ArrayList<MemberId>();
+		Var temp = stack.get(stack.size() - 1);
+		ids.add(_memberFromVar.get(temp));
+		for(int i = stack.size() - 2; i >= 0; i--){
+			ClassVar previousVar = (ClassVar)stack.get(i + 1);
+			Var currVar = stack.get(i);
+			MemberId id = previousVar.findMember(currVar);
+			ids.add(id);
+		}
+		return ids;
+	}
+	
+	private Var getFinalMember(ClassVar classVar, List<MemberId> ids) {
+		Var memberInstance = null;
+		for(MemberId id : ids) {
+			memberInstance = classVar.findMember(id);
+			if(memberInstance instanceof ClassVar)
+				classVar = (ClassVar)memberInstance;
+		}
+		return memberInstance;
 	}
 
 	/**
@@ -144,20 +176,20 @@ public class MemberFunc extends Function {
 			Graph graph, AstLoader astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
 
-		for (Map.Entry<Var, MemberId> entry : _readMembers.entrySet()) {
+		for (Map.Entry<Var, List<MemberId>> entry : _readMembers.entrySet()) {
 			Var DirectVarDecl = entry.getKey();
 			GraphNode firstNode = DirectVarDecl.getFirstNode();
 			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			Var memberInstance = classVar.findMember(entry.getValue());
+			Var memberInstance = getFinalMember(classVar, entry.getValue());
 			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
 					astLoader, startingLine);
 		}
 
-		for (Map.Entry<Var, MemberId> entry : _writtenMembers.entrySet()) {
+		for (Map.Entry<Var, List<MemberId>> entry : _writtenMembers.entrySet()) {
 			Var DirectVarDecl = entry.getKey();
 			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
 			GraphNode currNodeInNewGraph = map.get(currNode);
-			Var memberInstance = classVar.findMember(entry.getValue());
+			Var memberInstance = getFinalMember(classVar, entry.getValue());
 			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
 					startingLine);
 		}
