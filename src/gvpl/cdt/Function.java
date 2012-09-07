@@ -160,16 +160,19 @@ public class Function extends AstLoader {
 			// variables in the main graph
 			// ([out] parameters)
 			if (declaredParameter instanceof MemAddressVar) {
-				Var pointedVar = ((MemAddressVar) declaredParameter).getPointedVar();
-				GraphNode pointedNode = internalToMainGraphMap.get(pointedVar
-						.getCurrentNode(startingLine));
-
-				Var DirectVarDecl = callingParameter.getVar();
-				DirectVarDecl.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
+				bindOutParameter(internalToMainGraphMap, (MemAddressVar)declaredParameter, callingParameter.getVar(), startingLine);
 			}
 		}
 
 		return internalToMainGraphMap.get(_return_node);
+	}
+	
+	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, MemAddressVar declaredParameter, Var var, int startingLine) {
+		Var pointedVar = ((MemAddressVar) declaredParameter).getPointedVar();
+		GraphNode pointedNode = internalToMainGraphMap.get(pointedVar
+				.getCurrentNode(startingLine));
+
+		var.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
 	}
 
 	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
