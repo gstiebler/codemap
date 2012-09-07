@@ -116,16 +116,12 @@ public class InstructionLine {
 																			// a(5);
 			CPPASTConstructorInitializer constructorInit = (CPPASTConstructorInitializer) initializer;
 			IASTExpression expr = constructorInit.getExpression();
-			if (expr instanceof IASTExpressionList) {
-				ClassVar classVar = (ClassVar) lhsVar;
-				Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
-				IASTExpressionList exprList = (IASTExpressionList) expr;
-				List<FuncParameter> parameterValues = loadFunctionParameters(constructorFunc,
-						exprList);
-				classVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-						_parentBasicBlock, _astInterpreter, startingLine);
-			} else
-				ErrorOutputter.fatalError("work here");
+			ClassVar classVar = (ClassVar) lhsVar;
+			Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
+			List<FuncParameter> parameterValues = null;
+			parameterValues = loadFunctionParameters(constructorFunc, expr);
+			classVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
+					_parentBasicBlock, _astInterpreter, startingLine);
 		}
 
 		if (init_exp == null)
@@ -238,8 +234,7 @@ public class InstructionLine {
 			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
 			if (expr != null) {
-				IASTExpressionList exprList = (IASTExpressionList) expr;
-				parameterValues = loadFunctionParameters(constructorFunc, exprList);
+				parameterValues = loadFunctionParameters(constructorFunc, expr);
 			}
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBasicBlock, _astInterpreter, startingLine);
@@ -272,35 +267,37 @@ public class InstructionLine {
 
 	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
 		List<FuncParameter> parameter_values = new ArrayList<FuncParameter>();
-		if(paramExpr == null)
+		if (paramExpr == null)
 			return parameter_values;
-		
+
+		IASTExpression[] parameters;
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) paramExpr;
-			IASTExpression[] parameters = expr_list.getExpressions();
-			for (int i = 0; i < parameters.length; i++) {
-				IASTExpression parameter = parameters[i];
-				FuncParameter localParameter = null;
-				FuncParameter insideFuncParameter = func._parameters.get(i);
-
-				if (insideFuncParameter.getType() == IndirectionType.E_POINTER)
-					localParameter = new FuncParameter(loadVarInAddress(parameter,
-							_parentBasicBlock), IndirectionType.E_POINTER);
-				else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
-					Var var = _parentBasicBlock.getVarOfReference(parameter);
-					localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
-				} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
-					localParameter = new FuncParameter(loadValue(parameter),
-							IndirectionType.E_VARIABLE);
-				else
-					ErrorOutputter.fatalError("Work here ");
-
-				parameter_values.add(localParameter);
-			}
-		} else {
-			parameter_values
-					.add(new FuncParameter(loadValue(paramExpr), IndirectionType.E_VARIABLE));
+			parameters = expr_list.getExpressions();
+		} else if (true) {
+			parameters = new IASTExpression[1];
+			parameters[0] = paramExpr;
 		}
+
+		for (int i = 0; i < parameters.length; i++) {
+			IASTExpression parameter = parameters[i];
+			FuncParameter localParameter = null;
+			FuncParameter insideFuncParameter = func._parameters.get(i);
+
+			if (insideFuncParameter.getType() == IndirectionType.E_POINTER)
+				localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock),
+						IndirectionType.E_POINTER);
+			else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
+				Var var = _parentBasicBlock.getVarOfReference(parameter);
+				localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
+			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
+				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
+			else
+				ErrorOutputter.fatalError("Work here ");
+
+			parameter_values.add(localParameter);
+		}
+
 		return parameter_values;
 	}
 

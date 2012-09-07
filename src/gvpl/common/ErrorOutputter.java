@@ -7,7 +7,7 @@ public class ErrorOutputter {
 	}
 
 	public static void fatalError(String error) {
-		System.out.println(error);
+		System.out.println("FATAL ERROR!: " + error);
 	}
 	
 }

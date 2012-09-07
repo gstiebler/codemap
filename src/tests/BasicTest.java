@@ -88,5 +88,10 @@ public class BasicTest {
 	public void constructorChain() {
 		TestsUtil.baseTest("constructor_chain");
 	}
+
+	@Test
+	public void funcPointerReference() {
+		TestsUtil.baseTest("func_pointer_reference");
+	}
 	
 }
