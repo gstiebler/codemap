@@ -14,5 +14,5 @@ public class SubGraphNodes {
 	/** <Label of the node, List of the nodes with this label, topologically ordered> */
 	public Map<String, LinkedList<DotTree.Node>> _nodes = new HashMap<String, LinkedList<DotTree.Node>>();
 	
-	public Map<IdLineKey, SubGraphNodes> _subGraphs = new TreeMap<IdLineKey, SubGraphNodes>();
+	public Map<Integer, SubGraphNodes> _subGraphs = new TreeMap<Integer, SubGraphNodes>();
 }

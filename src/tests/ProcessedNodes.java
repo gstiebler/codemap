@@ -60,8 +60,8 @@ public class ProcessedNodes {
 			subGraphNodes._id = subGraph.id;
 			subGraphNodes._startingLine = subGraph.getStartingLine();
 			processRecursive(subGraph, nodesByName, subGraphNodes, subGraphsByParent);
-			IdLineKey key = new IdLineKey(subGraphNodes._id, subGraphNodes._startingLine);
-			graphNodes._subGraphs.put(key, subGraphNodes);
+			Integer startingLine = new Integer(subGraphNodes._startingLine);
+			graphNodes._subGraphs.put(startingLine, subGraphNodes);
 		}
 	}
 
