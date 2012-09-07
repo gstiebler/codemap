@@ -368,7 +368,7 @@ public class InstructionLine {
 			Var DirectVarDecl = astLoader.getVarOfReference(address);
 			if (!(DirectVarDecl instanceof PointerVar))
 				ErrorOutputter.fatalError("not expected here!!");
-			return ((PointerVar) DirectVarDecl).getPointedVar();
+			return ((PointerVar) DirectVarDecl).getVarInMem();
 		}
 
 		// It's getting the address of a reference, like "int a = &b;"
@@ -415,7 +415,7 @@ public class InstructionLine {
 	public static Var loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
 		Var pointerVar = astLoader.getVarOfReference(pointerExpr);
 		if (pointerVar instanceof PointerVar)
-			return ((PointerVar) pointerVar).getPointedVar();
+			return ((PointerVar) pointerVar).getVarInMem();
 		else
 			return loadVarInAddress(pointerExpr, astLoader);
 	}

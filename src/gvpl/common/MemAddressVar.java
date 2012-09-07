@@ -57,10 +57,6 @@ public class MemAddressVar extends Var {
 		_pointedVar.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}
 
-	public Var getPointedVar() {
-		return _pointedVar;
-	}
-
 	@Override
 	public Var getVarInMem() {
 		return _pointedVar;

@@ -168,7 +168,7 @@ public class Function extends AstLoader {
 	}
 	
 	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, MemAddressVar declaredParameter, Var var, int startingLine) {
-		Var pointedVar = ((MemAddressVar) declaredParameter).getPointedVar();
+		Var pointedVar = declaredParameter.getVarInMem();
 		GraphNode pointedNode = internalToMainGraphMap.get(pointedVar
 				.getCurrentNode(startingLine));
 
