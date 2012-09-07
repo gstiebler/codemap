@@ -58,8 +58,6 @@ public class ClassVar extends Var {
 	@Override
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
 			AstInterpreter astInterpreter, int startingLine) {
-		//super.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
-
 		for (Var var : _memberInstances.values()) {
 			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 			var.setOwner(this);
