@@ -5,18 +5,18 @@ label = "root";
 	node_000008 [ label = "1", style=filled, fillcolor="#E9FFE9", startingline=20 ]
 	node_000009 [ label = "ucRef1._memberInt", startingline=20 ]
 	node_000013 [ label = "ucRef1._memberInt", startingline=20 ]
-	node_000014 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=20 ]
-	node_000015 [ label = "ucRef2._memberInt", startingline=20 ]
-	node_000019 [ label = "ucRef2._memberInt", startingline=20 ]
-	node_000020 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=21 ]
-	node_000021 [ label = "ucP1_pointed._memberInt", startingline=21 ]
-	node_000025 [ label = "ucP1_pointed._memberInt", startingline=21 ]
-	node_000026 [ label = "20", style=filled, fillcolor="#E9FFE9", startingline=22 ]
-	node_000027 [ label = "ucP2_pointed._memberInt", startingline=22 ]
-	node_000031 [ label = "ucP2_pointed._memberInt", startingline=22 ]
-	node_000036 [ label = "ucRef1._memberInt", startingline=24 ]
-	node_000037 [ label = "ucP1_pointed._memberInt", startingline=24 ]
-	node_000038 [ label = "natural", startingline=24 ]
+	node_000014 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=21 ]
+	node_000015 [ label = "ucRef2._memberInt", startingline=21 ]
+	node_000019 [ label = "ucRef2._memberInt", startingline=21 ]
+	node_000020 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=23 ]
+	node_000021 [ label = "ucP1_pointed._memberInt", startingline=23 ]
+	node_000025 [ label = "ucP1_pointed._memberInt", startingline=23 ]
+	node_000026 [ label = "20", style=filled, fillcolor="#E9FFE9", startingline=24 ]
+	node_000027 [ label = "ucP2_pointed._memberInt", startingline=24 ]
+	node_000031 [ label = "ucP2_pointed._memberInt", startingline=24 ]
+	node_000036 [ label = "ucRef1._memberInt", startingline=26 ]
+	node_000037 [ label = "ucP1_pointed._memberInt", startingline=26 ]
+	node_000038 [ label = "natural", startingline=26 ]
 subgraph cluster_1 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
@@ -28,7 +28,7 @@ startingline = 20;
 subgraph cluster_2 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
-startingline = 20;
+startingline = 21;
 	node_000016 [ label = "_memberInt", startingline=2 ]
 	node_000017 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000018 [ label = "_memberInt", startingline=9 ]
@@ -36,7 +36,7 @@ startingline = 20;
 subgraph cluster_3 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
-startingline = 21;
+startingline = 23;
 	node_000022 [ label = "_memberInt", startingline=2 ]
 	node_000023 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000024 [ label = "_memberInt", startingline=9 ]
@@ -44,7 +44,7 @@ startingline = 21;
 subgraph cluster_4 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
-startingline = 22;
+startingline = 24;
 	node_000028 [ label = "_memberInt", startingline=2 ]
 	node_000029 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000030 [ label = "_memberInt", startingline=9 ]
@@ -52,7 +52,7 @@ startingline = 22;
 subgraph cluster_5 {
 label = "funcao";
 parent = "G";
-startingline = 24;
+startingline = 26;
 	node_000032 [ label = "paramRef_pointed._memberInt", startingline=13 ]
 	node_000033 [ label = "paramPointer_pointed._memberInt", startingline=13 ]
 	node_000034 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=15 ]

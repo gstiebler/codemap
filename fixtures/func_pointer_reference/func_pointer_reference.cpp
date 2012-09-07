@@ -17,7 +17,9 @@ int funcao(UnicaClass &paramRef, UnicaClass *paramPointer)
 
 int main() 
 {
-	UnicaClass ucRef1(1), ucRef2(2), *ucP1, *ucP2;
+	UnicaClass ucRef1(1);
+	UnicaClass ucRef2(2); 
+	UnicaClass *ucP1, *ucP2;
 	ucP1 = new UnicaClass(10);
 	ucP2 = new UnicaClass(20);
 	
