@@ -10,9 +10,9 @@ public:
 	}
 };
 
-int funcao(UnicaClass &param_ref, UnicaClass *param_pointer)
+int funcao(UnicaClass &paramRef, UnicaClass *paramPointer)
 {
-	return param_ref._memberInt + param_pointer->_memberInt;
+	return paramRef._memberInt + paramPointer->_memberInt;
 }
 
 int main() 

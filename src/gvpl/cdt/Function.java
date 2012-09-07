@@ -140,8 +140,8 @@ public class Function extends AstLoader {
 			Var receivedVar = callingParameter.getVar();
 			if (receivedVar instanceof ClassVar) {
 				// Binds the received parameter to the function parameter
-				bindInParameter(internalToMainGraphMap, (ClassVar) receivedVar, declaredParameter.getVarInMem(),
-						startingLine);
+				bindInParameter(internalToMainGraphMap, (ClassVar) receivedVar,
+						declaredParameter.getVarInMem(), startingLine);
 			} else {
 				GraphNode receivedParameter = callingParameter.getNode(startingLine);
 
@@ -160,19 +160,33 @@ public class Function extends AstLoader {
 			// variables in the main graph
 			// ([out] parameters)
 			if (declaredParameter instanceof MemAddressVar) {
-				bindOutParameter(internalToMainGraphMap, (MemAddressVar)declaredParameter, callingParameter.getVar(), startingLine);
+				bindOutParameter(internalToMainGraphMap, callingParameter.getVar().getVarInMem(),
+						declaredParameter.getVarInMem(), startingLine);
 			}
 		}
 
 		return internalToMainGraphMap.get(_return_node);
 	}
-	
-	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, MemAddressVar declaredParameter, Var var, int startingLine) {
-		Var pointedVar = declaredParameter.getVarInMem();
-		GraphNode pointedNode = internalToMainGraphMap.get(pointedVar
+
+	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
+			Var declaredParameter, int startingLine) {
+		if (callingParameter instanceof ClassVar) {
+			ClassVar callingParameterClass = (ClassVar) callingParameter;
+			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
+			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
+				Var callingParameterChild = callingParameterClass.getMember(memberId);
+				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
+
+				bindOutParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
+						declaredParameterChild.getVarInMem(), startingLine);
+			}
+			return;
+		}
+
+		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
 				.getCurrentNode(startingLine));
 
-		var.receiveAssign(NodeType.E_VARIABLE, pointedNode, null, startingLine);
+		callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, null, startingLine);
 	}
 
 	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
@@ -187,6 +201,7 @@ public class Function extends AstLoader {
 				bindInParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
 						declaredParameterChild.getVarInMem(), startingLine);
 			}
+			return;
 		}
 
 		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
