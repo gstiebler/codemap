@@ -16,8 +16,11 @@ label = "root";
 	node_000031 [ label = "ucP2_pointed._memberInt", startingline=24 ]
 	node_000036 [ label = "ucRef1._memberInt", startingline=26 ]
 	node_000037 [ label = "ucP1_pointed._memberInt", startingline=26 ]
-	node_000038 [ label = "natural", startingline=26 ]
-subgraph cluster_1 {
+	node_000038 [ label = "natural11", startingline=26 ]
+	node_000043 [ label = "ucRef1._memberInt", startingline=27 ]
+	node_000044 [ label = "ucRef2._memberInt", startingline=27 ]
+	node_000045 [ label = "refRef3", startingline=27 ]
+subgraph cluster_24 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 20;
@@ -25,7 +28,7 @@ startingline = 20;
 	node_000011 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000012 [ label = "_memberInt", startingline=9 ]
 }
-subgraph cluster_2 {
+subgraph cluster_25 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 21;
@@ -33,7 +36,7 @@ startingline = 21;
 	node_000017 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000018 [ label = "_memberInt", startingline=9 ]
 }
-subgraph cluster_3 {
+subgraph cluster_26 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 23;
@@ -41,7 +44,7 @@ startingline = 23;
 	node_000023 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000024 [ label = "_memberInt", startingline=9 ]
 }
-subgraph cluster_4 {
+subgraph cluster_27 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 24;
@@ -49,7 +52,7 @@ startingline = 24;
 	node_000029 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000030 [ label = "_memberInt", startingline=9 ]
 }
-subgraph cluster_5 {
+subgraph cluster_28 {
 label = "funcao";
 parent = "G";
 startingline = 26;
@@ -58,12 +61,23 @@ startingline = 26;
 	node_000034 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=15 ]
 	node_000035 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startingline=15 ]
 }
+subgraph cluster_29 {
+label = "funcao";
+parent = "G";
+startingline = 27;
+	node_000039 [ label = "paramRef_pointed._memberInt", startingline=13 ]
+	node_000040 [ label = "paramPointer_pointed._memberInt", startingline=13 ]
+	node_000041 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=15 ]
+	node_000042 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startingline=15 ]
+}
 	node_000008 -> node_000011
 	node_000013 -> node_000032
 	node_000014 -> node_000017
+	node_000019 -> node_000040
 	node_000020 -> node_000023
 	node_000025 -> node_000033
 	node_000026 -> node_000029
+	node_000036 -> node_000039
 	node_000011 -> node_000012
 	node_000012 -> node_000013
 	node_000017 -> node_000018
@@ -78,4 +92,10 @@ startingline = 26;
 	node_000033 -> node_000037
 	node_000034 -> node_000035
 	node_000035 -> node_000038
+	node_000039 -> node_000041
+	node_000039 -> node_000043
+	node_000040 -> node_000041
+	node_000040 -> node_000044
+	node_000041 -> node_000042
+	node_000042 -> node_000045
 }

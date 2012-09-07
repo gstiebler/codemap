@@ -138,6 +138,8 @@ public class Function extends AstLoader {
 			FuncParameter callingParameter = callingParameters.get(i);
 
 			Var receivedVar = callingParameter.getVar();
+			if(receivedVar != null)
+				receivedVar = receivedVar.getVarInMem();
 			if (receivedVar instanceof ClassVar) {
 				// Binds the received parameter to the function parameter
 				bindInParameter(internalToMainGraphMap, (ClassVar) receivedVar,
@@ -168,27 +170,6 @@ public class Function extends AstLoader {
 		return internalToMainGraphMap.get(_return_node);
 	}
 
-	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
-			Var declaredParameter, int startingLine) {
-		if (callingParameter instanceof ClassVar) {
-			ClassVar callingParameterClass = (ClassVar) callingParameter;
-			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
-			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
-				Var callingParameterChild = callingParameterClass.getMember(memberId);
-				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
-
-				bindOutParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
-						declaredParameterChild.getVarInMem(), startingLine);
-			}
-			return;
-		}
-
-		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
-				.getCurrentNode(startingLine));
-
-		callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, null, startingLine);
-	}
-
 	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
 			Var declaredParameter, int startingLine) {
 		if (callingParameter instanceof ClassVar) {
@@ -213,6 +194,27 @@ public class Function extends AstLoader {
 		if (callingParameterNode != null) {
 			callingParameterNode.addDependentNode(declParamNodeInMainGraph, this, startingLine);
 		}
+	}
+
+	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
+			Var declaredParameter, int startingLine) {
+		if (callingParameter instanceof ClassVar) {
+			ClassVar callingParameterClass = (ClassVar) callingParameter;
+			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
+			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
+				Var callingParameterChild = callingParameterClass.getMember(memberId);
+				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
+
+				bindOutParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
+						declaredParameterChild.getVarInMem(), startingLine);
+			}
+			return;
+		}
+
+		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
+				.getCurrentNode(startingLine));
+
+		callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, null, startingLine);
 	}
 
 	private void setName(String name) {
