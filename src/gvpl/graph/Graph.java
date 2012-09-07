@@ -20,7 +20,6 @@ public class Graph {
 	}
 
 	private String _label;
-
 	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = -1;
@@ -66,7 +65,10 @@ public class Graph {
 			}
 		}
 
-		Graph graph = new Graph(_label, startingLine);
+		int usedStartingLine = startingLine;
+		if(_startingLine > 0)
+			usedStartingLine = _startingLine;
+		Graph graph = new Graph(_label, usedStartingLine);
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 
 		// duplicate the nodes

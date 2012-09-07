@@ -12,15 +12,15 @@ label = "root";
 	node_000045 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startingline=44 ]
 	node_000046 [ label = "str2.seg.si.soEsse", startingline=44 ]
 	node_000047 [ label = "6.0", style=filled, fillcolor="#E9FFE9", startingline=46 ]
-	node_000073 [ label = "str2.h", startingline=46 ]
-	node_000074 [ label = "str2.a", startingline=46 ]
-	node_000075 [ label = "str2.seg.m1", startingline=46 ]
+	node_000073 [ label = "str2.a", startingline=46 ]
+	node_000074 [ label = "str2.seg.m1", startingline=46 ]
+	node_000075 [ label = "str2.h", startingline=46 ]
 	node_000076 [ label = "str2.seg.si.soEsse", startingline=46 ]
 	node_000077 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=48 ]
 	node_000078 [ label = "p", startingline=48 ]
-subgraph cluster_10 {
+subgraph cluster_1 {
 label = "sSeg::setM1";
-parent = "root";
+parent = "G";
 startingline = 42;
 	node_000037 [ label = "n1", startingline=15 ]
 	node_000038 [ label = "m1", startingline=15 ]
@@ -29,16 +29,16 @@ startingline = 42;
 	node_000041 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=15 ]
 	node_000042 [ label = "m1", startingline=17 ]
 }
-subgraph cluster_11 {
+subgraph cluster_2 {
 label = "sPri::inc_a5";
-parent = "root";
+parent = "G";
 startingline = 46;
 	node_000048 [ label = "h", startingline=20 ]
 	node_000049 [ label = "seg", startingline=20 ]
-	node_000050 [ label = "seg.si", startingline=20 ]
-	node_000051 [ label = "seg.si.soEsse", startingline=20 ]
-	node_000052 [ label = "seg.m1", startingline=20 ]
-	node_000053 [ label = "seg.n1", startingline=20 ]
+	node_000050 [ label = "seg.m1", startingline=20 ]
+	node_000051 [ label = "seg.n1", startingline=20 ]
+	node_000052 [ label = "seg.si", startingline=20 ]
+	node_000053 [ label = "seg.si.soEsse", startingline=20 ]
 	node_000054 [ label = "a", startingline=20 ]
 	node_000055 [ label = "w", style=filled, fillcolor="#FFE9E9", startingline=27 ]
 	node_000056 [ label = "5.0", style=filled, fillcolor="#E9FFE9", startingline=29 ]
@@ -52,10 +52,10 @@ startingline = 46;
 	node_000064 [ label = "18.20", style=filled, fillcolor="#E9FFE9", startingline=32 ]
 	node_000065 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=32 ]
 	node_000066 [ label = "seg.si.soEsse", startingline=32 ]
-subgraph cluster_12 {
+subgraph cluster_3 {
 label = "sSeg::setM1";
-parent = "sPri::inc_a5";
-startingline = 46;
+parent = "cluster_2";
+startingline = 31;
 	node_000067 [ label = "n1", startingline=15 ]
 	node_000068 [ label = "m1", startingline=15 ]
 	node_000069 [ label = "si", startingline=15 ]
@@ -71,24 +71,24 @@ startingline = 46;
 	node_000036 -> node_000041
 	node_000043 -> node_000044
 	node_000045 -> node_000046
-	node_000046 -> node_000051
+	node_000046 -> node_000053
 	node_000047 -> node_000055
-	node_000075 -> node_000077
+	node_000074 -> node_000077
 	node_000076 -> node_000077
 	node_000077 -> node_000078
 	node_000041 -> node_000042
 	node_000042 -> node_000043
 	node_000048 -> node_000060
-	node_000051 -> node_000065
+	node_000053 -> node_000065
 	node_000054 -> node_000057
 	node_000056 -> node_000057
 	node_000057 -> node_000058
-	node_000058 -> node_000074
+	node_000058 -> node_000073
 	node_000059 -> node_000060
 	node_000060 -> node_000061
-	node_000061 -> node_000073
+	node_000061 -> node_000075
 	node_000062 -> node_000071
-	node_000063 -> node_000075
+	node_000063 -> node_000074
 	node_000064 -> node_000065
 	node_000065 -> node_000066
 	node_000066 -> node_000076

@@ -92,7 +92,7 @@ public class FileDriver implements IGraphOutput {
 		out.println("\t" + internalName + " [ label = \"" + nodeLabel + "\"" + propertiesString + " ]");
 	}
 	
-    public String  insertSubGraphStart(String name, String parent, int startingLine) {
+    public String insertSubGraphStart(String name, String parent, int startingLine) {
     	String clusterName = "cluster_" + subGraphCounter++;
     	out.println("subgraph " + clusterName + " {");
     	out.println("label = \"" + name + "\";");

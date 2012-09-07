@@ -7,9 +7,9 @@ label = "root";
 	node_000023 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=18 ]
 	node_000024 [ label = "b", startingline=18 ]
 	node_000040 [ label = "l", startingline=19 ]
-subgraph cluster_6 {
+subgraph cluster_4 {
 label = "func1";
-parent = "root";
+parent = "G";
 startingline = 19;
 	node_000025 [ label = "x", style=filled, fillcolor="#FFE9E9", startingline=9 ]
 	node_000026 [ label = "y", style=filled, fillcolor="#FFE9E9", startingline=9 ]
@@ -21,10 +21,10 @@ startingline = 19;
 	node_000032 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
 	node_000033 [ label = "resultado", startingline=12 ]
 	node_000034 [ label = "func1", style=filled, fillcolor="#FFFFD0", startingline=13 ]
-subgraph cluster_7 {
+subgraph cluster_5 {
 label = "soma";
-parent = "func1";
-startingline = 19;
+parent = "cluster_4";
+startingline = 12;
 	node_000035 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000036 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000037 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]

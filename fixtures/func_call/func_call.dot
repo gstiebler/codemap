@@ -9,7 +9,7 @@ label = "root";
 	node_000015 [ label = "c", startingline=14 ]
 subgraph cluster_1 {
 label = "soma";
-parent = "root";
+parent = "G";
 startingline = 14;
 	node_000010 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000011 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]

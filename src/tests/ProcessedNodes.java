@@ -52,15 +52,15 @@ public class ProcessedNodes {
 	private static void processSubGraphs(DotTree.Graph gvGraph,
 			Map<String, DotTree.Node> nodesByName, SubGraphNodes graphNodes,
 			Map<String, List<DotTree.SubGraph>> subGraphsByParent) {
-		List<DotTree.SubGraph> subGraphs = subGraphsByParent.get(gvGraph.getLabel());
+		List<DotTree.SubGraph> subGraphs = subGraphsByParent.get(gvGraph.id);
 		if(subGraphs == null)
 			return;
 		for (DotTree.SubGraph subGraph : subGraphs) {
 			SubGraphNodes subGraphNodes = new SubGraphNodes();
-			subGraphNodes._name = subGraph.getLabel();
+			subGraphNodes._id = subGraph.id;
 			subGraphNodes._startingLine = subGraph.getStartingLine();
 			processRecursive(subGraph, nodesByName, subGraphNodes, subGraphsByParent);
-			NameLineKey key = new NameLineKey(subGraphNodes._name, subGraphNodes._startingLine);
+			IdLineKey key = new IdLineKey(subGraphNodes._id, subGraphNodes._startingLine);
 			graphNodes._subGraphs.put(key, subGraphNodes);
 		}
 	}

@@ -6,9 +6,9 @@ label = "root";
 	node_000018 [ label = "str1.sIntA.soEsse", startingline=21 ]
 	node_000019 [ label = "x", startingline=23 ]
 	node_000020 [ label = "y", startingline=24 ]
-subgraph cluster_3 {
+subgraph cluster_4 {
 label = "sPri::func1";
-parent = "root";
+parent = "G";
 startingline = 21;
 	node_000009 [ label = "sIntA", startingline=7 ]
 	node_000010 [ label = "sIntA.soEsse", startingline=7 ]

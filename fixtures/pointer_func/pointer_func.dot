@@ -16,9 +16,9 @@ label = "root";
 	node_000048 [ label = "*g", startingline=21 ]
 	node_000049 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=21 ]
 	node_000050 [ label = "k", startingline=21 ]
-subgraph cluster_1 {
+subgraph cluster_19 {
 label = "soma_sub";
-parent = "root";
+parent = "G";
 startingline = 13;
 	node_000017 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000018 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
@@ -33,9 +33,9 @@ startingline = 13;
 	node_000027 [ label = "*sub", startingline=5 ]
 	node_000028 [ label = "sub_pointed", startingline=5 ]
 }
-subgraph cluster_2 {
+subgraph cluster_20 {
 label = "soma_sub";
-parent = "root";
+parent = "G";
 startingline = 20;
 	node_000034 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000035 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]

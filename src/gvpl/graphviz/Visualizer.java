@@ -12,7 +12,7 @@ public class Visualizer {
 	}
 	
 	public void print_graph(Graph graph) {
-		printNodes(graph, "root");
+		printNodes(graph, "G");
 		printEdges(graph);
 	}
 	
@@ -23,8 +23,8 @@ public class Visualizer {
 		}
 		
 		for(Graph subgraph : graph._subgraphs) {
-			_graphOutput.insertSubGraphStart(subgraph.getName(), parentName, subgraph.getStartingLine());
-			printNodes(subgraph, subgraph.getName());
+			String clusterName = _graphOutput.insertSubGraphStart(subgraph.getName(), parentName, subgraph.getStartingLine());
+			printNodes(subgraph, clusterName);
 			_graphOutput.insertSubGraphEnd();
 		}
 	}
