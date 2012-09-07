@@ -149,7 +149,7 @@ public class MemberFunc extends Function {
 		for(int i = stack.size() - 2; i >= 0; i--){
 			ClassVar previousVar = (ClassVar)stack.get(i + 1);
 			Var currVar = stack.get(i);
-			MemberId id = previousVar.findMember(currVar);
+			MemberId id = previousVar.getMember(currVar);
 			ids.add(id);
 		}
 		return ids;
@@ -158,7 +158,7 @@ public class MemberFunc extends Function {
 	private Var getFinalMember(ClassVar classVar, List<MemberId> ids) {
 		Var memberInstance = null;
 		for(MemberId id : ids) {
-			memberInstance = classVar.findMember(id);
+			memberInstance = classVar.getMember(id);
 			if(memberInstance instanceof ClassVar)
 				classVar = (ClassVar)memberInstance;
 		}

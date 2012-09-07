@@ -5,6 +5,7 @@ import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
+import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
@@ -136,8 +137,24 @@ public class Function extends AstLoader {
 			Var declaredParameter = _parameters.get(i).getVar();
 			FuncParameter callingParameter = callingParameters.get(i);
 
-			//Binds the received parameter to the function parameter
-			bindInParameter(internalToMainGraphMap, callingParameter, declaredParameter, startingLine);
+			Var receivedVar = callingParameter.getVar();
+			if (receivedVar instanceof ClassVar) {
+				// Binds the received parameter to the function parameter
+				bindInParameter(internalToMainGraphMap, (ClassVar) receivedVar, declaredParameter.getVarInMem(),
+						startingLine);
+			} else {
+				GraphNode receivedParameter = callingParameter.getNode(startingLine);
+
+				// Point the received values to the received parameters ([in]
+				// parameters)
+				if (receivedParameter != null) {
+					GraphNode declParamNodeInMainGraph = internalToMainGraphMap
+							.get(declaredParameter.getFirstNode());
+
+					receivedParameter
+							.addDependentNode(declParamNodeInMainGraph, this, startingLine);
+				}
+			}
 
 			// Writes the written pointer parameter values to the pointed
 			// variables in the main graph
@@ -154,16 +171,24 @@ public class Function extends AstLoader {
 
 		return internalToMainGraphMap.get(_return_node);
 	}
-	
-	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, FuncParameter callingParameter, Var declaredParameter, int startingLine) {	
-		Var receivedVar = callingParameter.getVar();
-		if(receivedVar instanceof ClassVar) {
-			ClassVar classVar = (ClassVar) receivedVar;
-			//classVar.
+
+	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
+			Var declaredParameter, int startingLine) {
+		if (callingParameter instanceof ClassVar) {
+			ClassVar callingParameterClass = (ClassVar) callingParameter;
+			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
+			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
+				Var callingParameterChild = callingParameterClass.getMember(memberId);
+				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
+
+				bindInParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
+						declaredParameterChild.getVarInMem(), startingLine);
+			}
 		}
-		
-		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter.getFirstNode());
-		GraphNode callingParameterNode = callingParameter.getNode(startingLine);
+
+		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
+				.getFirstNode());
+		GraphNode callingParameterNode = callingParameter.getCurrentNode(startingLine);
 
 		// Point the received values to the received parameters ([in]
 		// parameters)

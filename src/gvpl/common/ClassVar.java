@@ -44,11 +44,11 @@ public class ClassVar extends Var {
 		_memberIdFromInstace.put(var, id);
 	}
 
-	public Var findMember(MemberId member_id) {
+	public Var getMember(MemberId member_id) {
 		return _memberInstances.get(member_id);
 	}
 	
-	public MemberId findMember(Var memberInstance) {
+	public MemberId getMember(Var memberInstance) {
 		return _memberIdFromInstace.get(memberInstance);
 	}
 
@@ -85,17 +85,5 @@ public class ClassVar extends Var {
 	
 	public ClassDecl getClassDecl() {
 		return _classDecl;
-	}
-
-	public Map<MemberId, Var> getInternalVariables() {
-		Map<MemberId, Var> internalVariables = new HashMap<MemberId, Var>();
-
-		internalVariables.putAll(_memberInstances);
-
-		for (Var var : _memberInstances.values())
-			if (var instanceof ClassVar)
-				internalVariables.putAll(((ClassVar) var)._memberInstances);
-
-		return internalVariables;
 	}
 }

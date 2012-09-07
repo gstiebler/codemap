@@ -129,4 +129,8 @@ public class ClassDecl {
 	public MemberFunc getConstructorFunc() {
 		return _constructorFunc;
 	}
+	
+	public Iterable<MemberId> getMemberIds() {
+		return _memberVarGraphNodes.keySet();
+	}
 }

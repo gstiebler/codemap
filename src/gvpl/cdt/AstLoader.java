@@ -79,7 +79,7 @@ public class AstLoader {
 		ClassVar ownerVar = (ClassVar) varInMem;
 
 		MemberId member_id = _astInterpreter.getMemberId(ownerVar.getType(), field_binding);
-		Var childVar = ownerVar.findMember(member_id);
+		Var childVar = ownerVar.getMember(member_id);
 		
 		return childVar;
 	}
