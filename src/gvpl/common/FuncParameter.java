@@ -5,7 +5,7 @@ import gvpl.graph.GraphNode;
 public class FuncParameter {
 	
 	public enum IndirectionType {
-		E_VARIABLE, E_POINTER, E_REFERENCE
+		E_VARIABLE, E_POINTER, E_REFERENCE, E_INDIFERENT
 	};
 	
 	private Var _varDecl = null;

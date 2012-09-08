@@ -106,7 +106,10 @@ public class InstructionLine {
 	public void LoadVariableInitialization(Var lhsVar, IASTDeclarator decl) {
 		int startingLine = decl.getFileLocation().getStartingLineNumber();
 
-		IASTInitializer initializer = decl.getInitializer();		
+		IASTInitializer initializer = decl.getInitializer();	
+		if(initializer == null) //variable is not initialized
+			return;
+		
 		if (initializer instanceof ICPPASTConstructorInitializer) { 
 			// format: int a(5);
 			IASTExpression initExpr = ((ICPPASTConstructorInitializer) initializer).getExpression();
@@ -114,14 +117,7 @@ public class InstructionLine {
 			return;
 		}
 		
-		IASTInitializerExpression init_exp = null;
-		if (initializer instanceof IASTInitializerExpression) {// format: int a = b;
-			init_exp = (IASTInitializerExpression) initializer;
-		} 
-
-		if (init_exp == null)
-			return;
-
+		IASTInitializerExpression init_exp = (IASTInitializerExpression) initializer;
 		IASTExpression rhsExpr = init_exp.getExpression();
 
 		if (lhsVar instanceof PointerVar) {
@@ -134,38 +130,45 @@ public class InstructionLine {
 	}
 	
 	void loadConstructorInitializer(Var lhsVar, IASTExpression initExpr, int startingLine) {
-		ClassVar classVar = (ClassVar) lhsVar;
-		Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
 		List<FuncParameter> parameterValues = null;
-		parameterValues = loadFunctionParameters(constructorFunc, initExpr);
-		classVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
+		if(lhsVar instanceof ClassVar) {
+			ClassVar classVar = (ClassVar) lhsVar;
+			Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
+			parameterValues = loadFunctionParameters(constructorFunc, initExpr);
+		} else {
+			parameterValues = new ArrayList<FuncParameter>();
+			GraphNode node = loadValue(initExpr);
+			FuncParameter funcParameter = new FuncParameter(node, IndirectionType.E_INDIFERENT);
+			parameterValues.add(funcParameter);
+		}
+		lhsVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 				_parentBasicBlock, _astInterpreter, startingLine);
 	}
 
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
-	public GraphNode loadValue(IASTExpression node) {
-		int startingLine = node.getFileLocation().getStartingLineNumber();
+	public GraphNode loadValue(IASTExpression expr) {
+		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		// Eh uma variavel
-		if (node instanceof IASTIdExpression) {
-			Var var_decl = _parentBasicBlock.getVarOfReference(node);
+		if (expr instanceof IASTIdExpression) {
+			Var var_decl = _parentBasicBlock.getVarOfReference(expr);
 			return var_decl.getCurrentNode(startingLine);
-		} else if (node instanceof IASTBinaryExpression) {// Eh uma expressao
-			return loadBinOp((IASTBinaryExpression) node);
-		} else if (node instanceof IASTLiteralExpression) {// Eh um valor direto
-			return loadDirectValue((IASTLiteralExpression) node);
-		} else if (node instanceof IASTFunctionCallExpression) {// Eh umachamada
+		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
+			return loadBinOp((IASTBinaryExpression) expr);
+		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
+			return loadDirectValue((IASTLiteralExpression) expr);
+		} else if (expr instanceof IASTFunctionCallExpression) {// Eh umachamada
 																// a funcao
-			return loadFunctionCall((IASTFunctionCallExpression) node);
-		} else if (node instanceof IASTFieldReference) {// reference to field of
+			return loadFunctionCall((IASTFunctionCallExpression) expr);
+		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
-			Var var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) node);
-			return var_decl.getCurrentNode(node.getFileLocation().getStartingLineNumber());
-		} else if (node instanceof IASTUnaryExpression) {
-			return loadUnaryExpr((IASTUnaryExpression) node);
+			Var var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) expr);
+			return var_decl.getCurrentNode(expr.getFileLocation().getStartingLineNumber());
+		} else if (expr instanceof IASTUnaryExpression) {
+			return loadUnaryExpr((IASTUnaryExpression) expr);
 		} else
-			ErrorOutputter.fatalError("Node type not found!! Node: " + node.getClass());
+			ErrorOutputter.fatalError("Node type not found!! Node: " + expr.getClass());
 
 		return null;
 	}

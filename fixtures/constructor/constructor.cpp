@@ -20,7 +20,8 @@ public:
 };
 
 int main() {
-	sPri str1(3.0, 1);
+	float a(3.0);
+	sPri str1(a, 1);
 	sPri *str2 = new sPri(4.0, 2);
 	
 	str2->h = 9099.0;
