@@ -17,4 +17,10 @@ int main()
 	b = 20;
 	
 	int c = *pointer;
+	int *pointerRec = pointer;
+	int f = *pointerRec
+	
+	int d = 30;
+	pointer = &d;
+	int e = *pointer;
 }
