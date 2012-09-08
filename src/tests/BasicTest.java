@@ -93,5 +93,10 @@ public class BasicTest {
 	public void funcPointerReference() {
 		TestsUtil.baseTest("func_pointer_reference");
 	}
+
+	/*@Test
+	public void polymorphism() {
+		TestsUtil.baseTest("polymorphism");
+	}*/
 	
 }

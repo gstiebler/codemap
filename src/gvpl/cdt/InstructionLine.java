@@ -38,7 +38,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 
@@ -106,23 +106,18 @@ public class InstructionLine {
 	public void LoadVariableInitialization(Var lhsVar, IASTDeclarator decl) {
 		int startingLine = decl.getFileLocation().getStartingLineNumber();
 
-		IASTInitializer initializer = decl.getInitializer();
-		IASTInitializerExpression init_exp = null;
-		if (initializer instanceof IASTInitializerExpression) {// format: int a
-																// = b;
-			init_exp = (IASTInitializerExpression) initializer;
-		} else if (initializer instanceof CPPASTConstructorInitializer) { // format:
-																			// int
-																			// a(5);
-			CPPASTConstructorInitializer constructorInit = (CPPASTConstructorInitializer) initializer;
-			IASTExpression expr = constructorInit.getExpression();
-			ClassVar classVar = (ClassVar) lhsVar;
-			Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
-			List<FuncParameter> parameterValues = null;
-			parameterValues = loadFunctionParameters(constructorFunc, expr);
-			classVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-					_parentBasicBlock, _astInterpreter, startingLine);
+		IASTInitializer initializer = decl.getInitializer();		
+		if (initializer instanceof ICPPASTConstructorInitializer) { 
+			// format: int a(5);
+			IASTExpression initExpr = ((ICPPASTConstructorInitializer) initializer).getExpression();
+			loadConstructorInitializer(lhsVar, initExpr, startingLine);														
+			return;
 		}
+		
+		IASTInitializerExpression init_exp = null;
+		if (initializer instanceof IASTInitializerExpression) {// format: int a = b;
+			init_exp = (IASTInitializerExpression) initializer;
+		} 
 
 		if (init_exp == null)
 			return;
@@ -136,6 +131,15 @@ public class InstructionLine {
 
 		GraphNode rhsValue = loadValue(rhsExpr);
 		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
+	}
+	
+	void loadConstructorInitializer(Var lhsVar, IASTExpression initExpr, int startingLine) {
+		ClassVar classVar = (ClassVar) lhsVar;
+		Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
+		List<FuncParameter> parameterValues = null;
+		parameterValues = loadFunctionParameters(constructorFunc, initExpr);
+		classVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
+				_parentBasicBlock, _astInterpreter, startingLine);
 	}
 
 	/*
@@ -278,6 +282,9 @@ public class InstructionLine {
 			parameters = new IASTExpression[1];
 			parameters[0] = paramExpr;
 		}
+		
+		if(parameters.length != func._parameters.size())
+			ErrorOutputter.fatalError("Number of parameters are different!");
 
 		for (int i = 0; i < parameters.length; i++) {
 			IASTExpression parameter = parameters[i];

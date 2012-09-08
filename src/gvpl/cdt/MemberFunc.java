@@ -73,16 +73,17 @@ public class MemberFunc extends Function {
 	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
 		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
 			int startingLine = initializer.getFileLocation().getStartingLineNumber();
+			
 			IASTExpression expr = initializer.getInitializerValue();
-			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
-			List<FuncParameter> parameters = instructionLine.loadFunctionParameters(this, expr);
-
-			IBinding member_binding = initializer.getMemberInitializerId().resolveBinding();
+			
+			IASTName memberInitId = initializer.getMemberInitializerId();
+			IBinding member_binding = memberInitId.resolveBinding();
 			ClassMember classMember = _parentClass.getMember(member_binding);
 			MemberId memberId = classMember.getMemberId();
 			Var var = _varFromMembersMap.get(memberId);
-			var.constructor(parameters, NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
-					startingLine);
+			
+			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
+			instructionLine.loadConstructorInitializer(var, expr, startingLine);
 		}
 	}
 
