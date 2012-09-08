@@ -1,8 +1,8 @@
 
 int main() 
 {
-	int a, b;
-	int *pointer;
+	int a, b, g;
+	int *pointer = &g;
 	
 	if(5 > 2)
 	{
