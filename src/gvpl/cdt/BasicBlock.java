@@ -24,18 +24,14 @@ public class BasicBlock extends AstLoader {
 		}
 	}
 
-	private GraphNode _conditionNode;
 	private List<VarNodePair> _writtenVar = new ArrayList<VarNodePair>();
 	private Set<Var> _writtenVarSet = new HashSet<Var>();
 
-	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter, GraphNode conditionNode) {
+	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter) {
 		super(parent._gvplGraph, parent, astInterpreter);
-		_conditionNode = conditionNode;
 	}
 
 	public void load(IASTStatement baseStatement) {
-		int startingLine = baseStatement.getFileLocation().getStartingLineNumber();
-
 		IASTStatement[] statements = null;
 		if (baseStatement instanceof IASTCompoundStatement)
 			statements = ((IASTCompoundStatement) baseStatement).getStatements();
@@ -48,12 +44,14 @@ public class BasicBlock extends AstLoader {
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			instructionLine.load(statement);
 		}
-
-		if (_conditionNode != null) {
+	}
+	
+	void addIf(GraphNode conditionNode, int startingLine) {
+		if (conditionNode != null) {
 			for (VarNodePair varNodePair : _writtenVar) {
 				Var var = varNodePair._varDecl;
 				_gvplGraph.addIf(var, var.getCurrentNode(startingLine), varNodePair._graphNode,
-						_conditionNode, null, startingLine);
+						conditionNode, null, startingLine);
 			}
 		}
 	}

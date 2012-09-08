@@ -37,7 +37,7 @@ public class ForLoop extends AstLoader {
 
 		// loadHeader(node);
 
-		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter, null);
+		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 		basicBlockLoader.load(body);
 
 		int startingLine = node.getFileLocation().getStartingLineNumber();

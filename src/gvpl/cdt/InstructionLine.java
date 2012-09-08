@@ -89,7 +89,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTIfStatement) {
 			loadIfStatement((IASTIfStatement) statement);
 		} else if (statement instanceof IASTCompoundStatement) {
-			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter, null);
+			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
@@ -345,21 +345,23 @@ public class InstructionLine {
 		IASTExpression condition = ifStatement.getConditionExpression();
 		GraphNode conditionNode = loadValue(condition);
 
-		IASTStatement thenClause = ifStatement.getThenClause();
 		{
-			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter,
-					conditionNode);
+			IASTStatement thenClause = ifStatement.getThenClause();
+			int startingLine = thenClause.getFileLocation().getStartingLineNumber();
+			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(thenClause);
+			basicBlockLoader.addIf(conditionNode, startingLine);
 		}
 
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null) {
+			int startingLine = elseClause.getFileLocation().getStartingLineNumber();
 			GraphNode notCondition = _gvplGraph.addNotOp(conditionNode, _parentBasicBlock,
 					ifStatement.getFileLocation().getStartingLineNumber());
 
-			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter,
-					notCondition);
+			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(elseClause);
+			basicBlockLoader.addIf(notCondition, startingLine);
 		}
 	}
 
