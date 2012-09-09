@@ -38,7 +38,7 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 
-	protected Var getVarDeclOfLocalReference(IASTIdExpression id_expr) {
+	protected Var getVarFromLocalReference(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		return _direct_var_graph_nodes.get(binding);
 	}
@@ -46,17 +46,14 @@ public class AstLoader {
 	protected Var getVarOfReference(IASTExpression expr) {
 		Var varDecl = null;
 		if (expr instanceof IASTIdExpression)
-			varDecl = getVarDeclOfLocalReference((IASTIdExpression) expr);
+			varDecl = getVarFromLocalReference((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference) {
-			varDecl = getVarDeclOfFieldRef((IASTFieldReference) expr);
+			varDecl = getVarFromFieldRef((IASTFieldReference) expr);
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
-			varDecl = getVarDeclOfLocalReference((IASTIdExpression) opExpr);
+			varDecl = getVarFromLocalReference((IASTIdExpression) opExpr);
 			// return InstructionLine.loadPointedVar(opExpr, this);
 		}
-
-		if (_parent == null)
-			return null;
 
 		if (varDecl != null)
 			return varDecl;
@@ -69,7 +66,7 @@ public class AstLoader {
 		return owner_var_decl.getType();
 	}
 
-	protected Var getVarDeclOfFieldRef(IASTFieldReference field_ref) {
+	protected Var getVarFromFieldRef(IASTFieldReference field_ref) {
 		IASTExpression owner = field_ref.getFieldOwner();
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();

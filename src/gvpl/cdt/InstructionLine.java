@@ -163,7 +163,7 @@ public class InstructionLine {
 			return loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
-			Var var_decl = _parentBasicBlock.getVarDeclOfFieldRef((IASTFieldReference) expr);
+			Var var_decl = _parentBasicBlock.getVarFromFieldRef((IASTFieldReference) expr);
 			return var_decl.getCurrentNode(expr.getFileLocation().getStartingLineNumber());
 		} else if (expr instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) expr);

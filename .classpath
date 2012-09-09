@@ -5,7 +5,6 @@
 	<classpathentry kind="var" path="ECLIPSE_HOME/plugins"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.core.runtime_3.7.0.v20110110.jar"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.osgi_3.7.1.R37x_v20110808-1106.jar"/>
-	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.equinox.weaving.hook_1.0.0.v20100503.jar"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.core.jobs_3.5.100.v20110404.jar"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse/plugins/org.eclipse.core.runtime.compatibility.registry_3.5.0.v20110505/runtime_registry_compatibility.jar"/>
@@ -29,5 +28,6 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="lib" path="C:/Programas/eclipse-europa/plugins/org.eclipse.cdt.core_4.0.3.200802251018.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-3.4-complete-no-antlrv2.jar"/>
+	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

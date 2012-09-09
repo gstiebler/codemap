@@ -101,7 +101,7 @@ public class MemberFunc extends Function {
 			ErrorOutputter.fatalError("problem here");
 
 		// Check if the variable is declared inside the own block
-		Var var_decl = getVarDeclOfLocalReference(id_expr);
+		Var var_decl = getVarFromLocalReference(id_expr);
 		if (var_decl != null)
 			return var_decl;
 		// Ok, if the function did not returned until here, the variable is a
