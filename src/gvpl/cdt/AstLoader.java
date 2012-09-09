@@ -30,7 +30,7 @@ public class AstLoader {
 	protected AstLoader _parent;
 	protected AstInterpreter _astInterpreter;
 
-	private Map<IBinding, Var> _direct_var_graph_nodes = new HashMap<IBinding, Var>();
+	private Map<IBinding, Var> _localVariables = new HashMap<IBinding, Var>();
 
 	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		_gvplGraph = gvplGraph;
@@ -38,31 +38,34 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 
-	protected Var getVarFromLocalReference(IASTIdExpression id_expr) {
-		IBinding binding = id_expr.getName().resolveBinding();
-		return _direct_var_graph_nodes.get(binding);
-	}
+	protected Var getVarFromBinding(IASTExpression expr) {
+		Var var = getVarFromBindingInternal(expr);
 
-	protected Var getVarOfReference(IASTExpression expr) {
-		Var varDecl = null;
+		if (var != null)
+			return var;
+		else
+			return _parent.getVarFromBinding(expr);
+	}
+	
+	protected Var getVarFromBindingInternal(IASTExpression expr) {
 		if (expr instanceof IASTIdExpression)
-			varDecl = getVarFromLocalReference((IASTIdExpression) expr);
+			return getLocalVarFromBinding((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference) {
-			varDecl = getVarFromFieldRef((IASTFieldReference) expr);
+			return getVarFromFieldRef((IASTFieldReference) expr);
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
-			varDecl = getVarFromLocalReference((IASTIdExpression) opExpr);
-			// return InstructionLine.loadPointedVar(opExpr, this);
+			return getLocalVarFromBinding((IASTIdExpression) opExpr);
 		}
+		return null;
+	}
 
-		if (varDecl != null)
-			return varDecl;
-		else
-			return _parent.getVarOfReference(expr);
+	protected Var getLocalVarFromBinding(IASTIdExpression id_expr) {
+		IBinding binding = id_expr.getName().resolveBinding();
+		return _localVariables.get(binding);
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
-		Var owner_var_decl = _direct_var_graph_nodes.get(binding);
+		Var owner_var_decl = _localVariables.get(binding);
 		return owner_var_decl.getType();
 	}
 
@@ -71,7 +74,7 @@ public class AstLoader {
 
 		IBinding field_binding = field_ref.getFieldName().resolveBinding();
 
-		Var varOfRef = getVarOfReference(owner);
+		Var varOfRef = getVarFromBinding(owner);
 		Var varInMem = varOfRef.getVarInMem();
 		ClassVar ownerVar = (ClassVar) varInMem;
 
@@ -84,7 +87,7 @@ public class AstLoader {
 	public Var loadVarDecl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
 		Var var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
-		_direct_var_graph_nodes.put(name.resolveBinding(), var_decl);
+		_localVariables.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
 	}

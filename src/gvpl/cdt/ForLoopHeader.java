@@ -43,7 +43,7 @@ public class ForLoopHeader extends AstLoader {
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	@Override
-	public Var getVarOfReference(IASTExpression expr) {
+	public Var getVarFromBinding(IASTExpression expr) {
 		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
@@ -51,7 +51,7 @@ public class ForLoopHeader extends AstLoader {
 		else
 			ErrorOutputter.fatalError("problem here");
 
-		Var extVarDecl = _parent.getVarOfReference(expr);
+		Var extVarDecl = _parent.getVarFromBinding(expr);
 
 		Var intVarDecl = _externalVars.get(extVarDecl);
 		if (intVarDecl != null)
