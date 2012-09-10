@@ -20,7 +20,7 @@ public class Graph {
 	}
 
 	private String _label;
-	private List<GraphNode> _graph_nodes = new ArrayList<GraphNode>();
+	private List<GraphNode> _graphNodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = -1;
 
@@ -35,22 +35,22 @@ public class Graph {
 
 	public GraphNode add_graph_node(String name, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(name, type, startingLine);
-		_graph_nodes.add(graph_node);
+		_graphNodes.add(graph_node);
 		return graph_node;
 	}
 
 	public GraphNode addGraphNode(Var parentVar, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(parentVar, type, startingLine);
-		_graph_nodes.add(graph_node);
+		_graphNodes.add(graph_node);
 		return graph_node;
 	}
 
 	public int getNumNodes() {
-		return _graph_nodes.size();
+		return _graphNodes.size();
 	}
 
 	public GraphNode getNode(int index) {
-		return _graph_nodes.get(index);
+		return _graphNodes.get(index);
 	}
 
 	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
@@ -72,10 +72,10 @@ public class Graph {
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 
 		// duplicate the nodes
-		for (GraphNode node : _graph_nodes) {
+		for (GraphNode node : _graphNodes) {
 			GraphNode newNode = new GraphNode(node);
 			map.put(node, newNode);
-			graph._graph_nodes.add(newNode);
+			graph._graphNodes.add(newNode);
 			nodesList.add(new NodeChange(node, newNode));
 		}
 
@@ -110,6 +110,11 @@ public class Graph {
 		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
 		return map;
+	}
+	
+	public void merge(Graph graph) {
+		_graphNodes.addAll(graph._graphNodes);
+		_subgraphs.addAll(graph._subgraphs);
 	}
 
 	public String getName() {
@@ -180,6 +185,6 @@ public class Graph {
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {
 		primaryNode.merge(secondaryNode, startingLine);
-		_graph_nodes.remove(secondaryNode);
+		_graphNodes.remove(secondaryNode);
 	}
 }
