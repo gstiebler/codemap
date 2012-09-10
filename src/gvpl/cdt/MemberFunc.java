@@ -41,14 +41,6 @@ public class MemberFunc extends Function {
 			member_var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
 					startingLine);
 			addMember(member_var, member.getMemberId());
-
-			/*if (member_var instanceof ClassVar) {
-				ClassVar structVarDecl = (ClassVar) member_var;
-				for (Map.Entry<MemberId, Var> entry : structVarDecl.getInternalVariables()
-						.entrySet()) {
-					addMember((Var) entry.getValue(), entry.getKey());
-				}
-			}*/
 		}
 	}
 

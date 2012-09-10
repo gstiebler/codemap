@@ -16,7 +16,7 @@ public class GraphNode {
 	private Var _parentVar = null;
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
-	private List<GraphNode> _dependent_nodes = new ArrayList<GraphNode>();
+	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
 	private int _startingLine;
 
 	public GraphNode(String name, NodeType type, int startingLine) {
@@ -51,13 +51,13 @@ public class GraphNode {
 	}
 
 	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
-		if (_dependent_nodes.contains(dependentNode))
+		if (_dependentNodes.contains(dependentNode))
 			ErrorOutputter.fatalError("Already dependent!!");
 
 		if (dependentNode == null)
 			ErrorOutputter.fatalError("Inserting null depending node");
 
-		_dependent_nodes.add(dependentNode);
+		_dependentNodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);
 
 		if (astLoader == null)
@@ -69,9 +69,17 @@ public class GraphNode {
 		if (dependentNode._parentVar != null)
 			astLoader.varWrite(dependentNode._parentVar, startingLine);
 	}
+	
+	public void merge(GraphNode node, int startingLine) {
+		for(GraphNode dependentNode : node._dependentNodes) {
+			addDependentNode(dependentNode, null, startingLine);
+			dependentNode._sourceNodes.remove(node);
+			dependentNode._sourceNodes.add(this);
+		}
+	}
 
 	public Iterable<GraphNode> getDependentNodes() {
-		return _dependent_nodes;
+		return _dependentNodes;
 	}
 
 	public Iterable<GraphNode> getSourceNodes() {
@@ -79,13 +87,17 @@ public class GraphNode {
 	}
 
 	public int getNumDependentNodes() {
-		return _dependent_nodes.size();
+		return _dependentNodes.size();
+	}
+
+	public int getNumSourceNodes() {
+		return _sourceNodes.size();
 	}
 
 	public void updateDependents(GraphNode oldNode, GraphNode newNode) {
-		int oldNodeIndex = _dependent_nodes.indexOf(oldNode);
+		int oldNodeIndex = _dependentNodes.indexOf(oldNode);
 		if (oldNodeIndex != -1)
-			_dependent_nodes.set(oldNodeIndex, newNode);
+			_dependentNodes.set(oldNodeIndex, newNode);
 	}
 
 	public static void resetCounter() {

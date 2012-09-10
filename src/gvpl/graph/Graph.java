@@ -176,4 +176,9 @@ public class Graph {
 
 		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
 	}
+	
+	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {
+		primaryNode.merge(secondaryNode, startingLine);
+		_graph_nodes.remove(secondaryNode);
+	}
 }

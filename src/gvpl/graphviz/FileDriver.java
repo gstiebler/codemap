@@ -95,7 +95,8 @@ public class FileDriver implements IGraphOutput {
     public String insertSubGraphStart(String name, String parent, int startingLine) {
     	String clusterName = "cluster_" + subGraphCounter++;
     	out.println("subgraph " + clusterName + " {");
-    	out.println("label = \"" + name + "\";");
+    	if(name != null)
+    		out.println("label = \"" + name + "\";");
     	out.println("parent = \"" + parent + "\";");
     	out.println(startingLineStr + " = " + startingLine + ";");
     	return clusterName;
