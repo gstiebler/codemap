@@ -1,5 +1,7 @@
 package gvpl.cdt;
 
+import gvpl.common.ClassVar;
+import gvpl.common.MemberId;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -57,14 +59,42 @@ public class BasicBlock extends AstLoader {
 		for (Map.Entry<Var, Var> entry : _extToInVars.entrySet()) {
 			Var extVar = entry.getKey();
 			Var intVar = entry.getValue();
-			GraphNode intVarFirstNode = intVar.getFirstNode();
 			
-			//if someone read from internal var
-			if(intVarFirstNode.getNumDependentNodes() > 0) {
+			bindInVarsRecursive(extGraph, extVar, intVar, startingLine);
+			
+			bindOutVarsRecursive(extGraph, extVar, intVar, startingLine);
+		}
+	}
+	
+	private void bindInVarsRecursive(Graph extGraph, Var extVar, Var intVar, int startingLine) {
+		if(extVar instanceof ClassVar) {
+			ClassVar extClassVar = (ClassVar) extVar;
+			ClassVar intClassVar = (ClassVar) intVar;
+			for(MemberId memberId : extClassVar.getClassDecl().getMemberIds()) {
+				Var memberExtVar = extClassVar.getMember(memberId);
+				Var memberIntVar = intClassVar.getMember(memberId);
+				bindInVarsRecursive(extGraph, memberExtVar, memberIntVar, startingLine);
+			}
+		} else {
+			GraphNode intVarFirstNode = intVar.getFirstNode();
+			// if someone read from internal var
+			if (intVarFirstNode.getNumDependentNodes() > 0) {
 				GraphNode extVarCurrNode = extVar.getCurrentNode(startingLine);
 				extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
 			}
-			
+		}
+	}
+	
+	private void bindOutVarsRecursive(Graph extGraph, Var extVar, Var intVar, int startingLine) {
+		if(extVar instanceof ClassVar) {
+			ClassVar extClassVar = (ClassVar) extVar;
+			ClassVar intClassVar = (ClassVar) intVar;
+			for(MemberId memberId : extClassVar.getClassDecl().getMemberIds()) {
+				Var memberExtVar = extClassVar.getMember(memberId);
+				Var memberIntVar = intClassVar.getMember(memberId);
+				bindOutVarsRecursive(extGraph, memberExtVar, memberIntVar, startingLine);
+			}
+		} else {
 			GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
 			//if someone has written in the internal var
 			if(intVarCurrNode.getNumSourceNodes() > 0) {

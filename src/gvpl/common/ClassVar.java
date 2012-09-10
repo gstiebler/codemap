@@ -7,6 +7,7 @@ import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -85,5 +86,15 @@ public class ClassVar extends Var {
 	
 	public ClassDecl getClassDecl() {
 		return _classDecl;
+	}
+	
+	@Override
+	public List<Var> getInternalVars() {
+		List<Var> internalVars = new ArrayList<>();
+		for(Var member : _memberInstances.values()) {
+			internalVars.addAll(member.getInternalVars());
+		}
+		
+		return internalVars;
 	}
 }

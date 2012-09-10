@@ -102,4 +102,10 @@ public class Var {
 		}
 		return stack;
 	}
+	
+	public List<Var> getInternalVars() {
+		List<Var> internalVars = new ArrayList<>();
+		internalVars.add(this);
+		return internalVars;
+	}
 }
