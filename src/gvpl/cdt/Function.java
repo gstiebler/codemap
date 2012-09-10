@@ -83,6 +83,7 @@ public class Function extends AstLoader {
 		if (body instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 			basicBlockLoader.load(body);
+			_return_node = basicBlockLoader.convertToExtGraph(_return_node);
 		} else
 			ErrorOutputter.fatalError("Work here.");
 

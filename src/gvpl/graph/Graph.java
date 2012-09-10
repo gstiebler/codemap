@@ -88,9 +88,10 @@ public class Graph {
 		for (NodeChange nodeChange : nodesList) {
 			GraphNode oldNode = nodeChange._originalNode;
 			GraphNode newNode = nodeChange._newNode;
+			int onSL = oldNode.getStartingLine();
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
-				newNode.addDependentNode(map.get(dependentNode), astLoader,
-						oldNode.getStartingLine());
+				GraphNode mappedNode = map.get(dependentNode);
+				newNode.addDependentNode(mappedNode, astLoader, onSL);
 			}
 		}
 

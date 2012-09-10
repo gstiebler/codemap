@@ -16,6 +16,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 public class BasicBlock extends AstLoader {
 	
 	private Map<Var, Var> _extToInVars = new HashMap<Var, Var>();
+	Map<GraphNode, GraphNode> _internalToMainGraphMap = null;
 
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
@@ -51,8 +52,7 @@ public class BasicBlock extends AstLoader {
 	
 	void addToExtGraph(int startingLine) {
 		Graph extGraph = _parent._gvplGraph;
-		Map<GraphNode, GraphNode> internalToMainGraphMap;
-		internalToMainGraphMap = extGraph.addSubGraph(_gvplGraph, this, startingLine);
+		_internalToMainGraphMap = extGraph.addSubGraph(_gvplGraph, this, startingLine);
 		
 		//TODO work with class vars also
 		for (Map.Entry<Var, Var> entry : _extToInVars.entrySet()) {
@@ -63,13 +63,13 @@ public class BasicBlock extends AstLoader {
 			//if someone read from internal var
 			if(intVarFirstNode.getNumDependentNodes() > 0) {
 				GraphNode extVarCurrNode = extVar.getCurrentNode(startingLine);
-				//get the node in the external graph
-				extVarCurrNode = internalToMainGraphMap.get(extVarCurrNode);
+
+				intVarFirstNode = _internalToMainGraphMap.get(intVarFirstNode);
 				extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
 			}
 			
 			GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
-			intVarCurrNode = internalToMainGraphMap.get(intVarCurrNode);
+			intVarCurrNode = _internalToMainGraphMap.get(intVarCurrNode);
 			//if someone has written in the internal var
 			if(intVarCurrNode.getNumSourceNodes() > 0) {
 				extVar.receiveAssign(NodeType.E_VARIABLE, intVarCurrNode, this, startingLine);
@@ -96,6 +96,10 @@ public class BasicBlock extends AstLoader {
 			_extToInVars.put(superVar, var);
 			return var;
 		}
+	}
+	
+	public GraphNode convertToExtGraph(GraphNode node) {
+		return _internalToMainGraphMap.get(node);
 	}
 
 }
