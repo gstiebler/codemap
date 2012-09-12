@@ -52,7 +52,10 @@ public class GraphNode {
 
 	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
 		if (_dependentNodes.contains(dependentNode))
+		{
 			ErrorOutputter.fatalError("Already dependent!!");
+			return;
+		}
 
 		if (dependentNode == null)
 			ErrorOutputter.fatalError("Inserting null depending node");
@@ -75,6 +78,11 @@ public class GraphNode {
 			addDependentNode(dependentNode, null, startingLine);
 			dependentNode._sourceNodes.remove(node);
 			dependentNode._sourceNodes.add(this);
+		}
+		
+		for(GraphNode sourceNode : node._sourceNodes) {
+			sourceNode._dependentNodes.remove(node);
+			sourceNode.addDependentNode(this, null, startingLine);
 		}
 	}
 

@@ -98,7 +98,9 @@ public class BasicBlock extends AstLoader {
 			GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
 			//if someone has written in the internal var
 			if(intVarCurrNode.getNumSourceNodes() > 0) {
-				extVar.receiveAssign(NodeType.E_VARIABLE, intVarCurrNode, this, startingLine);
+				extVar.initializeGraphNode(NodeType.E_VARIABLE, extGraph, this, _astInterpreter, startingLine);
+				GraphNode extVarCurrNode = extVar.getCurrentNode(startingLine);
+				extGraph.mergeNodes(extVarCurrNode, intVarCurrNode, startingLine);
 			}
 		}
 	}
