@@ -7,7 +7,9 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -16,6 +18,16 @@ import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class BasicBlock extends AstLoader {
+	
+	class InExtVarPair {
+		Var _in;
+		Var _ext;
+		
+		public InExtVarPair(Var in, Var ext) {
+			_in = in;
+			_ext = ext;
+		}
+	}
 	
 	private Map<Var, Var> _extToInVars = new HashMap<Var, Var>();
 
@@ -55,53 +67,62 @@ public class BasicBlock extends AstLoader {
 		Graph extGraph = _parent._gvplGraph;
 		extGraph.merge(_gvplGraph);
 		
-		//TODO work with class vars also
 		for (Map.Entry<Var, Var> entry : _extToInVars.entrySet()) {
-			Var extVar = entry.getKey();
-			Var intVar = entry.getValue();
+			List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+			List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+			List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+			getAccessedVars(extGraph, entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
 			
-			bindInVarsRecursive(extGraph, extVar, intVar, startingLine);
+			for(InExtVarPair readPair : readVars) {
+				GraphNode intVarFirstNode = readPair._in.getFirstNode();
+				// if someone read from internal var
+				if (intVarFirstNode.getNumDependentNodes() > 0) {
+					GraphNode extVarCurrNode = readPair._ext.getCurrentNode(startingLine);
+					extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
+				}
+			}
 			
-			bindOutVarsRecursive(extGraph, extVar, intVar, startingLine);
+			for(InExtVarPair writtenPair : writtenVars) {
+				GraphNode intVarCurrNode = writtenPair._in.getCurrentNode(startingLine);
+				//if someone has written in the internal var
+				if(intVarCurrNode.getNumSourceNodes() > 0) {
+					writtenPair._ext.initializeGraphNode(NodeType.E_VARIABLE, extGraph, this, _astInterpreter, startingLine);
+					GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode(startingLine);
+					extGraph.mergeNodes(extVarCurrNode, intVarCurrNode, startingLine);
+				}
+			}
+			
+			for(InExtVarPair ignoredPair : ignoredVars) {
+				extGraph.removeNode(ignoredPair._in.getFirstNode());
+			}
 		}
 	}
 	
-	private void bindInVarsRecursive(Graph extGraph, Var extVar, Var intVar, int startingLine) {
-		if(extVar instanceof ClassVar) {
+	private void getAccessedVars(Graph extGraph, Var intVar, Var extVar, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+		if(intVar instanceof ClassVar) {
 			ClassVar extClassVar = (ClassVar) extVar;
 			ClassVar intClassVar = (ClassVar) intVar;
-			for(MemberId memberId : extClassVar.getClassDecl().getMemberIds()) {
+			for(MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
 				Var memberExtVar = extClassVar.getMember(memberId);
 				Var memberIntVar = intClassVar.getMember(memberId);
-				bindInVarsRecursive(extGraph, memberExtVar, memberIntVar, startingLine);
+				getAccessedVars(extGraph, memberIntVar, memberExtVar, read, written, ignored, startingLine);
 			}
 		} else {
+			boolean accessed = false;
 			GraphNode intVarFirstNode = intVar.getFirstNode();
-			// if someone read from internal var
 			if (intVarFirstNode.getNumDependentNodes() > 0) {
-				GraphNode extVarCurrNode = extVar.getCurrentNode(startingLine);
-				extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
+				read.add(new InExtVarPair(intVar, extVar));
+				accessed = true;
 			}
-		}
-	}
-	
-	private void bindOutVarsRecursive(Graph extGraph, Var extVar, Var intVar, int startingLine) {
-		if(extVar instanceof ClassVar) {
-			ClassVar extClassVar = (ClassVar) extVar;
-			ClassVar intClassVar = (ClassVar) intVar;
-			for(MemberId memberId : extClassVar.getClassDecl().getMemberIds()) {
-				Var memberExtVar = extClassVar.getMember(memberId);
-				Var memberIntVar = intClassVar.getMember(memberId);
-				bindOutVarsRecursive(extGraph, memberExtVar, memberIntVar, startingLine);
-			}
-		} else {
+			
 			GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
-			//if someone has written in the internal var
 			if(intVarCurrNode.getNumSourceNodes() > 0) {
-				extVar.initializeGraphNode(NodeType.E_VARIABLE, extGraph, this, _astInterpreter, startingLine);
-				GraphNode extVarCurrNode = extVar.getCurrentNode(startingLine);
-				extGraph.mergeNodes(extVarCurrNode, intVarCurrNode, startingLine);
+				written.add(new InExtVarPair(intVar, extVar));
+				accessed = true;
 			}
+			
+			if(!accessed)
+				ignored.add(new InExtVarPair(intVar, extVar));
 		}
 	}
 
