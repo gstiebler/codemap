@@ -62,15 +62,6 @@ public class GraphNode {
 
 		_dependentNodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);
-
-		if (astLoader == null)
-			return;
-
-		if (_parentVar != null)
-			astLoader.varRead(_parentVar);
-
-		if (dependentNode._parentVar != null)
-			astLoader.varWrite(dependentNode._parentVar, startingLine);
 	}
 	
 	public void merge(GraphNode node, int startingLine) {

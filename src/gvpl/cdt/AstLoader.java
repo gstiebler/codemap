@@ -13,6 +13,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -26,11 +27,23 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstLoader {
 
+	class InExtVarPair {
+		Var _in;
+		Var _ext;
+		
+		public InExtVarPair(Var in, Var ext) {
+			_in = in;
+			_ext = ext;
+		}
+	}
+	
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;
 	protected AstInterpreter _astInterpreter;
 
 	private Map<IBinding, Var> _localVariables = new HashMap<IBinding, Var>();
+	
+	protected Map<Var, Var> _extToInVars = new HashMap<Var, Var>();
 
 	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		_gvplGraph = gvplGraph;
@@ -39,6 +52,42 @@ public class AstLoader {
 	}
 
 	protected Var getVarFromBinding(IASTExpression expr) {
+		int startingLine = expr.getFileLocation().getStartingLineNumber();
+		Var var = getVarFromBindingInternal(expr);
+
+		if (var != null) 
+			return var;
+		else
+		{
+			Var superVar = getVarFromBindingPrivate(expr);
+			if(_extToInVars.containsKey(superVar))
+				return _extToInVars.get(superVar);
+			
+			String name = "";
+			TypeId type = null;
+			if(superVar == null) {
+				if(expr instanceof IASTIdExpression) {
+					IASTName Name = ((IASTIdExpression) expr).getName();
+					IBinding binding = Name.getBinding();
+					type = _astInterpreter.getTypeFromBinding(binding);
+					name = Name.toString();
+				} else {
+					name = "temp_" + startingLine;
+				}
+				//type = _astInterpreter.getVarTypeFromBinding(binding);
+			} else {
+				name = superVar.getName();
+				type = superVar.getType();
+			}
+			//TODO review the null in the last parameter
+			var = addVarDecl(name, type, null);
+			var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
+			_extToInVars.put(superVar, var);
+			return var;
+		}
+	}
+	
+	private Var getVarFromBindingPrivate(IASTExpression expr) {
 		Var var = getVarFromBindingInternal(expr);
 
 		if (var != null)
@@ -129,13 +178,31 @@ public class AstLoader {
 		return _gvplGraph;
 	}
 
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null)
-			_parent.varWrite(var, startingLine);
-	}
-
-	public void varRead(Var var) {
-		if (_parent != null)
-			_parent.varRead(var);
+	protected void getAccessedVars(Var intVar, Var extVar, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+		if(intVar instanceof ClassVar) {
+			ClassVar extClassVar = (ClassVar) extVar;
+			ClassVar intClassVar = (ClassVar) intVar;
+			for(MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
+				Var memberExtVar = extClassVar.getMember(memberId);
+				Var memberIntVar = intClassVar.getMember(memberId);
+				getAccessedVars(memberIntVar, memberExtVar, read, written, ignored, startingLine);
+			}
+		} else {
+			boolean accessed = false;
+			GraphNode intVarFirstNode = intVar.getFirstNode();
+			if (intVarFirstNode.getNumDependentNodes() > 0) {
+				read.add(new InExtVarPair(intVar, extVar));
+				accessed = true;
+			}
+			
+			GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
+			if(intVarCurrNode.getNumSourceNodes() > 0) {
+				written.add(new InExtVarPair(intVar, extVar));
+				accessed = true;
+			}
+			
+			if(!accessed)
+				ignored.add(new InExtVarPair(intVar, extVar));
+		}
 	}
 }

@@ -102,20 +102,4 @@ public class ForLoop extends AstLoader {
 		return intVarDecl;
 	}
 
-	@Override
-	public void varWrite(Var var, int startingLIne) {
-		if (_parent != null)
-			_parent.varWrite(var, startingLIne);
-
-		_writtenExtVars.add(var);
-	}
-
-	@Override
-	public void varRead(Var var) {
-		if (_parent != null)
-			_parent.varRead(var);
-
-		_readExtVars.add(var);
-	}
-
 }

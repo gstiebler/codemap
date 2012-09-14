@@ -127,5 +127,13 @@ public class AstInterpreter extends AstLoader {
 	public ClassDecl getClassDecl(TypeId type) {
 		return _typeIdToClass.get(type);
 	}
+	
+	TypeId getTypeFromBinding(IBinding binding) {
+		ClassDecl classDecl =  _typeBindingToClass.get(binding);
+		if(classDecl == null)
+			return null;
+		else
+			return classDecl.getTypeId();
+	}
 
 }

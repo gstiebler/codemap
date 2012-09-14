@@ -65,22 +65,6 @@ public class ForLoopHeader extends AstLoader {
 		return intVarDecl;
 	}
 
-	@Override
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null)
-			_parent.varWrite(var, startingLine);
-
-		_writtenExtVars.add(var);
-	}
-
-	@Override
-	public void varRead(Var var) {
-		if (_parent != null)
-			_parent.varRead(var);
-
-		_readExtVars.add(var);
-	}
-
 	public Iterable<Var> getWrittenVars() {
 		return _writtenExtVars;
 	}

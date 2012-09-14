@@ -26,28 +26,26 @@ public class MemberFunc extends Function {
 
 	private ClassDecl _parentClass;
 	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
-	private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
-	private Map<Var, List<MemberId>> _writtenMembers = new HashMap<Var, List<MemberId>>();
-	private Map<Var, List<MemberId>> _readMembers = new HashMap<Var, List<MemberId>>();
+	//private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
 
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter);
 		_parentClass = parent;
 
-		List<ClassMember> members = _parentClass.getMembers();
+		//List<ClassMember> members = _parentClass.getMembers();
 		// declare a variable for each member of the struct
-		for (ClassMember member : members) {
+		/*for (ClassMember member : members) {
 			Var member_var = addVarDecl(member.getName(), member.getMemberType(), null);
 			member_var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
 					startingLine);
 			addMember(member_var, member.getMemberId());
-		}
+		}*/
 	}
 
-	private void addMember(Var var, MemberId id) {
+	/*private void addMember(Var var, MemberId id) {
 		_varFromMembersMap.put(id, var);
 		_memberFromVar.put(var, id);
-	}
+	}*/
 
 	protected String calcName() {
 		return _parentClass.getName() + "::" + _funcName;
@@ -109,55 +107,6 @@ public class MemberFunc extends Function {
 		return direct_var_decl;
 	}
 
-	@Override
-	public void varWrite(Var var, int startingLine) {
-		if (_parent != null)
-			_parent.varWrite(var, startingLine);
-
-		List<Var> stack = var.getOwnersStack();
-		Var masterOwner = stack.get(stack.size() - 1);
-		if (_memberFromVar.containsKey(masterOwner)) {
-			List<MemberId> ids = memberIdsFromVarStack(stack);
-			_writtenMembers.put(var, ids);
-		}
-	}
-
-	@Override
-	public void varRead(Var var) {
-		if (_parent != null)
-			_parent.varRead(var);
-
-		List<Var> stack = var.getOwnersStack();
-		Var masterOwner = stack.get(stack.size() - 1);
-		if (_memberFromVar.containsKey(masterOwner)) {
-			List<MemberId> ids = memberIdsFromVarStack(stack);
-			_readMembers.put(var, ids);
-		}
-	}
-	
-	private List<MemberId> memberIdsFromVarStack(List<Var> stack) {
-		List<MemberId> ids = new ArrayList<MemberId>();
-		Var temp = stack.get(stack.size() - 1);
-		ids.add(_memberFromVar.get(temp));
-		for(int i = stack.size() - 2; i >= 0; i--){
-			ClassVar previousVar = (ClassVar)stack.get(i + 1);
-			Var currVar = stack.get(i);
-			MemberId id = previousVar.getMember(currVar);
-			ids.add(id);
-		}
-		return ids;
-	}
-	
-	private Var getFinalMember(ClassVar classVar, List<MemberId> ids) {
-		Var memberInstance = null;
-		for(MemberId id : ids) {
-			memberInstance = classVar.getMember(id);
-			if(memberInstance instanceof ClassVar)
-				classVar = (ClassVar)memberInstance;
-		}
-		return memberInstance;
-	}
-
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function
@@ -169,21 +118,22 @@ public class MemberFunc extends Function {
 			Graph graph, AstLoader astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
 
-		for (Map.Entry<Var, List<MemberId>> entry : _readMembers.entrySet()) {
-			Var DirectVarDecl = entry.getKey();
-			GraphNode firstNode = DirectVarDecl.getFirstNode();
-			GraphNode firstNodeInNewGraph = map.get(firstNode);
-			Var memberInstance = getFinalMember(classVar, entry.getValue());
-			memberInstance.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
+		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+		for (Map.Entry<Var, Var> entry : _extToInVars.entrySet()) {
+			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
+		}
+		
+		for(InExtVarPair readPair : readVars) {
+			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
+			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
 					astLoader, startingLine);
 		}
 
-		for (Map.Entry<Var, List<MemberId>> entry : _writtenMembers.entrySet()) {
-			Var DirectVarDecl = entry.getKey();
-			GraphNode currNode = DirectVarDecl.getCurrentNode(startingLine);
-			GraphNode currNodeInNewGraph = map.get(currNode);
-			Var memberInstance = getFinalMember(classVar, entry.getValue());
-			memberInstance.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
+		for(InExtVarPair writtenPair : writtenVars) {
+			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
+			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
 					startingLine);
 		}
 
