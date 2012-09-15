@@ -12,6 +12,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,17 +34,15 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 
 public class Function extends AstLoader {
 
-	private GraphNode _return_node;
+	private GraphNode _return_node = null;
 
 	private String _externalName = "";
-	public Map<IBinding, FuncParameter> _parameters;
+	private Map<IBinding, FuncParameter> _parametersMap = new HashMap<IBinding, FuncParameter>();
+	private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
 	protected String _funcName;
 
 	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
-
-		_parameters = new HashMap<IBinding, FuncParameter>();
-		_return_node = null;
 	}
 
 	/**
@@ -72,7 +71,7 @@ public class Function extends AstLoader {
 
 		loadFuncParameters(parameters);
 
-		for (Map.Entry<IBinding, FuncParameter> entry : _parameters.entrySet()) {
+		for (Map.Entry<IBinding, FuncParameter> entry : _parametersMap.entrySet()) {
 			entry.getValue().getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
 					_astInterpreter, startingLine);
 		}
@@ -117,7 +116,7 @@ public class Function extends AstLoader {
 			FuncParameter.IndirectionType parameterVarType = null;
 			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
 
-			_parameters.put(binding, new FuncParameter(var_decl, parameterVarType));
+			addParameter(binding, new FuncParameter(var_decl, parameterVarType));
 		}
 	}
 
@@ -131,11 +130,11 @@ public class Function extends AstLoader {
 
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,
 			Map<GraphNode, GraphNode> internalToMainGraphMap, int startingLine) {
-		if (_parameters.size() != callingParameters.size())
+		if (_parametersMap.size() != callingParameters.size())
 			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < callingParameters.size(); ++i) {
-			Var declaredParameter = _parameters.get(i).getVar();
+			Var declaredParameter = _parametersList.get(i).getVar();
 			FuncParameter callingParameter = callingParameters.get(i);
 
 			Var receivedVar = callingParameter.getVar();
@@ -250,11 +249,22 @@ public class Function extends AstLoader {
 		return null;
 	}
 	
-
+	private void addParameter(IBinding binding, FuncParameter parameter) {
+		_parametersMap.put(binding, parameter);
+		_parametersList.add(parameter);
+	}
+	
+	public FuncParameter getParameter(int index) {
+		return _parametersList.get(index);
+	}
+	
+	public int getNumParameters() {
+		return _parametersList.size();
+	}
 
 	@Override
 	protected Var getVarFromBinding(List<IBinding> bindingStack) {
-		FuncParameter funcParameter = _parameters.get(bindingStack.get(0));
+		FuncParameter funcParameter = _parametersMap.get(bindingStack.get(0));
 		if(funcParameter != null)
 			return funcParameter.getVar();
 		

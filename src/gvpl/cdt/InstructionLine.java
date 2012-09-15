@@ -286,13 +286,13 @@ public class InstructionLine {
 			parameters[0] = paramExpr;
 		}
 		
-		if(parameters.length != func._parameters.size())
+		if(parameters.length != func.getNumParameters())
 			ErrorOutputter.fatalError("Number of parameters are different!");
 
 		for (int i = 0; i < parameters.length; i++) {
 			IASTExpression parameter = parameters[i];
 			FuncParameter localParameter = null;
-			FuncParameter insideFuncParameter = func._parameters.get(i);
+			FuncParameter insideFuncParameter = func.getParameter(i);
 
 			if (insideFuncParameter.getType() == IndirectionType.E_POINTER)
 				localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock),
