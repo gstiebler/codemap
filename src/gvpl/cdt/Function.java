@@ -4,6 +4,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.ClassMember;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
@@ -263,12 +264,20 @@ public class Function extends AstLoader {
 	}
 
 	@Override
-	protected Var getVarFromBinding(List<IBinding> bindingStack) {
-		FuncParameter funcParameter = _parametersMap.get(bindingStack.get(0));
+	protected Var getVarFromBinding(IBinding binding) {
+		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null)
 			return funcParameter.getVar();
 		
 		return null;
+	}
+	
+	protected TypeId getTypeFromVarBinding(IBinding binding) {
+		FuncParameter funcParameter = _parametersMap.get(binding);
+		if(funcParameter != null)
+			return funcParameter.getVar().getType();
+		
+		return _parent.getTypeFromVarBinding(binding);
 	}
 
 }

@@ -3,7 +3,7 @@ package gvpl.cdt;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
-import gvpl.common.MemberId;
+import gvpl.common.TypeId;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -71,7 +71,7 @@ public class MemberFunc extends Function {
 		}
 	}
 
-	@Override
+	/*@Override
 	protected Var getVarFromBinding(List<IBinding> binding) {
 		ClassMember member = _parentClass.getMember(binding.get(0));
 		if(member != null && _tempClassVar != null) {
@@ -86,7 +86,21 @@ public class MemberFunc extends Function {
 			return var;
 		
 		return createVarFromBindings(binding, -2);
+	}*/
+	
+	protected TypeId getTypeFromVarBinding(IBinding binding) {
+		ClassMember classMember = _parentClass.getMember(binding);
+		if(classMember != null)
+			return classMember.getMemberType();
+		
+		TypeId type = super.getTypeFromVarBinding(binding);
+		if(type != null)
+			return type;
+		
+		return _parent.getTypeFromVarBinding(binding);
 	}
+	
+	
 
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the

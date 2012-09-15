@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -68,7 +69,9 @@ public class AstLoader {
 	
 	protected Var createVarFromBindings(List<IBinding> bindingStack, int startingLine) {
 		IBinding binding = bindingStack.get(bindingStack.size() - 1);
-		TypeId type = _astInterpreter.getTypeFromBinding(binding);
+		
+		
+		TypeId type = getTypeFromBindingStack(bindingStack);
 		String name = binding.getName();
 		
 		//TODO review the null in the last parameter
@@ -103,7 +106,7 @@ public class AstLoader {
 	}
 	
 	protected Var getVarFromBindingStack(List<IBinding> bindingStack) {
-		Var currVar = getVarFromBinding(bindingStack);
+		Var currVar = getVarFromBinding(bindingStack.get(0));
 		
 		for(int i = bindingStack.size() - 1; i >= 1 ; i--) {
 			ClassVar classVar = (ClassVar) currVar;
@@ -115,15 +118,36 @@ public class AstLoader {
 		return currVar;
 	}
 	
-	
-	
-	
-	protected Var getVarFromBinding(List<IBinding> bindingStack) {
-		Var var = _localVariables.get(bindingStack.get(0));
+	protected Var getVarFromBinding(IBinding binding) {
+		Var var = _localVariables.get(binding);
 		if(var != null)
 			return var;
 		
-		return _parent.getVarFromBinding(bindingStack);
+		return _parent.getVarFromBinding(binding);
+	}
+	
+	
+	
+	
+	private TypeId getTypeFromBindingStack(List<IBinding> bindingStack) {
+		TypeId currType = getTypeFromVarBinding(bindingStack.get(0));
+		
+		for(int i = bindingStack.size() - 1; i >= 1 ; i--) {
+			IBinding memberBinding = bindingStack.get(i);
+			ClassDecl classDecl = _astInterpreter.getClassDecl(currType);
+			ClassMember classMember = classDecl.getMember(memberBinding);
+			currType = classMember.getMemberType();
+		}
+		
+		return currType;
+	}
+	
+	protected TypeId getTypeFromVarBinding(IBinding binding) {
+		Var var = _localVariables.get(binding);
+		if(var != null)
+			return var.getType();
+		
+		return _parent.getTypeFromVarBinding(binding);
 	}
 	
 	
