@@ -214,7 +214,7 @@ public class AstLoader {
 			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
-			if (typeId == null)
+			if (astInterpreter.isPrimitiveType(typeId))
 				return new Var(graph, name, typeId);
 
 			ClassDecl classDecl = astInterpreter.getClassDecl(typeId);

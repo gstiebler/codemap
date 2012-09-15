@@ -184,9 +184,10 @@ public class InstructionLine {
 		GraphNode rvalue = loadValue(return_node.getReturnValue());
 
 		Function function = _parentBasicBlock.getFunction();
+		TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
-		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, null,
+		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, returnType,
 				function.getName(), statement.getFileLocation().getStartingLineNumber());
 
 		function.setReturnNode(returnNode);

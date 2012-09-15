@@ -27,6 +27,7 @@ public class AstInterpreter extends AstLoader {
 	private Map<IBinding, ClassDecl> _typeBindingToClass = new HashMap<IBinding, ClassDecl>();
 	private Map<TypeId, ClassDecl> _typeIdToClass = new HashMap<TypeId, ClassDecl>();
 	private Map<IBinding, Function> _funcIdMap = new HashMap<IBinding, Function>();
+	private TypeId _primitiveType = new TypeId();//the same for all primitive types
 
 	public AstInterpreter(Graph gvplGraph, IASTTranslationUnit root) {
 		super(gvplGraph, null, null);
@@ -91,9 +92,8 @@ public class AstInterpreter extends AstLoader {
 		if (decl_spec instanceof IASTNamedTypeSpecifier) {
 			IASTNamedTypeSpecifier named_type = (IASTNamedTypeSpecifier) decl_spec;
 			return _typeBindingToClass.get(named_type.getName().resolveBinding()).getTypeId();
-		}
-
-		return null;
+		} else
+			return _primitiveType;
 	}
 
 	public Function getFuncId(IBinding binding) {
@@ -134,6 +134,14 @@ public class AstInterpreter extends AstLoader {
 			return null;
 		else
 			return classDecl.getTypeId();
+	}
+	
+	public boolean isPrimitiveType(TypeId type) {
+		return type.equals(_primitiveType);
+	}
+	
+	public TypeId getPrimitiveType() {
+		return _primitiveType;
 	}
 
 }

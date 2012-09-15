@@ -4,7 +4,6 @@ import gvpl.common.ClassVar;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
-import gvpl.common.ClassMember;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
@@ -36,6 +35,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 public class Function extends AstLoader {
 
 	private GraphNode _return_node = null;
+	private TypeId _returnType = null;
 
 	private String _externalName = "";
 	private Map<IBinding, FuncParameter> _parametersMap = new HashMap<IBinding, FuncParameter>();
@@ -44,6 +44,9 @@ public class Function extends AstLoader {
 
 	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
+		
+		//TODO FIX!!
+		_returnType = _astInterpreter.getPrimitiveType();
 	}
 
 	/**
@@ -87,6 +90,10 @@ public class Function extends AstLoader {
 			ErrorOutputter.fatalError("Work here.");
 
 		return member_func_binding;
+	}
+	
+	public TypeId getReturnTypeId() {
+		return _returnType;
 	}
 
 	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
