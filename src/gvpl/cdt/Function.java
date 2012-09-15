@@ -12,7 +12,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +36,13 @@ public class Function extends AstLoader {
 	private GraphNode _return_node;
 
 	private String _externalName = "";
-	public List<FuncParameter> _parameters;
+	public Map<IBinding, FuncParameter> _parameters;
 	protected String _funcName;
 
 	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
 
-		_parameters = new ArrayList<FuncParameter>();
+		_parameters = new HashMap<IBinding, FuncParameter>();
 		_return_node = null;
 	}
 
@@ -72,8 +72,8 @@ public class Function extends AstLoader {
 
 		loadFuncParameters(parameters);
 
-		for (FuncParameter parameter : _parameters) {
-			parameter.getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
+		for (Map.Entry<IBinding, FuncParameter> entry : _parameters.entrySet()) {
+			entry.getValue().getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
 					_astInterpreter, startingLine);
 		}
 
@@ -112,11 +112,12 @@ public class Function extends AstLoader {
 			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(decl_spec);
 			Var var_decl = loadVarDecl(parameter_var_decl, type);
+			IBinding binding = parameter_var_decl.getName().resolveBinding();
 
 			FuncParameter.IndirectionType parameterVarType = null;
 			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
 
-			_parameters.add(new FuncParameter(var_decl, parameterVarType));
+			_parameters.put(binding, new FuncParameter(var_decl, parameterVarType));
 		}
 	}
 
@@ -246,6 +247,17 @@ public class Function extends AstLoader {
 		} else
 			return IndirectionType.E_VARIABLE;
 		ErrorOutputter.fatalError("error not expected");
+		return null;
+	}
+	
+
+
+	@Override
+	protected Var getVarFromBinding(List<IBinding> bindingStack) {
+		FuncParameter funcParameter = _parameters.get(bindingStack.get(0));
+		if(funcParameter != null)
+			return funcParameter.getVar();
+		
 		return null;
 	}
 

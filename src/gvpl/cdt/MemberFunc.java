@@ -2,7 +2,6 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
-import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
 import gvpl.common.Var;
@@ -11,21 +10,20 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
-import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
-import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 
 public class MemberFunc extends Function {
 
 	private ClassDecl _parentClass;
-	private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
+	
+	private ClassVar _tempClassVar = null;
+	//private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
 	//private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
 
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
@@ -66,11 +64,7 @@ public class MemberFunc extends Function {
 			
 			IASTExpression expr = initializer.getInitializerValue();
 			
-			IASTName memberInitId = initializer.getMemberInitializerId();
-			IBinding member_binding = memberInitId.resolveBinding();
-			ClassMember classMember = _parentClass.getMember(member_binding);
-			MemberId memberId = classMember.getMemberId();
-			Var var = _varFromMembersMap.get(memberId);
+			Var var = getVarFromExpr(expr);
 			
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			instructionLine.loadConstructorInitializer(var, expr, startingLine);
@@ -78,33 +72,20 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	/**
-	 * Returns the DirectVarDecl of the reference to a variable
-	 * @return The DirectVarDecl of the reference to a variable
-	 */
-	public Var getVarFromExpr(IASTExpression expr) {
-
-		IASTIdExpression id_expr = null;
-		if (expr instanceof IASTIdExpression)
-			id_expr = (IASTIdExpression) expr;
-		else
-			ErrorOutputter.fatalError("problem here");
-
-		// Check if the variable is declared inside the own block
-		Var var_decl = getLocalVarFromIdExpr(id_expr);
-		if (var_decl != null)
-			return var_decl;
-		// Ok, if the function did not returned until here, the variable is a
-		// member.
-
-		IASTName name = id_expr.getName();
-		IBinding binding = name.resolveBinding();
-		ClassMember structMember = _parentClass.getMember(binding);
-		MemberId lhs_member_id = structMember.getMemberId();
-
-		Var direct_var_decl = _varFromMembersMap.get(lhs_member_id);
-
-		return direct_var_decl;
+	protected Var getVarFromBinding(List<IBinding> binding) {
+		ClassMember member = _parentClass.getMember(binding.get(0));
+		if(member != null && _tempClassVar != null) {
+			MemberId memberId = member.getMemberId();
+			Var var = _tempClassVar.getMember(memberId);
+			if(var != null)
+				return var;
+		}
+		
+		Var var = super.getVarFromBinding(binding);
+		if(var != null)
+			return var;
+		
+		return createVarFromBindings(binding, -2);
 	}
 
 	/**
@@ -116,6 +97,8 @@ public class MemberFunc extends Function {
 	 */
 	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameter_values,
 			Graph graph, AstLoader astLoader, int startingLine) {
+		_tempClassVar = classVar;
+		
 		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
 
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
@@ -137,6 +120,8 @@ public class MemberFunc extends Function {
 					startingLine);
 		}
 
+		_tempClassVar = null;
+		
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);
 	}
 

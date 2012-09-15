@@ -58,29 +58,24 @@ public class AstLoader {
 
 		if (var != null) 
 			return var;
-		else
-		{
-			String name = "";
-			TypeId type = null;
-
-			if(expr instanceof IASTIdExpression) {
-				IASTName Name = ((IASTIdExpression) expr).getName();
-				IBinding binding = Name.getBinding();
-				type = _astInterpreter.getTypeFromBinding(binding);
-				name = Name.toString();
-			} else {
-				name = "temp_" + startingLine;
-			}
-
+		else {
 			List<IBinding> bindingStack = new ArrayList<>();
 			getBindingStack(expr, bindingStack);
 			
-			//TODO review the null in the last parameter
-			var = addVarDecl(name, type, null);
-			var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
-			_extToInVars.put(bindingStack, var);
-			return var;
+			return createVarFromBindings(bindingStack, startingLine);
 		}
+	}
+	
+	protected Var createVarFromBindings(List<IBinding> bindingStack, int startingLine) {
+		IBinding binding = bindingStack.get(bindingStack.size() - 1);
+		TypeId type = _astInterpreter.getTypeFromBinding(binding);
+		String name = binding.getName();
+		
+		//TODO review the null in the last parameter
+		Var var = addVarDecl(name, type, null);
+		var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
+		_extToInVars.put(bindingStack, var);
+		return var;
 	}
 	
 	private void getBindingStack(IASTExpression expr, List<IBinding> bindingStack) {
@@ -108,7 +103,7 @@ public class AstLoader {
 	}
 	
 	protected Var getVarFromBindingStack(List<IBinding> bindingStack) {
-		Var currVar = getVarFromBinding(bindingStack.get(0));
+		Var currVar = getVarFromBinding(bindingStack);
 		
 		for(int i = bindingStack.size() - 1; i >= 1 ; i--) {
 			ClassVar classVar = (ClassVar) currVar;
@@ -123,12 +118,12 @@ public class AstLoader {
 	
 	
 	
-	private Var getVarFromBinding(IBinding binding) {
-		Var var = _localVariables.get(binding);
+	protected Var getVarFromBinding(List<IBinding> bindingStack) {
+		Var var = _localVariables.get(bindingStack.get(0));
 		if(var != null)
 			return var;
 		
-		return _parent.getVarFromBinding(binding);
+		return _parent.getVarFromBinding(bindingStack);
 	}
 	
 	
