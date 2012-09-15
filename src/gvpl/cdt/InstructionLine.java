@@ -152,7 +152,7 @@ public class InstructionLine {
 		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			Var var_decl = _parentBasicBlock.getVarFromBinding(expr);
+			Var var_decl = _parentBasicBlock.getVarFromExpr(expr);
 			return var_decl.getCurrentNode(startingLine);
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) expr);
@@ -202,7 +202,7 @@ public class InstructionLine {
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression lhsOp = node.getOperand1();
-		Var lhsVar = _parentBasicBlock.getVarFromBinding(lhsOp);
+		Var lhsVar = _parentBasicBlock.getVarFromExpr(lhsOp);
 		IASTExpression rhsExpr = node.getOperand2();
 
 		// check if we're trying to read a the instance of a pointer
@@ -298,7 +298,7 @@ public class InstructionLine {
 				localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock),
 						IndirectionType.E_POINTER);
 			else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
-				Var var = _parentBasicBlock.getVarFromBinding(parameter);
+				Var var = _parentBasicBlock.getVarFromExpr(parameter);
 				localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
@@ -333,7 +333,7 @@ public class InstructionLine {
 		MemberFunc member_func = _astInterpreter.getMemberFunc(func_member_binding);
 
 		IASTExpression expr = field_ref.getFieldOwner();
-		Var var = _parentBasicBlock.getVarFromBinding(expr);
+		Var var = _parentBasicBlock.getVarFromExpr(expr);
 		if (!(var instanceof ClassVar))
 			ErrorOutputter.fatalError("Work here.");
 
@@ -377,7 +377,7 @@ public class InstructionLine {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
-			Var DirectVarDecl = astLoader.getVarFromBinding(address);
+			Var DirectVarDecl = astLoader.getVarFromExpr(address);
 			if (!(DirectVarDecl instanceof PointerVar))
 				ErrorOutputter.fatalError("not expected here!!");
 			return ((PointerVar) DirectVarDecl).getVarInMem();
@@ -391,7 +391,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("not expected here!!");
 
 		IASTExpression op = unaryExpr.getOperand();
-		return astLoader.getVarFromBinding(op);
+		return astLoader.getVarFromExpr(op);
 	}
 
 	/**
@@ -407,7 +407,7 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("not implemented");
 
 		IASTExpression opExpr = unExpr.getOperand();
-		Var pointerVar = _parentBasicBlock.getVarFromBinding(opExpr);
+		Var pointerVar = _parentBasicBlock.getVarFromExpr(opExpr);
 		if (!(pointerVar instanceof PointerVar))
 			ErrorOutputter.fatalError("not expected here");
 
@@ -425,7 +425,7 @@ public class InstructionLine {
 	 * @return The variable that is currently pointed by the received pointer
 	 */
 	public static Var loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
-		Var pointerVar = astLoader.getVarFromBinding(pointerExpr);
+		Var pointerVar = astLoader.getVarFromExpr(pointerExpr);
 		if (pointerVar instanceof PointerVar)
 			return ((PointerVar) pointerVar).getVarInMem();
 		else

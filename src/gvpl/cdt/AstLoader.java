@@ -12,6 +12,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class AstLoader {
 
 	private Map<IBinding, Var> _localVariables = new HashMap<IBinding, Var>();
 	
-	protected Map<Var, Var> _extToInVars = new HashMap<Var, Var>();
+	protected Map<List<IBinding>, Var> _extToInVars = new HashMap<List<IBinding>, Var>();
 
 	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		_gvplGraph = gvplGraph;
@@ -51,64 +52,102 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 
-	protected Var getVarFromBinding(IASTExpression expr) {
+	protected Var getVarFromExpr(IASTExpression expr) {
 		int startingLine = expr.getFileLocation().getStartingLineNumber();
-		Var var = getVarFromBindingInternal(expr);
+		Var var = getVarFromExprInternal(expr);
 
 		if (var != null) 
 			return var;
 		else
 		{
-			Var superVar = getVarFromBindingPrivate(expr);
-			if(_extToInVars.containsKey(superVar))
-				return _extToInVars.get(superVar);
-			
 			String name = "";
 			TypeId type = null;
-			if(superVar == null) {
-				if(expr instanceof IASTIdExpression) {
-					IASTName Name = ((IASTIdExpression) expr).getName();
-					IBinding binding = Name.getBinding();
-					type = _astInterpreter.getTypeFromBinding(binding);
-					name = Name.toString();
-				} else {
-					name = "temp_" + startingLine;
-				}
-				//type = _astInterpreter.getVarTypeFromBinding(binding);
+
+			if(expr instanceof IASTIdExpression) {
+				IASTName Name = ((IASTIdExpression) expr).getName();
+				IBinding binding = Name.getBinding();
+				type = _astInterpreter.getTypeFromBinding(binding);
+				name = Name.toString();
 			} else {
-				name = superVar.getName();
-				type = superVar.getType();
+				name = "temp_" + startingLine;
 			}
+
+			List<IBinding> bindingStack = new ArrayList<>();
+			getBindingStack(expr, bindingStack);
+			
 			//TODO review the null in the last parameter
 			var = addVarDecl(name, type, null);
 			var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
-			_extToInVars.put(superVar, var);
+			_extToInVars.put(bindingStack, var);
 			return var;
 		}
 	}
 	
-	private Var getVarFromBindingPrivate(IASTExpression expr) {
-		Var var = getVarFromBindingInternal(expr);
-
-		if (var != null)
-			return var;
-		else
-			return _parent.getVarFromBinding(expr);
+	private void getBindingStack(IASTExpression expr, List<IBinding> bindingStack) {
+		if (expr instanceof IASTIdExpression)
+			getBindingFromIdExpr((IASTIdExpression) expr, bindingStack);
+		else if (expr instanceof IASTFieldReference) {
+			getBindingFromFieldRef((IASTFieldReference) expr, bindingStack);
+		} else if (expr instanceof IASTUnaryExpression) {
+			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
+			getBindingFromIdExpr((IASTIdExpression) opExpr, bindingStack);
+		}
 	}
 	
-	protected Var getVarFromBindingInternal(IASTExpression expr) {
+	private void getBindingFromIdExpr(IASTIdExpression idExpr, List<IBinding> bindingStack) {
+		IBinding binding = idExpr.getName().resolveBinding();
+		bindingStack.add(binding);
+	}
+	
+	private void getBindingFromFieldRef(IASTFieldReference field_ref, List<IBinding> bindingStack) {
+		IASTExpression owner = field_ref.getFieldOwner();
+
+		getBindingStack(owner, bindingStack);
+		IBinding field_binding = field_ref.getFieldName().resolveBinding();
+		bindingStack.add(field_binding);
+	}
+	
+	protected Var getVarFromBindingStack(List<IBinding> bindingStack) {
+		Var currVar = getVarFromBinding(bindingStack.get(0));
+		
+		for(int i = bindingStack.size() - 1; i >= 1 ; i--) {
+			ClassVar classVar = (ClassVar) currVar;
+			IBinding memberBinding = bindingStack.get(i);
+			MemberId memberId = _astInterpreter.getMemberId(classVar.getType(), memberBinding);
+			currVar = classVar.getMember(memberId);
+		}
+		
+		return currVar;
+	}
+	
+	
+	
+	
+	private Var getVarFromBinding(IBinding binding) {
+		Var var = _localVariables.get(binding);
+		if(var != null)
+			return var;
+		
+		return _parent.getVarFromBinding(binding);
+	}
+	
+	
+	
+	
+	
+	protected Var getVarFromExprInternal(IASTExpression expr) {
 		if (expr instanceof IASTIdExpression)
-			return getLocalVarFromBinding((IASTIdExpression) expr);
+			return getLocalVarFromIdExpr((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference) {
 			return getVarFromFieldRef((IASTFieldReference) expr);
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
-			return getLocalVarFromBinding((IASTIdExpression) opExpr);
+			return getLocalVarFromIdExpr((IASTIdExpression) opExpr);
 		}
 		return null;
 	}
 
-	protected Var getLocalVarFromBinding(IASTIdExpression id_expr) {
+	protected Var getLocalVarFromIdExpr(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		return _localVariables.get(binding);
 	}
@@ -121,12 +160,11 @@ public class AstLoader {
 	protected Var getVarFromFieldRef(IASTFieldReference field_ref) {
 		IASTExpression owner = field_ref.getFieldOwner();
 
-		IBinding field_binding = field_ref.getFieldName().resolveBinding();
-
-		Var varOfRef = getVarFromBinding(owner);
+		Var varOfRef = getVarFromExpr(owner);
 		Var varInMem = varOfRef.getVarInMem();
 		ClassVar ownerVar = (ClassVar) varInMem;
 
+		IBinding field_binding = field_ref.getFieldName().resolveBinding();
 		MemberId member_id = _astInterpreter.getMemberId(ownerVar.getType(), field_binding);
 		Var childVar = ownerVar.getMember(member_id);
 		
@@ -178,31 +216,23 @@ public class AstLoader {
 		return _gvplGraph;
 	}
 
-	protected void getAccessedVars(Var intVar, Var extVar, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
-		if(intVar instanceof ClassVar) {
-			ClassVar extClassVar = (ClassVar) extVar;
-			ClassVar intClassVar = (ClassVar) intVar;
-			for(MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
-				Var memberExtVar = extClassVar.getMember(memberId);
-				Var memberIntVar = intClassVar.getMember(memberId);
-				getAccessedVars(memberIntVar, memberExtVar, read, written, ignored, startingLine);
-			}
-		} else {
-			boolean accessed = false;
-			GraphNode intVarFirstNode = intVar.getFirstNode();
-			if (intVarFirstNode.getNumDependentNodes() > 0) {
-				read.add(new InExtVarPair(intVar, extVar));
-				accessed = true;
-			}
-			
-			GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
-			if(intVarCurrNode.getNumSourceNodes() > 0) {
-				written.add(new InExtVarPair(intVar, extVar));
-				accessed = true;
-			}
-			
-			if(!accessed)
-				ignored.add(new InExtVarPair(intVar, extVar));
+	protected void getAccessedVars(Var intVar, List<IBinding> extBindingStack, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+		Var extVar = getVarFromBindingStack(extBindingStack);
+		
+		boolean accessed = false;
+		GraphNode intVarFirstNode = intVar.getFirstNode();
+		if (intVarFirstNode.getNumDependentNodes() > 0) {
+			read.add(new InExtVarPair(intVar, extVar));
+			accessed = true;
 		}
+		
+		GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
+		if(intVarCurrNode.getNumSourceNodes() > 0) {
+			written.add(new InExtVarPair(intVar, extVar));
+			accessed = true;
+		}
+		
+		if(!accessed)
+			ignored.add(new InExtVarPair(intVar, extVar));
 	}
 }

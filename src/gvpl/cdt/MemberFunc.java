@@ -82,7 +82,7 @@ public class MemberFunc extends Function {
 	 * Returns the DirectVarDecl of the reference to a variable
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
-	public Var getVarFromBinding(IASTExpression expr) {
+	public Var getVarFromExpr(IASTExpression expr) {
 
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
@@ -91,7 +91,7 @@ public class MemberFunc extends Function {
 			ErrorOutputter.fatalError("problem here");
 
 		// Check if the variable is declared inside the own block
-		Var var_decl = getLocalVarFromBinding(id_expr);
+		Var var_decl = getLocalVarFromIdExpr(id_expr);
 		if (var_decl != null)
 			return var_decl;
 		// Ok, if the function did not returned until here, the variable is a
@@ -121,7 +121,7 @@ public class MemberFunc extends Function {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		for (Map.Entry<Var, Var> entry : _extToInVars.entrySet()) {
+		for (Map.Entry<List<IBinding>, Var> entry : _extToInVars.entrySet()) {
 			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
 		}
 		

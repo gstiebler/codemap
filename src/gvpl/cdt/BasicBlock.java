@@ -12,6 +12,7 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class BasicBlock extends AstLoader {
 
@@ -54,7 +55,7 @@ public class BasicBlock extends AstLoader {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		for (Map.Entry<Var, Var> entry : _extToInVars.entrySet()) {
+		for (Map.Entry<List<IBinding>, Var> entry : _extToInVars.entrySet()) {
 			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
 		}
 		
