@@ -4,6 +4,7 @@ import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.MemberId;
 import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
@@ -34,6 +35,8 @@ public class AstLoader {
 		Var _ext;
 		
 		public InExtVarPair(Var in, Var ext) {
+			if(ext == null)
+				ErrorOutputter.fatalError("ext cannot be null");
 			_in = in;
 			_ext = ext;
 		}
@@ -42,9 +45,7 @@ public class AstLoader {
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;
 	protected AstInterpreter _astInterpreter;
-
 	private Map<IBinding, Var> _localVariables = new HashMap<IBinding, Var>();
-	
 	protected Map<List<IBinding>, Var> _extToInVars = new HashMap<List<IBinding>, Var>();
 
 	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
@@ -58,7 +59,7 @@ public class AstLoader {
 		Var var = getVarFromExprInternal(expr);
 
 		if (var != null) 
-			return var;
+			return var; 
 		else {
 			List<IBinding> bindingStack = new ArrayList<>();
 			getBindingStack(expr, bindingStack);
@@ -237,6 +238,8 @@ public class AstLoader {
 
 	protected void getAccessedVars(Var intVar, List<IBinding> extBindingStack, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
 		Var extVar = getVarFromBindingStack(extBindingStack);
+		if(extVar == null) 
+			ErrorOutputter.fatalError("extVar cannot be null");
 		
 		boolean accessed = false;
 		GraphNode intVarFirstNode = intVar.getFirstNode();

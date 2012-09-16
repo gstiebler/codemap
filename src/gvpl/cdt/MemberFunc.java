@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
+import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
@@ -71,9 +72,9 @@ public class MemberFunc extends Function {
 		}
 	}
 
-	/*@Override
-	protected Var getVarFromBinding(List<IBinding> binding) {
-		ClassMember member = _parentClass.getMember(binding.get(0));
+	@Override
+	protected Var getVarFromBinding(IBinding binding) {
+		ClassMember member = _parentClass.getMember(binding);
 		if(member != null && _tempClassVar != null) {
 			MemberId memberId = member.getMemberId();
 			Var var = _tempClassVar.getMember(memberId);
@@ -85,8 +86,10 @@ public class MemberFunc extends Function {
 		if(var != null)
 			return var;
 		
-		return createVarFromBindings(binding, -2);
-	}*/
+		List<IBinding> bindings = new ArrayList<IBinding>();
+		bindings.add(binding);
+		return createVarFromBindings(bindings, -2);
+	}
 	
 	protected TypeId getTypeFromVarBinding(IBinding binding) {
 		ClassMember classMember = _parentClass.getMember(binding);
