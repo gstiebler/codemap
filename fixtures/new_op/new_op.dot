@@ -5,25 +5,21 @@ label = "root";
 	node_000001 [ label = "a_pointed", startingline=5 ]
 	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=6 ]
 	node_000003 [ label = "*a", startingline=6 ]
-	node_000004 [ label = "*a", startingline=6 ]
-	node_000005 [ label = "a_pointed", startingline=6 ]
-	node_000006 [ label = "*a", startingline=7 ]
-	node_000007 [ label = "b", startingline=7 ]
-	node_000008 [ label = "c_pointed", startingline=9 ]
-	node_000009 [ label = "19", style=filled, fillcolor="#E9FFE9", startingline=10 ]
-	node_000010 [ label = "*c", startingline=10 ]
-	node_000011 [ label = "*c", startingline=10 ]
-	node_000012 [ label = "c_pointed", startingline=10 ]
-	node_000013 [ label = "*c", startingline=11 ]
-	node_000014 [ label = "d", startingline=11 ]
-	node_000001 -> node_000004
+	node_000004 [ label = "a_pointed", startingline=6 ]
+	node_000005 [ label = "*a", startingline=7 ]
+	node_000006 [ label = "b", startingline=7 ]
+	node_000007 [ label = "c_pointed", startingline=9 ]
+	node_000008 [ label = "19", style=filled, fillcolor="#E9FFE9", startingline=10 ]
+	node_000009 [ label = "*c", startingline=10 ]
+	node_000010 [ label = "c_pointed", startingline=10 ]
+	node_000011 [ label = "*c", startingline=11 ]
+	node_000012 [ label = "d", startingline=11 ]
 	node_000002 -> node_000003
-	node_000003 -> node_000005
+	node_000003 -> node_000004
+	node_000004 -> node_000005
 	node_000005 -> node_000006
-	node_000006 -> node_000007
-	node_000008 -> node_000011
+	node_000008 -> node_000009
 	node_000009 -> node_000010
-	node_000010 -> node_000012
-	node_000012 -> node_000013
-	node_000013 -> node_000014
+	node_000010 -> node_000011
+	node_000011 -> node_000012
 }
