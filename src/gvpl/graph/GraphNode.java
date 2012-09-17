@@ -53,7 +53,7 @@ public class GraphNode {
 	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
 		if (_dependentNodes.contains(dependentNode))
 		{
-			ErrorOutputter.fatalError("Already dependent!!");
+			ErrorOutputter.warning("Already dependent!!");
 			return;
 		}
 

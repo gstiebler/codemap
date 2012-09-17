@@ -86,9 +86,7 @@ public class MemberFunc extends Function {
 		if(var != null)
 			return var;
 		
-		List<IBinding> bindings = new ArrayList<IBinding>();
-		bindings.add(binding);
-		return createVarFromBindings(bindings, -2);
+		return createVarFromBinding(binding, -2);
 	}
 	
 	protected TypeId getTypeFromVarBinding(IBinding binding) {
@@ -121,7 +119,7 @@ public class MemberFunc extends Function {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		for (Map.Entry<List<IBinding>, Var> entry : _extToInVars.entrySet()) {
+		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
 			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
 		}
 		

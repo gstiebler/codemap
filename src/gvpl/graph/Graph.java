@@ -33,7 +33,7 @@ public class Graph {
 		_startingLine = startingLine;
 	}
 
-	public GraphNode add_graph_node(String name, NodeType type, int startingLine) {
+	public GraphNode addGraphNode(String name, NodeType type, int startingLine) {
 		GraphNode graph_node = new GraphNode(name, type, startingLine);
 		_graphNodes.add(graph_node);
 		return graph_node;
@@ -130,11 +130,11 @@ public class Graph {
 	}
 
 	public GraphNode addDirectVal(eValueType type, String value, int startingLine) {
-		return add_graph_node(value, NodeType.E_DIRECT_VALUE, startingLine);
+		return addGraphNode(value, NodeType.E_DIRECT_VALUE, startingLine);
 	}
 
 	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
-		GraphNode un_op_node = add_graph_node(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
+		GraphNode un_op_node = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
 				startingLine);
 
 		val_node.addDependentNode(un_op_node, astLoader, startingLine);
@@ -143,7 +143,7 @@ public class Graph {
 	}
 
 	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
-		GraphNode notOpNode = add_graph_node("!", NodeType.E_OPERATION, startingLine);
+		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION, startingLine);
 		val_node.addDependentNode(notOpNode, astLoader, startingLine);
 
 		return notOpNode;
@@ -151,7 +151,7 @@ public class Graph {
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
 			AstLoader astLoader, int startingLine) {
-		GraphNode bin_op_node = add_graph_node(CppMaps._bin_op_strings.get(op),
+		GraphNode bin_op_node = addGraphNode(CppMaps._bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
 		val1_node.addDependentNode(bin_op_node, astLoader, startingLine);
@@ -162,7 +162,7 @@ public class Graph {
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_var_decl, GraphNode lhs_node,
 			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
-		GraphNode bin_op_node = add_graph_node(CppMaps._assign_bin_op_strings.get(op),
+		GraphNode bin_op_node = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
 		lhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
@@ -174,7 +174,7 @@ public class Graph {
 
 	public void addIf(Var var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
 			AstLoader astLoader, int startingLine) {
-		GraphNode ifOpNode = add_graph_node("If", NodeType.E_OPERATION, startingLine);
+		GraphNode ifOpNode = addGraphNode("If", NodeType.E_OPERATION, startingLine);
 
 		ifTrue.addDependentNode(ifOpNode, astLoader, startingLine);
 		ifFalse.addDependentNode(ifOpNode, astLoader, startingLine);

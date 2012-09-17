@@ -67,7 +67,7 @@ public class ForLoop extends AstLoader {
 		header.load(initializer, condition);
 
 		int startingLine = node.getFileLocation().getStartingLineNumber();
-		GraphNode headerNode = _gvplGraph.add_graph_node("ForHeader", NodeType.E_LOOP_HEADER,
+		GraphNode headerNode = _gvplGraph.addGraphNode("ForHeader", NodeType.E_LOOP_HEADER,
 				startingLine);
 		for (Var readVar : header.getReadVars()) {
 			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, null, startingLine);
