@@ -275,7 +275,7 @@ public class Function extends AstLoader {
 	protected Var getVarFromBinding(IBinding binding) {
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null)
-			return funcParameter.getVar();
+			return funcParameter.getVar().getVarInMem();
 		
 		return null;
 	}

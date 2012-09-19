@@ -62,20 +62,20 @@ public class BasicBlock extends AstLoader {
 		for(InExtVarPair readPair : readVars) {
 			GraphNode intVarFirstNode = readPair._in.getFirstNode();
 			// if someone read from internal var
-			if (intVarFirstNode.getNumDependentNodes() > 0) {
+			//if (intVarFirstNode.getNumDependentNodes() > 0) {
 				GraphNode extVarCurrNode = readPair._ext.getCurrentNode(startingLine);
 				extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
-			}
+			//}
 		}
 		
 		for(InExtVarPair writtenPair : writtenVars) {
 			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode(startingLine);
 			//if someone has written in the internal var
-			if(intVarCurrNode.getNumSourceNodes() > 0) {
+			//if(intVarCurrNode.getNumSourceNodes() > 0) {
 				writtenPair._ext.initializeGraphNode(NodeType.E_VARIABLE, extGraph, this, _astInterpreter, startingLine);
 				GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode(startingLine);
 				extGraph.mergeNodes(extVarCurrNode, intVarCurrNode, startingLine);
-			}
+			//}
 		}
 		
 		for(InExtVarPair ignoredPair : ignoredVars) {
