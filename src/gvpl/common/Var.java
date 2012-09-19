@@ -5,6 +5,7 @@ import java.util.List;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -13,7 +14,7 @@ import gvpl.graph.GraphNode;
  * This class is used to represent variables of primitive types
  */
 public class Var {
-
+	
 	protected String _name;
 
 	protected TypeId _type;
@@ -107,5 +108,9 @@ public class Var {
 		List<Var> internalVars = new ArrayList<>();
 		internalVars.add(this);
 		return internalVars;
+	}
+	
+	public VarInfo getVarInfo() {
+		return new VarInfo(_type, IndirectionType.E_VARIABLE);
 	}
 }

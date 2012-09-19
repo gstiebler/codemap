@@ -186,6 +186,8 @@ public class Graph {
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {
 		primaryNode.merge(secondaryNode, startingLine);
 		_graphNodes.remove(secondaryNode);
+		if(!_graphNodes.contains(primaryNode))
+			_graphNodes.add(primaryNode);
 	}
 	
 	public void removeNode(GraphNode node) {

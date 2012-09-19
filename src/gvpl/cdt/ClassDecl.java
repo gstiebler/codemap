@@ -4,6 +4,7 @@ import gvpl.common.ClassMember;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
@@ -65,8 +66,9 @@ public class ClassDecl {
 				IASTName decl_name = declarator.getName();
 				MemberId member_id = new MemberId();
 
+				//TODO insert the correct IndirectionType
 				ClassMember struct_member = new ClassMember(member_id, decl_name.toString(),
-						param_type);
+						param_type, IndirectionType.E_VARIABLE);
 				addMember(struct_member);
 
 				_memberIdMap.put(decl_name.resolveBinding(), struct_member);

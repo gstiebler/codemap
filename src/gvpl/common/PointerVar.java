@@ -27,5 +27,10 @@ public class PointerVar extends MemAddressVar {
 		_pointedVar.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
 				startingLine);
 	}
+	
+	@Override
+	public VarInfo getVarInfo() {
+		return new VarInfo(_type, IndirectionType.E_POINTER);
+	}
 
 }

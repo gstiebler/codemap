@@ -8,6 +8,7 @@ import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Var;
+import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -279,10 +280,11 @@ public class Function extends AstLoader {
 		return null;
 	}
 	
-	protected TypeId getTypeFromVarBinding(IBinding binding) {
+	@Override
+	protected VarInfo getTypeFromVarBinding(IBinding binding) {
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null)
-			return funcParameter.getVar().getType();
+			return funcParameter.getVar().getVarInfo();
 		
 		return _parent.getTypeFromVarBinding(binding);
 	}

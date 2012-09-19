@@ -6,6 +6,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Var;
+import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -89,14 +90,15 @@ public class MemberFunc extends Function {
 		return createVarFromBinding(binding, -2);
 	}
 	
-	protected TypeId getTypeFromVarBinding(IBinding binding) {
+	@Override
+	protected VarInfo getTypeFromVarBinding(IBinding binding) {
 		ClassMember classMember = _parentClass.getMember(binding);
 		if(classMember != null)
-			return classMember.getMemberType();
+			return classMember.getVarInfo();
 		
-		TypeId type = super.getTypeFromVarBinding(binding);
-		if(type != null)
-			return type;
+		VarInfo varInfo = super.getTypeFromVarBinding(binding);
+		if(varInfo != null)
+			return varInfo;
 		
 		return _parent.getTypeFromVarBinding(binding);
 	}

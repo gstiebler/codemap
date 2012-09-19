@@ -9,6 +9,7 @@ import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
 import gvpl.common.TypeId;
 import gvpl.common.Var;
+import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -68,11 +69,10 @@ public class AstLoader {
 	}
 	
 	protected Var createVarFromBinding(IBinding binding, int startingLine) {
-		TypeId type = getTypeFromVarBinding(binding);
+		VarInfo varInfo = getTypeFromVarBinding(binding);
 		String name = binding.getName();
 		
-		//TODO review the null in the last parameter
-		Var var = addVarDecl(name, type, null);
+		Var var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
 		var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
 		_extToInVars.put(binding, var);
 		return var;
@@ -99,10 +99,10 @@ public class AstLoader {
 	
 
 	
-	protected TypeId getTypeFromVarBinding(IBinding binding) {
+	protected VarInfo getTypeFromVarBinding(IBinding binding) {
 		Var var = _localVariables.get(binding);
 		if(var != null)
-			return var.getType();
+			return var.getVarInfo();
 		
 		return _parent.getTypeFromVarBinding(binding);
 	}
@@ -162,7 +162,7 @@ public class AstLoader {
 	}
 
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
-		FuncParameter.IndirectionType parameterVarType = null;
+		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		return instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
 	}
@@ -180,6 +180,11 @@ public class AstLoader {
 			return new PointerVar(graph, name, typeId);
 		case E_REFERENCE:
 			return new ReferenceVar(graph, name, typeId);
+		case E_INDIFERENT:
+			{
+				ErrorOutputter.fatalError("Not expected");
+				return null;
+			}
 		}
 		return null;
 	}
