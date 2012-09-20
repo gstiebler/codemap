@@ -206,9 +206,11 @@ public class AstLoader {
 	}
 	
 	private void getAccessedVarsRecursive(Var intVar, Var extVar, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
-		if(intVar instanceof ClassVar) {
-			ClassVar extClassVar = (ClassVar) extVar;
-			ClassVar intClassVar = (ClassVar) intVar;
+		Var extVarInMem = extVar.getVarInMem();
+		Var intVarInMem = intVar.getVarInMem();
+		if(intVarInMem instanceof ClassVar) {
+			ClassVar extClassVar = (ClassVar) extVarInMem;
+			ClassVar intClassVar = (ClassVar) intVarInMem;
 			for(MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
 				Var memberExtVar = extClassVar.getMember(memberId);
 				Var memberIntVar = intClassVar.getMember(memberId);
