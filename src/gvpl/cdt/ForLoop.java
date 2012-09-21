@@ -1,62 +1,75 @@
 package gvpl.cdt;
 
-import gvpl.common.ErrorOutputter;
 import gvpl.common.Var;
+import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
-import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class ForLoop extends AstLoader {
 
-	/**
-	 * Maps the external variables (from external graph) to internal generated
-	 * variables
-	 */
-	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();
-
-	private Set<Var> _writtenExtVars = new HashSet<Var>();
-	private Set<Var> _readExtVars = new HashSet<Var>();
-
-	public ForLoop(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
-		super(new Graph(-1), parent, astInterpreter);
+	AstLoader _typeSource;
+	
+	public ForLoop(AstLoader parent, AstInterpreter astInterpreter, int startingLine) {
+		super(new Graph(-1), null, astInterpreter);
+		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}
 
-	public void load(IASTForStatement node, Graph gvplGraph) {
+	public void load(IASTForStatement node, Graph gvplGraph, AstLoader astLoader) {
+		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTStatement body = node.getBody();
 
 		// loadHeader(node);
 
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 		basicBlockLoader.load(body);
-
-		int startingLine = node.getFileLocation().getStartingLineNumber();
+		
+		
 		Map<GraphNode, GraphNode> map = gvplGraph.addSubGraph(_gvplGraph, this, startingLine);
 
-		for (Map.Entry<Var, Var> entry : _externalVars.entrySet()) {
-			Var extVarDecl = entry.getKey();
-			Var intVarDecl = entry.getValue();
-
-			GraphNode firstNode = map.get(intVarDecl.getFirstNode());
-			GraphNode currentNode = map.get(intVarDecl.getCurrentNode(startingLine));
-
-			if (_readExtVars.contains(intVarDecl))
-				extVarDecl.getCurrentNode(startingLine).addDependentNode(firstNode, null,
-						startingLine);
-
-			if (_writtenExtVars.contains(intVarDecl))
-				extVarDecl.receiveAssign(NodeType.E_VARIABLE, currentNode, null, startingLine);
+		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+		
+		_parent = _typeSource;
+		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
+			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
 		}
+		
+		for(InExtVarPair readPair : readVars) {
+			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
+			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
+					astLoader, startingLine);
+		}
+
+		for(InExtVarPair writtenPair : writtenVars) {
+			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
+			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
+					startingLine);
+		}
+	}
+	
+	@Override
+	protected VarInfo getTypeFromVarBinding(IBinding binding) {
+		return _typeSource.getTypeFromVarBinding(binding);
+	}
+	
+
+	@Override
+	protected Var getVarFromBinding(IBinding binding) {
+		if(_parent == null)
+			return createVarFromBinding(binding, -2);
+		return _parent.getVarFromBinding(binding);
 	}
 
 	private void loadHeader(IASTForStatement node) {
@@ -72,34 +85,6 @@ public class ForLoop extends AstLoader {
 		for (Var readVar : header.getReadVars()) {
 			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, null, startingLine);
 		}
-	}
-
-	/**
-	 * Returns the DirectVarDecl of the reference to a variable
-	 * 
-	 * @return The DirectVarDecl of the reference to a variable
-	 */
-	@Override
-	public Var getVarFromExpr(IASTExpression expr) {
-		int startingLine = expr.getFileLocation().getStartingLineNumber();
-		IASTIdExpression id_expr = null;
-		if (expr instanceof IASTIdExpression)
-			id_expr = (IASTIdExpression) expr;
-		else
-			ErrorOutputter.fatalError("problem here");
-
-		Var extVarDecl = _parent.getVarFromExpr(expr);
-
-		Var intVarDecl = _externalVars.get(extVarDecl);
-		if (intVarDecl != null)
-			return intVarDecl;
-
-		String varName = id_expr.getName().toString();
-		intVarDecl = new Var(_gvplGraph, varName, null);
-		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
-				startingLine);
-		_externalVars.put(extVarDecl, intVarDecl);
-		return intVarDecl;
 	}
 
 }

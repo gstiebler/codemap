@@ -4,7 +4,6 @@ import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
-import gvpl.common.TypeId;
 import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;

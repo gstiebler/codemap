@@ -174,8 +174,9 @@ public class InstructionLine {
 	}
 
 	private void load_for_stmt(IASTForStatement node) {
-		ForLoop forLoop = new ForLoop(_gvplGraph, _parentBasicBlock, _astInterpreter);
-		forLoop.load(node, _gvplGraph);
+		int startingLine = node.getFileLocation().getStartingLineNumber();
+		ForLoop forLoop = new ForLoop(_parentBasicBlock, _astInterpreter, startingLine);
+		forLoop.load(node, _gvplGraph, _parentBasicBlock);
 	}
 
 	private void loadReturnStatement(IASTReturnStatement statement) {
