@@ -16,6 +16,7 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 
@@ -65,7 +66,9 @@ public class MemberFunc extends Function {
 			
 			IASTExpression expr = initializer.getInitializerValue();
 			
-			Var var = getVarFromExpr(expr);
+			IASTName memberInitId = initializer.getMemberInitializerId();
+			IBinding member_binding = memberInitId.resolveBinding();
+			Var var = getVarFromBinding(member_binding);
 			
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			instructionLine.loadConstructorInitializer(var, expr, startingLine);
