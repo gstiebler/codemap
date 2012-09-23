@@ -85,8 +85,11 @@ public class Function extends AstLoader {
 
 		IASTStatement body = fd.getBody();
 		if (body instanceof IASTCompoundStatement) {
-			BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
-			basicBlockLoader.load(body);
+			IASTStatement[] statements = ((IASTCompoundStatement)body).getStatements();
+			for (IASTStatement statement : statements) {
+				InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
+				instructionLine.load(statement);
+			}
 		} else
 			ErrorOutputter.fatalError("Work here.");
 
@@ -239,6 +242,7 @@ public class Function extends AstLoader {
 		_return_node = returnNode;
 	}
 
+	@Override
 	public Function getFunction() {
 		return this;
 	}
