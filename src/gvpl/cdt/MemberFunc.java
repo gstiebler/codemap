@@ -21,29 +21,12 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 public class MemberFunc extends Function {
 
 	private ClassDecl _parentClass;
-	
 	private ClassVar _tempClassVar = null;
-	//private Map<MemberId, Var> _varFromMembersMap = new HashMap<MemberId, Var>();
-	//private Map<Var, MemberId> _memberFromVar = new HashMap<Var, MemberId>();
-
+	
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter);
 		_parentClass = parent;
-
-		//List<ClassMember> members = _parentClass.getMembers();
-		// declare a variable for each member of the struct
-		/*for (ClassMember member : members) {
-			Var member_var = addVarDecl(member.getName(), member.getMemberType(), null);
-			member_var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
-					startingLine);
-			addMember(member_var, member.getMemberId());
-		}*/
 	}
-
-	/*private void addMember(Var var, MemberId id) {
-		_varFromMembersMap.put(id, var);
-		_memberFromVar.put(var, id);
-	}*/
 
 	protected String calcName() {
 		return _parentClass.getName() + "::" + _funcName;
@@ -103,8 +86,6 @@ public class MemberFunc extends Function {
 		return _parent.getTypeFromVarBinding(binding);
 	}
 	
-	
- 
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function
