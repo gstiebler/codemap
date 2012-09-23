@@ -294,6 +294,10 @@ public class Function extends AstLoader {
 		if(funcParameter != null)
 			return funcParameter.getVar().getVarInfo();
 		
+		VarInfo varInfo = super.getTypeFromVarBinding(binding);
+		if(varInfo != null)
+			return varInfo;
+		
 		return _parent.getTypeFromVarBinding(binding);
 	}
 
