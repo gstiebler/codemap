@@ -42,9 +42,8 @@ public class ForLoop extends AstLoader {
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
 		
 		_parent = _typeSource;
-		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
-			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
-		}
+		getAccessedVars(readVars, writtenVars, ignoredVars, startingLine);
+		
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());

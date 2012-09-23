@@ -52,9 +52,7 @@ public class BasicBlock extends AstLoader {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
-			getAccessedVars(entry.getValue(), entry.getKey(), readVars, writtenVars, ignoredVars, startingLine);
-		}
+		getAccessedVars(readVars, writtenVars, ignoredVars, startingLine);
 
 		Graph extGraph = _parent._gvplGraph;
 		extGraph.merge(_gvplGraph);

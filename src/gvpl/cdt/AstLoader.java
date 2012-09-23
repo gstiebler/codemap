@@ -103,9 +103,6 @@ public class AstLoader {
 		return null;
 	}
 	
-	
-
-	
 	protected VarInfo getTypeFromVarBinding(IBinding binding) {
 		Var var = _localVariables.get(binding);
 		if(var != null)
@@ -113,10 +110,6 @@ public class AstLoader {
 		
 		return _parent.getTypeFromVarBinding(binding);
 	}
-	
-	
-	
-	
 	
 	protected Var getVarFromExprInternal(IASTExpression expr) {
 		if (expr instanceof IASTIdExpression)
@@ -204,12 +197,14 @@ public class AstLoader {
 		return _gvplGraph;
 	}
 
-	protected void getAccessedVars(Var intVar, IBinding binding, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
-		Var extVar = getVarFromBinding(binding);
-		if(extVar == null) 
-			ErrorOutputter.fatalError("extVar cannot be null");
-		
-		getAccessedVarsRecursive(intVar, extVar, read, written, ignored, startingLine);
+	protected void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
+			Var extVar = getVarFromBinding(entry.getKey());
+			if(extVar == null) 
+				ErrorOutputter.fatalError("extVar cannot be null");
+			
+			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, startingLine);
+		}
 	}
 	
 	private void getAccessedVarsRecursive(Var intVar, Var extVar, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
