@@ -117,26 +117,7 @@ public class MemberFunc extends Function {
 	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameter_values,
 			Graph graph, AstLoader astLoader, int startingLine) {
 		_tempClassVar = classVar;
-		
-		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
-
-		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, startingLine);
-		
-		for(InExtVarPair readPair : readVars) {
-			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
-			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
-					astLoader, startingLine);
-		}
-
-		for(InExtVarPair writtenPair : writtenVars) {
-			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
-			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
-					startingLine);
-		}
-
+		Map<GraphNode, GraphNode> map = addSubGraph(graph, astLoader, startingLine);
 		_tempClassVar = null;
 		
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);

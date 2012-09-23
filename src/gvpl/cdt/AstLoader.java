@@ -14,6 +14,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -238,5 +239,29 @@ public class AstLoader {
 		
 		if(!accessed)
 			ignored.add(varPair);
+	}
+	
+	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {
+		
+		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
+
+		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+		getAccessedVars(readVars, writtenVars, ignoredVars, startingLine);
+		
+		for(InExtVarPair readPair : readVars) {
+			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
+			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
+					astLoader, startingLine);
+		}
+
+		for(InExtVarPair writtenPair : writtenVars) {
+			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
+			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
+					startingLine);
+		}
+		
+		return map;
 	}
 }

@@ -6,10 +6,6 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
@@ -33,29 +29,9 @@ public class ForLoop extends AstLoader {
 
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 		basicBlockLoader.load(body);
-		
-		
-		Map<GraphNode, GraphNode> map = gvplGraph.addSubGraph(_gvplGraph, this, startingLine);
 
-		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		
 		_parent = _typeSource;
-		getAccessedVars(readVars, writtenVars, ignoredVars, startingLine);
-		
-		
-		for(InExtVarPair readPair : readVars) {
-			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
-			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
-					astLoader, startingLine);
-		}
-
-		for(InExtVarPair writtenPair : writtenVars) {
-			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
-			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
-					startingLine);
-		}
+		addSubGraph(gvplGraph, astLoader, startingLine);
 	}
 	
 	@Override
