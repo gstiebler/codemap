@@ -66,10 +66,12 @@ public class MemberFunc extends Function {
 				return var;
 		}
 		
+		// search the variable in the function parameters
 		Var var = super.getVarFromBinding(binding);
 		if(var != null)
 			return var;
 		
+		//if the variable isn't in scope, create it
 		return createVarFromBinding(binding, -2);
 	}
 	
