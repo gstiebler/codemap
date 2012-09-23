@@ -7,10 +7,8 @@ import gvpl.common.MemberId;
 import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 

@@ -11,7 +11,6 @@ import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
 import java.io.StringWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
