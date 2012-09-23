@@ -7,6 +7,7 @@ import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +61,16 @@ public class TestsUtil {
 		
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
-		fileDriver.print(astInterpreter.getGraph(), examplePath + "generated.dot", visualizer);
+		
+		FileWriter outFile = null;
+		try {
+			outFile = new FileWriter(examplePath + "generated.dot");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		fileDriver.print(astInterpreter.getGraph(), outFile, visualizer);
 
         Graph gvGraph = DotTree.getGraphFromDot(examplePath + testName + ".dot");
 		assertTrue(GraphCompare.isEqual(astInterpreter.getGraph(), gvGraph));

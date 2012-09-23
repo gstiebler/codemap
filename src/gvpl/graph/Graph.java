@@ -7,7 +7,11 @@ import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
 import gvpl.cdt.CppMaps.eValueType;
 import gvpl.common.Var;
+import gvpl.graphviz.FileDriver;
+import gvpl.graphviz.Visualizer;
 
+import java.io.StringWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -192,5 +196,16 @@ public class Graph {
 	
 	public void removeNode(GraphNode node) {
 		_graphNodes.remove(node);
+	}
+	
+	@Override
+	public String toString() {
+		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
+		Visualizer visualizer = new Visualizer(fileDriver);
+		
+		StringWriter outString = new StringWriter();		
+		fileDriver.print(this, outString, visualizer);
+		
+		return outString.toString();
 	}
 }

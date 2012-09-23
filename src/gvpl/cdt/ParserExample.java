@@ -5,6 +5,8 @@ import gvpl.graph.Graph;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +42,15 @@ public class ParserExample {
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
-		fileDriver.print(gvplGraph, File.examplesPath() + "first.dot", visualizer);
+		
+		FileWriter outFile = null;
+		try {
+			outFile = new FileWriter(File.examplesPath() + "first.dot");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		fileDriver.print(gvplGraph, outFile, visualizer);
 	}
 }

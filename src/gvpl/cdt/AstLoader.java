@@ -93,7 +93,14 @@ public class AstLoader {
 		if(var != null)
 			return var;
 		
-		return _parent.getVarFromBinding(binding);
+		if(_parent != null)
+			return _parent.getVarFromBinding(binding);
+		
+		var = _extToInVars.get(binding);
+		if(var != null)
+			return var;
+		
+		return null;
 	}
 	
 	

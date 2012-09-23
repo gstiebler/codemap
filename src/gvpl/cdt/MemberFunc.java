@@ -106,7 +106,7 @@ public class MemberFunc extends Function {
 	}
 	
 	
-
+ 
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function

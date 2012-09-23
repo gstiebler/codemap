@@ -1,12 +1,11 @@
 package gvpl.graphviz;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import gvpl.graph.Graph;
+
 import java.io.PrintWriter;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-
-import gvpl.graph.Graph;
 
 public class FileDriver implements IGraphOutput {
 
@@ -25,14 +24,8 @@ public class FileDriver implements IGraphOutput {
 		}
 	}
 
-	public void print(Graph graph, String filename, Visualizer visualizer) {
-		FileWriter outFile = null;
-		try {
-			outFile = new FileWriter(filename);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public void print(Graph graph, Writer outFile, Visualizer visualizer) {
+
 		out = new PrintWriter(outFile);
 		out.println("digraph G\n{");
 		out.println("rankdir=LR;");
