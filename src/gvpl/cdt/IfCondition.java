@@ -101,11 +101,11 @@ public class IfCondition {
 			
 			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
 
-			trueNode.addDependentNode(ifOpNode, parentBasicBlock, startingLine);
-			falseNode.addDependentNode(ifOpNode, parentBasicBlock, startingLine);
-			conditionNode.addDependentNode(ifOpNode, parentBasicBlock, startingLine);
+			trueNode.addDependentNode(ifOpNode, startingLine);
+			falseNode.addDependentNode(ifOpNode, startingLine);
+			conditionNode.addDependentNode(ifOpNode, startingLine);
 
-			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
+			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, startingLine);
 		}
 	}
 

@@ -128,7 +128,7 @@ public class InstructionLine {
 		}
 
 		GraphNode rhsValue = loadValue(rhsExpr);
-		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
+		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
 	}
 	
 	void loadConstructorInitializer(Var lhsVar, IASTExpression initExpr, int startingLine) {
@@ -220,7 +220,7 @@ public class InstructionLine {
 		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBasicBlock, startingLine);
+			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
 			return null;
 		}
 

@@ -166,7 +166,7 @@ public class Function extends AstLoader {
 							.get(declaredParameter.getFirstNode());
 
 					receivedParameter
-							.addDependentNode(declParamNodeInMainGraph, this, startingLine);
+							.addDependentNode(declParamNodeInMainGraph, startingLine);
 				}
 			}
 
@@ -204,7 +204,7 @@ public class Function extends AstLoader {
 		// Point the received values to the received parameters ([in]
 		// parameters)
 		if (callingParameterNode != null) {
-			callingParameterNode.addDependentNode(declParamNodeInMainGraph, this, startingLine);
+			callingParameterNode.addDependentNode(declParamNodeInMainGraph, startingLine);
 		}
 	}
 
@@ -226,7 +226,7 @@ public class Function extends AstLoader {
 		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
 				.getCurrentNode(startingLine));
 
-		callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, null, startingLine);
+		callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, startingLine);
 	}
 
 	private void setName(String name) {

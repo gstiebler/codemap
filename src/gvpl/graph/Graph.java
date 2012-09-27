@@ -94,7 +94,7 @@ public class Graph {
 			int onSL = oldNode.getStartingLine();
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
 				GraphNode mappedNode = map.get(dependentNode);
-				newNode.addDependentNode(mappedNode, astLoader, onSL);
+				newNode.addDependentNode(mappedNode, onSL);
 			}
 		}
 
@@ -140,14 +140,14 @@ public class Graph {
 		GraphNode un_op_node = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
 				startingLine);
 
-		val_node.addDependentNode(un_op_node, astLoader, startingLine);
+		val_node.addDependentNode(un_op_node, startingLine);
 
 		return un_op_node;
 	}
 
 	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
 		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION, startingLine);
-		val_node.addDependentNode(notOpNode, astLoader, startingLine);
+		val_node.addDependentNode(notOpNode, startingLine);
 
 		return notOpNode;
 	}
@@ -157,8 +157,8 @@ public class Graph {
 		GraphNode bin_op_node = addGraphNode(CppMaps._bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		val1_node.addDependentNode(bin_op_node, astLoader, startingLine);
-		val2_node.addDependentNode(bin_op_node, astLoader, startingLine);
+		val1_node.addDependentNode(bin_op_node, startingLine);
+		val2_node.addDependentNode(bin_op_node, startingLine);
 
 		return bin_op_node;
 	}
@@ -168,11 +168,11 @@ public class Graph {
 		GraphNode bin_op_node = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		lhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
-		rhs_node.addDependentNode(bin_op_node, astLoader, startingLine);
+		lhs_node.addDependentNode(bin_op_node, startingLine);
+		rhs_node.addDependentNode(bin_op_node, startingLine);
 
 		return lhs_var_decl
-				.receiveAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
+				.receiveAssign(NodeType.E_VARIABLE, bin_op_node, startingLine);
 	}
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {

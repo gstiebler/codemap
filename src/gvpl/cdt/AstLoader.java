@@ -159,7 +159,7 @@ public class AstLoader {
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName,
 			int startLine) {
 		Var var_decl = addVarDecl(functionName, type, null);
-		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, this, startLine);
+		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, startLine);
 	}
 
 	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
@@ -252,14 +252,12 @@ public class AstLoader {
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
-			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph,
-					astLoader, startingLine);
+			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, startingLine);
 		}
 
 		for(InExtVarPair writtenPair : writtenVars) {
 			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
-			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, astLoader,
-					startingLine);
+			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, startingLine);
 		}
 		
 		return map;

@@ -50,7 +50,7 @@ public class GraphNode {
 		return _name;
 	}
 
-	public void addDependentNode(GraphNode dependentNode, AstLoader astLoader, int startingLine) {
+	public void addDependentNode(GraphNode dependentNode, int startingLine) {
 		if (_dependentNodes.contains(dependentNode))
 		{
 			ErrorOutputter.warning("Already dependent!!");
@@ -66,14 +66,14 @@ public class GraphNode {
 	
 	public void merge(GraphNode node, int startingLine) {
 		for(GraphNode dependentNode : node._dependentNodes) {
-			addDependentNode(dependentNode, null, startingLine);
+			addDependentNode(dependentNode, startingLine);
 			dependentNode._sourceNodes.remove(node);
 			dependentNode._sourceNodes.add(this);
 		}
 		
 		for(GraphNode sourceNode : node._sourceNodes) {
 			sourceNode._dependentNodes.remove(node);
-			sourceNode.addDependentNode(this, null, startingLine);
+			sourceNode.addDependentNode(this, startingLine);
 		}
 	}
 
