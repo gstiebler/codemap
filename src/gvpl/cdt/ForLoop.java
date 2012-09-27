@@ -29,6 +29,7 @@ public class ForLoop extends AstLoader {
 
 		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
 		basicBlockLoader.load(body);
+		basicBlockLoader.addToExtGraph(startingLine);
 
 		_parent = _typeSource;
 		addSubGraph(gvplGraph, astLoader, startingLine);

@@ -1,16 +1,25 @@
 package gvpl.cdt;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import gvpl.cdt.AstLoader.InExtVarPair;
 import gvpl.common.Var;
-import gvpl.graph.GraphNode;
+import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+
+class PrevTrueFalse {
+	GraphNode _prev = null;
+	GraphNode _true = null;
+	GraphNode _false = null;
+}
 
 public class IfCondition {
 	
@@ -18,10 +27,14 @@ public class IfCondition {
 
 		IASTExpression condition = ifStatement.getConditionExpression();
 		GraphNode conditionNode = instructionLine.loadValue(condition);
+		
+		Graph graph = instructionLine.getGraph();
+		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
 
-		BasicBlock ifTrueBB = new BasicBlock(instructionLine.getParentBasicBlock(), instructionLine.getAstInterpreter());
+		Map<Var, PrevTrueFalse> mapPrevTrueFalse = new HashMap<Var, PrevTrueFalse>();
+		
+		BasicBlock ifTrueBB = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 		BasicBlock ifFalseBB = null;
-
 		List<InExtVarPair> ifTrueWrittenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ifFalseWrittenVars = null;
 		{
@@ -31,46 +44,69 @@ public class IfCondition {
 			ifTrueBB.load(thenClause);
 			
 			ifTrueBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifTrueWrittenVars, new ArrayList<InExtVarPair>(), startingLine);
-			//ifTrueBB.addToExtGraph(startingLine);
+			for(InExtVarPair trueWrittenVarPair : ifTrueWrittenVars) {
+				Var extVar = trueWrittenVarPair._ext;
+				GraphNode currExtNode = trueWrittenVarPair._ext.getCurrentNode(startingLine);
+				GraphNode currIntNode = trueWrittenVarPair._in.getCurrentNode(startingLine);
+				PrevTrueFalse prevTrueFalse = new PrevTrueFalse();
+				prevTrueFalse._prev = currExtNode;
+				prevTrueFalse._true = currIntNode;
+				mapPrevTrueFalse.put(extVar, prevTrueFalse);
+			}
+			
+			ifTrueBB.addToExtGraph(startingLine);
 		}
 
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null) {
 			int startingLine = elseClause.getFileLocation().getStartingLineNumber();
 			
-			GraphNode notCondition = instructionLine.getGraph().addNotOp(conditionNode, instructionLine.getParentBasicBlock(),
-					ifStatement.getFileLocation().getStartingLineNumber());
-
-			ifFalseBB = new BasicBlock(instructionLine.getParentBasicBlock(), instructionLine.getAstInterpreter());
+			ifFalseBB = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 			ifFalseBB.load(elseClause);
 
 			ifFalseWrittenVars = new ArrayList<InExtVarPair>();
 			ifFalseBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifFalseWrittenVars, new ArrayList<InExtVarPair>(), startingLine);
-			//ifFalseBB.addToExtGraph(startingLine);
+			for(InExtVarPair falseWrittenVarPair : ifFalseWrittenVars) {
+				Var extVar = falseWrittenVarPair._ext;
+				GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
+				GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode(startingLine);
+				
+				PrevTrueFalse prevTrueFalse = mapPrevTrueFalse.get(extVar);
+				if(prevTrueFalse == null)
+					prevTrueFalse = new PrevTrueFalse();
+				prevTrueFalse._prev = currExtNode;
+				prevTrueFalse._false = currIntNode;
+				mapPrevTrueFalse.put(extVar, prevTrueFalse);
+			}
+			
+			ifTrueBB.addToExtGraph(startingLine);
 		}
 		
-		
+		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
+		for(Map.Entry<Var, PrevTrueFalse> entry : mapPrevTrueFalse.entrySet()) {
+			Var extVar = entry.getKey();
+			PrevTrueFalse prevTrueFalse = entry.getValue();
+			
+			GraphNode trueNode;
+			GraphNode falseNode;
+			
+			trueNode = prevTrueFalse._true;
+			falseNode = prevTrueFalse._false;
+			
+			if(trueNode == null)
+				trueNode = prevTrueFalse._prev;
+			
+			if(falseNode == null)
+				falseNode = prevTrueFalse._prev;
+			
+			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
 
-		
-		
-		
-		
-		
-		
-		
-/*
-		Var var = varNodePair._varDecl;
-				
-		GraphNode ifTrue = var.getCurrentNode(startingLine);
-		GraphNode ifFalse = varNodePair._graphNode;
-				
-		GraphNode ifOpNode = _gvplGraph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+			trueNode.addDependentNode(ifOpNode, parentBasicBlock, startingLine);
+			falseNode.addDependentNode(ifOpNode, parentBasicBlock, startingLine);
+			conditionNode.addDependentNode(ifOpNode, parentBasicBlock, startingLine);
 
-		ifTrue.addDependentNode(ifOpNode, this, startingLine);
-		ifFalse.addDependentNode(ifOpNode, this, startingLine);
-		conditionNode.addDependentNode(ifOpNode, this, startingLine);
-
-		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);*/
+			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
+		}
 	}
 
 }

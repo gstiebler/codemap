@@ -55,6 +55,7 @@ public class InstructionLine {
 	}
 
 	public void load(IASTStatement statement) {
+		int startingLine = statement.getFileLocation().getStartingLineNumber();
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
@@ -91,6 +92,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
+			basicBlockLoader.addToExtGraph(startingLine);
 		} else
 			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}

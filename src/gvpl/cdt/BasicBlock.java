@@ -18,7 +18,6 @@ public class BasicBlock extends AstLoader {
 	}
 
 	public void load(IASTStatement baseStatement) {
-		int startingLine = baseStatement.getFileLocation().getStartingLineNumber();
 		IASTStatement[] statements = null;
 		if (baseStatement instanceof IASTCompoundStatement)
 			statements = ((IASTCompoundStatement) baseStatement).getStatements();
@@ -31,11 +30,9 @@ public class BasicBlock extends AstLoader {
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			instructionLine.load(statement);
 		}
-		
-		addToExtGraph(startingLine);
 	}
 	
-	void addToExtGraph(int startingLine) {
+	public void addToExtGraph(int startingLine) {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
