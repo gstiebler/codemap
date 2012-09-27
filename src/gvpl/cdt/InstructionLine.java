@@ -87,7 +87,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTReturnStatement) {
 			loadReturnStatement((IASTReturnStatement) statement);
 		} else if (statement instanceof IASTIfStatement) {
-			loadIfStatement((IASTIfStatement) statement);
+			IfCondition.loadIfCondition((IASTIfStatement) statement, this);
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
@@ -343,30 +343,6 @@ public class InstructionLine {
 				_parentBasicBlock, func_call.getFileLocation().getStartingLineNumber());
 	}
 
-	public void loadIfStatement(IASTIfStatement ifStatement) {
-		IASTExpression condition = ifStatement.getConditionExpression();
-		GraphNode conditionNode = loadValue(condition);
-
-		{
-			IASTStatement thenClause = ifStatement.getThenClause();
-			int startingLine = thenClause.getFileLocation().getStartingLineNumber();
-			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
-			basicBlockLoader.load(thenClause);
-			basicBlockLoader.addIf(conditionNode, startingLine);
-		}
-
-		IASTStatement elseClause = ifStatement.getElseClause();
-		if (elseClause != null) {
-			int startingLine = elseClause.getFileLocation().getStartingLineNumber();
-			GraphNode notCondition = _gvplGraph.addNotOp(conditionNode, _parentBasicBlock,
-					ifStatement.getFileLocation().getStartingLineNumber());
-
-			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
-			basicBlockLoader.load(elseClause);
-			basicBlockLoader.addIf(notCondition, startingLine);
-		}
-	}
-
 	/**
 	 * Returns the var that is pointed by the address For example, in "b = &d;"
 	 * the function receives "&d" and returns the variable of "d"
@@ -449,5 +425,17 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("problem");
 
 		return null;
+	}
+	
+	public AstLoader getParentBasicBlock() {
+		return _parentBasicBlock;
+	}
+	
+	public AstInterpreter getAstInterpreter() {
+		return _astInterpreter;
+	}
+	
+	public Graph getGraph() {
+		return _gvplGraph;
 	}
 }

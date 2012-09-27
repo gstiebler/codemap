@@ -174,17 +174,6 @@ public class Graph {
 		return lhs_var_decl
 				.receiveAssign(NodeType.E_VARIABLE, bin_op_node, astLoader, startingLine);
 	}
-
-	public void addIf(Var var, GraphNode ifTrue, GraphNode ifFalse, GraphNode condition,
-			AstLoader astLoader, int startingLine) {
-		GraphNode ifOpNode = addGraphNode("If", NodeType.E_OPERATION, startingLine);
-
-		ifTrue.addDependentNode(ifOpNode, astLoader, startingLine);
-		ifFalse.addDependentNode(ifOpNode, astLoader, startingLine);
-		condition.addDependentNode(ifOpNode, astLoader, startingLine);
-
-		var.receiveAssign(NodeType.E_VARIABLE, ifOpNode, null, startingLine);
-	}
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {
 		primaryNode.merge(secondaryNode, startingLine);

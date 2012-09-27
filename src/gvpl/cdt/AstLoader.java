@@ -198,7 +198,7 @@ public class AstLoader {
 		return _gvplGraph;
 	}
 
-	protected void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
 		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
 			Var extVar = getVarFromBinding(entry.getKey());
 			if(extVar == null) 

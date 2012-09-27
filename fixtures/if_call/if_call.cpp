@@ -15,18 +15,22 @@ int main() {
 		m = g / k;
 	}
 
-	int z, e, x = 0;
+	int z, e = 15, x = 0;
 	z = 30;
+	int f = 50;
+	int j = 60;
+	int p = 70;
 	
 	if(m > 5)
 	{
-		z = 40;
-		x = 11;
+		z = f;
+		x = p;
 		str1.h = 400.0;
 	}
 	else
 	{
-		z = 50;
-		x = 12;
+		z = j;
+		int r = 20;
+		e = r;
 	}
 }

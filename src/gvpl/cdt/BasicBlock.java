@@ -35,16 +35,6 @@ public class BasicBlock extends AstLoader {
 		addToExtGraph(startingLine);
 	}
 	
-	void addIf(GraphNode conditionNode, int startingLine) {
-		/*if (conditionNode != null) {
-			for (VarNodePair varNodePair : _writtenVar) {
-				Var var = varNodePair._varDecl;
-				_gvplGraph.addIf(var, var.getCurrentNode(startingLine), varNodePair._graphNode,
-						conditionNode, null, startingLine);
-			}
-		}*/
-	}
-	
 	void addToExtGraph(int startingLine) {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
