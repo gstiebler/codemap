@@ -6,7 +6,7 @@ import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
@@ -24,9 +24,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 
 public class AstInterpreter extends AstLoader {
 
-	private Map<IBinding, ClassDecl> _typeBindingToClass = new HashMap<IBinding, ClassDecl>();
-	private Map<TypeId, ClassDecl> _typeIdToClass = new HashMap<TypeId, ClassDecl>();
-	private Map<IBinding, Function> _funcIdMap = new HashMap<IBinding, Function>();
+	private Map<IBinding, ClassDecl> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDecl>();
+	private Map<TypeId, ClassDecl> _typeIdToClass = new LinkedHashMap<TypeId, ClassDecl>();
+	private Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
 	private TypeId _primitiveType = new TypeId();//the same for all primitive types
 
 	public AstInterpreter(Graph gvplGraph, IASTTranslationUnit root) {

@@ -8,7 +8,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +18,8 @@ import java.util.Map;
  */
 public class ClassVar extends Var {
 
-	Map<MemberId, Var> _memberInstances = new HashMap<MemberId, Var>();
-	Map<Var, MemberId> _memberIdFromInstace = new HashMap<Var, MemberId>();
+	Map<MemberId, Var> _memberInstances = new LinkedHashMap<MemberId, Var>();
+	Map<Var, MemberId> _memberIdFromInstace = new LinkedHashMap<Var, MemberId>();
 	
 	ClassDecl _classDecl;
 

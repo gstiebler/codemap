@@ -7,7 +7,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +31,7 @@ public class IfCondition {
 		Graph graph = instructionLine.getGraph();
 		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
 
-		Map<Var, PrevTrueFalse> mapPrevTrueFalse = new HashMap<Var, PrevTrueFalse>();
+		Map<Var, PrevTrueFalse> mapPrevTrueFalse = new LinkedHashMap<Var, PrevTrueFalse>();
 		
 		BasicBlock ifTrueBB = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 		BasicBlock ifFalseBB = null;

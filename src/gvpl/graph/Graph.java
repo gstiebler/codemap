@@ -12,7 +12,7 @@ import gvpl.graphviz.Visualizer;
 
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,7 +109,7 @@ public class Graph {
 	 * @return The map between the nodes in the old graph and in the new
 	 */
 	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {
-		Map<GraphNode, GraphNode> map = new HashMap<GraphNode, GraphNode>();
+		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
 		return map;

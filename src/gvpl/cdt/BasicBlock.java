@@ -5,7 +5,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -41,7 +41,7 @@ public class BasicBlock extends AstLoader {
 	 *         of the map no longer exists.
 	 */
 	public Map<GraphNode, GraphNode> addToExtGraph(int startingLine) {
-		Map<GraphNode, GraphNode> mergedNodes = new HashMap<GraphNode, GraphNode>();
+		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
 		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();

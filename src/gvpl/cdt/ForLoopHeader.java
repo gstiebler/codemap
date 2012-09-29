@@ -5,8 +5,8 @@ import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -22,7 +22,7 @@ public class ForLoopHeader extends AstLoader {
 	 * Maps the external variables (from external graph) to internal generated
 	 * variables
 	 */
-	private Map<Var, Var> _externalVars = new HashMap<Var, Var>();
+	private Map<Var, Var> _externalVars = new LinkedHashMap<Var, Var>();
 
 	public ForLoopHeader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		super(gvplGraph, parent, astInterpreter);

@@ -7,8 +7,8 @@ import gvpl.graphviz.FileDriver.PropertyPair;
 import gvpl.graphviz.Visualizer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -74,7 +74,7 @@ public class GraphCompare {
 	static void compareEdges(gvpl.graph.Graph gvplGraph, 
 			Map<String, Set<String>> gvEdges, List<NodeMatch> completeNodesMatch) {
 		
-		Map<GraphNode, DotTree.Node> gvplToGv = new HashMap<GraphNode, DotTree.Node>();
+		Map<GraphNode, DotTree.Node> gvplToGv = new LinkedHashMap<GraphNode, DotTree.Node>();
 
 		for (NodeMatch nodeMatch : completeNodesMatch) {
 			gvplToGv.put(nodeMatch._gvplNode, nodeMatch._gvNode);
@@ -92,7 +92,11 @@ public class GraphCompare {
 			for (GraphNode gvplDepNode : gvplNode.getDependentNodes()) {
 				DotTree.Node gvDepNode = gvplToGv.get(gvplDepNode);
 
-				assertTrue(gvNodeEdges.contains(gvDepNode.id));
+				String src = gvplNode._name + " (" + gvplNode.getId() + ")";
+				String dest = gvplDepNode._name + " (" + gvplDepNode.getId() + ")";
+
+				String msg = "Edge from " + src + " to " + dest + " not found.";
+				assertTrue(msg, gvNodeEdges.contains(gvDepNode.id));
 			}
 		}
 		
@@ -117,7 +121,7 @@ public class GraphCompare {
 	}
 
 	static Map<String, Set<String>> getEdges(DotTree.Graph gvGraph) {
-		Map<String, Set<String>> edges = new HashMap<String, Set<String>>();
+		Map<String, Set<String>> edges = new LinkedHashMap<String, Set<String>>();
 
 		for (DotTree.Node gvNode : gvGraph.getNodes()) {
 			edges.put(gvNode.id, new HashSet<String>());

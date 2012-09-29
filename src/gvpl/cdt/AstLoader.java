@@ -15,7 +15,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +45,8 @@ public class AstLoader {
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;
 	protected AstInterpreter _astInterpreter;
-	private Map<IBinding, Var> _localVariables = new HashMap<IBinding, Var>();
-	protected Map<IBinding, Var> _extToInVars = new HashMap<IBinding, Var>();
+	private Map<IBinding, Var> _localVariables = new LinkedHashMap<IBinding, Var>();
+	protected Map<IBinding, Var> _extToInVars = new LinkedHashMap<IBinding, Var>();
 
 	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		_gvplGraph = gvplGraph;

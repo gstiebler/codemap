@@ -2,8 +2,8 @@ package tests;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +14,7 @@ import org.cesta.parsers.dot.DotTree;
 public class ProcessedNodes {
 
 	public static SubGraphNodes process(DotTree.Graph gvGraph) {
-		Map<String, DotTree.Node> nodesByName = new HashMap<String, DotTree.Node>();
+		Map<String, DotTree.Node> nodesByName = new LinkedHashMap<String, DotTree.Node>();
 		nodesByName.putAll(gvGraph.nodes);
 
 		Map<String, List<DotTree.SubGraph>> subGraphsByParent = processSubGraphsByParent(gvGraph.subGraphs);
@@ -88,7 +88,7 @@ public class ProcessedNodes {
 	}
 
 	private static Map<String, List<DotTree.SubGraph>> processSubGraphsByParent(Set<DotTree.SubGraph> allSubGraphs) {
-		Map<String, List<DotTree.SubGraph>> result = new HashMap<String, List<DotTree.SubGraph>>();
+		Map<String, List<DotTree.SubGraph>> result = new LinkedHashMap<String, List<DotTree.SubGraph>>();
 		
 		for (DotTree.SubGraph subGraph : allSubGraphs) {
 			String parentName = subGraph.attributes.get("parent").replace("\"", "");

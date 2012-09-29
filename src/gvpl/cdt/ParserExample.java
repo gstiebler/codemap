@@ -7,7 +7,7 @@ import gvpl.graphviz.Visualizer;
 
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
@@ -29,7 +29,7 @@ public class ParserExample {
 
 		CodeReader reader = new CodeReader(code.toCharArray());
 		@SuppressWarnings("rawtypes")
-		Map definedSymbols = new HashMap();
+		Map definedSymbols = new LinkedHashMap();
 		String[] includePaths = new String[0];
 		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
 		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();

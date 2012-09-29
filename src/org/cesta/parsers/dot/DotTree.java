@@ -3,25 +3,31 @@
 package org.cesta.parsers.dot;
 
 import java.io.IOException;
-import java.util.Comparator;
-import java.util.Set;
-import java.util.List;
-import java.util.LinkedList;
 import java.util.HashSet;
-import java.util.Map;
-import java.util.HashMap;
-import java.util.TreeMap;
-import java.util.Vector;
 import java.util.Iterator;
-
-import org.antlr.runtime.*;
-import org.antlr.runtime.tree.*;
-
-import java.util.Stack;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Map;
-import java.util.HashMap;
+import java.util.Set;
+import java.util.Stack;
+
+import org.antlr.runtime.ANTLRFileStream;
+import org.antlr.runtime.BitSet;
+import org.antlr.runtime.CommonTokenStream;
+import org.antlr.runtime.EarlyExitException;
+import org.antlr.runtime.NoViableAltException;
+import org.antlr.runtime.RecognitionException;
+import org.antlr.runtime.RecognizerSharedState;
+import org.antlr.runtime.Token;
+import org.antlr.runtime.tree.CommonTree;
+import org.antlr.runtime.tree.CommonTreeAdaptor;
+import org.antlr.runtime.tree.CommonTreeNodeStream;
+import org.antlr.runtime.tree.Tree;
+import org.antlr.runtime.tree.TreeAdaptor;
+import org.antlr.runtime.tree.TreeNodeStream;
+import org.antlr.runtime.tree.TreeParser;
+import org.antlr.runtime.tree.TreeRuleReturnScope;
 
 /**
  * An ANTLRv3 capable DOT tree grammar. Rule "graph" is entry-point, which
@@ -208,14 +214,14 @@ public class DotTree extends TreeParser {
 	 */
 	public class Graph implements Comparable<Graph> {
 
-		public Map<String, String> attributes = new HashMap<String, String>();
-		public Map<String, String> graphAttributes = new HashMap<String, String>();
-		public Map<String, String> edgeAttributes = new HashMap<String, String>();
-		public Map<String, String> nodeAttributes = new HashMap<String, String>();
+		public Map<String, String> attributes = new LinkedHashMap<String, String>();
+		public Map<String, String> graphAttributes = new LinkedHashMap<String, String>();
+		public Map<String, String> edgeAttributes = new LinkedHashMap<String, String>();
+		public Map<String, String> nodeAttributes = new LinkedHashMap<String, String>();
 
-		public Map<String, Node> nodes = new HashMap<String, Node>();
+		public Map<String, Node> nodes = new LinkedHashMap<String, Node>();
 		public List<Edge> edges = new LinkedList<Edge>();
-		public Map<String, SubGraph> subGraphsMap = new HashMap<String, SubGraph>();
+		public Map<String, SubGraph> subGraphsMap = new LinkedHashMap<String, SubGraph>();
 		public Set<SubGraph> subGraphs = new HashSet<SubGraph>();
 
 		public boolean isStrict = false;
@@ -246,7 +252,7 @@ public class DotTree extends TreeParser {
 		}
 
 		public Map<Node, List<Node>> getTransitionMap() {
-			Map<Node, List<Node>> map = new HashMap<Node, List<Node>>();
+			Map<Node, List<Node>> map = new LinkedHashMap<Node, List<Node>>();
 			for (Edge e : edges) {
 				List<NodePair> pairs = e.getNodePairs();
 				for (NodePair np : pairs) {
@@ -323,7 +329,7 @@ public class DotTree extends TreeParser {
 	 */
 	public class Node implements Comparable {
 		public String id;
-		public Map<String, String> attributes = new HashMap<String, String>();
+		public Map<String, String> attributes = new LinkedHashMap<String, String>();
 
 		public Node(String id) {
 			setId(id);
@@ -396,7 +402,7 @@ public class DotTree extends TreeParser {
 	 * SubGraphs)
 	 */
 	public class Edge {
-		public Map<String, String> attributes = new HashMap<String, String>();
+		public Map<String, String> attributes = new LinkedHashMap<String, String>();
 		public List<Object> nodes = new LinkedList<Object>();
 
 		/**
@@ -1372,7 +1378,7 @@ public class DotTree extends TreeParser {
 
 		CommonTree ATTR_LIST19_tree = null;
 
-		retval.attributes = new HashMap<String, String>();
+		retval.attributes = new LinkedHashMap<String, String>();
 
 		try {
 			// DotTree.g:312:5: ( ^( ATTR_LIST ( attr )* ) )

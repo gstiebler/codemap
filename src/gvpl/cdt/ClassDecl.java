@@ -9,6 +9,7 @@ import gvpl.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,8 +29,8 @@ public class ClassDecl {
 	private IBinding _binding;
 	private String _name;
 
-	private Map<IBinding, ClassMember> _memberIdMap = new HashMap<IBinding, ClassMember>();
-	private Map<IBinding, MemberFunc> _memberFuncIdMap = new HashMap<IBinding, MemberFunc>();
+	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
+	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 	private Map<MemberId, ClassMember> _memberVarGraphNodes;
 
 	private MemberFunc _constructorFunc = null;
@@ -39,7 +40,7 @@ public class ClassDecl {
 		int startingLine = classDecl.getFileLocation().getStartingLineNumber();
 
 		_typeId = new TypeId();
-		_memberVarGraphNodes = new HashMap<MemberId, ClassMember>();
+		_memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
 
 		IASTName name = classDecl.getName();
 		_binding = name.resolveBinding();

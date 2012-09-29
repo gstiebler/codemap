@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import java.util.EnumMap;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
@@ -24,8 +24,8 @@ public abstract class CppMaps {
 		E_INVALID_TYPE, E_INT, E_FLOAT, E_DOUBLE, E_STRING, E_BOOL
 	}
 
-	static private Map<Integer, eBinOp> _bin_op_types = new HashMap<Integer, eBinOp>();
-	static private Map<Integer, eAssignBinOp> _assign_bin_op_types = new HashMap<Integer, eAssignBinOp>();
+	static private Map<Integer, eBinOp> _bin_op_types = new LinkedHashMap<Integer, eBinOp>();
+	static private Map<Integer, eAssignBinOp> _assign_bin_op_types = new LinkedHashMap<Integer, eAssignBinOp>();
 
 	static public Map<eBinOp, String> _bin_op_strings = new EnumMap<eBinOp, String>(eBinOp.class);
 	static public Map<eUnOp, String> _un_op_strings = new EnumMap<eUnOp, String>(eUnOp.class);

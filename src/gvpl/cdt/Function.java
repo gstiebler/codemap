@@ -15,6 +15,7 @@ import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -39,7 +40,7 @@ public class Function extends AstLoader {
 	private TypeId _returnType = null;
 
 	private String _externalName = "";
-	private Map<IBinding, FuncParameter> _parametersMap = new HashMap<IBinding, FuncParameter>();
+	private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 	private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
 	protected String _funcName;
 
