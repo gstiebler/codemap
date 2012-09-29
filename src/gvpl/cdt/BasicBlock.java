@@ -5,7 +5,9 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
@@ -32,7 +34,15 @@ public class BasicBlock extends AstLoader {
 		}
 	}
 	
-	public void addToExtGraph(int startingLine) {
+	/**
+	 * Add the nodes of the internal graph to the external graph
+	 * @param startingLine
+	 * @return Maps the nodes that were merged with others. The nodes in the key
+	 *         of the map no longer exists.
+	 */
+	public Map<GraphNode, GraphNode> addToExtGraph(int startingLine) {
+		Map<GraphNode, GraphNode> mergedNodes = new HashMap<GraphNode, GraphNode>();
+		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
@@ -46,6 +56,7 @@ public class BasicBlock extends AstLoader {
 			// if someone read from internal var
 			GraphNode extVarCurrNode = readPair._ext.getCurrentNode(startingLine);
 			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
+			mergedNodes.put(intVarFirstNode, extVarCurrNode);
 		}
 		
 		for (InExtVarPair writtenPair : writtenVars) {
@@ -58,12 +69,14 @@ public class BasicBlock extends AstLoader {
 			GraphNode extVarCurrNode = writtenPair._ext
 					.getCurrentNode(startingLine);
 			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode, startingLine);
-
+			mergedNodes.put(intVarCurrNode, extVarCurrNode);
 		}
 		
 		for(InExtVarPair ignoredPair : ignoredVars) {
 			extGraph.removeNode(ignoredPair._in.getFirstNode());
 		}
+		
+		return mergedNodes;
 	}
 
 }

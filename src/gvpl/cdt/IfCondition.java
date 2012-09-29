@@ -37,6 +37,8 @@ public class IfCondition {
 		BasicBlock ifFalseBB = null;
 		List<InExtVarPair> ifTrueWrittenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ifFalseWrittenVars = null;
+		Map<GraphNode, GraphNode> ifTrueMergedNodes = null;
+		Map<GraphNode, GraphNode> ifFalseMergedNodes = null;
 		{
 			IASTStatement thenClause = ifStatement.getThenClause();
 			int startingLine = thenClause.getFileLocation().getStartingLineNumber();
@@ -54,7 +56,7 @@ public class IfCondition {
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
 			}
 			
-			ifTrueBB.addToExtGraph(startingLine);
+			ifTrueMergedNodes = ifTrueBB.addToExtGraph(startingLine);
 		}
 
 		IASTStatement elseClause = ifStatement.getElseClause();
@@ -79,7 +81,7 @@ public class IfCondition {
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
 			}
 			
-			ifTrueBB.addToExtGraph(startingLine);
+			ifFalseMergedNodes = ifTrueBB.addToExtGraph(startingLine);
 		}
 		
 		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
@@ -98,6 +100,21 @@ public class IfCondition {
 			
 			if(falseNode == null)
 				falseNode = prevTrueFalse._prev;
+
+			//get the nodes in the current graph, if necessary
+			{
+				GraphNode newNode = ifTrueMergedNodes.get(trueNode);
+				if(newNode != null)
+					trueNode = newNode;
+			}	
+			{
+				GraphNode newNode = ifFalseMergedNodes.get(falseNode);
+				if(newNode != null)
+					falseNode = newNode;
+			}
+			
+			assert(trueNode != null);
+			assert(falseNode != null);
 			
 			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
 
