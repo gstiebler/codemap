@@ -47,7 +47,7 @@ public class Visualizer {
 	}
 	
 	private static String debugStr(GraphNode graphNode) {
-		//return " (" + graph_node.getStartingLine() + ")";
+		//return " (" + graphNode.getStartingLine() + ")";
 		//return "\\n(" + graphNode.getId() + ")";
 		return "";
 	}

@@ -1,8 +1,7 @@
 package gvpl.graph;
 
-import gvpl.cdt.AstLoader;
-import gvpl.common.Var;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;

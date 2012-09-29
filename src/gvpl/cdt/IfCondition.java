@@ -81,7 +81,7 @@ public class IfCondition {
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
 			}
 			
-			ifFalseMergedNodes = ifTrueBB.addToExtGraph(startingLine);
+			ifFalseMergedNodes = ifFalseBB.addToExtGraph(startingLine);
 		}
 		
 		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
