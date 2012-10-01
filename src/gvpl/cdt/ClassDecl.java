@@ -2,13 +2,12 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ErrorOutputter;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;

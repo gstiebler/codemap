@@ -7,9 +7,22 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
+import java.util.List;
+
+class PossiblePointedVar {
+	Var _var;
+	GraphNode _conditionNode;
+	
+	PossiblePointedVar(Var var, GraphNode conditionNode) {
+		_var = var;
+		_conditionNode = conditionNode;
+	}
+}
+
 public class MemAddressVar extends Var {
 
-	protected Var _pointedVar = null;
+	private List<PossiblePointedVar> _pointedVars = new ArrayList<PossiblePointedVar>();
 	GraphNode _lastPointedVarNode = null;
 
 	public MemAddressVar(Graph gvplGraph, String name, TypeId type) {
@@ -17,23 +30,28 @@ public class MemAddressVar extends Var {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void setPointedVarDecl(Var pointedVarDecl) {
-		_pointedVar = pointedVarDecl;
+	public void setPointedVar(Var pointedVarDecl) {
+		_pointedVars.clear();
+		_pointedVars.add(new PossiblePointedVar(pointedVarDecl, null));
+	}
+	
+	public Var getPointedVar() {
+		return _pointedVars.get(0)._var;
 	}
 
 	@Override
 	public void updateNode(GraphNode node) {
-		_pointedVar.updateNode(node);
+		getPointedVar().updateNode(node);
 	}
 
 	@Override
 	public GraphNode getFirstNode() {
-		return _pointedVar.getFirstNode();
+		return getPointedVar().getFirstNode();
 	}
 
 	@Override
 	public GraphNode getCurrentNode(int startingLine) {
-		GraphNode currentPointedVarNode = _pointedVar.getCurrentNode(startingLine);
+		GraphNode currentPointedVarNode = getPointedVar().getCurrentNode(startingLine);
 		if (currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
 			currentPointedVarNode.addDependentNode(_currGraphNode, startingLine);
@@ -50,20 +68,21 @@ public class MemAddressVar extends Var {
 		//Cria-se um novo nó para a variável "ponteiro"
 		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, startLocation);
 		//A variável apontada recebe o nó recém-criado
-		return _pointedVar.receiveAssign(lhs_type, newNode, startLocation);
+		return getPointedVar().receiveAssign(lhs_type, newNode, startLocation);
 	}
 
 	@Override
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine) {
-		_pointedVar = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
+		Var var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astLoader, astInterpreter);
-		_pointedVar.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+		setPointedVar(var);
+		var.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}
 
 	@Override
 	public Var getVarInMem() {
-		return _pointedVar;
+		return getPointedVar();
 	}
 
 }

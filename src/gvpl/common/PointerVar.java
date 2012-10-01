@@ -22,9 +22,10 @@ public class PointerVar extends MemAddressVar {
 	@Override
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
-		_pointedVar = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
+		Var var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astLoader, astInterpreter);
-		_pointedVar.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
+		setPointedVar(var);
+		var.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
 				startingLine);
 	}
 	

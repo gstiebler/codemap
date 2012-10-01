@@ -252,7 +252,7 @@ public class InstructionLine {
 			return;
 		} else {
 			Var rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
-			lhsPointer.setPointedVarDecl(rhsPointer);
+			lhsPointer.setPointedVar(rhsPointer);
 			return;
 		}
 	}
