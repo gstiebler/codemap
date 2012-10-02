@@ -4,6 +4,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
@@ -239,6 +240,20 @@ public class AstLoader {
 		
 		if(!accessed)
 			ignored.add(varPair);
+	}
+
+	//TODO prepare to read member vars of each var. It's only working
+	// for primitive types
+	public List<MemAddressVar> getAccessedMemAddressVar() {
+		List<MemAddressVar> vars = new ArrayList<MemAddressVar>();
+		
+		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
+			Var var = entry.getValue();
+			if(var instanceof MemAddressVar)
+				vars.add((MemAddressVar) var);
+		}
+		
+		return vars;
 	}
 	
 	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {

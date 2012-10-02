@@ -22,17 +22,12 @@ class PrevTrueFalse {
 }
 
 public class IfCondition {
-	
-	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
 
-		IASTExpression condition = ifStatement.getConditionExpression();
-		GraphNode conditionNode = instructionLine.loadValue(condition);
-		
-		Graph graph = instructionLine.getGraph();
+	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
 		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
 
 		Map<Var, PrevTrueFalse> mapPrevTrueFalse = new LinkedHashMap<Var, PrevTrueFalse>();
-		
+
 		BasicBlock ifTrueBB = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 		BasicBlock ifFalseBB = null;
 		List<InExtVarPair> ifTrueWrittenVars = new ArrayList<InExtVarPair>();
@@ -42,11 +37,12 @@ public class IfCondition {
 		{
 			IASTStatement thenClause = ifStatement.getThenClause();
 			int startingLine = thenClause.getFileLocation().getStartingLineNumber();
-			
+
 			ifTrueBB.load(thenClause);
-			
-			ifTrueBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifTrueWrittenVars, new ArrayList<InExtVarPair>(), startingLine);
-			for(InExtVarPair trueWrittenVarPair : ifTrueWrittenVars) {
+
+			ifTrueBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifTrueWrittenVars,
+					new ArrayList<InExtVarPair>(), startingLine);
+			for (InExtVarPair trueWrittenVarPair : ifTrueWrittenVars) {
 				Var extVar = trueWrittenVarPair._ext;
 				GraphNode currExtNode = trueWrittenVarPair._ext.getCurrentNode(startingLine);
 				GraphNode currIntNode = trueWrittenVarPair._in.getCurrentNode(startingLine);
@@ -55,67 +51,79 @@ public class IfCondition {
 				prevTrueFalse._true = currIntNode;
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
 			}
-			
+
 			ifTrueMergedNodes = ifTrueBB.addToExtGraph(startingLine);
 		}
 
 		IASTStatement elseClause = ifStatement.getElseClause();
 		if (elseClause != null) {
 			int startingLine = elseClause.getFileLocation().getStartingLineNumber();
-			
+
 			ifFalseBB = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 			ifFalseBB.load(elseClause);
 
 			ifFalseWrittenVars = new ArrayList<InExtVarPair>();
-			ifFalseBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifFalseWrittenVars, new ArrayList<InExtVarPair>(), startingLine);
-			for(InExtVarPair falseWrittenVarPair : ifFalseWrittenVars) {
+			ifFalseBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifFalseWrittenVars,
+					new ArrayList<InExtVarPair>(), startingLine);
+			for (InExtVarPair falseWrittenVarPair : ifFalseWrittenVars) {
 				Var extVar = falseWrittenVarPair._ext;
 				GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
 				GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode(startingLine);
-				
+
 				PrevTrueFalse prevTrueFalse = mapPrevTrueFalse.get(extVar);
-				if(prevTrueFalse == null)
+				if (prevTrueFalse == null)
 					prevTrueFalse = new PrevTrueFalse();
 				prevTrueFalse._prev = currExtNode;
 				prevTrueFalse._false = currIntNode;
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
 			}
-			
+
 			ifFalseMergedNodes = ifFalseBB.addToExtGraph(startingLine);
 		}
+
+		createIfNodes(ifStatement, mapPrevTrueFalse, ifTrueMergedNodes, ifFalseMergedNodes,
+				instructionLine);
+	}
+
+	static void createIfNodes(IASTIfStatement ifStatement,
+			Map<Var, PrevTrueFalse> mapPrevTrueFalse, Map<GraphNode, GraphNode> ifTrueMergedNodes,
+			Map<GraphNode, GraphNode> ifFalseMergedNodes, InstructionLine instructionLine) {
 		
 		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
-		for(Map.Entry<Var, PrevTrueFalse> entry : mapPrevTrueFalse.entrySet()) {
+		IASTExpression condition = ifStatement.getConditionExpression();
+		GraphNode conditionNode = instructionLine.loadValue(condition);
+		Graph graph = instructionLine.getGraph();
+		for (Map.Entry<Var, PrevTrueFalse> entry : mapPrevTrueFalse.entrySet()) {
 			Var extVar = entry.getKey();
 			PrevTrueFalse prevTrueFalse = entry.getValue();
-			
+
 			GraphNode trueNode;
 			GraphNode falseNode;
-			
+
 			trueNode = prevTrueFalse._true;
 			falseNode = prevTrueFalse._false;
-			
-			if(trueNode == null)
+
+			if (trueNode == null)
 				trueNode = prevTrueFalse._prev;
-			
-			if(falseNode == null)
+
+			if (falseNode == null)
 				falseNode = prevTrueFalse._prev;
 
-			//get the nodes in the current graph, if necessary
+			// get the nodes in the current graph, if necessary
 			{
 				GraphNode newNode = ifTrueMergedNodes.get(trueNode);
-				if(newNode != null)
+				if (newNode != null)
 					trueNode = newNode;
-			}	
+			}
 			{
 				GraphNode newNode = ifFalseMergedNodes.get(falseNode);
-				if(newNode != null)
+				if (newNode != null)
 					falseNode = newNode;
 			}
-			
-			assert(trueNode != null);
-			assert(falseNode != null);
-			
+
+			assert (trueNode != null);
+			assert (falseNode != null);
+
 			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
 
 			trueNode.addDependentNode(ifOpNode, startingLine);

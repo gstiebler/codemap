@@ -24,7 +24,7 @@ public class PointerVar extends MemAddressVar {
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		Var var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astLoader, astInterpreter);
-		setPointedVar(var);
+		initializePointedVar(var);
 		var.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
 				startingLine);
 	}
