@@ -6,7 +6,6 @@ int main() {
 	c = 20;
 		
 	int m = 6;
-	
 	if(m > 5)
 	{
 		a = &b;

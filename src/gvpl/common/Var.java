@@ -112,4 +112,12 @@ public class Var {
 	public VarInfo getVarInfo() {
 		return new VarInfo(_type, IndirectionType.E_VARIABLE);
 	}
+	
+	public boolean onceRead() {
+		return _firstGraphNode.getNumDependentNodes() > 0;
+	}
+	
+	public boolean onceWritten() {
+		return _currGraphNode.getNumSourceNodes() > 0;
+	}
 }

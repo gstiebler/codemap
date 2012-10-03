@@ -41,6 +41,8 @@ public class MemAddressVar extends Var {
 	private PossiblePointedVar _possiblePointedVar = new PossiblePointedVar();
 	private boolean _hasReceivedVar = false;
 	GraphNode _lastPointedVarNode = null;
+	boolean _onceRead = false;
+	boolean _onceWritten = false;
 
 	public MemAddressVar(Graph gvplGraph, String name, TypeId type) {
 		super(gvplGraph, name, type);
@@ -73,15 +75,18 @@ public class MemAddressVar extends Var {
 	public GraphNode getFirstNode() {
 		return getPointedVar().getFirstNode();
 	}
-
+	
 	@Override
 	public GraphNode getCurrentNode(int startingLine) {
-		GraphNode currentPointedVarNode = getPointedVar().getCurrentNode(startingLine);
+		Var pointedVar = getPointedVar();
+		if(pointedVar == null)
+			return null;
+		GraphNode currentPointedVarNode = pointedVar.getCurrentNode(startingLine);
 		if (currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
 			currentPointedVarNode.addDependentNode(_currGraphNode, startingLine);
 		}
-
+		_onceRead = true;
 		return _currGraphNode;
 	}
 
@@ -92,6 +97,7 @@ public class MemAddressVar extends Var {
 	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node, int startLocation) {
 		// Cria-se um novo nó para a variável "ponteiro"
 		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, startLocation);
+		_onceWritten = true;
 		// A variável apontada recebe o nó recém-criado
 		return getPointedVar().receiveAssign(lhs_type, newNode, startLocation);
 	}
@@ -113,6 +119,16 @@ public class MemAddressVar extends Var {
 	public void setIf(GraphNode conditionNode, MemAddressVar varTrue, MemAddressVar varFalse) {
 		_possiblePointedVar.setPossibleVars(conditionNode, varTrue._possiblePointedVar,
 				varFalse._possiblePointedVar);
+	}
+	
+	@Override
+	public boolean onceRead() {
+		return _onceRead;
+	}
+	
+	@Override
+	public boolean onceWritten() {
+		return _onceWritten;
 	}
 
 }

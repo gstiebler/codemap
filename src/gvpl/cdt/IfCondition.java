@@ -1,6 +1,8 @@
 package gvpl.cdt;
 
+import gvpl.cdt.AstLoader.InExtMAVarPair;
 import gvpl.cdt.AstLoader.InExtVarPair;
+import gvpl.common.MemAddressVar;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -15,10 +17,16 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-class PrevTrueFalse {
+class PrevTrueFalseNode {
 	GraphNode _prev = null;
 	GraphNode _true = null;
 	GraphNode _false = null;
+}
+
+class PrevTrueFalseMemVar {
+	MemAddressVar _prev = null;
+	MemAddressVar _true = null;
+	MemAddressVar _false = null;
 }
 
 public class IfCondition {
@@ -26,12 +34,15 @@ public class IfCondition {
 	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
 		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
 
-		Map<Var, PrevTrueFalse> mapPrevTrueFalse = new LinkedHashMap<Var, PrevTrueFalse>();
+		Map<Var, PrevTrueFalseNode> mapPrevTrueFalse = new LinkedHashMap<Var, PrevTrueFalseNode>();
+		Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<Var, PrevTrueFalseMemVar>();
 
 		BasicBlock ifTrueBB = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 		BasicBlock ifFalseBB = null;
+
 		List<InExtVarPair> ifTrueWrittenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ifFalseWrittenVars = null;
+
 		Map<GraphNode, GraphNode> ifTrueMergedNodes = null;
 		Map<GraphNode, GraphNode> ifFalseMergedNodes = null;
 		{
@@ -46,10 +57,18 @@ public class IfCondition {
 				Var extVar = trueWrittenVarPair._ext;
 				GraphNode currExtNode = trueWrittenVarPair._ext.getCurrentNode(startingLine);
 				GraphNode currIntNode = trueWrittenVarPair._in.getCurrentNode(startingLine);
-				PrevTrueFalse prevTrueFalse = new PrevTrueFalse();
+				PrevTrueFalseNode prevTrueFalse = new PrevTrueFalseNode();
 				prevTrueFalse._prev = currExtNode;
 				prevTrueFalse._true = currIntNode;
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
+			}
+
+			List<InExtMAVarPair> trueAddressVars = ifTrueBB.getAccessedMemAddressVar();
+			for (InExtMAVarPair pair : trueAddressVars) {
+				PrevTrueFalseMemVar prevTrueFalse = new PrevTrueFalseMemVar();
+				prevTrueFalse._prev = pair._ext;
+				prevTrueFalse._true = pair._in;
+				mapPrevTrueFalseMV.put(pair._ext, prevTrueFalse);
 			}
 
 			ifTrueMergedNodes = ifTrueBB.addToExtGraph(startingLine);
@@ -70,38 +89,50 @@ public class IfCondition {
 				GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
 				GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode(startingLine);
 
-				PrevTrueFalse prevTrueFalse = mapPrevTrueFalse.get(extVar);
+				PrevTrueFalseNode prevTrueFalse = mapPrevTrueFalse.get(extVar);
 				if (prevTrueFalse == null)
-					prevTrueFalse = new PrevTrueFalse();
+					prevTrueFalse = new PrevTrueFalseNode();
 				prevTrueFalse._prev = currExtNode;
 				prevTrueFalse._false = currIntNode;
 				mapPrevTrueFalse.put(extVar, prevTrueFalse);
 			}
 
+			List<InExtMAVarPair> falseAddressVars = ifFalseBB.getAccessedMemAddressVar();
+			for (InExtMAVarPair pair : falseAddressVars) {
+				PrevTrueFalseMemVar prevTrueFalse = mapPrevTrueFalseMV.get(pair._ext);
+				if (prevTrueFalse == null)
+					prevTrueFalse = new PrevTrueFalseMemVar();
+				prevTrueFalse._prev = pair._ext;
+				prevTrueFalse._false = pair._in;
+				mapPrevTrueFalseMV.put(pair._ext, prevTrueFalse);
+			}
+
 			ifFalseMergedNodes = ifFalseBB.addToExtGraph(startingLine);
 		}
 
+		IASTExpression condition = ifStatement.getConditionExpression();
+		GraphNode conditionNode = instructionLine.loadValue(condition);
+
 		createIfNodes(ifStatement, mapPrevTrueFalse, ifTrueMergedNodes, ifFalseMergedNodes,
-				instructionLine);
+				conditionNode, instructionLine);
+	
+		mergeIfMAV(mapPrevTrueFalseMV, conditionNode);
 	}
 
 	static void createIfNodes(IASTIfStatement ifStatement,
-			Map<Var, PrevTrueFalse> mapPrevTrueFalse, Map<GraphNode, GraphNode> ifTrueMergedNodes,
-			Map<GraphNode, GraphNode> ifFalseMergedNodes, InstructionLine instructionLine) {
-		
+			Map<Var, PrevTrueFalseNode> mapPrevTrueFalse,
+			Map<GraphNode, GraphNode> ifTrueMergedNodes,
+			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode,
+			InstructionLine instructionLine) {
+
 		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
-		IASTExpression condition = ifStatement.getConditionExpression();
-		GraphNode conditionNode = instructionLine.loadValue(condition);
 		Graph graph = instructionLine.getGraph();
-		for (Map.Entry<Var, PrevTrueFalse> entry : mapPrevTrueFalse.entrySet()) {
+		for (Map.Entry<Var, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
 			Var extVar = entry.getKey();
-			PrevTrueFalse prevTrueFalse = entry.getValue();
+			PrevTrueFalseNode prevTrueFalse = entry.getValue();
 
-			GraphNode trueNode;
-			GraphNode falseNode;
-
-			trueNode = prevTrueFalse._true;
-			falseNode = prevTrueFalse._false;
+			GraphNode trueNode = prevTrueFalse._true;
+			GraphNode falseNode = prevTrueFalse._false;
 
 			if (trueNode == null)
 				trueNode = prevTrueFalse._prev;
@@ -134,4 +165,22 @@ public class IfCondition {
 		}
 	}
 
+	//TODO convert internal to external vars
+	static void mergeIfMAV(Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV, GraphNode conditionNode) {
+		for (Map.Entry<Var, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
+			MemAddressVar extVar = (MemAddressVar) entry.getKey();
+			PrevTrueFalseMemVar prevTrueFalse = entry.getValue();
+
+			MemAddressVar trueMAV = prevTrueFalse._true;
+			MemAddressVar falseMAV = prevTrueFalse._false;
+
+			if (trueMAV == null)
+				trueMAV = prevTrueFalse._prev;
+
+			if (falseMAV == null)
+				falseMAV = prevTrueFalse._prev;
+
+			extVar.setIf(conditionNode, trueMAV, falseMAV);
+		}
+	}
 }

@@ -42,6 +42,18 @@ public class AstLoader {
 			_ext = ext;
 		}
 	}
+
+	class InExtMAVarPair {
+		MemAddressVar _in;
+		MemAddressVar _ext;
+		
+		public InExtMAVarPair(MemAddressVar in, MemAddressVar ext) {
+			if(ext == null)
+				ErrorOutputter.fatalError("ext cannot be null");
+			_in = in;
+			_ext = ext;
+		}
+	}
 	
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;
@@ -226,14 +238,12 @@ public class AstLoader {
 		
 		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
 		boolean accessed = false;
-		GraphNode intVarFirstNode = intVar.getFirstNode();
-		if (intVarFirstNode.getNumDependentNodes() > 0) {
+		if (intVar.onceRead()) {
 			read.add(varPair);
 			accessed = true;
 		}
 		
-		GraphNode intVarCurrNode = intVar.getCurrentNode(startingLine);
-		if(intVarCurrNode.getNumSourceNodes() > 0) {
+		if(intVar.onceWritten()) {
 			written.add(varPair);
 			accessed = true;
 		}
@@ -244,13 +254,16 @@ public class AstLoader {
 
 	//TODO prepare to read member vars of each var. It's only working
 	// for primitive types
-	public List<MemAddressVar> getAccessedMemAddressVar() {
-		List<MemAddressVar> vars = new ArrayList<MemAddressVar>();
+	public List<InExtMAVarPair> getAccessedMemAddressVar() {
+		List<InExtMAVarPair> vars = new ArrayList<InExtMAVarPair>();
 		
 		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
-			Var var = entry.getValue();
-			if(var instanceof MemAddressVar)
-				vars.add((MemAddressVar) var);
+			Var intVar = entry.getValue();
+			if(intVar instanceof MemAddressVar) {
+				MemAddressVar extVar = (MemAddressVar) getVarFromBinding(entry.getKey());
+				
+				vars.add(new InExtMAVarPair((MemAddressVar)intVar, extVar));
+			}
 		}
 		
 		return vars;
