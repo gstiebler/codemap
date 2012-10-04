@@ -1,40 +1,13 @@
 package gvpl.common;
 
+import java.util.Map;
+
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
-
-class PossiblePointedVar {
-	PossiblePointedVar _varTrue = null;
-	PossiblePointedVar _varFalse = null;
-	GraphNode _conditionNode = null;
-	Var _finalVar = null;
-
-	PossiblePointedVar() {
-
-	}
-
-	PossiblePointedVar(Var finalVar) {
-		setVar(finalVar);
-
-	}
-
-	void setVar(Var finalVar) {
-		_finalVar = finalVar;
-		_conditionNode = null;
-	}
-
-	void setPossibleVars(GraphNode conditionNode, PossiblePointedVar varTrue,
-			PossiblePointedVar varFalse) {
-		_conditionNode = conditionNode;
-		_varTrue = varTrue;
-		_varFalse = varFalse;
-		_finalVar = null;
-	}
-}
 
 public class MemAddressVar extends Var {
 
@@ -79,8 +52,9 @@ public class MemAddressVar extends Var {
 	@Override
 	public GraphNode getCurrentNode(int startingLine) {
 		Var pointedVar = getPointedVar();
-		if(pointedVar == null)
-			return null;
+		if(pointedVar == null) {
+			return _possiblePointedVar.getIfNode(_gvplGraph, startingLine);
+		}
 		GraphNode currentPointedVarNode = pointedVar.getCurrentNode(startingLine);
 		if (currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
@@ -129,6 +103,22 @@ public class MemAddressVar extends Var {
 	@Override
 	public boolean onceWritten() {
 		return _onceWritten;
+	}
+	
+	public MemAddressVar updateInternalVars(Map<Var, Var> inToExtVar) {
+		updateInternalVarsRecursive(_possiblePointedVar, inToExtVar);
+		
+		return this;
+	}
+	
+	private void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<Var, Var> inToExtVar) {
+		if(possiblePointedVar == null)
+			return;
+		
+		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
+		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
+		
+		possiblePointedVar._finalVar = inToExtVar.get(possiblePointedVar._finalVar);
 	}
 
 }

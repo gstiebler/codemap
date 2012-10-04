@@ -211,45 +211,52 @@ public class AstLoader {
 		return _gvplGraph;
 	}
 
-	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
+			List<InExtVarPair> ignored, Map<Var, Var> inToExtMap, int startingLine) {
 		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
 			Var extVar = getVarFromBinding(entry.getKey());
-			if(extVar == null) 
+			if (extVar == null)
 				ErrorOutputter.fatalError("extVar cannot be null");
-			
-			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, startingLine);
+
+			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap, 
+					startingLine);
 		}
 	}
 	
-	private void getAccessedVarsRecursive(Var intVar, Var extVar, List<InExtVarPair> read, List<InExtVarPair> written, List<InExtVarPair> ignored, int startingLine) {
+	private void getAccessedVarsRecursive(Var intVar, Var extVar, List<InExtVarPair> read,
+			List<InExtVarPair> written, List<InExtVarPair> ignored, Map<Var, Var> inToExtMap,
+			int startingLine) {
 		Var extVarInMem = extVar.getVarInMem();
 		Var intVarInMem = intVar.getVarInMem();
-		if(intVarInMem instanceof ClassVar) {
+		if (intVarInMem instanceof ClassVar) {
 			ClassVar extClassVar = (ClassVar) extVarInMem;
 			ClassVar intClassVar = (ClassVar) intVarInMem;
-			for(MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
+			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
 				Var memberExtVar = extClassVar.getMember(memberId);
 				Var memberIntVar = intClassVar.getMember(memberId);
-				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, startingLine);
+				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap,
+						startingLine);
 			}
-			
+
 			return;
 		}
-		
+
 		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
 		boolean accessed = false;
 		if (intVar.onceRead()) {
 			read.add(varPair);
 			accessed = true;
 		}
-		
-		if(intVar.onceWritten()) {
+
+		if (intVar.onceWritten()) {
 			written.add(varPair);
 			accessed = true;
 		}
-		
-		if(!accessed)
+
+		if (!accessed)
 			ignored.add(varPair);
+		
+		inToExtMap.put(intVar, extVar);
 	}
 
 	//TODO prepare to read member vars of each var. It's only working
@@ -276,7 +283,7 @@ public class AstLoader {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, startingLine);
+		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<Var, Var>(), startingLine);
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());

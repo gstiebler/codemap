@@ -45,6 +45,9 @@ public class IfCondition {
 
 		Map<GraphNode, GraphNode> ifTrueMergedNodes = null;
 		Map<GraphNode, GraphNode> ifFalseMergedNodes = null;
+
+		Map<Var, Var> inToExtVarTrue = new LinkedHashMap<Var, Var>();
+		Map<Var, Var> inToExtVarFalse = new LinkedHashMap<Var, Var>();
 		{
 			IASTStatement thenClause = ifStatement.getThenClause();
 			int startingLine = thenClause.getFileLocation().getStartingLineNumber();
@@ -52,7 +55,7 @@ public class IfCondition {
 			ifTrueBB.load(thenClause);
 
 			ifTrueBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifTrueWrittenVars,
-					new ArrayList<InExtVarPair>(), startingLine);
+					new ArrayList<InExtVarPair>(), inToExtVarTrue, startingLine);
 			for (InExtVarPair trueWrittenVarPair : ifTrueWrittenVars) {
 				Var extVar = trueWrittenVarPair._ext;
 				GraphNode currExtNode = trueWrittenVarPair._ext.getCurrentNode(startingLine);
@@ -83,7 +86,7 @@ public class IfCondition {
 
 			ifFalseWrittenVars = new ArrayList<InExtVarPair>();
 			ifFalseBB.getAccessedVars(new ArrayList<InExtVarPair>(), ifFalseWrittenVars,
-					new ArrayList<InExtVarPair>(), startingLine);
+					new ArrayList<InExtVarPair>(), inToExtVarFalse, startingLine);
 			for (InExtVarPair falseWrittenVarPair : ifFalseWrittenVars) {
 				Var extVar = falseWrittenVarPair._ext;
 				GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
@@ -115,8 +118,8 @@ public class IfCondition {
 
 		createIfNodes(ifStatement, mapPrevTrueFalse, ifTrueMergedNodes, ifFalseMergedNodes,
 				conditionNode, instructionLine);
-	
-		mergeIfMAV(mapPrevTrueFalseMV, conditionNode);
+
+		mergeIfMAV(mapPrevTrueFalseMV, conditionNode, inToExtVarTrue, inToExtVarFalse);
 	}
 
 	static void createIfNodes(IASTIfStatement ifStatement,
@@ -165,14 +168,15 @@ public class IfCondition {
 		}
 	}
 
-	//TODO convert internal to external vars
-	static void mergeIfMAV(Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV, GraphNode conditionNode) {
+	// TODO convert internal to external vars
+	static void mergeIfMAV(Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
+			GraphNode conditionNode, Map<Var, Var> inToExtVarTrue, Map<Var, Var> inToExtVarFalse) {
 		for (Map.Entry<Var, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
 			MemAddressVar extVar = (MemAddressVar) entry.getKey();
 			PrevTrueFalseMemVar prevTrueFalse = entry.getValue();
 
-			MemAddressVar trueMAV = prevTrueFalse._true;
-			MemAddressVar falseMAV = prevTrueFalse._false;
+			MemAddressVar trueMAV = prevTrueFalse._true.updateInternalVars(inToExtVarTrue);
+			MemAddressVar falseMAV = prevTrueFalse._false.updateInternalVars(inToExtVarFalse);
 
 			if (trueMAV == null)
 				trueMAV = prevTrueFalse._prev;

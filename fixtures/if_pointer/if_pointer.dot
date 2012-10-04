@@ -1,0 +1,26 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+	node_000001 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=5 ]
+	node_000002 [ label = "b", startingline=5 ]
+	node_000003 [ label = "20", style=filled, fillcolor="#E9FFE9", startingline=6 ]
+	node_000004 [ label = "c", startingline=6 ]
+	node_000005 [ label = "6", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000006 [ label = "m", startingline=8 ]
+	node_000007 [ label = "a_pointed", startingline=11 ]
+	node_000009 [ label = "a_pointed", startingline=15 ]
+	node_000011 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=9 ]
+	node_000012 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=9 ]
+	node_000013 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
+	node_000014 [ label = "d", startingline=18 ]
+	node_000001 -> node_000002
+	node_000002 -> node_000013
+	node_000003 -> node_000004
+	node_000004 -> node_000013
+	node_000005 -> node_000006
+	node_000006 -> node_000012
+	node_000011 -> node_000012
+	node_000012 -> node_000013
+	node_000013 -> node_000014
+}
