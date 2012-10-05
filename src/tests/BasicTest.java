@@ -99,6 +99,11 @@ public class BasicTest {
 		TestsUtil.baseTest("if_pointer");
 	}
 
+	@Test
+	public void inheritance() {
+		TestsUtil.baseTest("inheritance");
+	}
+
 	/*@Test
 	public void polymorphism() {
 		TestsUtil.baseTest("polymorphism");
