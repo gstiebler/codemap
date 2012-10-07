@@ -104,9 +104,9 @@ public class BasicTest {
 		TestsUtil.baseTest("inheritance");
 	}
 
-	/*@Test
+	@Test
 	public void polymorphism() {
 		TestsUtil.baseTest("polymorphism");
-	}*/
+	}
 	
 }

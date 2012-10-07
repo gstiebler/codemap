@@ -31,7 +31,7 @@ public class ClassVar extends Var {
 
 		// For each member of the struct, create a variable instance of the
 		// member
-		for (Map.Entry<MemberId, ClassMember> entry : classDecl.getMemberVarGraphNodes()) {
+		for (Map.Entry<MemberId, ClassMember> entry : classDecl.getMembersMap()) {
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();

@@ -124,16 +124,20 @@ public class ClassDecl {
 		}
 		
 		return null;
-		
-		
 	}
 
 	public MemberFunc getMemberFunc(IBinding binding) {
-		return _memberFuncIdMap.get(binding);
-	}
-
-	public List<ClassMember> getMembers() {
-		return new ArrayList<ClassMember>(_memberIdMap.values());
+		MemberFunc memberFunc = _memberFuncIdMap.get(binding);
+		if(memberFunc != null)
+			return memberFunc;
+		
+		for(ClassDecl parent : _parentClasses) {
+			memberFunc = parent.getMemberFunc(binding);
+			if(memberFunc != null)
+				return memberFunc;
+		}
+		
+		return null;
 	}
 
 	public String getName() {
@@ -144,7 +148,7 @@ public class ClassDecl {
 		_memberVarGraphNodes.put(structMember.getMemberId(), structMember);
 	}
 
-	public Iterable<Map.Entry<MemberId, ClassMember>> getMemberVarGraphNodes() {
+	public Iterable<Map.Entry<MemberId, ClassMember>> getMembersMap() {
 		return _memberVarGraphNodes.entrySet();
 	}
 
