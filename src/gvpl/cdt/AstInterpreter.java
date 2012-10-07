@@ -68,7 +68,10 @@ public class AstInterpreter extends AstLoader {
 		} else if (name instanceof CPPASTName) {
 			Function function = new Function(_gvplGraph, this, this);
 			CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
-			IBinding binding = function.loadDeclaration(funcDeclarator, startingLine);
+			
+			IBinding binding = funcDeclarator.getName().resolveBinding(); 
+			
+			function.loadDeclaration(funcDeclarator, startingLine);
 			function.loadDefinition(funcDeclarator.getConstructorChain(), declaration.getBody());
 			_funcIdMap.put(binding, function);
 

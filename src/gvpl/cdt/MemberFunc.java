@@ -36,11 +36,11 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	public IBinding loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
-		IBinding result = super.loadDeclaration(decl, startingLine);
+	public void loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
+		super.loadDeclaration(decl, startingLine);
+		
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
-		return result;
 	}
 
 	@Override

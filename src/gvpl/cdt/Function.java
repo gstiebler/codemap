@@ -21,7 +21,6 @@ import java.util.Map;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
@@ -49,25 +48,8 @@ public class Function extends AstLoader {
 		//TODO FIX!!
 		_returnType = _astInterpreter.getPrimitiveType();
 	}
-
-	/**
-	 * Loads the member function definition
-	 * 
-	 * @param fd
-	 *            The ast function definition
-	 * @return The binding of the loaded function member
-	 */
-	/*public IBinding load(IASTFunctionDefinition fd) {
-		int startingLine = fd.getFileLocation().getStartingLineNumber();
-		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
-		
-		IBinding memberFuncBinding = loadDeclaration(decl, startingLine);
-		loadDefinition(decl.getConstructorChain(), fd.getBody());
-		
-		return memberFuncBinding;
-	}*/
 	
-	public IBinding loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
+	public void loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
 		// Gets the name of the function
@@ -76,7 +58,6 @@ public class Function extends AstLoader {
 		else
 			_funcName = name_binding.toString();
 
-		IBinding memberFuncBinding = name_binding.resolveBinding();
 		setName(calcName());
 
 		loadFuncParameters(parameters);
@@ -85,8 +66,6 @@ public class Function extends AstLoader {
 			entry.getValue().getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
 					_astInterpreter, startingLine);
 		}
-		
-		return memberFuncBinding;
 	}
 	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {

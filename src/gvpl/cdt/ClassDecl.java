@@ -39,8 +39,6 @@ public class ClassDecl {
 
 	public ClassDecl(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter,
 			CPPASTCompositeTypeSpecifier classDecl) {
-		int startingLine = classDecl.getFileLocation().getStartingLineNumber();
-
 		_typeId = new TypeId();
 		loadBaseClasses(classDecl.getBaseSpecifiers(), astInterpreter);
 		_memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
@@ -113,11 +111,13 @@ public class ClassDecl {
 
 	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreter astInterpreter) {
 		int startingLine = member.getFileLocation().getStartingLineNumber();
-		MemberFunc memberFunc = new MemberFunc(this, astInterpreter, startingLine);
-
+		
 		IASTDeclarator declarator = member.getDeclarator();
 		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
-		IBinding memberFuncBinding = memberFunc.loadDeclaration(funcDeclarator, startingLine);
+		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
+		MemberFunc memberFunc = new MemberFunc(this, astInterpreter, startingLine);
+
+		memberFunc.loadDeclaration(funcDeclarator, startingLine);
 		memberFunc.loadDefinition(funcDeclarator.getConstructorChain(), member.getBody());
 
 		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
