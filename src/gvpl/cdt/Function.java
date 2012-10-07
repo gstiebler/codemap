@@ -57,7 +57,7 @@ public class Function extends AstLoader {
 	 *            The ast function definition
 	 * @return The binding of the loaded function member
 	 */
-	public IBinding load(IASTFunctionDefinition fd) {
+	/*public IBinding load(IASTFunctionDefinition fd) {
 		int startingLine = fd.getFileLocation().getStartingLineNumber();
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
 		
@@ -65,9 +65,9 @@ public class Function extends AstLoader {
 		loadDefinition(decl.getConstructorChain(), fd.getBody());
 		
 		return memberFuncBinding;
-	}
+	}*/
 	
-	private IBinding loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
+	public IBinding loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
 		// Gets the name of the function
@@ -89,7 +89,7 @@ public class Function extends AstLoader {
 		return memberFuncBinding;
 	}
 	
-	private void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
+	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
 		loadConstructorChain(ccInitializer);
 		
 		if (body instanceof IASTCompoundStatement) {

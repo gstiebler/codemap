@@ -22,6 +22,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
 public class ClassDecl {
 
@@ -97,7 +98,7 @@ public class ClassDecl {
 				continue;
 			}
 
-			loadMemberFunc(member, astInterpreter, startingLine);
+			loadMemberFunc((IASTFunctionDefinition) member, astInterpreter);
 		}
 	}
 	
@@ -110,13 +111,16 @@ public class ClassDecl {
 		}
 	}
 
-	public void loadMemberFunc(IASTDeclaration member, AstInterpreter astInterpreter,
-			int startingLine) {
-		IASTFunctionDefinition func_def = (IASTFunctionDefinition) member;
+	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreter astInterpreter) {
+		int startingLine = member.getFileLocation().getStartingLineNumber();
 		MemberFunc memberFunc = new MemberFunc(this, astInterpreter, startingLine);
-		IBinding member_func_binding = memberFunc.load(func_def);
 
-		_memberFuncIdMap.put(member_func_binding, memberFunc);
+		IASTDeclarator declarator = member.getDeclarator();
+		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
+		IBinding memberFuncBinding = memberFunc.loadDeclaration(funcDeclarator, startingLine);
+		memberFunc.loadDefinition(funcDeclarator.getConstructorChain(), member.getBody());
+
+		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
 	}
 
 	public TypeId getTypeId() {

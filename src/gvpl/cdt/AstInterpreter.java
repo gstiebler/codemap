@@ -19,6 +19,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 
@@ -53,24 +54,26 @@ public class AstInterpreter extends AstLoader {
 	}
 
 	private Function loadFunction(IASTFunctionDefinition declaration) {
+		int startingLine = declaration.getFileLocation().getStartingLineNumber();
 		IASTDeclarator declarator = declaration.getDeclarator();
 		IASTName name = declarator.getName();
 
 		if (name instanceof CPPASTQualifiedName) {
-			int startingLine = declaration.getFileLocation().getStartingLineNumber();
 			CPPASTQualifiedName qn = (CPPASTQualifiedName) name;
 			IASTName[] names = qn.getNames();
 			IASTName className = names[0];
 			IBinding classBinding = className.resolveBinding();
 			ClassDecl classDecl = _typeBindingToClass.get(classBinding);
-			classDecl.loadMemberFunc(declaration, this, startingLine);
+			classDecl.loadMemberFunc(declaration, this);
 		} else if (name instanceof CPPASTName) {
-			Function loadFunction = new Function(_gvplGraph, this, this);
-			IBinding binding = loadFunction.load(declaration);
-			_funcIdMap.put(binding, loadFunction);
+			Function function = new Function(_gvplGraph, this, this);
+			CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
+			IBinding binding = function.loadDeclaration(funcDeclarator, startingLine);
+			function.loadDefinition(funcDeclarator.getConstructorChain(), declaration.getBody());
+			_funcIdMap.put(binding, function);
 
-			if (loadFunction.getName().equals("main"))
-				return loadFunction;
+			if (function.getName().equals("main"))
+				return function;
 		} else
 			ErrorOutputter.fatalError("Problem");
 

@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
@@ -34,10 +34,10 @@ public class MemberFunc extends Function {
 	protected String calcName() {
 		return _parentClass.getName() + "::" + _funcName;
 	}
-
+	
 	@Override
-	public IBinding load(IASTFunctionDefinition fd) {
-		IBinding result = super.load(fd);
+	public IBinding loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
+		IBinding result = super.loadDeclaration(decl, startingLine);
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
 		return result;
