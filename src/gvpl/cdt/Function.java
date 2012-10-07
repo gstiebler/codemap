@@ -59,19 +59,24 @@ public class Function extends AstLoader {
 	 */
 	public IBinding load(IASTFunctionDefinition fd) {
 		int startingLine = fd.getFileLocation().getStartingLineNumber();
-
-		// The declaration of the function
 		CPPASTFunctionDeclarator decl = (CPPASTFunctionDeclarator) fd.getDeclarator();
+		
+		IBinding memberFuncBinding = loadDeclaration(decl, startingLine);
+		loadDefinition(decl.getConstructorChain(), fd.getBody());
+		
+		return memberFuncBinding;
+	}
+	
+	private IBinding loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName name_binding = decl.getName();
 		// Gets the name of the function
-		if (name_binding instanceof CPPASTQualifiedName) {
+		if (name_binding instanceof CPPASTQualifiedName)
 			_funcName = ((CPPASTQualifiedName) name_binding).getNames()[1].toString();
-		} else {
+		else
 			_funcName = name_binding.toString();
-		}
 
-		IBinding member_func_binding = name_binding.resolveBinding();
+		IBinding memberFuncBinding = name_binding.resolveBinding();
 		setName(calcName());
 
 		loadFuncParameters(parameters);
@@ -80,10 +85,13 @@ public class Function extends AstLoader {
 			entry.getValue().getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
 					_astInterpreter, startingLine);
 		}
-
-		loadConstructorChain(decl.getConstructorChain());
-
-		IASTStatement body = fd.getBody();
+		
+		return memberFuncBinding;
+	}
+	
+	private void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
+		loadConstructorChain(ccInitializer);
+		
 		if (body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)body).getStatements();
 			for (IASTStatement statement : statements) {
@@ -92,8 +100,6 @@ public class Function extends AstLoader {
 			}
 		} else
 			ErrorOutputter.fatalError("Work here.");
-
-		return member_func_binding;
 	}
 	
 	public TypeId getReturnTypeId() {

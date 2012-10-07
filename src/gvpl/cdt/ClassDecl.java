@@ -79,8 +79,23 @@ public class ClassDecl {
 		}
 
 		for (IASTDeclaration member : members) {
-			if (!(member instanceof IASTFunctionDefinition))
+			if (!(member instanceof IASTFunctionDefinition)) {
+			
+				/*IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
+				IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
+				TypeId param_type = astInterpreter.getType(decl_spec);
+				IASTDeclarator[] declarators = simple_decl.getDeclarators();
+				
+				for (IASTDeclarator declarator : declarators) {
+					if (declarator instanceof IASTFunctionDeclarator) {
+						IBinding binding = declarator.getName().resolveBinding();
+						int x = 5;
+						continue;
+					}
+				}*/
+				
 				continue;
+			}
 
 			loadMemberFunc(member, astInterpreter, startingLine);
 		}
