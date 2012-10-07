@@ -61,40 +61,26 @@ public class ClassDecl {
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
 				if (declarator instanceof IASTFunctionDeclarator) {
-					ErrorOutputter.warning("work here?");
-					continue;
+					//Load function declaration
+					CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
+					loadMemberFuncDecl(funcDeclarator, astInterpreter);	
+				} else {
+					IASTName decl_name = declarator.getName();
+					MemberId member_id = new MemberId();
+
+					//TODO insert the correct IndirectionType
+					ClassMember struct_member = new ClassMember(member_id, decl_name.toString(),
+							param_type, IndirectionType.E_VARIABLE);
+					addMember(struct_member);
+
+					_memberIdMap.put(decl_name.resolveBinding(), struct_member);
 				}
-
-				IASTName decl_name = declarator.getName();
-				MemberId member_id = new MemberId();
-
-				//TODO insert the correct IndirectionType
-				ClassMember struct_member = new ClassMember(member_id, decl_name.toString(),
-						param_type, IndirectionType.E_VARIABLE);
-				addMember(struct_member);
-
-				_memberIdMap.put(decl_name.resolveBinding(), struct_member);
 			}
 		}
 
 		for (IASTDeclaration member : members) {
-			if (!(member instanceof IASTFunctionDefinition)) {
-			
-				/*IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
-				IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
-				TypeId param_type = astInterpreter.getType(decl_spec);
-				IASTDeclarator[] declarators = simple_decl.getDeclarators();
-				
-				for (IASTDeclarator declarator : declarators) {
-					if (declarator instanceof IASTFunctionDeclarator) {
-						IBinding binding = declarator.getName().resolveBinding();
-						int x = 5;
-						continue;
-					}
-				}*/
-				
+			if (!(member instanceof IASTFunctionDefinition))
 				continue;
-			}
 
 			loadMemberFunc((IASTFunctionDefinition) member, astInterpreter);
 		}
@@ -108,19 +94,28 @@ public class ClassDecl {
 			_parentClasses.add(parentClass);
 		}
 	}
+	
+	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreter astInterpreter) {
+		int startingLine = funcDeclarator.getFileLocation().getStartingLineNumber();
+
+		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
+		MemberFunc memberFunc = _memberFuncIdMap.get(memberFuncBinding);
+		// check if the function declaration has already been loaded
+		if(memberFunc == null) {
+			memberFunc = new MemberFunc(this, astInterpreter, startingLine);
+			memberFunc.loadDeclaration(funcDeclarator, startingLine);
+		}
+		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
+		
+		return memberFunc;
+	}
 
 	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreter astInterpreter) {
-		int startingLine = member.getFileLocation().getStartingLineNumber();
-		
 		IASTDeclarator declarator = member.getDeclarator();
 		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
-		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
-		MemberFunc memberFunc = new MemberFunc(this, astInterpreter, startingLine);
-
-		memberFunc.loadDeclaration(funcDeclarator, startingLine);
+		
+		MemberFunc memberFunc = loadMemberFuncDecl(funcDeclarator, astInterpreter);
 		memberFunc.loadDefinition(funcDeclarator.getConstructorChain(), member.getBody());
-
-		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
 	}
 
 	public TypeId getTypeId() {

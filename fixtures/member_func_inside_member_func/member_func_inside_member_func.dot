@@ -12,17 +12,17 @@ label = "root";
 	node_000034 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startingline=44 ]
 	node_000035 [ label = "str2.seg.si.soEsse", startingline=44 ]
 	node_000036 [ label = "6.0", style=filled, fillcolor="#E9FFE9", startingline=46 ]
-	node_000057 [ label = "str2.seg.si.soEsse", startingline=46 ]
-	node_000058 [ label = "str2.seg.m1", startingline=46 ]
-	node_000059 [ label = "str2.h", startingline=46 ]
-	node_000060 [ label = "str2.a", startingline=46 ]
+	node_000057 [ label = "str2.a", startingline=46 ]
+	node_000058 [ label = "str2.h", startingline=46 ]
+	node_000059 [ label = "str2.seg.m1", startingline=46 ]
+	node_000060 [ label = "str2.seg.si.soEsse", startingline=46 ]
 	node_000061 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=48 ]
 	node_000062 [ label = "p", startingline=48 ]
 subgraph cluster_1 {
 label = "sSeg::setM1";
 parent = "G";
 startingline = 42;
-	node_000029 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=15 ]
+	node_000029 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=12 ]
 	node_000030 [ label = "m1", startingline=17 ]
 	node_000031 [ label = "m1", startingline=17 ]
 }
@@ -40,9 +40,9 @@ startingline = 46;
 	node_000044 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=30 ]
 	node_000045 [ label = "h", startingline=30 ]
 	node_000046 [ label = "16", style=filled, fillcolor="#E9FFE9", startingline=31 ]
-	node_000047 [ label = "seg.si.soEsse", startingline=31 ]
-	node_000048 [ label = "seg.m1", startingline=31 ]
-	node_000049 [ label = "seg.n1", startingline=31 ]
+	node_000047 [ label = "seg.m1", startingline=31 ]
+	node_000048 [ label = "seg.n1", startingline=31 ]
+	node_000049 [ label = "seg.si.soEsse", startingline=31 ]
 	node_000050 [ label = "seg.m1", startingline=31 ]
 	node_000051 [ label = "18.20", style=filled, fillcolor="#E9FFE9", startingline=32 ]
 	node_000052 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=32 ]
@@ -51,7 +51,7 @@ subgraph cluster_3 {
 label = "sSeg::setM1";
 parent = "cluster_2";
 startingline = 31;
-	node_000054 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=15 ]
+	node_000054 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=12 ]
 	node_000055 [ label = "m1", startingline=17 ]
 	node_000056 [ label = "m1", startingline=17 ]
 }
@@ -63,27 +63,27 @@ startingline = 31;
 	node_000028 -> node_000029
 	node_000032 -> node_000033
 	node_000034 -> node_000035
-	node_000035 -> node_000047
+	node_000035 -> node_000049
 	node_000036 -> node_000037
-	node_000057 -> node_000061
-	node_000058 -> node_000061
+	node_000059 -> node_000061
+	node_000060 -> node_000061
 	node_000061 -> node_000062
 	node_000029 -> node_000031
 	node_000031 -> node_000032
 	node_000038 -> node_000040
 	node_000039 -> node_000040
 	node_000040 -> node_000041
-	node_000041 -> node_000060
+	node_000041 -> node_000057
 	node_000042 -> node_000044
 	node_000043 -> node_000044
 	node_000044 -> node_000045
-	node_000045 -> node_000059
+	node_000045 -> node_000058
 	node_000046 -> node_000054
-	node_000047 -> node_000052
-	node_000050 -> node_000058
+	node_000049 -> node_000052
+	node_000050 -> node_000059
 	node_000051 -> node_000052
 	node_000052 -> node_000053
-	node_000053 -> node_000057
+	node_000053 -> node_000060
 	node_000054 -> node_000056
 	node_000056 -> node_000050
 }
