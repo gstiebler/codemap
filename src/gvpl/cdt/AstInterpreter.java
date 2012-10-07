@@ -9,7 +9,6 @@ import gvpl.graph.Graph;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -19,6 +18,7 @@ import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 
@@ -44,7 +44,7 @@ public class AstInterpreter extends AstLoader {
 					mainFunction = func;
 			} else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
-				loadStructureDecl((IASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
+				loadStructureDecl((CPPASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
 				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
 		}
@@ -82,7 +82,7 @@ public class AstInterpreter extends AstLoader {
 		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
 	}
 
-	private void loadStructureDecl(IASTCompositeTypeSpecifier strDecl) {
+	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
 		ClassDecl classDecl = new ClassDecl(_gvplGraph, this, this, strDecl);
 
 		addClass(classDecl);
@@ -91,7 +91,9 @@ public class AstInterpreter extends AstLoader {
 	public TypeId getType(IASTDeclSpecifier decl_spec) {
 		if (decl_spec instanceof IASTNamedTypeSpecifier) {
 			IASTNamedTypeSpecifier named_type = (IASTNamedTypeSpecifier) decl_spec;
-			return _typeBindingToClass.get(named_type.getName().resolveBinding()).getTypeId();
+			IBinding binding = named_type.getName().resolveBinding();
+			ClassDecl classDecl = _typeBindingToClass.get(binding);
+			return classDecl.getTypeId();
 		} else
 			return _primitiveType;
 	}

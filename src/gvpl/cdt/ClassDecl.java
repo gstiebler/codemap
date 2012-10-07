@@ -12,7 +12,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -21,6 +20,8 @@ import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 
 public class ClassDecl {
 
@@ -31,14 +32,16 @@ public class ClassDecl {
 	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 	private Map<MemberId, ClassMember> _memberVarGraphNodes;
+	private List<ClassDecl> _parentClasses;
 
 	private MemberFunc _constructorFunc = null;
 
 	public ClassDecl(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter,
-			IASTCompositeTypeSpecifier classDecl) {
+			CPPASTCompositeTypeSpecifier classDecl) {
 		int startingLine = classDecl.getFileLocation().getStartingLineNumber();
 
 		_typeId = new TypeId();
+		loadBaseClasses(classDecl.getBaseSpecifiers(), astInterpreter);
 		_memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
 
 		IASTName name = classDecl.getName();
@@ -80,6 +83,15 @@ public class ClassDecl {
 				continue;
 
 			loadMemberFunc(member, astInterpreter, startingLine);
+		}
+	}
+	
+	void loadBaseClasses(ICPPASTBaseSpecifier[] baseSpecs, AstInterpreter astInterpreter) {
+		for(ICPPASTBaseSpecifier baseSpec : baseSpecs) {
+			IBinding binding = baseSpec.getName().resolveBinding();
+			TypeId type = astInterpreter.getTypeFromBinding(binding);
+			ClassDecl parentClass = astInterpreter.getClassDecl(type);
+			_parentClasses.add(parentClass);
 		}
 	}
 

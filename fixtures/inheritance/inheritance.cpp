@@ -15,7 +15,7 @@ class DerivedClass : public BaseClassA, public BaseClassB
 {
 public:
 	int _unused;
-}
+};
 
 int main() 
 {
