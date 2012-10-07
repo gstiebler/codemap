@@ -32,7 +32,7 @@ public class ClassDecl {
 	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 	private Map<MemberId, ClassMember> _memberVarGraphNodes;
-	private List<ClassDecl> _parentClasses;
+	private List<ClassDecl> _parentClasses = new ArrayList<ClassDecl>();
 
 	private MemberFunc _constructorFunc = null;
 
@@ -113,7 +113,19 @@ public class ClassDecl {
 	}
 
 	public ClassMember getMember(IBinding binding) {
-		return _memberIdMap.get(binding);
+		ClassMember member = _memberIdMap.get(binding);
+		if(member != null)
+			return member;
+		
+		for(ClassDecl parent : _parentClasses) {
+			member = parent.getMember(binding);
+			if(member != null)
+				return member;
+		}
+		
+		return null;
+		
+		
 	}
 
 	public MemberFunc getMemberFunc(IBinding binding) {
@@ -146,5 +158,9 @@ public class ClassDecl {
 	
 	public Iterable<MemberId> getMemberIds() {
 		return _memberVarGraphNodes.keySet();
+	}
+	
+	public Iterable<ClassDecl> getParentClasses() {
+		return _parentClasses;
 	}
 }

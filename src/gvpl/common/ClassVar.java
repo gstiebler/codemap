@@ -19,7 +19,8 @@ import java.util.Map;
 public class ClassVar extends Var {
 
 	Map<MemberId, Var> _memberInstances = new LinkedHashMap<MemberId, Var>();
-	Map<Var, MemberId> _memberIdFromInstace = new LinkedHashMap<Var, MemberId>();
+	Map<Var, MemberId> _memberIdFromInstance = new LinkedHashMap<Var, MemberId>();
+	List<ClassVar> _parentInstances = new ArrayList<ClassVar>();
 	
 	ClassDecl _classDecl;
 
@@ -38,19 +39,44 @@ public class ClassVar extends Var {
 					struct_member.getMemberType(), null);
 			addMember(entry.getKey(), member_instance);
 		}
+		
+		for(ClassDecl parentClass : _classDecl.getParentClasses()) {
+			ClassVar parentInstance = new ClassVar(graph, name, parentClass, parentAstLoader);
+			_parentInstances.add(parentInstance);
+		}
 	}
 	
 	private void addMember(MemberId id, Var var) {
 		_memberInstances.put(id, var);
-		_memberIdFromInstace.put(var, id);
+		_memberIdFromInstance.put(var, id);
 	}
 
-	public Var getMember(MemberId member_id) {
-		return _memberInstances.get(member_id);
+	public Var getMember(MemberId memberId) {
+		Var member = _memberInstances.get(memberId);
+		if(member != null)
+			return member;
+		
+		for(ClassVar parent : _parentInstances) {
+			member = parent.getMember(memberId);
+			if(member != null)
+				return member;
+		}
+		
+		return null;
 	}
 	
 	public MemberId getMember(Var memberInstance) {
-		return _memberIdFromInstace.get(memberInstance);
+		MemberId member = _memberIdFromInstance.get(memberInstance);
+		if(member != null)
+			return member;
+		
+		for(ClassVar parent : _parentInstances) {
+			member = parent.getMember(memberInstance);
+			if(member != null)
+				return member;
+		}
+		
+		return null;
 	}
 
 	/**
@@ -59,6 +85,9 @@ public class ClassVar extends Var {
 	@Override
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
 			AstInterpreter astInterpreter, int startingLine) {
+		for(ClassVar parent : _parentInstances) 
+			parent.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+		
 		for (Var var : _memberInstances.values()) {
 			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 			var.setOwner(this);
@@ -66,22 +95,31 @@ public class ClassVar extends Var {
 	}
 	
 	@Override
-	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph, 
+	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
-		//TODO s√≥ chamar para as vari√°veis que n√£o foram escritas em constructorFunc.loadMemberFuncRef
+
+		for (ClassVar parent : _parentInstances) {
+			parent.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
+					startingLine);
+		}
+
+		// TODO sÛ chamar para as vari·veis que n„o foram escritas em
+		// constructorFunc.loadMemberFuncRef
 		for (Var var : _memberInstances.values()) {
-			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter,
+					startingLine);
 			var.setOwner(this);
 		}
-		
+
 		MemberFunc constructorFunc = _classDecl.getConstructorFunc();
-		if(constructorFunc == null)
+		if (constructorFunc == null)
 			return;
-		
-		if(parameter_values == null)
+
+		if (parameter_values == null)
 			return;
-		
-		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, astLoader, startingLine);
+
+		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, astLoader,
+				startingLine);
 	}
 	
 	public ClassDecl getClassDecl() {
@@ -91,6 +129,11 @@ public class ClassVar extends Var {
 	@Override
 	public List<Var> getInternalVars() {
 		List<Var> internalVars = new ArrayList<>();
+		
+		for (ClassVar parent : _parentInstances) {
+			internalVars.addAll(parent.getInternalVars());
+		}
+		
 		for(Var member : _memberInstances.values()) {
 			internalVars.addAll(member.getInternalVars());
 		}
