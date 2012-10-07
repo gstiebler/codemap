@@ -285,7 +285,7 @@ public class InstructionLine {
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList expr_list = (IASTExpressionList) paramExpr;
 			parameters = expr_list.getExpressions();
-		} else if (true) {
+		} else {
 			parameters = new IASTExpression[1];
 			parameters[0] = paramExpr;
 		}

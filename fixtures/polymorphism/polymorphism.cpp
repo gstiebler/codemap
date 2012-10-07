@@ -6,7 +6,7 @@ class BaseClass
 	virtual int process(int baseParam) = 0;
 	
 public:
-	BaseClass(int init)
+	BaseClass(int init, int dummy)
 	{
 		_baseMember = init;
 	}
@@ -17,7 +17,7 @@ class ClassA : public BaseClass
 	int _aMember;
 	
 public:
-	ClassA() : BaseClass(10)
+	ClassA() : BaseClass(10, 55)
 	{}
 
 	int process(int baseParam)
@@ -31,7 +31,7 @@ class ClassB : public BaseClass
 	int _bMember;
 	
 public:
-	ClassB() : BaseClass(20), _bMember(30)
+	ClassB() : BaseClass(20, 55), _bMember(30)
 	{}
 
 	int process(int baseParam)

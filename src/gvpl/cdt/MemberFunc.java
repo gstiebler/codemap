@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
+import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
 import gvpl.common.Var;
@@ -16,7 +17,10 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
 public class MemberFunc extends Function {
 
@@ -44,15 +48,30 @@ public class MemberFunc extends Function {
 	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
 		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
 			int startingLine = initializer.getFileLocation().getStartingLineNumber();
-			
+
 			IASTExpression expr = initializer.getInitializerValue();
-			
+
 			IASTName memberInitId = initializer.getMemberInitializerId();
-			IBinding member_binding = memberInitId.resolveBinding();
-			Var var = getVarFromBinding(member_binding);
-			
+			IBinding memberBinding = memberInitId.resolveBinding();
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
-			instructionLine.loadConstructorInitializer(var, expr, startingLine);
+
+			if (memberBinding instanceof CPPField) {
+				Var var = getVarFromBinding(memberBinding);
+				instructionLine.loadConstructorInitializer(var, expr, startingLine);
+			} else if (memberBinding instanceof CPPConstructor) {
+				for (ClassDecl parentClass : _parentClass.getParentClasses()) {
+					MemberFunc memberFunc = parentClass.getMemberFunc(memberBinding);
+					if (memberFunc == null)
+						continue;
+
+					IASTExpression initValue = initializer.getInitializerValue();
+					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
+							memberFunc, initValue);
+					memberFunc.addFuncRef(parameters, _gvplGraph, startingLine);
+					break;
+				}
+			} else
+				ErrorOutputter.fatalError("not expected");
 		}
 	}
 
