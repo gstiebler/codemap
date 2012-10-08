@@ -341,7 +341,8 @@ public class InstructionLine {
 		if (!(var instanceof ClassVar))
 			ErrorOutputter.fatalError("Work here.");
 
-		return member_func.loadMemberFuncRef((ClassVar) var, parameter_values, _gvplGraph,
+		ClassVar classVar = (ClassVar) var.getVarInMem();
+		return member_func.loadMemberFuncRef(classVar, parameter_values, _gvplGraph,
 				_parentBasicBlock, func_call.getFileLocation().getStartingLineNumber());
 	}
 

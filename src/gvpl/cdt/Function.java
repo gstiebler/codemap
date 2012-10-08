@@ -31,10 +31,11 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 public class Function extends AstLoader {
 
-	private GraphNode _return_node = null;
+	private GraphNode _returnNode = null;
 	private TypeId _returnType = null;
 
 	private String _externalName = "";
@@ -51,12 +52,12 @@ public class Function extends AstLoader {
 	
 	public void loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
-		IASTName name_binding = decl.getName();
+		IASTName astName = decl.getName();
 		// Gets the name of the function
-		if (name_binding instanceof CPPASTQualifiedName)
-			_funcName = ((CPPASTQualifiedName) name_binding).getNames()[1].toString();
+		if (astName instanceof CPPASTQualifiedName)
+			_funcName = ((CPPASTQualifiedName) astName).getNames()[1].toString();
 		else
-			_funcName = name_binding.toString();
+			_funcName = astName.toString();
 
 		setName(calcName());
 
@@ -104,16 +105,19 @@ public class Function extends AstLoader {
 	 */
 	public void loadFuncParameters(IASTParameterDeclaration[] parameters) {
 		for (IASTParameterDeclaration parameter : parameters) {
-			IASTDeclarator parameter_var_decl = parameter.getDeclarator();
-			IASTDeclSpecifier decl_spec = parameter.getDeclSpecifier();
-			TypeId type = _astInterpreter.getType(decl_spec);
-			Var var_decl = loadVarDecl(parameter_var_decl, type);
-			IBinding binding = parameter_var_decl.getName().resolveBinding();
+			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
+			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();
+			TypeId type = _astInterpreter.getType(declSpec);
+			Var var_decl = loadVarDecl(parameterVarDecl, type);
+			IBinding binding = parameterVarDecl.getName().resolveBinding();
 
 			FuncParameter.IndirectionType parameterVarType = null;
 			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
+			FuncParameter funcParameter = new FuncParameter(var_decl, parameterVarType);
+			if(declSpec instanceof CPPASTSimpleDeclSpecifier)
+				funcParameter.setType(((CPPASTSimpleDeclSpecifier)declSpec).getType());
 
-			addParameter(binding, new FuncParameter(var_decl, parameterVarType));
+			addParameter(binding, funcParameter);
 		}
 	}
 
@@ -164,7 +168,7 @@ public class Function extends AstLoader {
 			}
 		}
 
-		return internalToMainGraphMap.get(_return_node);
+		return internalToMainGraphMap.get(_returnNode);
 	}
 
 	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
@@ -224,7 +228,7 @@ public class Function extends AstLoader {
 	}
 
 	public void setReturnNode(GraphNode returnNode) {
-		_return_node = returnNode;
+		_returnNode = returnNode;
 	}
 
 	@Override
@@ -284,6 +288,34 @@ public class Function extends AstLoader {
 			return varInfo;
 		
 		return _parent.getTypeFromVarBinding(binding);
+	}
+	
+	//TODO improve! Can be done with bindings? There is a function in Eclipse IDE that
+	// do this. It points the implementations of a function
+	/**
+	 * Returns true if the declarations are equivalent. It's used to verify if one function
+	 * is the implementation of the other in a derived class 
+	 * @param other Other function to compare
+	 * @return True if the two functions are equivalent
+	 */
+	public boolean isDeclarationEquivalent(Function other) {
+		if(!_funcName.equals(other._funcName))
+			return false;
+		
+		if(_returnType != other._returnType)
+			return false;
+		
+		if(_parametersList.size() != other._parametersList.size())
+			return false;
+		
+		for(int i = 0; i < _parametersList.size(); ++i) {
+			FuncParameter internal = _parametersList.get(i);
+			FuncParameter external = other._parametersList.get(i);
+			if(!internal.isEquivalent(external))
+				return false;
+		}
+		
+		return true;
 	}
 
 }

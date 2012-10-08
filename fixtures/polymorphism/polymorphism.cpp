@@ -3,13 +3,13 @@ class BaseClass
 {
 	int _baseMember;
 	
-	virtual int process(int baseParam) = 0;
-	
 public:
 	BaseClass(int init, int dummy)
 	{
 		_baseMember = init;
 	}
+	
+	virtual int process(int baseParam) = 0;
 };
 
 class ClassA : public BaseClass

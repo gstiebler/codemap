@@ -25,6 +25,9 @@ public class MemberFunc extends Function {
 
 	private ClassDecl _parentClass;
 	private ClassVar _tempClassVar = null;
+	/** The equivalent function in a parent class. It's only used if the current
+	 * function implements a function in a parent class. */
+	private MemberFunc _parentMemberFunc = null;
 	
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter);
@@ -41,6 +44,8 @@ public class MemberFunc extends Function {
 		
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
+		
+		_parentMemberFunc = _parentClass.getParentFunc(this);
 	}
 
 	@Override

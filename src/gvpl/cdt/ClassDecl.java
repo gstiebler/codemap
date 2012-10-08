@@ -1,7 +1,6 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassMember;
-import gvpl.common.ErrorOutputter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
@@ -149,6 +148,26 @@ public class ClassDecl {
 			memberFunc = parent.getMemberFunc(binding);
 			if(memberFunc != null)
 				return memberFunc;
+		}
+		
+		return null;
+	}
+	
+	/**
+	 * 
+	 * @param memberFunc
+	 * @return
+	 */
+	public MemberFunc getParentFunc(MemberFunc memberFunc) {
+		for(MemberFunc intMemberFunc : _memberFuncIdMap.values()) {
+			if(memberFunc.isDeclarationEquivalent(intMemberFunc))
+				return intMemberFunc;
+		}
+		
+		for(ClassDecl parentClass : _parentClasses) {
+			MemberFunc mfInParent = parentClass.getParentFunc(memberFunc);
+			if(mfInParent != null)
+				return mfInParent;
 		}
 		
 		return null;
