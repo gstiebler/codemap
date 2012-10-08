@@ -29,8 +29,8 @@ public class MemberFunc extends Function {
 	 * function implements a function in a parent class. */
 	private MemberFunc _parentMemberFunc = null;
 	
-	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, int startingLine) {
-		super(new Graph(startingLine), null, astInterpreter);
+	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, IBinding ownBinding, int startingLine) {
+		super(new Graph(startingLine), null, astInterpreter, ownBinding);
 		_parentClass = parent;
 	}
 
@@ -125,6 +125,10 @@ public class MemberFunc extends Function {
 		_tempClassVar = null;
 		
 		return addParametersReferenceAndReturn(parameter_values, map, startingLine);
+	}
+	
+	public MemberFunc getParent() {
+		return _parentMemberFunc;
 	}
 
 }

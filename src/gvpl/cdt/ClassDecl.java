@@ -101,7 +101,7 @@ public class ClassDecl {
 		MemberFunc memberFunc = _memberFuncIdMap.get(memberFuncBinding);
 		// check if the function declaration has already been loaded
 		if(memberFunc == null) {
-			memberFunc = new MemberFunc(this, astInterpreter, startingLine);
+			memberFunc = new MemberFunc(this, astInterpreter, memberFuncBinding, startingLine);
 			memberFunc.loadDeclaration(funcDeclarator, startingLine);
 		}
 		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
@@ -143,6 +143,15 @@ public class ClassDecl {
 		MemberFunc memberFunc = _memberFuncIdMap.get(binding);
 		if(memberFunc != null)
 			return memberFunc;
+		
+		for(MemberFunc memberF : _memberFuncIdMap.values()) {
+			MemberFunc parentMemberFunc = memberF.getParent();
+			if(parentMemberFunc == null)
+				continue;
+			
+			if(parentMemberFunc.getBinding() == binding)
+				return memberF;
+		}
 		
 		for(ClassDecl parent : _parentClasses) {
 			memberFunc = parent.getMemberFunc(binding);

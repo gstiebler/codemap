@@ -39,6 +39,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 
@@ -233,7 +234,15 @@ public class InstructionLine {
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
 		int startingLine = rhsOp.getFileLocation().getStartingLineNumber();
 		if (rhsOp instanceof CPPASTNewExpression) {
-			ClassDecl classDecl = _astInterpreter.getClassDecl(lhsPointer.getType());
+			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
+			IASTDeclSpecifier namedSpec = newExpr.getTypeId().getDeclSpecifier();
+			
+			ClassDecl classDecl = null;
+			if(namedSpec instanceof CPPASTNamedTypeSpecifier) {
+				CPPASTNamedTypeSpecifier typeSpec = (CPPASTNamedTypeSpecifier) namedSpec;
+				IBinding funcBinding = typeSpec.getName().resolveBinding();
+				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
+			}
 			if (classDecl == null) {
 				lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, _parentBasicBlock,
 						_astInterpreter, startingLine);
@@ -248,7 +257,7 @@ public class InstructionLine {
 				parameterValues = loadFunctionParameters(constructorFunc, expr);
 			}
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-					_parentBasicBlock, _astInterpreter, startingLine);
+					_parentBasicBlock, _astInterpreter, classDecl.getTypeId(), startingLine);
 			return;
 		} else {
 			Var rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
@@ -329,21 +338,22 @@ public class InstructionLine {
 				.getFileLocation().getStartingLineNumber());
 	}
 
-	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression func_call,
+	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression funcCall,
 			List<FuncParameter> parameter_values) {
-		IASTFieldReference field_ref = (IASTFieldReference) func_call.getFunctionNameExpression();
+		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 
-		IBinding func_member_binding = field_ref.getFieldName().resolveBinding();
-		MemberFunc member_func = _astInterpreter.getMemberFunc(func_member_binding);
-
-		IASTExpression expr = field_ref.getFieldOwner();
+		IASTExpression expr = fieldRef.getFieldOwner();
 		Var var = _parentBasicBlock.getVarFromExpr(expr);
+		var = var.getVarInMem();
 		if (!(var instanceof ClassVar))
 			ErrorOutputter.fatalError("Work here.");
+		ClassVar classVar = (ClassVar) var;
 
-		ClassVar classVar = (ClassVar) var.getVarInMem();
-		return member_func.loadMemberFuncRef(classVar, parameter_values, _gvplGraph,
-				_parentBasicBlock, func_call.getFileLocation().getStartingLineNumber());
+		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
+		MemberFunc memberFunc = classVar.getClassDecl().getMemberFunc(funcMemberBinding);
+		
+		return memberFunc.loadMemberFuncRef(classVar, parameter_values, _gvplGraph,
+				_parentBasicBlock, funcCall.getFileLocation().getStartingLineNumber());
 	}
 
 	/**

@@ -42,10 +42,12 @@ public class Function extends AstLoader {
 	private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 	private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
 	protected String _funcName;
+	protected IBinding _ownBinding;
 
-	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
+	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter, IBinding ownBinding) {
 		super(new Graph(-1), parent, astInterpreter);
 		
+		_ownBinding = ownBinding;
 		//TODO FIX!!
 		_returnType = _astInterpreter.getPrimitiveType();
 	}
@@ -316,6 +318,10 @@ public class Function extends AstLoader {
 		}
 		
 		return true;
+	}
+	
+	public IBinding getBinding() {
+		return _ownBinding;
 	}
 
 }

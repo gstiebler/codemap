@@ -66,10 +66,9 @@ public class AstInterpreter extends AstLoader {
 			ClassDecl classDecl = _typeBindingToClass.get(classBinding);
 			classDecl.loadMemberFunc(declaration, this);
 		} else if (name instanceof CPPASTName) {
-			Function function = new Function(_gvplGraph, this, this);
 			CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
-			
 			IBinding binding = funcDeclarator.getName().resolveBinding(); 
+			Function function = new Function(_gvplGraph, this, this, binding);
 			
 			function.loadDeclaration(funcDeclarator, startingLine);
 			function.loadDefinition(funcDeclarator.getConstructorChain(), declaration.getBody());
@@ -120,12 +119,11 @@ public class AstInterpreter extends AstLoader {
 		return classMember.getMemberId();
 	}
 
-	public MemberFunc getMemberFunc(IBinding func_member_binding) {
-		for (Map.Entry<TypeId, ClassDecl> entry : _typeIdToClass.entrySet()) {
-			ClassDecl loadStruct = entry.getValue();
-			MemberFunc member_func = loadStruct.getMemberFunc(func_member_binding);
-			if (member_func != null)
-				return member_func;
+	public MemberFunc getMemberFunc(IBinding funcMemberBinding) {
+		for (ClassDecl classDecl : _typeIdToClass.values()) {
+			MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
+			if (memberFunc != null)
+				return memberFunc;
 		}
 
 		ErrorOutputter.fatalError("Problem here.");
@@ -142,6 +140,15 @@ public class AstInterpreter extends AstLoader {
 			return null;
 		else
 			return classDecl.getTypeId();
+	}
+	
+	public ClassDecl getClassFromFuncBinding(IBinding funcBinding) {
+		for(ClassDecl classDecl : _typeIdToClass.values()) {
+			if(classDecl.getMemberFunc(funcBinding) != null)
+				return classDecl;
+		}
+		
+		return null;
 	}
 	
 	public boolean isPrimitiveType(TypeId type) {
