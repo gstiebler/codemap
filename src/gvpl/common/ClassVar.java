@@ -95,13 +95,13 @@ public class ClassVar extends Var {
 	}
 	
 	@Override
-	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
+	public void constructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 
-		for (ClassVar parent : _parentInstances) {
-			parent.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
+		/*for (ClassVar parent : _parentInstances) {
+			parent.constructor(parameterValues, nodeType, graph, astLoader, astInterpreter,
 					startingLine);
-		}
+		}*/
 
 		// TODO só chamar para as variáveis que não foram escritas em
 		// constructorFunc.loadMemberFuncRef
@@ -115,10 +115,10 @@ public class ClassVar extends Var {
 		if (constructorFunc == null)
 			return;
 
-		if (parameter_values == null)
+		if (parameterValues == null)
 			return;
 
-		constructorFunc.loadMemberFuncRef(this, parameter_values, _gvplGraph, astLoader,
+		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader,
 				startingLine);
 	}
 	

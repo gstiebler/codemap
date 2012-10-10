@@ -287,7 +287,8 @@ public class AstLoader {
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
-			readPair._ext.getCurrentNode(startingLine).addDependentNode(firstNodeInNewGraph, startingLine);
+			GraphNode currNode = readPair._ext.getCurrentNode(startingLine);
+			currNode.addDependentNode(firstNodeInNewGraph, startingLine);
 		}
 
 		for(InExtVarPair writtenPair : writtenVars) {
