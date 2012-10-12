@@ -173,7 +173,7 @@ public class Function extends AstLoader {
 		return internalToMainGraphMap.get(_returnNode);
 	}
 
-	void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
+	protected void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
 			Var declaredParameter, int startingLine) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
@@ -182,6 +182,9 @@ public class Function extends AstLoader {
 				Var callingParameterChild = callingParameterClass.getMember(memberId);
 				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
 
+				if(declaredParameterChild == null)
+					continue;
+				
 				bindInParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
 						declaredParameterChild.getVarInMem(), startingLine);
 			}
@@ -199,7 +202,7 @@ public class Function extends AstLoader {
 		}
 	}
 
-	void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
+	protected void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
 			Var declaredParameter, int startingLine) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
@@ -207,6 +210,9 @@ public class Function extends AstLoader {
 			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
 				Var callingParameterChild = callingParameterClass.getMember(memberId);
 				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
+
+				if(declaredParameterChild == null)
+					continue;
 
 				bindOutParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
 						declaredParameterChild.getVarInMem(), startingLine);

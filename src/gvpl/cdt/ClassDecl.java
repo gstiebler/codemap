@@ -145,7 +145,7 @@ public class ClassDecl {
 			return memberFunc;
 		
 		for(MemberFunc memberF : _memberFuncIdMap.values()) {
-			MemberFunc parentMemberFunc = memberF.getParent();
+			MemberFunc parentMemberFunc = memberF.getParentMemberFunc();
 			if(parentMemberFunc == null)
 				continue;
 			
@@ -202,8 +202,18 @@ public class ClassDecl {
 		return _constructorFunc;
 	}
 	
+	private Map<MemberId, ClassMember> getAllMembersIds() {
+		Map<MemberId, ClassMember> allMembers = new LinkedHashMap<MemberId, ClassMember>();
+		allMembers.putAll(_memberVarGraphNodes);
+		
+		for(ClassDecl parentClass : _parentClasses) 
+			allMembers.putAll(parentClass.getAllMembersIds());
+		
+		return allMembers;
+	}
+	
 	public Iterable<MemberId> getMemberIds() {
-		return _memberVarGraphNodes.keySet();
+		return getAllMembersIds().keySet();
 	}
 	
 	public Iterable<ClassDecl> getParentClasses() {

@@ -8,6 +8,7 @@ import gvpl.common.MemberId;
 import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.List;
@@ -24,7 +25,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 public class MemberFunc extends Function {
 
 	private ClassDecl _parentClass;
-	private ClassVar _tempClassVar = null;
+	/** represents the "this" pointer inside the function */
+	private ClassVar _thisVar = null;
 	/** The equivalent function in a parent class. It's only used if the current
 	 * function implements a function in a parent class. */
 	private MemberFunc _parentMemberFunc = null;
@@ -32,6 +34,9 @@ public class MemberFunc extends Function {
 	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, IBinding ownBinding, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter, ownBinding);
 		_parentClass = parent;
+		
+		_thisVar = new ClassVar(_gvplGraph, "temp", parent, this);
+		_thisVar.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
 	}
 
 	protected String calcName() {
@@ -71,7 +76,7 @@ public class MemberFunc extends Function {
 					IASTExpression initValue = initializer.getInitializerValue();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
 							memberFunc, initValue);
-					memberFunc.addFuncRef(parameters, _gvplGraph, startingLine);
+					memberFunc.loadMemberFuncRef(_thisVar, parameters, _gvplGraph, this, startingLine);
 					break;
 				}
 			} else
@@ -82,9 +87,9 @@ public class MemberFunc extends Function {
 	@Override
 	protected Var getVarFromBinding(IBinding binding) {
 		ClassMember member = _parentClass.getMember(binding);
-		if(member != null && _tempClassVar != null) {
+		if(member != null) {
 			MemberId memberId = member.getMemberId();
-			Var var = _tempClassVar.getMember(memberId);
+			Var var = _thisVar.getMember(memberId);
 			if(var != null)
 				return var;
 		}
@@ -111,6 +116,13 @@ public class MemberFunc extends Function {
 		return _parent.getTypeFromVarBinding(binding);
 	}
 	
+	@Override
+	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph,
+			int startingLine) {
+		ErrorOutputter.fatalError("Error! Should call loadMemberFuncRef instead.");
+		return null;
+	}
+	
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function
@@ -120,15 +132,26 @@ public class MemberFunc extends Function {
 	 */
 	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameter_values,
 			Graph graph, AstLoader astLoader, int startingLine) {
-		_tempClassVar = classVar;
-		Map<GraphNode, GraphNode> map = addSubGraph(graph, astLoader, startingLine);
-		_tempClassVar = null;
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_gvplGraph, this,
+				startingLine);
 		
-		return addParametersReferenceAndReturn(parameter_values, map, startingLine);
+		// binds the "this" pointer as a normal parameter
+		bindInParameter(internalToMainGraphMap, classVar, _thisVar, startingLine); 
+		bindOutParameter(internalToMainGraphMap, classVar, _thisVar, startingLine);
+		
+		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap,
+				startingLine);
 	}
 	
-	public MemberFunc getParent() {
+	public MemberFunc getParentMemberFunc() {
 		return _parentMemberFunc;
 	}
+	
+	public ClassDecl getParentClass() {
+		return _parentClass;
+	}
 
+	public ClassVar getThisReference() {
+		return _thisVar;
+	}
 }

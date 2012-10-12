@@ -75,7 +75,7 @@ public class AstLoader {
 			return var; 
 		
 		IBinding binding = getBindingFromExpr(expr);
-		var = _extToInVars.get(binding);
+		var = getVarFromBinding(binding);
 		if (var != null) 
 			return var; 
 		

@@ -24,10 +24,22 @@ struct sPri
 	
 	sSeg seg;
 	
+	float soma(float x)
+	{
+		return x + a;
+	}
+	
+	float subtracao(float y)
+	{
+		h += 8.0;
+		return y - h;
+	}
+	
 	float inc_a5(float w)
 	{
 		a -= 5.0;
-		h += 3.0;
+		h += soma(3.0);
+		h += subtracao(9.3);
 		seg.setM1(16);
 		seg.si.soEsse += 18.20;
 	}

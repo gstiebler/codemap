@@ -42,6 +42,7 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
 public class InstructionLine {
 
@@ -264,21 +265,42 @@ public class InstructionLine {
 		}
 	}
 
-	GraphNode loadFunctionCall(IASTFunctionCallExpression func_call) {
-		int startingLine = func_call.getFileLocation().getStartingLineNumber();
-		Function func = getFunction(func_call);
-		IASTExpression paramExpr = func_call.getParameterExpression();
+	MemberFunc loadOwnMemberFunc(IASTFunctionCallExpression funcCall) {
+		return null;
+	}
+	
+	private GraphNode loadFunctionCall(IASTFunctionCallExpression funcCall) {
+		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
+		
+		Function func = null;
+		func = isOwnMemberFunc(funcCall);
+		boolean isOwn = false;
+		if (func == null) 
+			func = getFunction(funcCall);
+		 else
+			isOwn = true;
+		
+		IASTExpression paramExpr = funcCall.getParameterExpression();
 
+		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-		IASTExpression name_expr = func_call.getFunctionNameExpression();
-		if (name_expr instanceof IASTIdExpression) {
-			IASTIdExpression expr = (IASTIdExpression) name_expr;
-			Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
-			return loadFunction.addFuncRef(parameterValues, _gvplGraph, startingLine);
-		} else if (name_expr instanceof IASTFieldReference) {
-			return loadMemberFuncRef(func_call, parameterValues);
+		if (nameExpr instanceof IASTFieldReference) {
+			return loadMemberFuncRef(funcCall, parameterValues);
+		} else if (nameExpr instanceof IASTIdExpression) {
+			if(isOwn) {		
+				MemberFunc memberFunc = (MemberFunc) func;
+				MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
+				ClassVar var = parentMF.getThisReference();
+				GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
+					_parentBasicBlock, startingLine);
+				return node;
+			} else {
+				IASTIdExpression expr = (IASTIdExpression) nameExpr;
+				Function loadFunction = _astInterpreter.getFuncId(expr.getName().resolveBinding());
+				return loadFunction.addFuncRef(parameterValues, _gvplGraph, startingLine);
+			}
 		} else
-			ErrorOutputter.fatalError("Not treated. " + name_expr.getClass());
+			ErrorOutputter.fatalError("Not treated. " + nameExpr.getClass());
 
 		return null;
 	}
@@ -337,8 +359,9 @@ public class InstructionLine {
 	}
 
 	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression funcCall,
-			List<FuncParameter> parameter_values) {
-		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
+			List<FuncParameter> parameterValues) {
+		IASTExpression astExpr = funcCall.getFunctionNameExpression();
+		IASTFieldReference fieldRef = (IASTFieldReference) astExpr;
 
 		IASTExpression expr = fieldRef.getFieldOwner();
 		Var var = _parentBasicBlock.getVarFromExpr(expr);
@@ -350,7 +373,7 @@ public class InstructionLine {
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		MemberFunc memberFunc = classVar.getClassDecl().getMemberFunc(funcMemberBinding);
 		
-		return memberFunc.loadMemberFuncRef(classVar, parameter_values, _gvplGraph,
+		return memberFunc.loadMemberFuncRef(classVar, parameterValues, _gvplGraph,
 				_parentBasicBlock, funcCall.getFileLocation().getStartingLineNumber());
 	}
 
@@ -421,20 +444,37 @@ public class InstructionLine {
 			return loadVarInAddress(pointerExpr, astLoader);
 	}
 
-	private Function getFunction(IASTFunctionCallExpression func_call) {
-		IASTExpression name_expr = func_call.getFunctionNameExpression();
+	private Function getFunction(IASTFunctionCallExpression funcCall) {
+		IASTExpression name_expr = funcCall.getFunctionNameExpression();
 		if (name_expr instanceof IASTIdExpression) {
 			IASTIdExpression expr = (IASTIdExpression) name_expr;
-			return _astInterpreter.getFuncId(expr.getName().resolveBinding());
+			IBinding binding = expr.getName().resolveBinding();
+			return _astInterpreter.getFuncId(binding);
 		} else if (name_expr instanceof IASTFieldReference) {
-			IASTFieldReference field_ref = (IASTFieldReference) func_call
+			IASTFieldReference field_ref = (IASTFieldReference) funcCall
 					.getFunctionNameExpression();
 
-			IBinding func_member_binding = field_ref.getFieldName().resolveBinding();
-			return _astInterpreter.getMemberFunc(func_member_binding);
+			IBinding funcMemberBinding = field_ref.getFieldName().resolveBinding();
+			return _astInterpreter.getMemberFunc(funcMemberBinding);
 		} else
 			ErrorOutputter.fatalError("problem");
 
+		return null;
+	}
+	
+	private MemberFunc isOwnMemberFunc(IASTFunctionCallExpression funcCall) {
+		IASTExpression name_expr = funcCall.getFunctionNameExpression();
+		if (!(name_expr instanceof IASTIdExpression))
+			return null;
+			
+		IASTIdExpression expr = (IASTIdExpression) name_expr;
+		IBinding binding = expr.getName().resolveBinding();
+		
+		if(binding instanceof CPPMethod) {
+			MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
+			return parentMF.getParentClass().getMemberFunc(binding);
+		}
+		
 		return null;
 	}
 	
