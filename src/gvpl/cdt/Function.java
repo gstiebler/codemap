@@ -173,8 +173,8 @@ public class Function extends AstLoader {
 		return internalToMainGraphMap.get(_returnNode);
 	}
 
-	protected void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
-			Var declaredParameter, int startingLine) {
+	protected void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap,
+			Var callingParameter, Var declaredParameter, int startingLine) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
 			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
@@ -182,9 +182,9 @@ public class Function extends AstLoader {
 				Var callingParameterChild = callingParameterClass.getMember(memberId);
 				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
 
-				if(declaredParameterChild == null)
+				if (declaredParameterChild == null)
 					continue;
-				
+
 				bindInParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
 						declaredParameterChild.getVarInMem(), startingLine);
 			}
@@ -197,7 +197,8 @@ public class Function extends AstLoader {
 
 		// Point the received values to the received parameters ([in]
 		// parameters)
-		if (callingParameterNode != null) {
+		if (callingParameterNode != null && declParamNodeInMainGraph != null
+				&& (declParamNodeInMainGraph.getNumDependentNodes() > 0)) {
 			callingParameterNode.addDependentNode(declParamNodeInMainGraph, startingLine);
 		}
 	}
@@ -223,7 +224,8 @@ public class Function extends AstLoader {
 		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
 				.getCurrentNode(startingLine));
 
-		callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, startingLine);
+		if(declaredParameter.onceWritten())
+			callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, startingLine);
 	}
 
 	private void setName(String name) {
