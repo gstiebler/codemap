@@ -1,0 +1,49 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+	node_000037 [ label = "bcPointer_pointed._aMember", startingline=46 ]
+	node_000047 [ label = "bcPointer_pointed._baseMember", startingline=46 ]
+	node_000048 [ label = "40", style=filled, fillcolor="#E9FFE9", startingline=47 ]
+	node_000054 [ label = "a", startingline=47 ]
+subgraph cluster_32 {
+label = "ClassA::ClassA";
+parent = "G";
+startingline = 46;
+	node_000038 [ label = "THIS._baseMember", startingline=20 ]
+	node_000039 [ label = "THIS._aMember", startingline=20 ]
+	node_000040 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=20 ]
+	node_000041 [ label = "55", style=filled, fillcolor="#E9FFE9", startingline=20 ]
+	node_000042 [ label = "THIS._baseMember", startingline=20 ]
+subgraph cluster_33 {
+label = "BaseClass::BaseClass";
+parent = "cluster_32";
+startingline = 20;
+	node_000043 [ label = "THIS._baseMember", startingline=7 ]
+	node_000044 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
+	node_000045 [ label = "dummy", style=filled, fillcolor="#FFE9E9", startingline=7 ]
+	node_000046 [ label = "THIS._baseMember", startingline=9 ]
+}
+}
+subgraph cluster_34 {
+label = "ClassA::process";
+parent = "G";
+startingline = 47;
+	node_000049 [ label = "THIS._baseMember", startingline=23 ]
+	node_000050 [ label = "THIS._aMember", startingline=23 ]
+	node_000051 [ label = "baseParam", style=filled, fillcolor="#FFE9E9", startingline=23 ]
+	node_000052 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=25 ]
+	node_000053 [ label = "ClassA::process", style=filled, fillcolor="#FFFFD0", startingline=25 ]
+}
+	node_000047 -> node_000049
+	node_000048 -> node_000051
+	node_000040 -> node_000044
+	node_000041 -> node_000045
+	node_000042 -> node_000047
+	node_000044 -> node_000046
+	node_000046 -> node_000042
+	node_000049 -> node_000052
+	node_000051 -> node_000052
+	node_000052 -> node_000053
+	node_000053 -> node_000054
+}
