@@ -43,6 +43,15 @@ public:
 int main() 
 {
 	BaseClass *bcPointer;
-	bcPointer = new ClassA();
+	
+	if(true)
+	{
+		bcPointer = new ClassA();
+	}
+	else
+	{
+		bcPointer = new ClassB();
+	}
+	
 	int a = bcPointer->process(40);
 }

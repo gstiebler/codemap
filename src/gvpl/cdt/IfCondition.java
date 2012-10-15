@@ -70,8 +70,8 @@ abstract class BoolValuePack {
 		}
 
 		// the list of all pointers and reference variables
-		List<InExtMAVarPair> falseAddressVars = _ifBasicBlock.getAccessedMemAddressVar();
-		for (InExtMAVarPair pair : falseAddressVars) {
+		List<InExtMAVarPair> addressVars = _ifBasicBlock.getAccessedMemAddressVar();
+		for (InExtMAVarPair pair : addressVars) {
 			PrevTrueFalseMemVar prevTrueFalse = mapPrevTrueFalseMV.get(pair._ext);
 			if (prevTrueFalse == null)
 				prevTrueFalse = new PrevTrueFalseMemVar();

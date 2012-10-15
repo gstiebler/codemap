@@ -221,6 +221,10 @@ public class AstLoader {
 			int startingLine) {
 		Var extVarInMem = extVar.getVarInMem();
 		Var intVarInMem = intVar.getVarInMem();
+		
+		if(extVarInMem == null)
+			return;
+		
 		if (intVarInMem instanceof ClassVar) {
 			ClassVar extClassVar = (ClassVar) extVarInMem;
 			ClassVar intClassVar = (ClassVar) intVarInMem;

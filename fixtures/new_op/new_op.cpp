@@ -2,7 +2,9 @@
 int main() 
 {
 		int *a;
-		a = new int;
+		{
+			a = new int;
+		}
 		*a = 5;
 		int b = *a;
 		
