@@ -343,8 +343,7 @@ public class InstructionLine {
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(memberFunc, paramExpr);
-		ClassVar classVar = (ClassVar)var;
-		return memberFunc.loadMemberFuncRef(classVar, parameterValues, _gvplGraph,
+		return var.loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
 					_parentBasicBlock, startingLine);
 	}
 

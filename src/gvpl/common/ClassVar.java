@@ -3,19 +3,15 @@ package gvpl.common;
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.cdt.ClassDecl;
-import gvpl.cdt.Function;
 import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IBinding;
 
 /**
  * Variable (instance) of a class
@@ -147,11 +143,8 @@ public class ClassVar extends Var {
 	}
 	
 	@Override
-	public GraphNode loadMethod(IBinding funcMemberBinding, IASTExpression paramExpr) {
-		return null;
-		/*Function func =  _classDecl.getMemberFunc(funcMemberBinding);
-
-		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-		return loadMemberFuncRef(funcCall, parameterValues);*/
+	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
+			Graph graph, AstLoader astLoader, int startingLine) {
+		return memberFunc.loadMemberFuncRef(this, parameterValues, graph, astLoader, startingLine);
 	}
 }

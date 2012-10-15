@@ -1,17 +1,15 @@
 package gvpl.common;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IBinding;
-
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.cdt.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is used to represent variables of primitive types
@@ -128,7 +126,9 @@ public class Var {
 		_gvplGraph = graph;
 	}
 	
-	public GraphNode loadMethod(IBinding funcMemberBinding, IASTExpression paramExpr) {
+	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
+			Graph graph, AstLoader astLoader, int startingLine) {
+		ErrorOutputter.fatalError("should not be here");
 		return null;
 	}
 }

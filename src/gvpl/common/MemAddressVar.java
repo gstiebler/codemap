@@ -1,9 +1,11 @@
 package gvpl.common;
 
+import java.util.List;
 import java.util.Map;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.cdt.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -121,6 +123,16 @@ public class MemAddressVar extends Var {
 		Var converted = inToExtVar.get(possiblePointedVar._finalVar);
 		if(converted != null)
 			possiblePointedVar._finalVar = converted; 
+	}
+	
+	@Override
+	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
+			Graph graph, AstLoader astLoader, int startingLine) {
+		Var var = getPointedVar();
+		if(!(var instanceof ClassVar))
+			ErrorOutputter.fatalError("You're doing it wrong.");
+		
+		return memberFunc.loadMemberFuncRef((ClassVar)var, parameterValues, graph, astLoader, startingLine);
 	}
 
 }
