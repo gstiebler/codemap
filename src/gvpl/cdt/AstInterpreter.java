@@ -93,9 +93,9 @@ public class AstInterpreter extends AstLoader {
 		addClass(classDecl);
 	}
 
-	public TypeId getType(IASTDeclSpecifier decl_spec) {
-		if (decl_spec instanceof IASTNamedTypeSpecifier) {
-			IASTNamedTypeSpecifier named_type = (IASTNamedTypeSpecifier) decl_spec;
+	public TypeId getType(IASTDeclSpecifier declSpec) {
+		if (declSpec instanceof IASTNamedTypeSpecifier) {
+			IASTNamedTypeSpecifier named_type = (IASTNamedTypeSpecifier) declSpec;
 			IBinding binding = named_type.getName().resolveBinding();
 			ClassDecl classDecl = _typeBindingToClass.get(binding);
 			return classDecl.getTypeId();
@@ -107,27 +107,16 @@ public class AstInterpreter extends AstLoader {
 		return _funcIdMap.get(binding);
 	}
 
-	public MemberId getMemberId(IBinding member_binding, IBinding type_binding) {
-		ClassDecl loadStruct = _typeBindingToClass.get(type_binding);
-		ClassMember structMember = loadStruct.getMember(member_binding);
+	public MemberId getMemberId(IBinding memberBinding, IBinding typeBinding) {
+		ClassDecl loadStruct = _typeBindingToClass.get(typeBinding);
+		ClassMember structMember = loadStruct.getMember(memberBinding);
 		return structMember.getMemberId();
 	}
 
-	public MemberId getMemberId(TypeId type_id, IBinding member_binding) {
-		ClassDecl loadStruct = _typeIdToClass.get(type_id);
-		ClassMember classMember = loadStruct.getMember(member_binding);
+	public MemberId getMemberId(TypeId typeId, IBinding memberBinding) {
+		ClassDecl loadStruct = _typeIdToClass.get(typeId);
+		ClassMember classMember = loadStruct.getMember(memberBinding);
 		return classMember.getMemberId();
-	}
-
-	public MemberFunc getMemberFunc(IBinding funcMemberBinding) {
-		for (ClassDecl classDecl : _typeIdToClass.values()) {
-			MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
-			if (memberFunc != null)
-				return memberFunc;
-		}
-
-		ErrorOutputter.fatalError("Problem here.");
-		return null;
 	}
 
 	public ClassDecl getClassDecl(TypeId type) {

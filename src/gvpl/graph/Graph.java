@@ -136,13 +136,13 @@ public class Graph {
 		return addGraphNode(value, NodeType.E_DIRECT_VALUE, startingLine);
 	}
 
-	GraphNode addUnOp(eUnOp op, GraphNode val_node, AstLoader astLoader, int startingLine) {
-		GraphNode un_op_node = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
+	GraphNode addUnOp(eUnOp op, GraphNode valNode, AstLoader astLoader, int startingLine) {
+		GraphNode unOpNode = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
 				startingLine);
 
-		val_node.addDependentNode(un_op_node, startingLine);
+		valNode.addDependentNode(unOpNode, startingLine);
 
-		return un_op_node;
+		return unOpNode;
 	}
 
 	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
@@ -163,16 +163,16 @@ public class Graph {
 		return bin_op_node;
 	}
 
-	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_var_decl, GraphNode lhs_node,
+	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_varDecl, GraphNode lhsNode,
 			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
-		GraphNode bin_op_node = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
+		GraphNode binOpNode = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		lhs_node.addDependentNode(bin_op_node, startingLine);
-		rhs_node.addDependentNode(bin_op_node, startingLine);
+		lhsNode.addDependentNode(binOpNode, startingLine);
+		rhs_node.addDependentNode(binOpNode, startingLine);
 
-		return lhs_var_decl
-				.receiveAssign(NodeType.E_VARIABLE, bin_op_node, startingLine);
+		return lhs_varDecl
+				.receiveAssign(NodeType.E_VARIABLE, binOpNode, startingLine);
 	}
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {

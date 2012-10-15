@@ -445,17 +445,18 @@ public class InstructionLine {
 	}
 
 	private Function getFunction(IASTFunctionCallExpression funcCall) {
-		IASTExpression name_expr = funcCall.getFunctionNameExpression();
-		if (name_expr instanceof IASTIdExpression) {
-			IASTIdExpression expr = (IASTIdExpression) name_expr;
+		IASTExpression namExpr = funcCall.getFunctionNameExpression();
+		if (namExpr instanceof IASTIdExpression) {
+			IASTIdExpression expr = (IASTIdExpression) namExpr;
 			IBinding binding = expr.getName().resolveBinding();
 			return _astInterpreter.getFuncId(binding);
-		} else if (name_expr instanceof IASTFieldReference) {
-			IASTFieldReference field_ref = (IASTFieldReference) funcCall
-					.getFunctionNameExpression();
-
-			IBinding funcMemberBinding = field_ref.getFieldName().resolveBinding();
-			return _astInterpreter.getMemberFunc(funcMemberBinding);
+		} else if (namExpr instanceof IASTFieldReference) {
+			IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
+			IASTExpression ownerExpr = fieldRef.getFieldOwner();
+			Var var =  _parentBasicBlock.getVarFromExpr(ownerExpr);
+			ClassVar ownerVar = (ClassVar) var.getVarInMem();
+			IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
+			return ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
 		} else
 			ErrorOutputter.fatalError("problem");
 
