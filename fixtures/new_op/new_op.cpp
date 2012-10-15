@@ -10,5 +10,5 @@ int main()
 		
 		int *c = new int;
 		*c = 19;
-		int d = c;
+		int d = *c;
 }

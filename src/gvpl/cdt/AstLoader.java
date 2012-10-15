@@ -29,31 +29,31 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
+class InExtVarPair {
+	Var _in;
+	Var _ext;
+	
+	public InExtVarPair(Var in, Var ext) {
+		if(ext == null)
+			ErrorOutputter.fatalError("ext cannot be null");
+		_in = in;
+		_ext = ext;
+	}
+}
+
+class InExtMAVarPair {
+	MemAddressVar _in;
+	MemAddressVar _ext;
+	
+	public InExtMAVarPair(MemAddressVar in, MemAddressVar ext) {
+		if(ext == null)
+			ErrorOutputter.fatalError("ext cannot be null");
+		_in = in;
+		_ext = ext;
+	}
+}
+
 public class AstLoader {
-
-	class InExtVarPair {
-		Var _in;
-		Var _ext;
-		
-		public InExtVarPair(Var in, Var ext) {
-			if(ext == null)
-				ErrorOutputter.fatalError("ext cannot be null");
-			_in = in;
-			_ext = ext;
-		}
-	}
-
-	class InExtMAVarPair {
-		MemAddressVar _in;
-		MemAddressVar _ext;
-		
-		public InExtMAVarPair(MemAddressVar in, MemAddressVar ext) {
-			if(ext == null)
-				ErrorOutputter.fatalError("ext cannot be null");
-			_in = in;
-			_ext = ext;
-		}
-	}
 	
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;

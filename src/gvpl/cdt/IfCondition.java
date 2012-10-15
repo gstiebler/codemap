@@ -1,7 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.cdt.AstLoader.InExtMAVarPair;
-import gvpl.cdt.AstLoader.InExtVarPair;
 import gvpl.common.MemAddressVar;
 import gvpl.common.Var;
 import gvpl.graph.Graph;

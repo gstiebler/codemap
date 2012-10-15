@@ -62,8 +62,7 @@ public class BasicBlock extends AstLoader {
 		}
 		
 		for (InExtVarPair writtenPair : writtenVars) {
-			GraphNode intVarCurrNode = writtenPair._in
-					.getCurrentNode(startingLine);
+			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode(startingLine);
 			// if someone has written in the internal var
 
 			writtenPair._ext.initializeGraphNode(NodeType.E_VARIABLE, extGraph,
@@ -77,6 +76,13 @@ public class BasicBlock extends AstLoader {
 		
 		for(InExtVarPair ignoredPair : ignoredVars) {
 			extGraph.removeNode(ignoredPair._in.getFirstNode());
+		}
+		
+		List<InExtMAVarPair> addressVars = getAccessedMemAddressVar();
+		for (InExtMAVarPair pair : addressVars) {
+			Var pointedVar = pair._in.getPointedVar();
+			pointedVar.setGraph(extGraph);
+			pair._ext.setPointedVar(pointedVar);
 		}
 		
 		return mergedNodes;

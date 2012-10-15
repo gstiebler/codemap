@@ -81,8 +81,8 @@ public class InstructionLine {
 		else if (statement instanceof IASTForStatement)
 			load_for_stmt((IASTForStatement) statement);
 		else if (statement instanceof IASTExpressionStatement) {
-			IASTExpressionStatement expr_stat = (IASTExpressionStatement) statement;
-			IASTExpression expr = expr_stat.getExpression();
+			IASTExpressionStatement exprStat = (IASTExpressionStatement) statement;
+			IASTExpression expr = exprStat.getExpression();
 			if (expr instanceof IASTBinaryExpression)
 				loadAssignBinOp((IASTBinaryExpression) expr);
 			else if (expr instanceof IASTFunctionCallExpression)
