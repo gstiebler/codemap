@@ -306,7 +306,6 @@ public class InstructionLine {
 		IASTExpression paramExpr = funcCall.getParameterExpression();
 		
 		Function func = null;
-		boolean isOwn = false;
 		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		
 
@@ -321,44 +320,34 @@ public class InstructionLine {
 		if (idExprBinding instanceof CPPMethod) {
 			MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
 			func = parentMF.getParentClass().getMemberFunc(idExprBinding);
+			
+			List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+			MemberFunc memberFunc = (MemberFunc) func;
+			ClassVar var = parentMF.getThisReference();
+			GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
+				_parentBasicBlock, startingLine);
+			return node;
 		}
 
-		if (func == null) {
-			if (nameExpr instanceof IASTIdExpression) {
-				func = _astInterpreter.getFuncId(idExprBinding);
-
-				List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-				Function loadFunction = _astInterpreter.getFuncId(idExpr.getName().resolveBinding());
-				return loadFunction.addFuncRef(parameterValues, _gvplGraph, startingLine);
-			} else if (nameExpr instanceof IASTFieldReference) {
-				IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
-				IASTExpression ownerExpr = fieldRef.getFieldOwner();
-				Var var =  _parentBasicBlock.getVarFromExpr(ownerExpr);
-				ClassVar ownerVar = (ClassVar) var.getVarInMem();
-				IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
-				func = ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
-
-				List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-				return loadMemberFuncRef(funcCall, parameterValues);
-				
-			} else
-				ErrorOutputter.fatalError("problem");
-		}
-		 else
-			isOwn = true;
-
-		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		if (nameExpr instanceof IASTIdExpression) {
-			if(isOwn) {		
-				MemberFunc memberFunc = (MemberFunc) func;
-				MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
-				ClassVar var = parentMF.getThisReference();
-				GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
-					_parentBasicBlock, startingLine);
-				return node;
-			} 
+			func = _astInterpreter.getFuncId(idExprBinding);
+
+			List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+			Function loadFunction = _astInterpreter.getFuncId(idExpr.getName().resolveBinding());
+			return loadFunction.addFuncRef(parameterValues, _gvplGraph, startingLine);
+		} else if (nameExpr instanceof IASTFieldReference) {
+			IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
+			IASTExpression ownerExpr = fieldRef.getFieldOwner();
+			Var var = _parentBasicBlock.getVarFromExpr(ownerExpr);
+			ClassVar ownerVar = (ClassVar) var.getVarInMem();
+			IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
+			func = ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
+
+			List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+			return loadMemberFuncRef(funcCall, parameterValues);
+
 		} else
-			ErrorOutputter.fatalError("Not treated. " + nameExpr.getClass());
+			ErrorOutputter.fatalError("problem");
 
 		return null;
 	}
