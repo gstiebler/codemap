@@ -167,14 +167,14 @@ public class ClassDecl {
 	 * @param memberFunc
 	 * @return
 	 */
-	public MemberFunc getParentFunc(MemberFunc memberFunc) {
+	public MemberFunc getEquivalentFunc(MemberFunc memberFunc) {
 		for(MemberFunc intMemberFunc : _memberFuncIdMap.values()) {
 			if(memberFunc.isDeclarationEquivalent(intMemberFunc))
 				return intMemberFunc;
 		}
 		
 		for(ClassDecl parentClass : _parentClasses) {
-			MemberFunc mfInParent = parentClass.getParentFunc(memberFunc);
+			MemberFunc mfInParent = parentClass.getEquivalentFunc(memberFunc);
 			if(mfInParent != null)
 				return mfInParent;
 		}

@@ -128,11 +128,27 @@ public class MemAddressVar extends Var {
 	@Override
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, AstLoader astLoader, int startingLine) {
-		Var var = getPointedVar();
-		if(!(var instanceof ClassVar))
-			ErrorOutputter.fatalError("You're doing it wrong.");
+		return loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc, parameterValues, graph,
+				astLoader, startingLine);
+	}
+	
+	private GraphNode loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
+			MemberFunc memberFunc, List<FuncParameter> parameterValues, Graph graph,
+			AstLoader astLoader, int startingLine) {
 		
-		return memberFunc.loadMemberFuncRef((ClassVar)var, parameterValues, graph, astLoader, startingLine);
+		if (possiblePointedVar._finalVar == null) {
+			loadMemberFuncRefRecursive(possiblePointedVar._varTrue, memberFunc, parameterValues,
+					graph, astLoader, startingLine);
+			loadMemberFuncRefRecursive(possiblePointedVar._varFalse, memberFunc, parameterValues,
+					graph, astLoader, startingLine);
+		} else {
+			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
+			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);
+			return eqFunc.loadMemberFuncRef(classVar, parameterValues, graph, astLoader,
+					startingLine);
+		}
+		
+		return null;
 	}
 
 }

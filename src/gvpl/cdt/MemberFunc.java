@@ -50,7 +50,7 @@ public class MemberFunc extends Function {
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
 		
-		_parentMemberFunc = _parentClass.getParentFunc(this);
+		_parentMemberFunc = _parentClass.getEquivalentFunc(this);
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class MemberFunc extends Function {
 	 * @param classVar
 	 * @param graphBuilder
 	 */
-	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameter_values,
+	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameterValues,
 			Graph graph, AstLoader astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_gvplGraph, this,
 				startingLine);
@@ -139,7 +139,7 @@ public class MemberFunc extends Function {
 		bindInParameter(internalToMainGraphMap, classVar, _thisVar, startingLine); 
 		bindOutParameter(internalToMainGraphMap, classVar, _thisVar, startingLine);
 		
-		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap,
+		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap,
 				startingLine);
 	}
 	
