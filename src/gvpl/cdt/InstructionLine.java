@@ -265,18 +265,74 @@ public class InstructionLine {
 		}
 	}
 
-	MemberFunc loadOwnMemberFunc(IASTFunctionCallExpression funcCall) {
+	private Function getFunction(IASTFunctionCallExpression funcCall) {
+		IASTExpression namExpr = funcCall.getFunctionNameExpression();
+		if (namExpr instanceof IASTIdExpression) {
+			IASTIdExpression expr = (IASTIdExpression) namExpr;
+			IBinding binding = expr.getName().resolveBinding();
+			return _astInterpreter.getFuncId(binding);
+		} else if (namExpr instanceof IASTFieldReference) {
+			IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
+			IASTExpression ownerExpr = fieldRef.getFieldOwner();
+			Var var =  _parentBasicBlock.getVarFromExpr(ownerExpr);
+			ClassVar ownerVar = (ClassVar) var.getVarInMem();
+			IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
+			return ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
+		} else
+			ErrorOutputter.fatalError("problem");
+
 		return null;
 	}
 	
+	private MemberFunc isOwnMemberFunc(IASTFunctionCallExpression funcCall) {
+		IASTExpression name_expr = funcCall.getFunctionNameExpression();
+		if (!(name_expr instanceof IASTIdExpression))
+			return null;
+			
+		IASTIdExpression expr = (IASTIdExpression) name_expr;
+		IBinding binding = expr.getName().resolveBinding();
+		
+		if(binding instanceof CPPMethod) {
+			MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
+			return parentMF.getParentClass().getMemberFunc(binding);
+		}
+		
+		return null;
+	}
+
 	private GraphNode loadFunctionCall(IASTFunctionCallExpression funcCall) {
 		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
 		
 		Function func = null;
-		func = isOwnMemberFunc(funcCall);
+		IASTExpression namExpr = funcCall.getFunctionNameExpression();
+		{
+			if (namExpr instanceof IASTIdExpression)
+			{
+				IASTIdExpression expr = (IASTIdExpression) namExpr;
+				IBinding binding = expr.getName().resolveBinding();
+				
+				if(binding instanceof CPPMethod) {
+					MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
+					func = parentMF.getParentClass().getMemberFunc(binding);
+				}
+			}
+		}
 		boolean isOwn = false;
-		if (func == null) 
-			func = getFunction(funcCall);
+		if (func == null) {
+			if (namExpr instanceof IASTIdExpression) {
+				IASTIdExpression expr = (IASTIdExpression) namExpr;
+				IBinding binding = expr.getName().resolveBinding();
+				func = _astInterpreter.getFuncId(binding);
+			} else if (namExpr instanceof IASTFieldReference) {
+				IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
+				IASTExpression ownerExpr = fieldRef.getFieldOwner();
+				Var var =  _parentBasicBlock.getVarFromExpr(ownerExpr);
+				ClassVar ownerVar = (ClassVar) var.getVarInMem();
+				IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
+				func = ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
+			} else
+				ErrorOutputter.fatalError("problem");
+		}
 		 else
 			isOwn = true;
 		
@@ -444,41 +500,6 @@ public class InstructionLine {
 			return loadVarInAddress(pointerExpr, astLoader);
 	}
 
-	private Function getFunction(IASTFunctionCallExpression funcCall) {
-		IASTExpression namExpr = funcCall.getFunctionNameExpression();
-		if (namExpr instanceof IASTIdExpression) {
-			IASTIdExpression expr = (IASTIdExpression) namExpr;
-			IBinding binding = expr.getName().resolveBinding();
-			return _astInterpreter.getFuncId(binding);
-		} else if (namExpr instanceof IASTFieldReference) {
-			IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
-			IASTExpression ownerExpr = fieldRef.getFieldOwner();
-			Var var =  _parentBasicBlock.getVarFromExpr(ownerExpr);
-			ClassVar ownerVar = (ClassVar) var.getVarInMem();
-			IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
-			return ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
-		} else
-			ErrorOutputter.fatalError("problem");
-
-		return null;
-	}
-	
-	private MemberFunc isOwnMemberFunc(IASTFunctionCallExpression funcCall) {
-		IASTExpression name_expr = funcCall.getFunctionNameExpression();
-		if (!(name_expr instanceof IASTIdExpression))
-			return null;
-			
-		IASTIdExpression expr = (IASTIdExpression) name_expr;
-		IBinding binding = expr.getName().resolveBinding();
-		
-		if(binding instanceof CPPMethod) {
-			MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
-			return parentMF.getParentClass().getMemberFunc(binding);
-		}
-		
-		return null;
-	}
-	
 	public AstLoader getParentBasicBlock() {
 		return _parentBasicBlock;
 	}
