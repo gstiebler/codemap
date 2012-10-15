@@ -304,26 +304,26 @@ public class InstructionLine {
 		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
 		
 		Function func = null;
-		IASTExpression namExpr = funcCall.getFunctionNameExpression();
+		boolean isOwn = false;
+		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		{
-			if (namExpr instanceof IASTIdExpression)
+			if (nameExpr instanceof IASTIdExpression)
 			{
-				IASTIdExpression expr = (IASTIdExpression) namExpr;
-				IBinding binding = expr.getName().resolveBinding();
+				IASTIdExpression idExpr = (IASTIdExpression) nameExpr;
+				IBinding idExprBinding = idExpr.getName().resolveBinding();
 				
-				if(binding instanceof CPPMethod) {
+				if(idExprBinding instanceof CPPMethod) {
 					MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
-					func = parentMF.getParentClass().getMemberFunc(binding);
+					func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 				}
 			}
 		}
-		boolean isOwn = false;
 		if (func == null) {
-			if (namExpr instanceof IASTIdExpression) {
-				IASTIdExpression expr = (IASTIdExpression) namExpr;
-				IBinding binding = expr.getName().resolveBinding();
-				func = _astInterpreter.getFuncId(binding);
-			} else if (namExpr instanceof IASTFieldReference) {
+			if (nameExpr instanceof IASTIdExpression) {
+				IASTIdExpression idExpr = (IASTIdExpression) nameExpr;
+				IBinding idExprBinding = idExpr.getName().resolveBinding();
+				func = _astInterpreter.getFuncId(idExprBinding);
+			} else if (nameExpr instanceof IASTFieldReference) {
 				IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 				IASTExpression ownerExpr = fieldRef.getFieldOwner();
 				Var var =  _parentBasicBlock.getVarFromExpr(ownerExpr);
@@ -338,7 +338,6 @@ public class InstructionLine {
 		
 		IASTExpression paramExpr = funcCall.getParameterExpression();
 
-		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		if (nameExpr instanceof IASTFieldReference) {
 			return loadMemberFuncRef(funcCall, parameterValues);
