@@ -332,15 +332,20 @@ public class InstructionLine {
 	 * @return The graph node of the result of the function
 	 */
 	private GraphNode loadVarMethod(IASTFunctionCallExpression funcCall, IASTExpression paramExpr) {
+		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
 		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 		IASTExpression ownerExpr = fieldRef.getFieldOwner();
 		Var var = _parentBasicBlock.getVarFromExpr(ownerExpr);
-		ClassVar ownerVar = (ClassVar) var.getVarInMem();
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
-		Function func = ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
+		
+		TypeId typeId = var.getType();
+		ClassDecl classDecl =_astInterpreter.getClassDecl(typeId);
+		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
-		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-		return loadMemberFuncRef(funcCall, parameterValues);
+		List<FuncParameter> parameterValues = loadFunctionParameters(memberFunc, paramExpr);
+		ClassVar classVar = (ClassVar)var;
+		return memberFunc.loadMemberFuncRef(classVar, parameterValues, _gvplGraph,
+					_parentBasicBlock, startingLine);
 	}
 
 	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
@@ -394,25 +399,6 @@ public class InstructionLine {
 		String value = node.toString();
 		return _gvplGraph.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value, node
 				.getFileLocation().getStartingLineNumber());
-	}
-
-	public GraphNode loadMemberFuncRef(IASTFunctionCallExpression funcCall,
-			List<FuncParameter> parameterValues) {
-		IASTExpression astExpr = funcCall.getFunctionNameExpression();
-		IASTFieldReference fieldRef = (IASTFieldReference) astExpr;
-
-		IASTExpression expr = fieldRef.getFieldOwner();
-		Var var = _parentBasicBlock.getVarFromExpr(expr);
-		var = var.getVarInMem();
-		if (!(var instanceof ClassVar))
-			ErrorOutputter.fatalError("Work here.");
-		ClassVar classVar = (ClassVar) var;
-
-		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
-		MemberFunc memberFunc = classVar.getClassDecl().getMemberFunc(funcMemberBinding);
-		
-		return memberFunc.loadMemberFuncRef(classVar, parameterValues, _gvplGraph,
-				_parentBasicBlock, funcCall.getFileLocation().getStartingLineNumber());
 	}
 
 	/**

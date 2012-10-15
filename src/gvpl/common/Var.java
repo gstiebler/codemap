@@ -3,6 +3,9 @@ package gvpl.common;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IBinding;
+
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -123,5 +126,9 @@ public class Var {
 	
 	public void setGraph(Graph graph) {
 		_gvplGraph = graph;
+	}
+	
+	public GraphNode loadMethod(IBinding funcMemberBinding, IASTExpression paramExpr) {
+		return null;
 	}
 }
