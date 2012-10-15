@@ -280,11 +280,7 @@ public class Function extends AstLoader {
 		if(funcParameter != null)
 			return funcParameter.getVar().getVarInMem();
 		
-		Var var = super.getVarFromBinding(binding);
-		if(var != null)
-			return var;
-		
-		return null;
+		return super.getVarFromBinding(binding);
 	}
 	
 	@Override
