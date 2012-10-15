@@ -118,7 +118,9 @@ public class MemAddressVar extends Var {
 		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
 		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
 		
-		possiblePointedVar._finalVar = inToExtVar.get(possiblePointedVar._finalVar);
+		Var converted = inToExtVar.get(possiblePointedVar._finalVar);
+		if(converted != null)
+			possiblePointedVar._finalVar = converted; 
 	}
 
 }

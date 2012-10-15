@@ -219,6 +219,10 @@ public class AstLoader {
 	private void getAccessedVarsRecursive(Var intVar, Var extVar, List<InExtVarPair> read,
 			List<InExtVarPair> written, List<InExtVarPair> ignored, Map<Var, Var> inToExtMap,
 			int startingLine) {
+		
+		if(extVar == null)
+			return;
+		
 		Var extVarInMem = extVar.getVarInMem();
 		Var intVarInMem = intVar.getVarInMem();
 		
