@@ -111,21 +111,6 @@ public class AstLoader {
 		return _localVariables.get(binding);
 	}
 	
-	protected Var getVarFromBindingExt(IBinding binding) {
-		Var var = _localVariables.get(binding);
-		if(var != null)
-			return var;
-		
-		if(_parent != null)
-			return _parent.getVarFromBinding(binding);
-		
-		var = _extToInVars.get(binding);
-		if(var != null)
-			return var;
-		
-		return null;
-	}
-	
 	protected VarInfo getTypeFromVarBinding(IBinding binding) {
 		Var var = _localVariables.get(binding);
 		if(var != null)
@@ -223,7 +208,7 @@ public class AstLoader {
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
 			List<InExtVarPair> ignored, Map<Var, Var> inToExtMap, int startingLine) {
 		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
-			Var extVar = getVarFromBindingExt(entry.getKey());
+			Var extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
 				ErrorOutputter.fatalError("extVar cannot be null");
 
@@ -276,7 +261,7 @@ public class AstLoader {
 		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
 			Var intVar = entry.getValue();
 			if(intVar instanceof MemAddressVar) {
-				MemAddressVar extVar = (MemAddressVar) getVarFromBindingExt(entry.getKey());
+				MemAddressVar extVar = (MemAddressVar) _parent.getVarFromBinding(entry.getKey());
 				
 				vars.add(new InExtMAVarPair((MemAddressVar)intVar, extVar));
 			}
