@@ -42,6 +42,7 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
 public class InstructionLine {
@@ -304,44 +305,26 @@ public class InstructionLine {
 		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
 		
 		IASTExpression paramExpr = funcCall.getParameterExpression();
-		
-		Function func = null;
 		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		
-
-		IASTIdExpression idExpr = null;
-		IBinding idExprBinding = null;
 		if (nameExpr instanceof IASTIdExpression)
 		{
-			idExpr = (IASTIdExpression) nameExpr;
-			idExprBinding = idExpr.getName().resolveBinding();
-		}
-
-		if (idExprBinding instanceof CPPMethod) {
-			MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
-			func = parentMF.getParentClass().getMemberFunc(idExprBinding);
+			IASTIdExpression idExpr = (IASTIdExpression) nameExpr;
+			IBinding idExprBinding = idExpr.getName().resolveBinding();
 			
-			List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-			MemberFunc memberFunc = (MemberFunc) func;
-			ClassVar var = parentMF.getThisReference();
-			GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
-				_parentBasicBlock, startingLine);
-			return node;
-		}
-
-		if (nameExpr instanceof IASTIdExpression) {
-			func = _astInterpreter.getFuncId(idExprBinding);
-
-			List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-			Function loadFunction = _astInterpreter.getFuncId(idExpr.getName().resolveBinding());
-			return loadFunction.addFuncRef(parameterValues, _gvplGraph, startingLine);
+			if (idExprBinding instanceof CPPMethod) {
+				return loadOwnMethod(idExprBinding, paramExpr, startingLine);
+			} else if (idExprBinding instanceof CPPFunction) {
+				return loadSimpleFunc(idExprBinding, paramExpr, startingLine);
+			} else
+				ErrorOutputter.fatalError("problem");
 		} else if (nameExpr instanceof IASTFieldReference) {
 			IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 			IASTExpression ownerExpr = fieldRef.getFieldOwner();
 			Var var = _parentBasicBlock.getVarFromExpr(ownerExpr);
 			ClassVar ownerVar = (ClassVar) var.getVarInMem();
 			IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
-			func = ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
+			Function func = ownerVar.getClassDecl().getMemberFunc(funcMemberBinding);
 
 			List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 			return loadMemberFuncRef(funcCall, parameterValues);
@@ -350,6 +333,26 @@ public class InstructionLine {
 			ErrorOutputter.fatalError("problem");
 
 		return null;
+	}
+	
+	private GraphNode loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr, int stLine) {
+		MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
+		Function func = parentMF.getParentClass().getMemberFunc(idExprBinding);
+		
+		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+		MemberFunc memberFunc = (MemberFunc) func;
+		ClassVar var = parentMF.getThisReference();
+		GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
+			_parentBasicBlock, stLine);
+		return node;
+	}
+	
+	private GraphNode loadSimpleFunc(IBinding idExprBinding, IASTExpression paramExpr, int stLine) {
+		Function func = _astInterpreter.getFuncId(idExprBinding);
+
+		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+		Function loadFunction = _astInterpreter.getFuncId(idExprBinding);
+		return loadFunction.addFuncRef(parameterValues, _gvplGraph, stLine);
 	}
 
 	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
