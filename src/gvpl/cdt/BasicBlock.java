@@ -57,6 +57,7 @@ public class BasicBlock extends AstLoader {
 			// if someone read from internal var
 			GraphNode extVarCurrNode = readPair._ext.getCurrentNode(startingLine);
 			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode, startingLine);
+			// connect the var from the calling block to the correspodent var in this block
 			mergedNodes.put(intVarFirstNode, extVarCurrNode);
 		}
 		
@@ -69,6 +70,7 @@ public class BasicBlock extends AstLoader {
 					this, _astInterpreter, startingLine);
 			GraphNode extVarCurrNode = writtenPair._ext
 					.getCurrentNode(startingLine);
+			// connect the var from the calling block to the correspodent var in this block
 			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode, startingLine);
 			mergedNodes.put(intVarCurrNode, extVarCurrNode);
 		}

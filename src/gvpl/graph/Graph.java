@@ -154,13 +154,13 @@ public class Graph {
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
 			AstLoader astLoader, int startingLine) {
-		GraphNode bin_op_node = addGraphNode(CppMaps._bin_op_strings.get(op),
+		GraphNode binOpNode = addGraphNode(CppMaps._bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
-		val1_node.addDependentNode(bin_op_node, startingLine);
-		val2_node.addDependentNode(bin_op_node, startingLine);
+		val1_node.addDependentNode(binOpNode, startingLine);
+		val2_node.addDependentNode(binOpNode, startingLine);
 
-		return bin_op_node;
+		return binOpNode;
 	}
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_varDecl, GraphNode lhsNode,

@@ -285,7 +285,13 @@ public class AstLoader {
 		return vars;
 	}
 	
-	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {
+	/**
+	 * Connects a external graph to the internal graph
+	 * @param graph External graph
+	 * @param startingLine
+	 * @return A map from the internal graph nodes to the external graph nodes
+	 */
+	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph, int startingLine) {
 		
 		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
 

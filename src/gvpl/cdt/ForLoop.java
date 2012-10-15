@@ -32,7 +32,7 @@ public class ForLoop extends AstLoader {
 		basicBlockLoader.addToExtGraph(startingLine);
 
 		_parent = _typeSource;
-		addSubGraph(gvplGraph, astLoader, startingLine);
+		addSubGraph(gvplGraph, startingLine);
 	}
 	
 	@Override
