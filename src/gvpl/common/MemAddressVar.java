@@ -137,18 +137,25 @@ public class MemAddressVar extends Var {
 			AstLoader astLoader, int startingLine) {
 		
 		if (possiblePointedVar._finalVar == null) {
-			loadMemberFuncRefRecursive(possiblePointedVar._varTrue, memberFunc, parameterValues,
-					graph, astLoader, startingLine);
-			loadMemberFuncRefRecursive(possiblePointedVar._varFalse, memberFunc, parameterValues,
-					graph, astLoader, startingLine);
+			GraphNode trueNode = loadMemberFuncRefRecursive(possiblePointedVar._varTrue,
+					memberFunc, parameterValues, graph, astLoader, startingLine);
+			GraphNode falseNode = loadMemberFuncRefRecursive(possiblePointedVar._varFalse,
+					memberFunc, parameterValues, graph, astLoader, startingLine);
+			
+			
+			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+
+			trueNode.addDependentNode(ifOpNode, startingLine);
+			falseNode.addDependentNode(ifOpNode, startingLine);
+			possiblePointedVar._conditionNode.addDependentNode(ifOpNode, startingLine);
+			
+			return ifOpNode;
 		} else {
 			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
 			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);
 			return eqFunc.loadMemberFuncRef(classVar, parameterValues, graph, astLoader,
 					startingLine);
 		}
-		
-		return null;
 	}
 
 }
