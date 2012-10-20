@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassVar;
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
@@ -81,7 +82,7 @@ public class Function extends AstLoader {
 				instructionLine.load(statement);
 			}
 		} else
-			ErrorOutputter.fatalError("Work here.");
+			GeneralOutputter.fatalError("Work here.");
 	}
 	
 	public TypeId getReturnTypeId() {
@@ -134,7 +135,7 @@ public class Function extends AstLoader {
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,
 			Map<GraphNode, GraphNode> internalToMainGraphMap, int startingLine) {
 		if (_parametersMap.size() != callingParameters.size())
-			ErrorOutputter.fatalError("Number of parameters differs from func declaration!");
+			GeneralOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < callingParameters.size(); ++i) {
 			Var declaredParameter = _parametersList.get(i).getVar();
@@ -178,7 +179,8 @@ public class Function extends AstLoader {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
 			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
-			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
+			Set<MemberId> members = callingParameterClass.getClassDecl().getMemberIds();
+			for (MemberId memberId : members) {
 				Var callingParameterChild = callingParameterClass.getMember(memberId);
 				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
 
@@ -257,7 +259,7 @@ public class Function extends AstLoader {
 				return IndirectionType.E_REFERENCE;
 		} else
 			return IndirectionType.E_VARIABLE;
-		ErrorOutputter.fatalError("error not expected");
+		GeneralOutputter.fatalError("error not expected");
 		return null;
 	}
 	

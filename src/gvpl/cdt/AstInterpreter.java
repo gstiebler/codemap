@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassMember;
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -65,7 +65,7 @@ public class AstInterpreter extends AstLoader {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
 				loadStructureDecl((CPPASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
-				ErrorOutputter.fatalError("Deu merda aqui." + declaration.getClass());
+				GeneralOutputter.fatalError("Deu merda aqui." + declaration.getClass());
 		}
 
 		_gvplGraph = mainFunction.getGraph();
@@ -90,7 +90,7 @@ public class AstInterpreter extends AstLoader {
 			if (function.getName().equals("main"))
 				return function;
 		} else
-			ErrorOutputter.fatalError("Problem");
+			GeneralOutputter.fatalError("Problem");
 
 		return null;
 	}

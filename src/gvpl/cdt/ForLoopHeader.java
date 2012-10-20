@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -49,7 +49,7 @@ public class ForLoopHeader extends AstLoader {
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
-			ErrorOutputter.fatalError("problem here");
+			GeneralOutputter.fatalError("problem here");
 
 		Var extVarDecl = _parent.getVarFromExpr(expr);
 

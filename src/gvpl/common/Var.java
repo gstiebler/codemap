@@ -41,6 +41,13 @@ public class Var {
 
 		_currGraphNode = node;
 	}
+	
+	public void updateNodes(GraphNode oldNode, GraphNode newNode) {
+		if(_firstGraphNode == oldNode)
+			_firstGraphNode = newNode;
+		if(_currGraphNode == oldNode)
+			_currGraphNode = newNode;
+	}
 
 	public GraphNode getFirstNode() {
 		return _firstGraphNode;
@@ -59,7 +66,7 @@ public class Var {
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		if (parameter_values != null) {
 			if (parameter_values.size() > 1)
-				ErrorOutputter
+				GeneralOutputter
 						.fatalError("Primitive type receiving more than 1 parameter in initialization");
 
 			GraphNode parameterNode = parameter_values.get(0).getNode(startingLine);
@@ -128,7 +135,7 @@ public class Var {
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, AstLoader astLoader, int startingLine) {
-		ErrorOutputter.fatalError("should not be here");
+		GeneralOutputter.fatalError("should not be here");
 		return null;
 	}
 }

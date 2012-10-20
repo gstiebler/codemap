@@ -2,7 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
 import gvpl.common.Var;
@@ -80,7 +80,7 @@ public class MemberFunc extends Function {
 					break;
 				}
 			} else
-				ErrorOutputter.fatalError("not expected");
+				GeneralOutputter.fatalError("not expected");
 		}
 	}
 
@@ -119,7 +119,7 @@ public class MemberFunc extends Function {
 	@Override
 	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph,
 			int startingLine) {
-		ErrorOutputter.fatalError("Error! Should call loadMemberFuncRef instead.");
+		GeneralOutputter.fatalError("Error! Should call loadMemberFuncRef instead.");
 		return null;
 	}
 	
@@ -136,6 +136,7 @@ public class MemberFunc extends Function {
 				startingLine);
 		
 		// binds the "this" pointer as a normal parameter
+		_thisVar.setGraph(graph);
 		bindInParameter(internalToMainGraphMap, classVar, _thisVar, startingLine); 
 		bindOutParameter(internalToMainGraphMap, classVar, _thisVar, startingLine);
 		

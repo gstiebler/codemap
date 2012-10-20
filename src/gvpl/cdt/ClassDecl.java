@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
@@ -212,7 +213,7 @@ public class ClassDecl {
 		return allMembers;
 	}
 	
-	public Iterable<MemberId> getMemberIds() {
+	public Set<MemberId> getMemberIds() {
 		return getAllMembersIds().keySet();
 	}
 	

@@ -43,7 +43,6 @@ abstract class BoolValuePack {
 
 		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
 		_ifBasicBlock = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
-
 		_ifBasicBlock.load(clause);
 
 		_ifWrittenVars = new ArrayList<InExtVarPair>();
@@ -185,6 +184,7 @@ public class IfCondition {
 			falseNode.addDependentNode(ifOpNode, startingLine);
 			conditionNode.addDependentNode(ifOpNode, startingLine);
 
+			extVar.setGraph(graph);
 			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, startingLine);
 		}
 	}

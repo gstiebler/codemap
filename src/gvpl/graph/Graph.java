@@ -6,6 +6,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
 import gvpl.cdt.CppMaps.eValueType;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.Var;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
@@ -26,26 +27,38 @@ public class Graph {
 	private List<GraphNode> _graphNodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = -1;
+	private static int _counter = 1;
+	private int _id;
 
 	public Graph(String label, int startingLine) {
 		_label = label;
 		_startingLine = startingLine;
+		_id = _counter++;
 	}
 
 	public Graph(int startingLine) {
 		_startingLine = startingLine;
+		_id = _counter++;
+	}
+	
+	public int getId() {
+		return _id;
 	}
 
 	public GraphNode addGraphNode(String name, NodeType type, int startingLine) {
-		GraphNode graph_node = new GraphNode(name, type, startingLine);
-		_graphNodes.add(graph_node);
-		return graph_node;
+		GraphNode graphNode = new GraphNode(name, type, startingLine);
+		_graphNodes.add(graphNode);
+		
+		GeneralOutputter.debug("Add node " + graphNode.getName() +" (" + graphNode.getId() + ") graph " + _label + " (" + _id + ")");
+		return graphNode;
 	}
 
 	public GraphNode addGraphNode(Var parentVar, NodeType type, int startingLine) {
-		GraphNode graph_node = new GraphNode(parentVar, type, startingLine);
-		_graphNodes.add(graph_node);
-		return graph_node;
+		GraphNode graphNode = new GraphNode(parentVar, type, startingLine);
+		_graphNodes.add(graphNode);
+
+		GeneralOutputter.debug("Add node " + graphNode.getName() +" (" + graphNode.getId() + ") graph " + _label + " (" + _id + ")");
+		return graphNode;
 	}
 
 	public int getNumNodes() {
@@ -112,12 +125,14 @@ public class Graph {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
+		GeneralOutputter.debug("Adding graph (" + graph._id + ") to (" + _id + ")");
 		return map;
 	}
 	
 	public void merge(Graph graph) {
 		_graphNodes.addAll(graph._graphNodes);
 		_subgraphs.addAll(graph._subgraphs);
+		GeneralOutputter.debug("Merging graph (" + graph._id + ") to (" + _id + ")");
 	}
 
 	public String getName() {
@@ -177,6 +192,7 @@ public class Graph {
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {
 		primaryNode.merge(secondaryNode, startingLine);
+		GeneralOutputter.debug("Merging node (" + secondaryNode.getId() + ") to (" + primaryNode.getId() + ")");
 		_graphNodes.remove(secondaryNode);
 		if(!_graphNodes.contains(primaryNode))
 			_graphNodes.add(primaryNode);

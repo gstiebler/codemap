@@ -1,6 +1,6 @@
 package gvpl.common;
 
-public class ErrorOutputter {
+public class GeneralOutputter {
 	
 	public static void warning(String error) {
 		System.out.println(error);
@@ -8,6 +8,10 @@ public class ErrorOutputter {
 
 	public static void fatalError(String error) {
 		System.out.println("FATAL ERROR!: " + error);
+	}
+
+	public static void debug(String msg) {
+		System.out.println( msg);
 	}
 	
 }

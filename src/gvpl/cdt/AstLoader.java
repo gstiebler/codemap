@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassVar;
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
@@ -35,7 +35,7 @@ class InExtVarPair {
 	
 	public InExtVarPair(Var in, Var ext) {
 		if(ext == null)
-			ErrorOutputter.fatalError("ext cannot be null");
+			GeneralOutputter.fatalError("ext cannot be null");
 		_in = in;
 		_ext = ext;
 	}
@@ -47,7 +47,7 @@ class InExtMAVarPair {
 	
 	public InExtMAVarPair(MemAddressVar in, MemAddressVar ext) {
 		if(ext == null)
-			ErrorOutputter.fatalError("ext cannot be null");
+			GeneralOutputter.fatalError("ext cannot be null");
 		_in = in;
 		_ext = ext;
 	}
@@ -189,7 +189,7 @@ public class AstLoader {
 			return new ReferenceVar(graph, name, typeId);
 		case E_INDIFERENT:
 			{
-				ErrorOutputter.fatalError("Not expected");
+				GeneralOutputter.fatalError("Not expected");
 				return null;
 			}
 		}
@@ -209,7 +209,7 @@ public class AstLoader {
 		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
 			Var extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
-				ErrorOutputter.fatalError("extVar cannot be null");
+				GeneralOutputter.fatalError("extVar cannot be null");
 
 			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap, 
 					startingLine);

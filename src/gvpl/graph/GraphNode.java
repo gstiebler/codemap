@@ -1,6 +1,6 @@
 package gvpl.graph;
 
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.Var;
 import gvpl.graph.Graph.NodeType;
 
@@ -23,6 +23,8 @@ public class GraphNode {
 		_name = name;
 		_type = type;
 		_startingLine = startingLine;
+		
+		GeneralOutputter.debug("new graphnode " + name + " (" + _id + ")");
 	}
 
 	public GraphNode(Var parentVar, NodeType type, int startingLine) {
@@ -31,6 +33,8 @@ public class GraphNode {
 		_name = parentVar.getName();
 		_type = type;
 		_startingLine = startingLine;
+		
+		GeneralOutputter.debug("new graphnode var " + parentVar.getName() + " (" + _id + ")");
 	}
 
 	public GraphNode(GraphNode other) {
@@ -39,6 +43,9 @@ public class GraphNode {
 		_type = other._type;
 		_startingLine = other._startingLine;
 		_parentVar = other._parentVar;
+		
+		GeneralOutputter.debug("new graphnode copy " + _name + " (" + _id + ")");
+		GeneralOutputter.debug("    from " + other._name + " (" + other._id + ")");
 	}
 
 	public int getId() {
@@ -52,12 +59,12 @@ public class GraphNode {
 	public void addDependentNode(GraphNode dependentNode, int startingLine) {
 		if (_dependentNodes.contains(dependentNode))
 		{
-			ErrorOutputter.warning("Already dependent!!");
+			GeneralOutputter.warning("Already dependent!!");
 			return;
 		}
 
 		if (dependentNode == null)
-			ErrorOutputter.fatalError("Inserting null depending node");
+			GeneralOutputter.fatalError("Inserting null depending node");
 
 		_dependentNodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);
@@ -74,6 +81,8 @@ public class GraphNode {
 			sourceNode._dependentNodes.remove(node);
 			sourceNode.addDependentNode(this, startingLine);
 		}
+		
+		node._parentVar.updateNodes(node, this);
 	}
 
 	public Iterable<GraphNode> getDependentNodes() {

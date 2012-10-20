@@ -3,7 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.ClassVar;
-import gvpl.common.ErrorOutputter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.PointerVar;
@@ -64,7 +64,7 @@ public class InstructionLine {
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
 			IASTDeclaration decl = decl_statement.getDeclaration();
 			if (!(decl instanceof IASTSimpleDeclaration))
-				ErrorOutputter.fatalError("Deu merda aqui.");
+				GeneralOutputter.fatalError("Deu merda aqui.");
 
 			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) decl;
 			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
@@ -97,7 +97,7 @@ public class InstructionLine {
 			basicBlockLoader.load(statement);
 			basicBlockLoader.addToExtGraph(startingLine);
 		} else
-			ErrorOutputter.fatalError("Node type not found!! Node: " + statement.toString());
+			GeneralOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class InstructionLine {
 		} else if (expr instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) expr);
 		} else
-			ErrorOutputter.fatalError("Node type not found!! Node: " + expr.getClass());
+			GeneralOutputter.fatalError("Node type not found!! Node: " + expr.getClass());
 
 		return null;
 	}
@@ -282,11 +282,11 @@ public class InstructionLine {
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr, startingLine);
 			} else
-				ErrorOutputter.fatalError("problem");
+				GeneralOutputter.fatalError("problem");
 		} else if (nameExpr instanceof IASTFieldReference) {
 			return loadVarMethod(funcCall, paramExpr);
 		} else
-			ErrorOutputter.fatalError("problem");
+			GeneralOutputter.fatalError("problem");
 
 		return null;
 	}
@@ -362,7 +362,7 @@ public class InstructionLine {
 		}
 		
 		if(parameters.length != func.getNumParameters())
-			ErrorOutputter.fatalError("Number of parameters are different!");
+			GeneralOutputter.fatalError("Number of parameters are different!");
 
 		for (int i = 0; i < parameters.length; i++) {
 			IASTExpression parameter = parameters[i];
@@ -378,7 +378,7 @@ public class InstructionLine {
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
 			else
-				ErrorOutputter.fatalError("Work here ");
+				GeneralOutputter.fatalError("Work here ");
 
 			parameter_values.add(localParameter);
 		}
@@ -414,7 +414,7 @@ public class InstructionLine {
 			// "int *b; int *a = b;"
 			Var DirectVarDecl = astLoader.getVarFromExpr(address);
 			if (!(DirectVarDecl instanceof PointerVar))
-				ErrorOutputter.fatalError("not expected here!!");
+				GeneralOutputter.fatalError("not expected here!!");
 			return ((PointerVar) DirectVarDecl).getVarInMem();
 		}
 
@@ -423,7 +423,7 @@ public class InstructionLine {
 		IASTUnaryExpression unaryExpr = (IASTUnaryExpression) address;
 		// Check if the operator is a reference
 		if (unaryExpr.getOperator() != IASTUnaryExpression.op_amper)
-			ErrorOutputter.fatalError("not expected here!!");
+			GeneralOutputter.fatalError("not expected here!!");
 
 		IASTExpression op = unaryExpr.getOperand();
 		return astLoader.getVarFromExpr(op);
@@ -439,12 +439,12 @@ public class InstructionLine {
 		int startingLine = unExpr.getFileLocation().getStartingLineNumber();
 		// Check if the operator is a star
 		if (unExpr.getOperator() != CPPASTUnaryExpression.op_star)
-			ErrorOutputter.fatalError("not implemented");
+			GeneralOutputter.fatalError("not implemented");
 
 		IASTExpression opExpr = unExpr.getOperand();
 		Var pointerVar = _parentBasicBlock.getVarFromExpr(opExpr);
 		if (!(pointerVar instanceof PointerVar))
-			ErrorOutputter.fatalError("not expected here");
+			GeneralOutputter.fatalError("not expected here");
 
 		return pointerVar.getCurrentNode(startingLine);
 	}
