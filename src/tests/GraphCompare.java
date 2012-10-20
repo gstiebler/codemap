@@ -3,6 +3,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gvpl.graph.GraphNode;
+import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.FileDriver.PropertyPair;
 import gvpl.graphviz.Visualizer;
 
@@ -40,8 +41,8 @@ public class GraphCompare {
 		assertEquals("Number of subgraphs of " + gvplGraph.getName(), gvplGraph._subgraphs.size(),
 				processedNodes._subGraphs.size());
 		for (gvpl.graph.Graph gvplSubGraph : gvplGraph._subgraphs) {
-			Integer startingLine = new Integer(gvplSubGraph.getStartingLine());
-			SubGraphNodes gvSubGraphNodes = processedNodes._subGraphs.get(startingLine);
+			String strId = gvplSubGraph.getName() + "_" + gvplSubGraph.getStartingLine();
+			SubGraphNodes gvSubGraphNodes = processedNodes._subGraphs.get(strId);
 			List<NodeMatch> sgNodesMatch = analyseSubGraph(gvplSubGraph, gvSubGraphNodes);
 			result.addAll(sgNodesMatch);
 		}

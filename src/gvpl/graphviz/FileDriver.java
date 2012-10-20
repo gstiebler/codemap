@@ -86,13 +86,17 @@ public class FileDriver implements IGraphOutput {
 	}
 	
     public String insertSubGraphStart(String name, String parent, int startingLine) {
-    	String clusterName = "cluster_" + subGraphCounter++;
+    	String clusterName = genClusterName(subGraphCounter++);
     	out.println("subgraph " + clusterName + " {");
     	if(name != null)
     		out.println("label = \"" + name + "\";");
     	out.println("parent = \"" + parent + "\";");
     	out.println(startingLineStr + " = " + startingLine + ";");
     	return clusterName;
+    }
+    
+    public static String genClusterName(int counter) {
+    	return "cluster_" + counter;
     }
     
 	public void insertSubGraphEnd() {
