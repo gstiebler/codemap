@@ -1,9 +1,9 @@
 
 class BaseClass
 {
+public:
 	int _baseMember;
 	
-public:
 	BaseClass(int init, int dummy)
 	{
 		_baseMember = init;
@@ -54,4 +54,5 @@ int main()
 	}
 	
 	int a = bcPointer->process(40);
+	int b = bcPointer->_baseMember;
 }
