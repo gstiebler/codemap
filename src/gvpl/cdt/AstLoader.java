@@ -140,16 +140,18 @@ public class AstLoader {
 		return owner_var_decl.getType();
 	}
 
-	protected Var getVarFromFieldRef(IASTFieldReference field_ref) {
-		IASTExpression owner = field_ref.getFieldOwner();
+	protected Var getVarFromFieldRef(IASTFieldReference fieldRef) {
+		IASTExpression owner = fieldRef.getFieldOwner();
+		IBinding fieldBinding = fieldRef.getFieldName().resolveBinding();
 
 		Var varOfRef = getVarFromExpr(owner);
 		Var varInMem = varOfRef.getVarInMem();
 		ClassVar ownerVar = (ClassVar) varInMem;
 
-		IBinding field_binding = field_ref.getFieldName().resolveBinding();
-		MemberId member_id = _astInterpreter.getMemberId(ownerVar.getType(), field_binding);
-		Var childVar = ownerVar.getMember(member_id);
+		TypeId ownerType = varOfRef.getType();
+		ClassDecl classDecl = _astInterpreter.getClassDecl(ownerType);
+		MemberId memberId = classDecl.getMember(fieldBinding).getMemberId();
+		Var childVar = ownerVar.getMember(memberId);
 		
 		return childVar;
 	}
