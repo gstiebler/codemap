@@ -3,7 +3,6 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gvpl.graph.GraphNode;
-import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.FileDriver.PropertyPair;
 import gvpl.graphviz.Visualizer;
 

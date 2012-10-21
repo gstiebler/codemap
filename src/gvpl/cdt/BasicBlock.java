@@ -52,6 +52,7 @@ public class BasicBlock extends AstLoader {
 		Graph extGraph = _parent._gvplGraph;
 		extGraph.merge(_gvplGraph);
 
+		// bind the vars from calling block to the internal read vars
 		for(InExtVarPair readPair : readVars) {
 			GraphNode intVarFirstNode = readPair._in.getFirstNode();
 			// if someone read from internal var
@@ -61,6 +62,7 @@ public class BasicBlock extends AstLoader {
 			mergedNodes.put(intVarFirstNode, extVarCurrNode);
 		}
 		
+		// bind the vars from calling block to the internal written vars
 		for (InExtVarPair writtenPair : writtenVars) {
 			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode(startingLine);
 			// if someone has written in the internal var
@@ -78,14 +80,17 @@ public class BasicBlock extends AstLoader {
 			extGraph.removeNode(ignoredPair._in.getFirstNode());
 		}
 		
+		return mergedNodes;
+	}
+	
+	public void bindSettedPointers() {
+		Graph extGraph = _parent._gvplGraph;
 		List<InExtMAVarPair> addressVars = getAccessedMemAddressVar();
 		for (InExtMAVarPair pair : addressVars) {
 			Var pointedVar = pair._in.getPointedVar();
 			pointedVar.setGraph(extGraph);
 			pair._ext.setPointedVar(pointedVar);
 		}
-		
-		return mergedNodes;
 	}
 
 }

@@ -96,6 +96,7 @@ public class InstructionLine {
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
 			basicBlockLoader.addToExtGraph(startingLine);
+			basicBlockLoader.bindSettedPointers();
 		} else
 			GeneralOutputter.fatalError("Node type not found!! Node: " + statement.toString());
 	}

@@ -136,7 +136,6 @@ public class MemberFunc extends Function {
 				startingLine);
 		
 		// binds the "this" pointer as a normal parameter
-		_thisVar.setGraph(graph);
 		bindInParameter(internalToMainGraphMap, classVar, _thisVar, startingLine); 
 		bindOutParameter(internalToMainGraphMap, classVar, _thisVar, startingLine);
 		

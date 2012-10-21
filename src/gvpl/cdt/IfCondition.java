@@ -74,7 +74,7 @@ abstract class BoolValuePack {
 				prevTrueFalse = new PrevTrueFalseMemVar();
 			prevTrueFalse._prev = pair._ext;
 			insertBoolVar(prevTrueFalse, pair._in);
-			mapPrevTrueFalseMV.put(pair._ext, prevTrueFalse);
+			mapPrevTrueFalseMV.put(prevTrueFalse._prev, prevTrueFalse);
 		}
 
 		_ifMergedNodes = _ifBasicBlock.addToExtGraph(startingLine);
