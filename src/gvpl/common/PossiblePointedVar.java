@@ -1,22 +1,24 @@
 package gvpl.common;
 
+import java.util.List;
+import java.util.Map;
+
+import gvpl.cdt.AstInterpreter;
+import gvpl.cdt.AstLoader;
+import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 
-class PossiblePointedVar {
+class PossiblePointedVar implements IVar{
 	PossiblePointedVar _varTrue = null;
 	PossiblePointedVar _varFalse = null;
 	GraphNode _conditionNode = null;
 	IVar _finalVar = null;
+	IVar _ownerVar = null;
 
-	PossiblePointedVar() {
-
-	}
-
-	PossiblePointedVar(IVar finalVar) {
-		setVar(finalVar);
-
+	PossiblePointedVar(IVar ownerVar) {
+		_ownerVar = ownerVar;
 	}
 
 	void setVar(IVar finalVar) {
@@ -43,5 +45,147 @@ class PossiblePointedVar {
 		_conditionNode.addDependentNode(ifOpNode, startingLine);
 		
 		return ifOpNode;
+	}
+	
+	
+	public TypeId getType() {
+		return _ownerVar.getType();
+	}
+	
+	public void updateNode(GraphNode node) {
+		
+	}
+
+	public static void updateNodeRecursive(PossiblePointedVar possiblePointedVar, Graph graph, GraphNode node) {
+		int startingLine = -4;
+		if(possiblePointedVar._conditionNode != null) {
+			{
+				GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+
+				node.addDependentNode(ifOpNode, startingLine);
+				possiblePointedVar._varTrue._finalVar.getCurrentNode(startingLine).addDependentNode(ifOpNode, startingLine);
+				possiblePointedVar._conditionNode.addDependentNode(ifOpNode, startingLine);
+				
+				updateNodeRecursive(possiblePointedVar._varTrue, graph, ifOpNode);
+			}
+			{
+				GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+
+				possiblePointedVar._varFalse._finalVar.getCurrentNode(startingLine).addDependentNode(ifOpNode, startingLine);
+				node.addDependentNode(ifOpNode, startingLine);
+				possiblePointedVar._conditionNode.addDependentNode(ifOpNode, startingLine);
+				
+				updateNodeRecursive(possiblePointedVar._varFalse, graph, ifOpNode);
+			}
+		} else {
+			possiblePointedVar._finalVar.receiveAssign(null, node, startingLine);
+		}
+	}
+	
+	public void updateNodes(GraphNode oldNode, GraphNode newNode) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+	}
+
+	public GraphNode getFirstNode() {
+		return _finalVar.getFirstNode();
+	}
+
+	public GraphNode getCurrentNode(int startingLine) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+		return null;
+	}
+
+	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
+			AstInterpreter astInterpreter, int startingLine) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+	}
+
+	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
+			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+	}
+
+	/**
+	 * Creates an assignment to this variable
+	 * 
+	 * @return New node from assignment, the left from assignment
+	 */
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startingLine) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+		return null;
+	}
+
+	public String getName() {
+		return _ownerVar.getName();
+	}
+
+	public IVar getVarInMem() {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+		return null;
+	}
+	
+	public void setOwner(IVar owner) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+	}
+	
+	public List<IVar> getInternalVars() {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+		return null;
+	}
+	
+	public VarInfo getVarInfo() {
+		return _ownerVar.getVarInfo();
+	}
+	
+	public boolean onceRead() {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+		return false;
+	}
+	
+	public boolean onceWritten() {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+		return false;
+	}
+	
+	public void setGraph(Graph graph) {
+		GeneralOutputter.fatalError("You're doing it wrong.");
+	}
+
+	public static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<IVar, IVar> inToExtVar) {
+		if(possiblePointedVar == null)
+			return;
+		
+		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
+		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
+		
+		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
+		if(converted != null)
+			possiblePointedVar._finalVar = converted; 
+	}
+	
+	public static GraphNode loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
+			MemberFunc memberFunc, List<FuncParameter> parameterValues, Graph graph,
+			AstLoader astLoader, int startingLine) {
+		
+		if (possiblePointedVar._finalVar == null) {
+			GraphNode trueNode = loadMemberFuncRefRecursive(possiblePointedVar._varTrue,
+					memberFunc, parameterValues, graph, astLoader, startingLine);
+			GraphNode falseNode = loadMemberFuncRefRecursive(possiblePointedVar._varFalse,
+					memberFunc, parameterValues, graph, astLoader, startingLine);
+			
+			
+			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+
+			trueNode.addDependentNode(ifOpNode, startingLine);
+			falseNode.addDependentNode(ifOpNode, startingLine);
+			possiblePointedVar._conditionNode.addDependentNode(ifOpNode, startingLine);
+			
+			return ifOpNode;
+		} else {
+			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
+			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);
+			return eqFunc.loadMemberFuncRef(classVar, parameterValues, graph, astLoader,
+					startingLine);
+		}
 	}
 }

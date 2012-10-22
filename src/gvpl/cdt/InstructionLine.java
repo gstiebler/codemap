@@ -6,6 +6,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
 import gvpl.common.IVar;
@@ -344,8 +345,15 @@ public class InstructionLine {
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(memberFunc, paramExpr);
-		return var.loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
+		
+		if(var instanceof ClassVar) {
+			return ((ClassVar)var).loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
 					_parentBasicBlock, startingLine);
+		} else if(var instanceof MemAddressVar) {
+			return ((MemAddressVar)var).loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
+					_parentBasicBlock, startingLine);
+		} 
+		return null;
 	}
 
 	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {

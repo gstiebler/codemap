@@ -142,7 +142,6 @@ public class ClassVar extends Var {
 		return internalVars;
 	}
 	
-	@Override
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, AstLoader astLoader, int startingLine) {
 		return memberFunc.loadMemberFuncRef(this, parameterValues, graph, astLoader, startingLine);

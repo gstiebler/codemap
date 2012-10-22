@@ -2,7 +2,6 @@ package gvpl.common;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
-import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -50,9 +49,6 @@ public interface IVar {
 	public boolean onceWritten();
 	
 	public void setGraph(Graph graph);
-	
-	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoader astLoader, int startingLine);
 	
 	
 }

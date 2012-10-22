@@ -2,7 +2,6 @@ package gvpl.common;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
-import gvpl.cdt.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -120,11 +119,5 @@ public class Var implements IVar {
 	
 	public void setGraph(Graph graph) {
 		_gvplGraph = graph;
-	}
-	
-	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoader astLoader, int startingLine) {
-		GeneralOutputter.fatalError("should not be here");
-		return null;
 	}
 }
