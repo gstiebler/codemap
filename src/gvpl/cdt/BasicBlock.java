@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -47,7 +47,7 @@ public class BasicBlock extends AstLoader {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<Var, Var>(), startingLine);
+		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<IVar, IVar>(), startingLine);
 
 		Graph extGraph = _parent._gvplGraph;
 		extGraph.merge(_gvplGraph);
@@ -87,7 +87,7 @@ public class BasicBlock extends AstLoader {
 		Graph extGraph = _parent._gvplGraph;
 		List<InExtMAVarPair> addressVars = getAccessedMemAddressVar();
 		for (InExtMAVarPair pair : addressVars) {
-			Var pointedVar = pair._in.getPointedVar();
+			IVar pointedVar = pair._in.getPointedVar();
 			pointedVar.setGraph(extGraph);
 			pair._ext.setPointedVar(pointedVar);
 		}

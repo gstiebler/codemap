@@ -1,7 +1,7 @@
 package gvpl.graph;
 
 import gvpl.common.GeneralOutputter;
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class GraphNode {
 	private int _id;
 	public String _name;
 	public NodeType _type;
-	private Var _parentVar = null;
+	private IVar _parentVar = null;
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
@@ -27,7 +27,7 @@ public class GraphNode {
 		GeneralOutputter.debug("new graphnode " + name + " (" + _id + ")");
 	}
 
-	public GraphNode(Var parentVar, NodeType type, int startingLine) {
+	public GraphNode(IVar parentVar, NodeType type, int startingLine) {
 		_id = getNewId();
 		_parentVar = parentVar;
 		_name = parentVar.getName();

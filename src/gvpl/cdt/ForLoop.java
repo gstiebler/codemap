@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -43,7 +43,7 @@ public class ForLoop extends AstLoader {
 	
 
 	@Override
-	protected Var getVarFromBinding(IBinding binding) {
+	protected IVar getVarFromBinding(IBinding binding) {
 		if(_parent == null)
 			return createVarFromBinding(binding, -2);
 		return _parent.getVarFromBinding(binding);
@@ -59,7 +59,7 @@ public class ForLoop extends AstLoader {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		GraphNode headerNode = _gvplGraph.addGraphNode("ForHeader", NodeType.E_LOOP_HEADER,
 				startingLine);
-		for (Var readVar : header.getReadVars()) {
+		for (IVar readVar : header.getReadVars()) {
 			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, startingLine);
 		}
 	}

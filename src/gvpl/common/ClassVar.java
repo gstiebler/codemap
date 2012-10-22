@@ -19,8 +19,8 @@ import java.util.Map;
  */
 public class ClassVar extends Var {
 
-	Map<MemberId, Var> _memberInstances = new LinkedHashMap<MemberId, Var>();
-	Map<Var, MemberId> _memberIdFromInstance = new LinkedHashMap<Var, MemberId>();
+	Map<MemberId, IVar> _memberInstances = new LinkedHashMap<MemberId, IVar>();
+	Map<IVar, MemberId> _memberIdFromInstance = new LinkedHashMap<IVar, MemberId>();
 	List<ClassVar> _parentInstances = new ArrayList<ClassVar>();
 	
 	ClassDecl _classDecl;
@@ -36,7 +36,7 @@ public class ClassVar extends Var {
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			Var member_instance = parentAstLoader.addVarDecl(memberName,
+			IVar member_instance = parentAstLoader.addVarDecl(memberName,
 					struct_member.getMemberType(), null);
 			addMember(entry.getKey(), member_instance);
 		}
@@ -47,13 +47,13 @@ public class ClassVar extends Var {
 		}
 	}
 	
-	private void addMember(MemberId id, Var var) {
+	private void addMember(MemberId id, IVar var) {
 		_memberInstances.put(id, var);
 		_memberIdFromInstance.put(var, id);
 	}
 
-	public Var getMember(MemberId memberId) {
-		Var member = _memberInstances.get(memberId);
+	public IVar getMember(MemberId memberId) {
+		IVar member = _memberInstances.get(memberId);
 		if(member != null)
 			return member;
 		
@@ -66,7 +66,7 @@ public class ClassVar extends Var {
 		return null;
 	}
 	
-	public MemberId getMember(Var memberInstance) {
+	public MemberId getMember(IVar memberInstance) {
 		MemberId member = _memberIdFromInstance.get(memberInstance);
 		if(member != null)
 			return member;
@@ -89,7 +89,7 @@ public class ClassVar extends Var {
 		for(ClassVar parent : _parentInstances) 
 			parent.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 		
-		for (Var var : _memberInstances.values()) {
+		for (IVar var : _memberInstances.values()) {
 			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 			var.setOwner(this);
 		}
@@ -106,7 +106,7 @@ public class ClassVar extends Var {
 
 		// TODO só chamar para as variáveis que não foram escritas em
 		// constructorFunc.loadMemberFuncRef
-		for (Var var : _memberInstances.values()) {
+		for (IVar var : _memberInstances.values()) {
 			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter,
 					startingLine);
 			var.setOwner(this);
@@ -128,14 +128,14 @@ public class ClassVar extends Var {
 	}
 	
 	@Override
-	public List<Var> getInternalVars() {
-		List<Var> internalVars = new ArrayList<>();
+	public List<IVar> getInternalVars() {
+		List<IVar> internalVars = new ArrayList<>();
 		
 		for (ClassVar parent : _parentInstances) {
 			internalVars.addAll(parent.getInternalVars());
 		}
 		
-		for(Var member : _memberInstances.values()) {
+		for(IVar member : _memberInstances.values()) {
 			internalVars.addAll(member.getInternalVars());
 		}
 		

@@ -14,14 +14,14 @@ import java.util.List;
 /**
  * This class is used to represent variables of primitive types
  */
-public class Var {
+public class Var implements IVar {
 	
 	protected String _name;
 
 	protected TypeId _type;
 	protected GraphNode _currGraphNode = null;
 	protected GraphNode _firstGraphNode = null;
-	protected Var _owner = null;
+	protected IVar _owner = null;
 
 	protected Graph _gvplGraph;
 
@@ -92,16 +92,16 @@ public class Var {
 		return _name;
 	}
 
-	public Var getVarInMem() {
+	public IVar getVarInMem() {
 		return this;
 	}
 	
-	public void setOwner(Var owner) {
+	public void setOwner(IVar owner) {
 		_owner = owner;
 	}
 	
-	public List<Var> getInternalVars() {
-		List<Var> internalVars = new ArrayList<>();
+	public List<IVar> getInternalVars() {
+		List<IVar> internalVars = new ArrayList<>();
 		internalVars.add(this);
 		return internalVars;
 	}

@@ -7,7 +7,7 @@ import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -111,7 +111,7 @@ public class Function extends AstLoader {
 			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
 			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(declSpec);
-			Var var_decl = loadVarDecl(parameterVarDecl, type);
+			IVar var_decl = loadVarDecl(parameterVarDecl, type);
 			IBinding binding = parameterVarDecl.getName().resolveBinding();
 
 			FuncParameter.IndirectionType parameterVarType = null;
@@ -138,10 +138,10 @@ public class Function extends AstLoader {
 			GeneralOutputter.fatalError("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < callingParameters.size(); ++i) {
-			Var declaredParameter = _parametersList.get(i).getVar();
+			IVar declaredParameter = _parametersList.get(i).getVar();
 			FuncParameter callingParameter = callingParameters.get(i);
 
-			Var receivedVar = callingParameter.getVar();
+			IVar receivedVar = callingParameter.getVar();
 			if(receivedVar != null)
 				receivedVar = receivedVar.getVarInMem();
 			if (receivedVar instanceof ClassVar) {
@@ -175,14 +175,14 @@ public class Function extends AstLoader {
 	}
 
 	protected void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap,
-			Var callingParameter, Var declaredParameter, int startingLine) {
+			IVar callingParameter, IVar declaredParameter, int startingLine) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
 			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
 			Set<MemberId> members = callingParameterClass.getClassDecl().getMemberIds();
 			for (MemberId memberId : members) {
-				Var callingParameterChild = callingParameterClass.getMember(memberId);
-				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
+				IVar callingParameterChild = callingParameterClass.getMember(memberId);
+				IVar declaredParameterChild = declaredParameterClass.getMember(memberId);
 
 				if (declaredParameterChild == null)
 					continue;
@@ -205,14 +205,14 @@ public class Function extends AstLoader {
 		}
 	}
 
-	protected void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, Var callingParameter,
-			Var declaredParameter, int startingLine) {
+	protected void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, IVar callingParameter,
+			IVar declaredParameter, int startingLine) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
 			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
 			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
-				Var callingParameterChild = callingParameterClass.getMember(memberId);
-				Var declaredParameterChild = declaredParameterClass.getMember(memberId);
+				IVar callingParameterChild = callingParameterClass.getMember(memberId);
+				IVar declaredParameterChild = declaredParameterClass.getMember(memberId);
 
 				if(declaredParameterChild == null)
 					continue;
@@ -277,7 +277,7 @@ public class Function extends AstLoader {
 	}
 
 	@Override
-	protected Var getVarFromBinding(IBinding binding) {
+	protected IVar getVarFromBinding(IBinding binding) {
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null)
 			return funcParameter.getVar().getVarInMem();

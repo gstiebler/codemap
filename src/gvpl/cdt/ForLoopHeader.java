@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.GeneralOutputter;
+import gvpl.common.IVar;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -16,13 +17,13 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class ForLoopHeader extends AstLoader {
 
-	private Set<Var> _writtenExtVars = new HashSet<Var>();
-	private Set<Var> _readExtVars = new HashSet<Var>();
+	private Set<IVar> _writtenExtVars = new HashSet<IVar>();
+	private Set<IVar> _readExtVars = new HashSet<IVar>();
 	/**
 	 * Maps the external variables (from external graph) to internal generated
 	 * variables
 	 */
-	private Map<Var, Var> _externalVars = new LinkedHashMap<Var, Var>();
+	private Map<IVar, IVar> _externalVars = new LinkedHashMap<IVar, IVar>();
 
 	public ForLoopHeader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		super(gvplGraph, parent, astInterpreter);
@@ -43,7 +44,7 @@ public class ForLoopHeader extends AstLoader {
 	 * @return The DirectVarDecl of the reference to a variable
 	 */
 	@Override
-	public Var getVarFromExpr(IASTExpression expr) {
+	public IVar getVarFromExpr(IASTExpression expr) {
 		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
@@ -51,9 +52,9 @@ public class ForLoopHeader extends AstLoader {
 		else
 			GeneralOutputter.fatalError("problem here");
 
-		Var extVarDecl = _parent.getVarFromExpr(expr);
+		IVar extVarDecl = _parent.getVarFromExpr(expr);
 
-		Var intVarDecl = _externalVars.get(extVarDecl);
+		IVar intVarDecl = _externalVars.get(extVarDecl);
 		if (intVarDecl != null)
 			return intVarDecl;
 
@@ -65,11 +66,11 @@ public class ForLoopHeader extends AstLoader {
 		return intVarDecl;
 	}
 
-	public Iterable<Var> getWrittenVars() {
+	public Iterable<IVar> getWrittenVars() {
 		return _writtenExtVars;
 	}
 
-	public Iterable<Var> getReadVars() {
+	public Iterable<IVar> getReadVars() {
 		return _readExtVars;
 	}
 

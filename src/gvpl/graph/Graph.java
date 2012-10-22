@@ -7,7 +7,7 @@ import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
 import gvpl.cdt.CppMaps.eValueType;
 import gvpl.common.GeneralOutputter;
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
@@ -53,7 +53,7 @@ public class Graph {
 		return graphNode;
 	}
 
-	public GraphNode addGraphNode(Var parentVar, NodeType type, int startingLine) {
+	public GraphNode addGraphNode(IVar parentVar, NodeType type, int startingLine) {
 		GraphNode graphNode = new GraphNode(parentVar, type, startingLine);
 		_graphNodes.add(graphNode);
 
@@ -178,7 +178,7 @@ public class Graph {
 		return binOpNode;
 	}
 
-	public GraphNode addAssignBinOp(eAssignBinOp op, Var lhs_varDecl, GraphNode lhsNode,
+	public GraphNode addAssignBinOp(eAssignBinOp op, IVar lhs_varDecl, GraphNode lhsNode,
 			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
 		GraphNode binOpNode = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);

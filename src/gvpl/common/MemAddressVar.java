@@ -24,7 +24,7 @@ public class MemAddressVar extends Var {
 		// TODO Auto-generated constructor stub
 	}
 
-	public void setPointedVar(Var pointedVar) {
+	public void setPointedVar(IVar pointedVar) {
 		_possiblePointedVar.setVar(pointedVar);
 		_hasReceivedVar = true;
 	}
@@ -33,11 +33,11 @@ public class MemAddressVar extends Var {
 		return _hasReceivedVar;
 	}
 
-	protected void initializePointedVar(Var pointedVar) {
+	protected void initializePointedVar(IVar pointedVar) {
 		_possiblePointedVar.setVar(pointedVar);
 	}
 
-	public Var getPointedVar() {
+	public IVar getPointedVar() {
 		return _possiblePointedVar._finalVar;
 	}
 
@@ -79,7 +79,7 @@ public class MemAddressVar extends Var {
 	
 	@Override
 	public GraphNode getCurrentNode(int startingLine) {
-		Var pointedVar = getPointedVar();
+		IVar pointedVar = getPointedVar();
 		if(pointedVar == null) {
 			return _possiblePointedVar.getIfNode(_gvplGraph, startingLine);
 		}
@@ -107,14 +107,14 @@ public class MemAddressVar extends Var {
 	@Override
 	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine) {
-		Var var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
+		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astLoader, astInterpreter);
 		var.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
 		initializePointedVar(var);
 	}
 
 	@Override
-	public Var getVarInMem() {
+	public IVar getVarInMem() {
 		return getPointedVar();
 	}
 
@@ -133,20 +133,20 @@ public class MemAddressVar extends Var {
 		return _onceWritten;
 	}
 	
-	public MemAddressVar updateInternalVars(Map<Var, Var> inToExtVar) {
+	public MemAddressVar updateInternalVars(Map<IVar, IVar> inToExtVar) {
 		updateInternalVarsRecursive(_possiblePointedVar, inToExtVar);
 		
 		return this;
 	}
 	
-	private static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<Var, Var> inToExtVar) {
+	private static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<IVar, IVar> inToExtVar) {
 		if(possiblePointedVar == null)
 			return;
 		
 		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
 		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
 		
-		Var converted = inToExtVar.get(possiblePointedVar._finalVar);
+		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
 		if(converted != null)
 			possiblePointedVar._finalVar = converted; 
 	}

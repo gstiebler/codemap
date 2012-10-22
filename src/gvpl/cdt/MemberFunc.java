@@ -5,7 +5,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -65,7 +65,7 @@ public class MemberFunc extends Function {
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 
 			if (memberBinding instanceof CPPField) {
-				Var var = getVarFromBinding(memberBinding);
+				IVar var = getVarFromBinding(memberBinding);
 				instructionLine.loadConstructorInitializer(var, expr, startingLine);
 			} else if (memberBinding instanceof CPPConstructor) {
 				for (ClassDecl parentClass : _parentClass.getParentClasses()) {
@@ -85,17 +85,17 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	protected Var getVarFromBinding(IBinding binding) {
+	protected IVar getVarFromBinding(IBinding binding) {
 		ClassMember member = _parentClass.getMember(binding);
 		if(member != null) {
 			MemberId memberId = member.getMemberId();
-			Var var = _thisVar.getMember(memberId);
+			IVar var = _thisVar.getMember(memberId);
 			if(var != null)
 				return var;
 		}
 		
 		// search the variable in the function parameters
-		Var var = super.getVarFromBinding(binding);
+		IVar var = super.getVarFromBinding(binding);
 		if(var != null)
 			return var;
 		

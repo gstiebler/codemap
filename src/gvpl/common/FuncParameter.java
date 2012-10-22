@@ -8,12 +8,12 @@ public class FuncParameter {
 		E_VARIABLE, E_POINTER, E_REFERENCE, E_INDIFERENT
 	};
 	
-	private Var _varDecl = null;
+	private IVar _varDecl = null;
 	private GraphNode _node = null;
 	private IndirectionType _indirectionType = null;
 	int _type = -1;
 	
-	public FuncParameter(Var varDecl, IndirectionType type) {
+	public FuncParameter(IVar varDecl, IndirectionType type) {
 		_varDecl = varDecl;
 		_indirectionType = type;
 	}
@@ -30,7 +30,7 @@ public class FuncParameter {
 		return _node;
 	}
 	
-	public Var getVar() {
+	public IVar getVar() {
 		return _varDecl;
 	}
 	

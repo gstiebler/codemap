@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.MemAddressVar;
-import gvpl.common.Var;
+import gvpl.common.IVar;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -31,11 +31,11 @@ abstract class BoolValuePack {
 	BasicBlock _ifBasicBlock = null;
 	List<InExtVarPair> _ifWrittenVars = new ArrayList<InExtVarPair>();
 	Map<GraphNode, GraphNode> _ifMergedNodes = null;
-	Map<Var, Var> _inToExtVar = new LinkedHashMap<Var, Var>();
+	Map<IVar, IVar> _inToExtVar = new LinkedHashMap<IVar, IVar>();
 
 	BoolValuePack(InstructionLine instructionLine, IASTStatement clause,
-			Map<Var, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
+			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
 		if (clause == null)
 			return;
 
@@ -51,7 +51,7 @@ abstract class BoolValuePack {
 		_ifBasicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), _ifWrittenVars,
 				new ArrayList<InExtVarPair>(), _inToExtVar, startingLine);
 		for (InExtVarPair falseWrittenVarPair : _ifWrittenVars) {
-			Var extVar = falseWrittenVarPair._ext;
+			IVar extVar = falseWrittenVarPair._ext;
 			GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
 			GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode(startingLine);
 
@@ -87,8 +87,8 @@ abstract class BoolValuePack {
 class trueClass extends BoolValuePack {
 
 	trueClass(InstructionLine instructionLine, IASTStatement clause,
-			Map<Var, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
+			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
 		super(instructionLine, clause, mapPrevTrueFalse, mapPrevTrueFalseMV);
 	}
 
@@ -104,8 +104,8 @@ class trueClass extends BoolValuePack {
 class falseClass extends BoolValuePack {
 
 	falseClass(InstructionLine instructionLine, IASTStatement clause,
-			Map<Var, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
+			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
 		super(instructionLine, clause, mapPrevTrueFalse, mapPrevTrueFalseMV);
 	}
 
@@ -121,8 +121,8 @@ class falseClass extends BoolValuePack {
 public class IfCondition {
 
 	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
-		Map<Var, PrevTrueFalseNode> mapPrevTrueFalse = new LinkedHashMap<Var, PrevTrueFalseNode>();
-		Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<Var, PrevTrueFalseMemVar>();
+		Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse = new LinkedHashMap<IVar, PrevTrueFalseNode>();
+		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
 
 		BoolValuePack trueBvp = new trueClass(instructionLine, ifStatement.getThenClause(),
 				mapPrevTrueFalse, mapPrevTrueFalseMV);
@@ -139,15 +139,15 @@ public class IfCondition {
 	}
 
 	static void createIfNodes(IASTIfStatement ifStatement,
-			Map<Var, PrevTrueFalseNode> mapPrevTrueFalse,
+			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
 			Map<GraphNode, GraphNode> ifTrueMergedNodes,
 			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode,
 			InstructionLine instructionLine) {
 
 		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
 		Graph graph = instructionLine.getGraph();
-		for (Map.Entry<Var, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
-			Var extVar = entry.getKey();
+		for (Map.Entry<IVar, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
+			IVar extVar = entry.getKey();
 			PrevTrueFalseNode prevTrueFalse = entry.getValue();
 
 			GraphNode trueNode = prevTrueFalse._true;
@@ -190,9 +190,9 @@ public class IfCondition {
 	}
 
 	// TODO convert internal to external vars
-	static void mergeIfMAV(Map<Var, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
-			GraphNode conditionNode, Map<Var, Var> inToExtVarTrue, Map<Var, Var> inToExtVarFalse) {
-		for (Map.Entry<Var, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
+	static void mergeIfMAV(Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
+			GraphNode conditionNode, Map<IVar, IVar> inToExtVarTrue, Map<IVar, IVar> inToExtVarFalse) {
+		for (Map.Entry<IVar, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
 			MemAddressVar extVar = (MemAddressVar) entry.getKey();
 			PrevTrueFalseMemVar prevTrueFalse = entry.getValue();
 

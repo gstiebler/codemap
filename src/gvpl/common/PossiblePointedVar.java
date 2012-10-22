@@ -8,18 +8,18 @@ class PossiblePointedVar {
 	PossiblePointedVar _varTrue = null;
 	PossiblePointedVar _varFalse = null;
 	GraphNode _conditionNode = null;
-	Var _finalVar = null;
+	IVar _finalVar = null;
 
 	PossiblePointedVar() {
 
 	}
 
-	PossiblePointedVar(Var finalVar) {
+	PossiblePointedVar(IVar finalVar) {
 		setVar(finalVar);
 
 	}
 
-	void setVar(Var finalVar) {
+	void setVar(IVar finalVar) {
 		_finalVar = finalVar;
 		_conditionNode = null;
 	}

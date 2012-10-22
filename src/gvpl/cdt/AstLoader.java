@@ -9,6 +9,7 @@ import gvpl.common.MemberId;
 import gvpl.common.PointerVar;
 import gvpl.common.ReferenceVar;
 import gvpl.common.TypeId;
+import gvpl.common.IVar;
 import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
@@ -30,10 +31,10 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 class InExtVarPair {
-	Var _in;
-	Var _ext;
+	IVar _in;
+	IVar _ext;
 	
-	public InExtVarPair(Var in, Var ext) {
+	public InExtVarPair(IVar in, IVar ext) {
 		if(ext == null)
 			GeneralOutputter.fatalError("ext cannot be null");
 		_in = in;
@@ -58,8 +59,8 @@ public class AstLoader {
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;
 	protected AstInterpreter _astInterpreter;
-	private Map<IBinding, Var> _localVariables = new LinkedHashMap<IBinding, Var>();
-	protected Map<IBinding, Var> _extToInVars = new LinkedHashMap<IBinding, Var>();
+	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
+	protected Map<IBinding, IVar> _extToInVars = new LinkedHashMap<IBinding, IVar>();
 
 	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
 		_gvplGraph = gvplGraph;
@@ -67,9 +68,9 @@ public class AstLoader {
 		_astInterpreter = astInterpreter;
 	}
 
-	protected Var getVarFromExpr(IASTExpression expr) {
+	protected IVar getVarFromExpr(IASTExpression expr) {
 		int startingLine = expr.getFileLocation().getStartingLineNumber();
-		Var var = getVarFromExprInternal(expr);
+		IVar var = getVarFromExprInternal(expr);
 
 		if (var != null) 
 			return var; 
@@ -82,11 +83,11 @@ public class AstLoader {
 		return createVarFromBinding(binding, startingLine);
 	}
 	
-	protected Var createVarFromBinding(IBinding binding, int startingLine) {
+	protected IVar createVarFromBinding(IBinding binding, int startingLine) {
 		VarInfo varInfo = getTypeFromVarBinding(binding);
 		String name = binding.getName();
 		
-		Var var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
+		IVar var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
 		var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
 		_extToInVars.put(binding, var);
 		return var;
@@ -102,8 +103,8 @@ public class AstLoader {
 		return null;
 	}
 	
-	protected Var getVarFromBinding(IBinding binding) {		
-		Var var = _extToInVars.get(binding);
+	protected IVar getVarFromBinding(IBinding binding) {		
+		IVar var = _extToInVars.get(binding);
 		if(var != null)
 			return var;
 		
@@ -111,14 +112,14 @@ public class AstLoader {
 	}
 	
 	protected VarInfo getTypeFromVarBinding(IBinding binding) {
-		Var var = _localVariables.get(binding);
+		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var.getVarInfo();
 		
 		return _parent.getTypeFromVarBinding(binding);
 	}
 	
-	protected Var getVarFromExprInternal(IASTExpression expr) {
+	protected IVar getVarFromExprInternal(IASTExpression expr) {
 		if (expr instanceof IASTIdExpression)
 			return getLocalVarFromIdExpr((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference) {
@@ -130,35 +131,35 @@ public class AstLoader {
 		return null;
 	}
 
-	protected Var getLocalVarFromIdExpr(IASTIdExpression id_expr) {
+	protected IVar getLocalVarFromIdExpr(IASTIdExpression id_expr) {
 		IBinding binding = id_expr.getName().resolveBinding();
 		return _localVariables.get(binding);
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
-		Var owner_var_decl = _localVariables.get(binding);
+		IVar owner_var_decl = _localVariables.get(binding);
 		return owner_var_decl.getType();
 	}
 
-	protected Var getVarFromFieldRef(IASTFieldReference fieldRef) {
+	protected IVar getVarFromFieldRef(IASTFieldReference fieldRef) {
 		IASTExpression owner = fieldRef.getFieldOwner();
 		IBinding fieldBinding = fieldRef.getFieldName().resolveBinding();
 
-		Var varOfRef = getVarFromExpr(owner);
-		Var varInMem = varOfRef.getVarInMem();
+		IVar varOfRef = getVarFromExpr(owner);
+		IVar varInMem = varOfRef.getVarInMem();
 		ClassVar ownerVar = (ClassVar) varInMem;
 
 		TypeId ownerType = varOfRef.getType();
 		ClassDecl classDecl = _astInterpreter.getClassDecl(ownerType);
 		MemberId memberId = classDecl.getMember(fieldBinding).getMemberId();
-		Var childVar = ownerVar.getMember(memberId);
+		IVar childVar = ownerVar.getMember(memberId);
 		
 		return childVar;
 	}
 
-	public Var loadVarDecl(IASTDeclarator decl, TypeId type) {
+	public IVar loadVarDecl(IASTDeclarator decl, TypeId type) {
 		IASTName name = decl.getName();
-		Var var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
+		IVar var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
 		_localVariables.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
@@ -166,17 +167,17 @@ public class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName,
 			int startLine) {
-		Var var_decl = addVarDecl(functionName, type, null);
+		IVar var_decl = addVarDecl(functionName, type, null);
 		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, startLine);
 	}
 
-	public Var addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
+	public IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		return instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
 	}
 
-	public static Var instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
+	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
 			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
@@ -207,9 +208,9 @@ public class AstLoader {
 	}
 
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, Map<Var, Var> inToExtMap, int startingLine) {
-		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
-			Var extVar = _parent.getVarFromBinding(entry.getKey());
+			List<InExtVarPair> ignored, Map<IVar, IVar> inToExtMap, int startingLine) {
+		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
+			IVar extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
 				GeneralOutputter.fatalError("extVar cannot be null");
 
@@ -218,15 +219,15 @@ public class AstLoader {
 		}
 	}
 	
-	private void getAccessedVarsRecursive(Var intVar, Var extVar, List<InExtVarPair> read,
-			List<InExtVarPair> written, List<InExtVarPair> ignored, Map<Var, Var> inToExtMap,
+	private void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
+			List<InExtVarPair> written, List<InExtVarPair> ignored, Map<IVar, IVar> inToExtMap,
 			int startingLine) {
 		
 		if(extVar == null)
 			return;
 		
-		Var extVarInMem = extVar.getVarInMem();
-		Var intVarInMem = intVar.getVarInMem();
+		IVar extVarInMem = extVar.getVarInMem();
+		IVar intVarInMem = intVar.getVarInMem();
 		
 		if(extVarInMem == null)
 			return;
@@ -235,8 +236,8 @@ public class AstLoader {
 			ClassVar extClassVar = (ClassVar) extVarInMem;
 			ClassVar intClassVar = (ClassVar) intVarInMem;
 			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
-				Var memberExtVar = extClassVar.getMember(memberId);
-				Var memberIntVar = intClassVar.getMember(memberId);
+				IVar memberExtVar = extClassVar.getMember(memberId);
+				IVar memberIntVar = intClassVar.getMember(memberId);
 				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap,
 						startingLine);
 			}
@@ -267,8 +268,8 @@ public class AstLoader {
 	public List<InExtMAVarPair> getAccessedMemAddressVar() {
 		List<InExtMAVarPair> vars = new ArrayList<InExtMAVarPair>();
 		
-		for (Map.Entry<IBinding, Var> entry : _extToInVars.entrySet()) {
-			Var intVar = entry.getValue();
+		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
+			IVar intVar = entry.getValue();
 			if(intVar instanceof MemAddressVar) {
 				MemAddressVar extVar = (MemAddressVar) _parent.getVarFromBinding(entry.getKey());
 				
@@ -292,7 +293,7 @@ public class AstLoader {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<Var, Var>(), startingLine);
+		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<IVar, IVar>(), startingLine);
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
