@@ -100,17 +100,6 @@ public class Var {
 		_owner = owner;
 	}
 	
-	public List<Var> getOwnersStack() {
-		List<Var> stack = new ArrayList<Var>();
-		
-		Var currVar = this;
-		while (currVar != null) {
-			stack.add(currVar);
-			currVar = currVar._owner;
-		}
-		return stack;
-	}
-	
 	public List<Var> getInternalVars() {
 		List<Var> internalVars = new ArrayList<>();
 		internalVars.add(this);

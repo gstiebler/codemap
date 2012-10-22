@@ -139,7 +139,7 @@ public class MemAddressVar extends Var {
 		return this;
 	}
 	
-	private void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<Var, Var> inToExtVar) {
+	private static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<Var, Var> inToExtVar) {
 		if(possiblePointedVar == null)
 			return;
 		
@@ -158,7 +158,7 @@ public class MemAddressVar extends Var {
 				astLoader, startingLine);
 	}
 	
-	private GraphNode loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
+	private static GraphNode loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
 			MemberFunc memberFunc, List<FuncParameter> parameterValues, Graph graph,
 			AstLoader astLoader, int startingLine) {
 		
