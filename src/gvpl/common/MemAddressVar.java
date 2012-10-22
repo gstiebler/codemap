@@ -43,7 +43,33 @@ public class MemAddressVar extends Var {
 
 	@Override
 	public void updateNode(GraphNode node) {
-		getPointedVar().updateNode(node);
+		updateNodeRecursive(_possiblePointedVar, node);
+	}
+	
+	private void updateNodeRecursive(PossiblePointedVar possiblePointedVar, GraphNode node) {
+		int startingLine = -4;
+		if(possiblePointedVar._conditionNode != null) {
+			{
+				GraphNode ifOpNode = _gvplGraph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+
+				node.addDependentNode(ifOpNode, startingLine);
+				possiblePointedVar._varTrue._finalVar.getCurrentNode(startingLine).addDependentNode(ifOpNode, startingLine);
+				possiblePointedVar._conditionNode.addDependentNode(ifOpNode, startingLine);
+				
+				updateNodeRecursive(possiblePointedVar._varTrue, ifOpNode);
+			}
+			{
+				GraphNode ifOpNode = _gvplGraph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+
+				possiblePointedVar._varFalse._finalVar.getCurrentNode(startingLine).addDependentNode(ifOpNode, startingLine);
+				node.addDependentNode(ifOpNode, startingLine);
+				possiblePointedVar._conditionNode.addDependentNode(ifOpNode, startingLine);
+				
+				updateNodeRecursive(possiblePointedVar._varFalse, ifOpNode);
+			}
+		} else {
+			possiblePointedVar._finalVar.receiveAssign(null, node, startingLine);
+		}
 	}
 
 	@Override
@@ -70,12 +96,12 @@ public class MemAddressVar extends Var {
 	 * Cria-se um novo nó para a
 	 */
 	@Override
-	public GraphNode receiveAssign(NodeType lhs_type, GraphNode rhs_node, int startLocation) {
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startLocation) {
 		// Cria-se um novo nó para a variável "ponteiro"
-		GraphNode newNode = super.receiveAssign(lhs_type, rhs_node, startLocation);
+		GraphNode newNode = super.receiveAssign(lhsType, rhsNode, startLocation);
 		_onceWritten = true;
-		// A variável apontada recebe o nó recém-criado
-		return getPointedVar().receiveAssign(lhs_type, newNode, startLocation);
+
+		return newNode;
 	}
 
 	@Override

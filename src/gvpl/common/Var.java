@@ -81,11 +81,11 @@ public class Var {
 	 * @return New node from assignment, the left from assignment
 	 */
 	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startingLine) {
-		GraphNode lhs_node = _gvplGraph.addGraphNode(this, lhsType, startingLine);
-		rhsNode.addDependentNode(lhs_node, startingLine);
-		updateNode(lhs_node);
+		GraphNode lhsNode = _gvplGraph.addGraphNode(this, lhsType, startingLine);
+		rhsNode.addDependentNode(lhsNode, startingLine);
+		updateNode(lhsNode);
 
-		return lhs_node;
+		return lhsNode;
 	}
 
 	public String getName() {

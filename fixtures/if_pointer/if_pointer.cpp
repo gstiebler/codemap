@@ -16,4 +16,6 @@ int main() {
 	}
 	
 	int d = *a;
+	*a = 7;
+	int e = b;
 }
