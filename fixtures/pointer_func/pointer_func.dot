@@ -16,55 +16,55 @@ label = "root";
 	node_000042 [ label = "*g", startingline=21 ]
 	node_000043 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=21 ]
 	node_000044 [ label = "k", startingline=21 ]
-subgraph cluster_3 {
+subgraph cluster_27 {
 label = "soma_sub";
 parent = "G";
 startingline = 13;
-	node_000015 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000016 [ label = "soma_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000017 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000015 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000016 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000017 [ label = "soma_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000018 [ label = "sub_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000019 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=4 ]
 	node_000020 [ label = "*soma", startingline=4 ]
-	node_000021 [ label = "soma_pointed", startingline=4 ]
+	node_000021 [ label = "soma_pointed", startingline=-4 ]
 	node_000022 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
 	node_000023 [ label = "*sub", startingline=5 ]
-	node_000024 [ label = "sub_pointed", startingline=5 ]
+	node_000024 [ label = "sub_pointed", startingline=-4 ]
 }
-subgraph cluster_4 {
+subgraph cluster_28 {
 label = "soma_sub";
 parent = "G";
 startingline = 20;
-	node_000030 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000031 [ label = "soma_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000032 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000030 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000031 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000032 [ label = "soma_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000033 [ label = "sub_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000034 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=4 ]
 	node_000035 [ label = "*soma", startingline=4 ]
-	node_000036 [ label = "soma_pointed", startingline=4 ]
+	node_000036 [ label = "soma_pointed", startingline=-4 ]
 	node_000037 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
 	node_000038 [ label = "*sub", startingline=5 ]
-	node_000039 [ label = "sub_pointed", startingline=5 ]
+	node_000039 [ label = "sub_pointed", startingline=-4 ]
 }
 	node_000011 -> node_000012
-	node_000012 -> node_000017
-	node_000012 -> node_000031
+	node_000012 -> node_000015
+	node_000012 -> node_000032
 	node_000013 -> node_000014
-	node_000014 -> node_000015
+	node_000014 -> node_000016
 	node_000014 -> node_000029
 	node_000025 -> node_000027
-	node_000025 -> node_000032
+	node_000025 -> node_000030
 	node_000025 -> node_000033
 	node_000026 -> node_000028
-	node_000029 -> node_000030
+	node_000029 -> node_000031
 	node_000040 -> node_000042
 	node_000041 -> node_000043
 	node_000042 -> node_000043
 	node_000043 -> node_000044
 	node_000015 -> node_000019
 	node_000015 -> node_000022
-	node_000017 -> node_000019
-	node_000017 -> node_000022
+	node_000016 -> node_000019
+	node_000016 -> node_000022
 	node_000019 -> node_000020
 	node_000020 -> node_000021
 	node_000021 -> node_000025
@@ -73,8 +73,8 @@ startingline = 20;
 	node_000024 -> node_000026
 	node_000030 -> node_000034
 	node_000030 -> node_000037
-	node_000032 -> node_000034
-	node_000032 -> node_000037
+	node_000031 -> node_000034
+	node_000031 -> node_000037
 	node_000034 -> node_000035
 	node_000035 -> node_000036
 	node_000036 -> node_000040

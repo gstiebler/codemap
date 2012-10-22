@@ -19,7 +19,7 @@ public class GraphNode {
 	private int _startingLine;
 
 	public GraphNode(String name, NodeType type, int startingLine) {
-		_id = _counter++;
+		_id = getNewId();
 		_name = name;
 		_type = type;
 		_startingLine = startingLine;
@@ -28,7 +28,7 @@ public class GraphNode {
 	}
 
 	public GraphNode(Var parentVar, NodeType type, int startingLine) {
-		_id = _counter++;
+		_id = getNewId();
 		_parentVar = parentVar;
 		_name = parentVar.getName();
 		_type = type;
@@ -38,7 +38,7 @@ public class GraphNode {
 	}
 
 	public GraphNode(GraphNode other) {
-		_id = _counter++;
+		_id = getNewId();
 		_name = other._name;
 		_type = other._type;
 		_startingLine = other._startingLine;
@@ -46,6 +46,10 @@ public class GraphNode {
 		
 		GeneralOutputter.debug("new graphnode copy " + _name + " (" + _id + ")");
 		GeneralOutputter.debug("    from " + other._name + " (" + other._id + ")");
+	}
+	
+	private int getNewId() {
+		return _counter++;
 	}
 
 	public int getId() {
