@@ -1,6 +1,7 @@
 package gvpl.graphviz;
 
 import gvpl.graph.Graph;
+import gvpl.graph.GraphNode;
 
 import java.io.PrintWriter;
 import java.io.Writer;
@@ -37,13 +38,24 @@ public class FileDriver implements IGraphOutput {
 		out.close();
 	}
 	
-	public void insertOperation(int node_id, String node_name, int startingLine) {
+	private String srcNodes(GraphNode node) {
+		String srcNodes = "\"";
+		for(GraphNode src : node.getSourceNodes()) {
+			srcNodes += src.getId() + "/";
+		}
+		srcNodes += "\"";
+		return srcNodes;
+	}
+	
+	public void insertOperation(GraphNode node, String node_name, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("shape", "invtriangle"));
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#E0E0E0\""));
 		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
-		insertNode(node_id, node_name, properties);
+		if( node.getNumSourceNodes() > 0)
+			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
+		insertNode(node.getId(), node_name, properties);
 	}
 	
 	public void insertValueNode(int node_id, String node_name, int startingLine) {
@@ -70,10 +82,13 @@ public class FileDriver implements IGraphOutput {
 		insertNode(node_id, node_name, properties);
 	}
 	
-	public void insertVariable(int node_id, String node_name, int startingLine) {
+	public void insertVariable(GraphNode node, String node_name, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("startingline", String.valueOf(startingLine)));
-		insertNode(node_id, node_name, properties);
+		if( node.getNumSourceNodes() > 0)
+			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
+		
+		insertNode(node.getId(), node_name, properties);
 	}
 	
 	protected void insertNode(int node_id, String nodeLabel, List<PropertyPair> properties){

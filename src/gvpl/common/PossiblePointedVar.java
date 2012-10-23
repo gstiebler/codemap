@@ -62,7 +62,7 @@ class PossiblePointedVar implements IVar, IClassVar {
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varTrue);
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varFalse);
 		} else {
-			possiblePointedVar._finalVar.receiveAssign(null, node, startingLine);
+			possiblePointedVar._finalVar.receiveAssign(NodeType.E_VARIABLE, node, startingLine);
 		}
 	}
 	

@@ -52,16 +52,16 @@ public class Visualizer {
 		return "";
 	}
 	
-	public static void printNode(GraphNode graph_node, IGraphOutput graphOutput) {
-		if (graph_node._type == Graph.NodeType.E_OPERATION)
-			graphOutput.insertOperation(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
-		else if (graph_node._type == Graph.NodeType.E_DIRECT_VALUE)
-			graphOutput.insertValueNode(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
-		else if (graph_node._type == Graph.NodeType.E_DECLARED_PARAMETER)
-			graphOutput.insertDeclaredParameter(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
-		else if (graph_node._type == Graph.NodeType.E_RETURN_VALUE)
-			graphOutput.insertReturnValue(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
+	public static void printNode(GraphNode graphNode, IGraphOutput graphOutput) {
+		if (graphNode._type == Graph.NodeType.E_OPERATION)
+			graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+		else if (graphNode._type == Graph.NodeType.E_DIRECT_VALUE)
+			graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+		else if (graphNode._type == Graph.NodeType.E_DECLARED_PARAMETER)
+			graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+		else if (graphNode._type == Graph.NodeType.E_RETURN_VALUE)
+			graphOutput.insertReturnValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else
-			graphOutput.insertVariable(graph_node.getId(), graph_node._name + debugStr(graph_node), graph_node.getStartingLine());
+			graphOutput.insertVariable(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 	}
 }
