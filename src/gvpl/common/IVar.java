@@ -50,5 +50,7 @@ public interface IVar {
 	
 	public void setGraph(Graph graph);
 	
+	public Graph getGraph();
+	
 	
 }

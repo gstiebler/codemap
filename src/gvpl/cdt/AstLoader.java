@@ -4,6 +4,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.IClassVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.PointerVar;
@@ -147,7 +148,7 @@ public class AstLoader {
 
 		IVar varOfRef = getVarFromExpr(owner);
 		IVar varInMem = varOfRef.getVarInMem();
-		ClassVar ownerVar = (ClassVar) varInMem;
+		IClassVar ownerVar = (IClassVar) varInMem;
 
 		TypeId ownerType = varOfRef.getType();
 		ClassDecl classDecl = _astInterpreter.getClassDecl(ownerType);

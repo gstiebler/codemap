@@ -17,7 +17,7 @@ import java.util.Map;
  * Variable (instance) of a class
  *
  */
-public class ClassVar extends Var {
+public class ClassVar extends Var implements IClassVar{
 
 	Map<MemberId, IVar> _memberInstances = new LinkedHashMap<MemberId, IVar>();
 	Map<IVar, MemberId> _memberIdFromInstance = new LinkedHashMap<IVar, MemberId>();

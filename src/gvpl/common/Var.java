@@ -120,4 +120,8 @@ public class Var implements IVar {
 	public void setGraph(Graph graph) {
 		_gvplGraph = graph;
 	}
+	
+	public Graph getGraph() {
+		return _gvplGraph;
+	}
 }
