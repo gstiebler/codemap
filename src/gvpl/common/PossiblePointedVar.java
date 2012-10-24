@@ -10,11 +10,11 @@ import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 
-class PossiblePointedVar implements IVar, IClassVar {
-	PossiblePointedVar _varTrue = null;
-	PossiblePointedVar _varFalse = null;
-	GraphNode _conditionNode = null;
-	IVar _finalVar = null;
+public class PossiblePointedVar implements IVar, IClassVar {
+	public PossiblePointedVar _varTrue = null;
+	public PossiblePointedVar _varFalse = null;
+	public GraphNode _conditionNode = null;
+	public IVar _finalVar = null;
 	IVar _ownerVar = null;
 
 	PossiblePointedVar(IVar ownerVar) {

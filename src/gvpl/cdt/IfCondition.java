@@ -21,15 +21,8 @@ class PrevTrueFalseNode {
 	GraphNode _false = null;
 }
 
-class PrevTrueFalseMemVar {
-	MemAddressVar _prev = null;
-	MemAddressVar _true = null;
-	MemAddressVar _false = null;
-}
-
 abstract class BoolValuePack {
 	BasicBlock _ifBasicBlock = null;
-	List<InExtVarPair> _ifWrittenVars = new ArrayList<InExtVarPair>();
 	Map<GraphNode, GraphNode> _ifMergedNodes = null;
 	/** includes all member vars */
 	Map<IVar, IVar> _inToExtVar = new LinkedHashMap<IVar, IVar>();
@@ -46,12 +39,12 @@ abstract class BoolValuePack {
 		_ifBasicBlock = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 		_ifBasicBlock.load(clause);
 
-		_ifWrittenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ifWrittenVars = new ArrayList<InExtVarPair>();
 		// Get the accessed vars inside the block. This functions returns the variables created
 		// inside the block, and the equivalent var from the calling block (external vars)
-		_ifBasicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), _ifWrittenVars,
+		_ifBasicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), ifWrittenVars,
 				new ArrayList<InExtVarPair>(), _inToExtVar, startingLine);
-		for (InExtVarPair falseWrittenVarPair : _ifWrittenVars) {
+		for (InExtVarPair falseWrittenVarPair : ifWrittenVars) {
 			IVar extVar = falseWrittenVarPair._ext;
 			GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
 			GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode(startingLine);
@@ -228,7 +221,7 @@ public class IfCondition {
 	 *            Maps the internal vars, created inside the False block, and the
 	 *            correspondents variables in the parent block
 	 */
-	static void mergeIfMAV(Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
+	static public void mergeIfMAV(Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
 			GraphNode conditionNode, Map<IVar, IVar> inToExtVarTrue, Map<IVar, IVar> inToExtVarFalse) {
 		for (Map.Entry<IVar, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
 			MemAddressVar extVar = (MemAddressVar) entry.getKey();

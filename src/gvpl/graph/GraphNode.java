@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GraphNode {
-	private static int _counter = 1;
+	private static int _nodeCounter = 3000; 
 	private int _id;
 	public String _name;
 	public NodeType _type;
@@ -49,7 +49,7 @@ public class GraphNode {
 	}
 	
 	private int getNewId() {
-		return _counter++;
+		return _nodeCounter++;
 	}
 
 	public int getId() {
@@ -112,7 +112,7 @@ public class GraphNode {
 	}
 
 	public static void resetCounter() {
-		_counter = 1;
+		_nodeCounter = 1;
 	}
 
 	public int getStartingLine() {

@@ -27,7 +27,7 @@ public class Graph {
 	private List<GraphNode> _graphNodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = -1;
-	private static int _counter = 1;
+	private static int _counter = 1000;
 	private int _id;
 
 	public Graph(String label, int startingLine) {

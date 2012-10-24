@@ -14,7 +14,7 @@ import java.util.List;
  * This class is used to represent variables of primitive types
  */
 public class Var implements IVar {
-	private static int _counter = 1;
+	private static int _counter = 2000;
 	
 	protected String _name;
 
@@ -130,5 +130,10 @@ public class Var implements IVar {
 	
 	public int getId() {
 		return _id;
+	}
+	
+	@Override
+	public String toString() {
+		return _name + " (" + _id + ")";
 	}
 }
