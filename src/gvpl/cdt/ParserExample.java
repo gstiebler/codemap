@@ -38,7 +38,8 @@ public class ParserExample {
 				reader, info, readerFactory, null, log);
 
 		Graph gvplGraph = new Graph(-1);
-		new AstInterpreter(gvplGraph, translationUnit);
+		AstInterpreter astInterpreter = new AstInterpreter(gvplGraph);
+		astInterpreter.execute(translationUnit);
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);

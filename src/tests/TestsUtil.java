@@ -57,7 +57,8 @@ public class TestsUtil {
 			e.printStackTrace();
 		}
 
-		AstInterpreter astInterpreter = new AstInterpreter(new gvpl.graph.Graph(-1), translationUnit);
+		AstInterpreter astInterpreter = new AstInterpreter(new gvpl.graph.Graph(-1));
+		astInterpreter.execute(translationUnit);
 		
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);

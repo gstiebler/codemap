@@ -45,10 +45,12 @@ public class AstInterpreter extends AstLoader {
 	 * @param root
 	 *            The root of the program
 	 */
-	public AstInterpreter(Graph gvplGraph, IASTTranslationUnit root) {
+	public AstInterpreter(Graph gvplGraph) {
 		super(gvplGraph, null, null);
 		CppMaps.initialize();
-
+	}
+	
+	public void execute(IASTTranslationUnit root) {
 		IASTDeclaration[] declarations = root.getDeclarations();
 
 		Function mainFunction = null;

@@ -92,8 +92,12 @@ public class GraphNode {
 	public Iterable<GraphNode> getDependentNodes() {
 		return _dependentNodes;
 	}
+	
+	public boolean isDependentNode(GraphNode node) {
+		return _dependentNodes.contains(node);
+	}
 
-	public Iterable<GraphNode> getSourceNodes() {
+	public List<GraphNode> getSourceNodes() {
 		return _sourceNodes;
 	}
 
