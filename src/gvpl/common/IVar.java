@@ -52,5 +52,5 @@ public interface IVar {
 	
 	public Graph getGraph();
 	
-	
+	public int getId();
 }

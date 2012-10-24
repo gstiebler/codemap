@@ -31,6 +31,7 @@ abstract class BoolValuePack {
 	BasicBlock _ifBasicBlock = null;
 	List<InExtVarPair> _ifWrittenVars = new ArrayList<InExtVarPair>();
 	Map<GraphNode, GraphNode> _ifMergedNodes = null;
+	/** includes all member vars */
 	Map<IVar, IVar> _inToExtVar = new LinkedHashMap<IVar, IVar>();
 
 	BoolValuePack(InstructionLine instructionLine, IASTStatement clause,
@@ -132,20 +133,39 @@ public class IfCondition {
 		IASTExpression condition = ifStatement.getConditionExpression();
 		GraphNode conditionNode = instructionLine.loadValue(condition);
 
-		createIfNodes(ifStatement, mapPrevTrueFalse, trueBvp._ifMergedNodes,
-				falseBvp._ifMergedNodes, conditionNode, instructionLine);
+		createIfNodes(mapPrevTrueFalse, trueBvp._ifMergedNodes, falseBvp._ifMergedNodes,
+				conditionNode, instructionLine.getGraph(), ifStatement.getFileLocation()
+						.getStartingLineNumber());
 
 		mergeIfMAV(mapPrevTrueFalseMV, conditionNode, trueBvp._inToExtVar, falseBvp._inToExtVar);
 	}
 
-	static void createIfNodes(IASTIfStatement ifStatement,
-			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
+	/**
+	 * Creates the If nodes to the written variables
+	 * 
+	 * @param ifStatement
+	 *            The If statement from CDT
+	 * @param mapPrevTrueFalse
+	 *            Maps the external variable (the variable in the parent block)
+	 *            to a structure that holds the node if the condition is true,
+	 *            if the condition is false, and the previous GraphNode of this
+	 *            variable
+	 * @param ifTrueMergedNodes
+	 *            Maps the nodes from the parent block to the True block
+	 * @param ifFalseMergedNodes
+	 *            Maps the nodes from the parent block to the True block
+	 * @param conditionNode
+	 *            The condition of the If statement
+	 * @param Graph
+	 *            The Graph
+	 * @param startingLine
+	 *            The number of the line in the source code
+	 * 
+	 */
+	static void createIfNodes(Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
 			Map<GraphNode, GraphNode> ifTrueMergedNodes,
-			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode,
-			InstructionLine instructionLine) {
-
-		int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
-		Graph graph = instructionLine.getGraph();
+			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode, Graph graph,
+			int startingLine) {
 		for (Map.Entry<IVar, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
 			IVar extVar = entry.getKey();
 			PrevTrueFalseNode prevTrueFalse = entry.getValue();
@@ -153,12 +173,14 @@ public class IfCondition {
 			GraphNode trueNode = prevTrueFalse._true;
 			GraphNode falseNode = prevTrueFalse._false;
 
-			// if the variable was not written in the true block, then if the condition is true,
+			// if the variable was not written in the true block, then if the
+			// condition is true,
 			// the variable will hold it's previous value
 			if (trueNode == null)
 				trueNode = prevTrueFalse._prev;
 
-			// if the variable was not written in the false block (else), then if the condition is false,
+			// if the variable was not written in the false block (else), then
+			// if the condition is false,
 			// the variable will hold it's previous value
 			if (falseNode == null)
 				falseNode = prevTrueFalse._prev;
@@ -189,7 +211,23 @@ public class IfCondition {
 		}
 	}
 
-	// TODO convert internal to external vars
+	/**
+	 * Creates if nodes for memory address variables (pointers and references)
+	 * that have been referenced in the true and false blocks
+	 * 
+	 * @param mapPrevTrueFalseMV
+	 *            Maps the variable to it's possible assigments. Maps to what
+	 *            the variable would have been if the condition is true and if
+	 *            the condition is false
+	 * @param conditionNode
+	 *            The condition of the If statement
+	 * @param inToExtVarTrue
+	 *            Maps the internal vars, created inside the True block, and the
+	 *            correspondents variables in the parent block
+	 * @param inToExtVarFalse
+	 *            Maps the internal vars, created inside the False block, and the
+	 *            correspondents variables in the parent block
+	 */
 	static void mergeIfMAV(Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
 			GraphNode conditionNode, Map<IVar, IVar> inToExtVarTrue, Map<IVar, IVar> inToExtVarFalse) {
 		for (Map.Entry<IVar, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {

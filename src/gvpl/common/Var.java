@@ -14,6 +14,7 @@ import java.util.List;
  * This class is used to represent variables of primitive types
  */
 public class Var implements IVar {
+	private static int _counter = 1;
 	
 	protected String _name;
 
@@ -21,6 +22,7 @@ public class Var implements IVar {
 	protected GraphNode _currGraphNode = null;
 	protected GraphNode _firstGraphNode = null;
 	protected IVar _owner = null;
+	private int _id = -1;
 
 	protected Graph _gvplGraph;
 
@@ -28,6 +30,7 @@ public class Var implements IVar {
 		_type = type;
 		_gvplGraph = graph;
 		_name = name;
+		_id = _counter++;
 	}
 
 	public TypeId getType() {
@@ -123,5 +126,9 @@ public class Var implements IVar {
 	
 	public Graph getGraph() {
 		return _gvplGraph;
+	}
+	
+	public int getId() {
+		return _id;
 	}
 }

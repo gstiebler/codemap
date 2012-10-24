@@ -1,5 +1,6 @@
 package gvpl.graphviz;
 
+import gvpl.common.IVar;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
@@ -87,6 +88,10 @@ public class FileDriver implements IGraphOutput {
 		properties.add(new PropertyPair("startingline", String.valueOf(startingLine)));
 		if( node.getNumSourceNodes() > 0)
 			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
+		
+		IVar parentVar = node.getParentVar();
+		if(parentVar != null)
+			properties.add(new PropertyPair("parentVarId", String.valueOf(parentVar.getId())));
 		
 		insertNode(node.getId(), node_name, properties);
 	}

@@ -112,7 +112,8 @@ class PossiblePointedVar implements IVar, IClassVar {
 		
 		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
 		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
-		
+
+		//TODO Atualizar também as variáveis membro
 		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
 		if(converted != null)
 			possiblePointedVar._finalVar = converted; 
@@ -217,5 +218,9 @@ class PossiblePointedVar implements IVar, IClassVar {
 	
 	public void setGraph(Graph graph) {
 		GeneralOutputter.fatalError("You're doing it wrong.");
+	}
+	
+	public int getId() {
+		return -1;
 	}
 }

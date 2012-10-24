@@ -118,5 +118,9 @@ public class GraphNode {
 	public int getStartingLine() {
 		return _startingLine;
 	}
+	
+	public IVar getParentVar() {
+		return _parentVar;
+	}
 
 }

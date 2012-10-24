@@ -17,7 +17,7 @@ class ClassA : public BaseClass
 	int _aMember;
 	
 public:
-	ClassA() : BaseClass(10, 55)
+	ClassA(int dummyA) : BaseClass(10, 55)
 	{}
 
 	int process(int baseParam)
@@ -31,7 +31,7 @@ class ClassB : public BaseClass
 	int _bMember;
 	
 public:
-	ClassB() : BaseClass(20, 55), _bMember(30)
+	ClassB(int dummyB) : BaseClass(20, 55), _bMember(30)
 	{}
 
 	int process(int baseParam)
@@ -43,8 +43,8 @@ public:
 int main() 
 {
 	BaseClass *bcPointer;
-	ClassA classA();
-	ClassB classB();
+	ClassA classA(1);
+	ClassB classB(2);
 	
 	if(true)
 	{
