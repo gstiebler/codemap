@@ -4,7 +4,6 @@ import gvpl.common.ClassMember;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
-import gvpl.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -29,19 +28,22 @@ public class ClassDecl {
 	private TypeId _typeId;
 	private IBinding _binding;
 	private String _name;
+	private AstInterpreter _astInterpreter;
 
 	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
-	private Map<MemberId, ClassMember> _memberVarGraphNodes;
+	private Map<MemberId, ClassMember> _memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
 	private List<ClassDecl> _parentClasses = new ArrayList<ClassDecl>();
 
 	private MemberFunc _constructorFunc = null;
 
-	public ClassDecl(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter,
-			CPPASTCompositeTypeSpecifier classDecl) {
+	public ClassDecl(AstInterpreter astInterpreter) {
 		_typeId = new TypeId();
-		loadBaseClasses(classDecl.getBaseSpecifiers(), astInterpreter);
-		_memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
+		_astInterpreter = astInterpreter;
+	}
+	
+	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl) {
+		loadBaseClasses(classDecl.getBaseSpecifiers(), _astInterpreter);
 
 		IASTName name = classDecl.getName();
 		_binding = name.resolveBinding();
@@ -56,14 +58,14 @@ public class ClassDecl {
 
 			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
 			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
-			TypeId param_type = astInterpreter.getType(decl_spec);
+			TypeId param_type = _astInterpreter.getType(decl_spec);
 			IASTDeclarator[] declarators = simple_decl.getDeclarators();
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
 				if (declarator instanceof IASTFunctionDeclarator) {
 					//Load function declaration
 					CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
-					loadMemberFuncDecl(funcDeclarator, astInterpreter);	
+					loadMemberFuncDecl(funcDeclarator, _astInterpreter);	
 				} else {
 					IASTName decl_name = declarator.getName();
 					MemberId member_id = new MemberId();
@@ -82,7 +84,7 @@ public class ClassDecl {
 			if (!(member instanceof IASTFunctionDefinition))
 				continue;
 
-			loadMemberFunc((IASTFunctionDefinition) member, astInterpreter);
+			loadMemberFunc((IASTFunctionDefinition) member, _astInterpreter);
 		}
 	}
 	

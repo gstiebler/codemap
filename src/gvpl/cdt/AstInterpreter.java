@@ -115,6 +115,11 @@ public class AstInterpreter extends AstLoader {
 		_funcIdMap.put(binding, function);
 		return function;
 	}
+	
+	public void addClassDeclInMaps(ClassDecl classDecl) {
+		_typeBindingToClass.put(classDecl.getBinding(), classDecl);
+		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
+	}
 
 	/**
 	 * Loads a class or structure from the AST
@@ -122,10 +127,10 @@ public class AstInterpreter extends AstLoader {
 	 * @param strDecl
 	 */
 	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
-		ClassDecl classDecl = new ClassDecl(_gvplGraph, this, this, strDecl);
+		ClassDecl classDecl = new ClassDecl(this);
+		classDecl.loadAstDecl(strDecl);
 
-		_typeBindingToClass.put(classDecl.getBinding(), classDecl);
-		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
+		addClassDeclInMaps(classDecl);
 	}
 
 	/**
