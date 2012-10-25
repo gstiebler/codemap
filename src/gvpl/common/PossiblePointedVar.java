@@ -113,7 +113,6 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
 		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
 
-		//TODO Atualizar também as variáveis membro
 		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
 		if(converted != null)
 			possiblePointedVar._finalVar = converted; 

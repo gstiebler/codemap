@@ -233,6 +233,8 @@ public class AstLoader {
 		if(extVarInMem == null)
 			return;
 		
+		inToExtMap.put(intVar, extVar);
+		
 		if (intVarInMem instanceof ClassVar) {
 			ClassVar extClassVar = (ClassVar) extVarInMem;
 			ClassVar intClassVar = (ClassVar) intVarInMem;
@@ -260,8 +262,6 @@ public class AstLoader {
 
 		if (!accessed)
 			ignored.add(varPair);
-		
-		inToExtMap.put(intVar, extVar);
 	}
 
 	//TODO prepare to read member vars of each var. It's only working

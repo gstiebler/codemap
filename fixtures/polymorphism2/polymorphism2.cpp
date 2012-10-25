@@ -57,5 +57,5 @@ int main()
 	
 	int a = bcPointer->process(40);
 	bcPointer->_baseMember = a;
-	//int b = bcPointer->_baseMember;
+	int b = bcPointer->_baseMember;
 }
