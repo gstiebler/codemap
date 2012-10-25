@@ -1,20 +1,21 @@
 package tests;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreter;
-import gvpl.cdt.AstLoader;
 import gvpl.cdt.BasicBlock;
 import gvpl.cdt.ClassDecl;
 import gvpl.cdt.IfCondition;
 import gvpl.cdt.PrevTrueFalseMemVar;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.PossiblePointedVar;
 import gvpl.common.TypeId;
 import gvpl.common.Var;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -23,8 +24,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 public class IfConditionTest {
 	
@@ -66,7 +65,6 @@ public class IfConditionTest {
 			ptfm._true.setPointedVar(truePointedVarInTrueBlock);
 		}
 		
-
 		IVar falsePointedVar = null;
 		GraphNode currFalsePointedVar = null;
 		IVar falsePointedVarInFalseBlock = null;
@@ -90,10 +88,10 @@ public class IfConditionTest {
 		
 		mapPrevTrueFalseMV.put(prev, ptfm);
 		
-		inToExtVarTrue.put(ptfm._true, prev);
+		//inToExtVarTrue.put(ptfm._true, prev);
 		inToExtVarTrue.put(truePointedVarInTrueBlock, truePointedVar);
 		
-		inToExtVarFalse.put(ptfm._false, prev);
+		//inToExtVarFalse.put(ptfm._false, prev);
 		inToExtVarFalse.put(falsePointedVarInFalseBlock, falsePointedVar);
 		
 		// the function to be tested
@@ -145,7 +143,8 @@ public class IfConditionTest {
 		ClassVar truePointedVar = null;
 		GraphNode currTruePointedVar = null;
 		IVar trueVarMember = null;
-		IVar truePointedVarInTrueBlock = null;
+		IVar trueVarMemberInBlock = null;
+		ClassVar truePointedVarInTrueBlock = null;
 		{
 			// true block
 			BasicBlock trueBasicBlock = new BasicBlock(null, astInterpreter);
@@ -160,16 +159,18 @@ public class IfConditionTest {
 			// the address var in the true block
 			ptfm._true = new MemAddressVar(trueGraph, "true", type);
 
-			truePointedVarInTrueBlock = new Var(trueGraph, "truePointedVarInTrueBlock", type);
+			truePointedVarInTrueBlock = new ClassVar(trueGraph, "truePointedVarInTrueBlock", classDecl, trueBasicBlock);
 			truePointedVarInTrueBlock.initializeGraphNode(NodeType.E_VARIABLE, trueGraph,
 					trueBasicBlock, astInterpreter, -1);
+			trueVarMemberInBlock = truePointedVarInTrueBlock.getMember(memberId);
 			ptfm._true.setPointedVar(truePointedVarInTrueBlock);
 		}
 
 		ClassVar falsePointedVar = null;
 		GraphNode currFalsePointedVar = null;
 		IVar falseVarMember = null;
-		IVar falsePointedVarInFalseBlock = null; 
+		IVar falseVarMemberInBlock = null;
+		ClassVar falsePointedVarInFalseBlock = null; 
 		{
 			// false block
 			BasicBlock falseBasicBlock = new BasicBlock(null, astInterpreter);
@@ -184,20 +185,23 @@ public class IfConditionTest {
 			// the address var in the false block
 			ptfm._false = new MemAddressVar(falseGraph, "true", type);
 
-			falsePointedVarInFalseBlock = new Var(falseGraph, "falsePointedVarInFalseBlock", type);
+			falsePointedVarInFalseBlock = new ClassVar(falseGraph, "falsePointedVarInFalseBlock", classDecl, falseBasicBlock);
 			falsePointedVarInFalseBlock.initializeGraphNode(NodeType.E_VARIABLE, falseGraph,
 					falseBasicBlock, astInterpreter, -1);
+			falseVarMemberInBlock = falsePointedVarInFalseBlock.getMember(memberId);
 			ptfm._false.setPointedVar(falsePointedVar);
 		}
 
 		mapPrevTrueFalseMV.put(prev, ptfm);
 
-		inToExtVarTrue.put(ptfm._true, prev);
+		//inToExtVarTrue.put(ptfm._true, prev);
 		inToExtVarTrue.put(truePointedVarInTrueBlock, truePointedVar);
+		inToExtVarTrue.put(trueVarMemberInBlock, trueVarMember);
 		//TODO fazer a mesma coisa para os membros
 		
-		inToExtVarFalse.put(ptfm._false, prev);
+		//inToExtVarFalse.put(ptfm._false, prev);
 		inToExtVarFalse.put(falsePointedVarInFalseBlock, falsePointedVar);
+		inToExtVarFalse.put(falseVarMemberInBlock, falseVarMember);
 
 		// the function to be tested
 		IfCondition.mergeIfMAV(mapPrevTrueFalseMV, conditionNode, inToExtVarTrue, inToExtVarFalse);
@@ -211,10 +215,10 @@ public class IfConditionTest {
 		assertEquals(extGraph, ppv._varFalse._finalVar.getGraph());
 		
 		
-		IVar newTrueVarMember = ((ClassVar)ppv._varTrue._finalVar.getVarInMem()).getMember(memberId);
+		IVar newTrueVarMember = ((ClassVar)ppv._varTrue._finalVar).getMember(memberId);
 		assertEquals(trueVarMember, newTrueVarMember);
 		
-		IVar newFalseVarMember = ((ClassVar)ppv._varFalse._finalVar.getVarInMem()).getMember(memberId);
+		IVar newFalseVarMember = ((ClassVar)ppv._varFalse._finalVar).getMember(memberId);
 		assertEquals(falseVarMember, newFalseVarMember);
 
 		assertEquals(extGraph, newTrueVarMember.getGraph());

@@ -18,6 +18,7 @@ public class BasicBlock extends AstLoader {
 
 	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
+		_gvplGraph.setLabel("BasicBlockGraph");
 	}
 
 	public void load(IASTStatement baseStatement) {
