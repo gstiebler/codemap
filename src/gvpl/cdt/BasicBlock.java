@@ -45,12 +45,12 @@ public class BasicBlock extends AstLoader {
 	public Map<GraphNode, GraphNode> addToExtGraph(int startingLine) {
 		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
 		
+		Graph extGraph = _parent._gvplGraph;
+		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<IVar, IVar>(), startingLine);
-
-		Graph extGraph = _parent._gvplGraph;
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), startingLine);
 		extGraph.merge(_gvplGraph);
 
 		// bind the vars from calling block to the internal read vars
@@ -68,7 +68,7 @@ public class BasicBlock extends AstLoader {
 			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode(startingLine);
 			// if someone has written in the internal var
 
-			writtenPair._ext.initializeGraphNode(NodeType.E_VARIABLE, extGraph,
+			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph,
 					this, _astInterpreter, startingLine);
 			GraphNode extVarCurrNode = writtenPair._ext
 					.getCurrentNode(startingLine);

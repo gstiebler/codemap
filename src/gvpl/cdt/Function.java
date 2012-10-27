@@ -67,7 +67,7 @@ public class Function extends AstLoader {
 		loadFuncParameters(parameters);
 
 		for (Map.Entry<IBinding, FuncParameter> entry : _parametersMap.entrySet()) {
-			entry.getValue().getVar().initializeGraphNode(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
+			entry.getValue().getVar().initializeVar(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
 					_astInterpreter, startingLine);
 		}
 	}

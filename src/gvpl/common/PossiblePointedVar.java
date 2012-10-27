@@ -1,14 +1,14 @@
 package gvpl.common;
 
-import java.util.List;
-import java.util.Map;
-
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.cdt.InToExtVar;
 import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
+
+import java.util.List;
 
 public class PossiblePointedVar implements IVar, IClassVar {
 	public PossiblePointedVar _varTrue = null;
@@ -106,7 +106,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		return _ownerVar.getName();
 	}
 
-	public static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, Map<IVar, IVar> inToExtVar) {
+	public static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar, InToExtVar inToExtVar) {
 		if(possiblePointedVar == null)
 			return;
 		
@@ -114,8 +114,15 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
 
 		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
-		if(converted != null)
-			possiblePointedVar._finalVar = converted; 
+		if (converted == null) {
+			possiblePointedVar._finalVar.setGraph(inToExtVar.getExtGraph());
+			GeneralOutputter.debug("Var " + possiblePointedVar._finalVar.getName() + " ("
+					+ possiblePointedVar._finalVar.getId() + ")" + " is now on graph "
+					+ inToExtVar.getExtGraph().getName() + " (" + inToExtVar.getExtGraph().getId()
+					+ ")");
+		} else
+			possiblePointedVar._finalVar = converted;
+		
 	}
 	
 	public static GraphNode loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
@@ -156,7 +163,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		return currGraphNode;
 	}
 
-	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
+	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine) {
 		GeneralOutputter.fatalError("You're doing it wrong.");
 	}

@@ -21,7 +21,7 @@ public interface IVar {
 
 	public GraphNode getCurrentNode(int startingLine);
 
-	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
+	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine);
 
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,

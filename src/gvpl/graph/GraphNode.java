@@ -7,6 +7,8 @@ import gvpl.graph.Graph.NodeType;
 import java.util.ArrayList;
 import java.util.List;
 
+import debug.DebugOptions;
+
 public class GraphNode {
 	private static int _nodeCounter = 3000; 
 	private int _id;
@@ -24,7 +26,8 @@ public class GraphNode {
 		_type = type;
 		_startingLine = startingLine;
 		
-		GeneralOutputter.debug("new graphnode " + name + " (" + _id + ")");
+		if(DebugOptions.outputNodeInfo())
+			GeneralOutputter.debug("new graphnode " + name + " (" + _id + ")");
 	}
 
 	public GraphNode(IVar parentVar, NodeType type, int startingLine) {
@@ -33,8 +36,9 @@ public class GraphNode {
 		_name = parentVar.getName();
 		_type = type;
 		_startingLine = startingLine;
-		
-		GeneralOutputter.debug("new graphnode var " + parentVar.getName() + " (" + _id + ")");
+
+		if(DebugOptions.outputNodeInfo())
+			GeneralOutputter.debug("new graphnode (" + _id + ") var " + parentVar.getName() + "(" + parentVar.getId() + ")");
 	}
 
 	public GraphNode(GraphNode other) {
@@ -43,9 +47,12 @@ public class GraphNode {
 		_type = other._type;
 		_startingLine = other._startingLine;
 		_parentVar = other._parentVar;
-		
-		GeneralOutputter.debug("new graphnode copy " + _name + " (" + _id + ")");
-		GeneralOutputter.debug("    from " + other._name + " (" + other._id + ")");
+
+		if(DebugOptions.outputNodeInfo())
+		{
+			GeneralOutputter.debug("new graphnode copy " + _name + " (" + _id + ")");
+			GeneralOutputter.debug("    from " + other._name + " (" + other._id + ")");
+		}
 	}
 	
 	private int getNewId() {

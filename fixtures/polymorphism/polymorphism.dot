@@ -10,9 +10,18 @@ label = "root";
 	node_000062 [ label = "bcPointer_pointed._bMember", startingline=53 ]
 	node_000063 [ label = "bcPointer_pointed._baseMember", startingline=53 ]
 	node_000064 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=47 ]
-	node_000065 [ label = "40", style=filled, fillcolor="#E9FFE9", startingline=56 ]
-	node_000076 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=56 ]
-	node_000077 [ label = "a", startingline=56 ]
+	node_000065 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=56 ]
+	node_000066 [ label = "e", startingline=56 ]
+	node_000067 [ label = "40", style=filled, fillcolor="#E9FFE9", startingline=57 ]
+	node_000078 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=57 ]
+	node_000079 [ label = "a", startingline=57 ]
+	node_000080 [ label = "*bcPointer", startingline=58 ]
+	node_000081 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=-5 ]
+	node_000082 [ label = "bcPointer_pointed._baseMember", startingline=-4 ]
+	node_000083 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=-5 ]
+	node_000084 [ label = "bcPointer_pointed._baseMember", startingline=-4 ]
+	node_000085 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=59 ]
+	node_000086 [ label = "b", startingline=59 ]
 subgraph cluster_1 {
 label = "ClassA::ClassA";
 parent = "G";
@@ -56,30 +65,47 @@ startingline = 34;
 subgraph cluster_5 {
 label = "ClassA::process";
 parent = "G";
-startingline = 56;
-	node_000066 [ label = "THIS._baseMember", startingline=23 ]
-	node_000067 [ label = "THIS._aMember", startingline=23 ]
-	node_000068 [ label = "baseParam", style=filled, fillcolor="#FFE9E9", startingline=23 ]
-	node_000069 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=25 ]
-	node_000070 [ label = "ClassA::process", style=filled, fillcolor="#FFFFD0", startingline=25 ]
+startingline = 57;
+	node_000068 [ label = "THIS._baseMember", startingline=23 ]
+	node_000069 [ label = "THIS._aMember", startingline=23 ]
+	node_000070 [ label = "baseParam", style=filled, fillcolor="#FFE9E9", startingline=23 ]
+	node_000071 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=25 ]
+	node_000072 [ label = "ClassA::process", style=filled, fillcolor="#FFFFD0", startingline=25 ]
 }
 subgraph cluster_6 {
 label = "ClassB::process";
 parent = "G";
-startingline = 56;
-	node_000071 [ label = "THIS._baseMember", startingline=37 ]
-	node_000072 [ label = "THIS._bMember", startingline=37 ]
-	node_000073 [ label = "baseParam", style=filled, fillcolor="#FFE9E9", startingline=37 ]
-	node_000074 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=39 ]
-	node_000075 [ label = "ClassB::process", style=filled, fillcolor="#FFFFD0", startingline=39 ]
+startingline = 57;
+	node_000073 [ label = "THIS._baseMember", startingline=37 ]
+	node_000074 [ label = "THIS._bMember", startingline=37 ]
+	node_000075 [ label = "baseParam", style=filled, fillcolor="#FFE9E9", startingline=37 ]
+	node_000076 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=39 ]
+	node_000077 [ label = "ClassB::process", style=filled, fillcolor="#FFFFD0", startingline=39 ]
 }
-	node_000048 -> node_000066
-	node_000062 -> node_000072
-	node_000063 -> node_000071
-	node_000064 -> node_000076
-	node_000065 -> node_000068
-	node_000065 -> node_000073
-	node_000076 -> node_000077
+	node_000048 -> node_000065
+	node_000048 -> node_000068
+	node_000048 -> node_000081
+	node_000062 -> node_000074
+	node_000063 -> node_000065
+	node_000063 -> node_000073
+	node_000063 -> node_000083
+	node_000064 -> node_000065
+	node_000064 -> node_000078
+	node_000064 -> node_000081
+	node_000064 -> node_000083
+	node_000064 -> node_000085
+	node_000065 -> node_000066
+	node_000067 -> node_000070
+	node_000067 -> node_000075
+	node_000078 -> node_000079
+	node_000079 -> node_000080
+	node_000080 -> node_000081
+	node_000080 -> node_000083
+	node_000081 -> node_000082
+	node_000082 -> node_000085
+	node_000083 -> node_000084
+	node_000084 -> node_000085
+	node_000085 -> node_000086
 	node_000041 -> node_000045
 	node_000042 -> node_000046
 	node_000043 -> node_000048
@@ -92,12 +118,12 @@ startingline = 56;
 	node_000057 -> node_000062
 	node_000059 -> node_000061
 	node_000061 -> node_000055
-	node_000066 -> node_000069
-	node_000068 -> node_000069
-	node_000069 -> node_000070
-	node_000070 -> node_000076
-	node_000071 -> node_000074
-	node_000072 -> node_000074
-	node_000074 -> node_000075
-	node_000075 -> node_000076
+	node_000068 -> node_000071
+	node_000070 -> node_000071
+	node_000071 -> node_000072
+	node_000072 -> node_000078
+	node_000073 -> node_000076
+	node_000074 -> node_000076
+	node_000076 -> node_000077
+	node_000077 -> node_000078
 }

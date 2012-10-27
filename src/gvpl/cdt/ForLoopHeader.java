@@ -60,7 +60,7 @@ public class ForLoopHeader extends AstLoader {
 
 		String varName = id_expr.getName().toString();
 		intVarDecl = new Var(_gvplGraph, varName, null);
-		intVarDecl.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
+		intVarDecl.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
 				startingLine);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;

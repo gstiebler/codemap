@@ -25,7 +25,7 @@ abstract class BoolValuePack {
 	BasicBlock _ifBasicBlock = null;
 	Map<GraphNode, GraphNode> _ifMergedNodes = null;
 	/** includes all member vars */
-	Map<IVar, IVar> _inToExtVar = new LinkedHashMap<IVar, IVar>();
+	InToExtVar _inToExtVar = null;
 
 	BoolValuePack(InstructionLine instructionLine, IASTStatement clause,
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
@@ -34,6 +34,8 @@ abstract class BoolValuePack {
 			return;
 
 		int startingLine = clause.getFileLocation().getStartingLineNumber();
+		
+		_inToExtVar = new InToExtVar(instructionLine.getGraph());
 
 		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
 		_ifBasicBlock = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
@@ -222,7 +224,7 @@ public class IfCondition {
 	 *            correspondents variables in the parent block
 	 */
 	static public void mergeIfMAV(Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
-			GraphNode conditionNode, Map<IVar, IVar> inToExtVarTrue, Map<IVar, IVar> inToExtVarFalse) {
+			GraphNode conditionNode, InToExtVar inToExtVarTrue, InToExtVar inToExtVarFalse) {
 		for (Map.Entry<IVar, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
 			MemAddressVar extVar = (MemAddressVar) entry.getKey();
 			PrevTrueFalseMemVar prevTrueFalse = entry.getValue();

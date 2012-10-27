@@ -42,6 +42,7 @@ public class ClassVar extends Var implements IClassVar{
 		}
 		
 		for(ClassDecl parentClass : _classDecl.getParentClasses()) {
+			GeneralOutputter.debug("Parent instance of " + parentClass.getName() + " from " + name);
 			ClassVar parentInstance = new ClassVar(graph, name, parentClass, parentAstLoader);
 			_parentInstances.add(parentInstance);
 		}
@@ -84,13 +85,13 @@ public class ClassVar extends Var implements IClassVar{
 	 * It is used mainly to be used in function parameters
 	 */
 	@Override
-	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader, 
+	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader, 
 			AstInterpreter astInterpreter, int startingLine) {
 		for(ClassVar parent : _parentInstances) 
-			parent.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+			parent.initializeVar(nodeType, graph, astLoader, astInterpreter, startingLine);
 		
 		for (IVar var : _memberInstances.values()) {
-			var.initializeGraphNode(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.initializeVar(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
 			var.setOwner(this);
 		}
 	}
@@ -140,6 +141,14 @@ public class ClassVar extends Var implements IClassVar{
 		}
 		
 		return internalVars;
+	}
+	
+	@Override
+	public void setGraph(Graph graph) {
+		super.setGraph(graph);
+		List<IVar> internalVars = getInternalVars();
+		for(IVar internalVar : internalVars)
+			internalVar.setGraph(graph);
 	}
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,

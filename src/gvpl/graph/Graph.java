@@ -17,6 +17,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import debug.DebugOptions;
+
 public class Graph {
 
 	public enum NodeType {
@@ -49,15 +51,17 @@ public class Graph {
 		GraphNode graphNode = new GraphNode(name, type, startingLine);
 		_graphNodes.add(graphNode);
 		
-		GeneralOutputter.debug("Add node " + graphNode.getName() +" (" + graphNode.getId() + ") graph " + _label + " (" + _id + ")");
+		if(DebugOptions.outputNodeInfo())
+			GeneralOutputter.debug("Add node " + graphNode.getName() +" (" + graphNode.getId() + ") graph " + _label + " (" + _id + ")");
 		return graphNode;
 	}
 
 	public GraphNode addGraphNode(IVar parentVar, NodeType type, int startingLine) {
 		GraphNode graphNode = new GraphNode(parentVar, type, startingLine);
 		_graphNodes.add(graphNode);
-
-		GeneralOutputter.debug("Add node " + graphNode.getName() +" (" + graphNode.getId() + ") graph " + _label + " (" + _id + ")");
+		
+		if(DebugOptions.outputNodeInfo())
+			GeneralOutputter.debug("Add node " + graphNode.getName() +" (" + graphNode.getId() + ") graph " + _label + " (" + _id + ")");
 		return graphNode;
 	}
 
@@ -125,14 +129,16 @@ public class Graph {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
-		GeneralOutputter.debug("Adding graph (" + graph._id + ") to (" + _id + ")");
+		if(DebugOptions.outputGraphInfo())
+			GeneralOutputter.debug("Adding graph (" + graph._id + ") to (" + _id + ")");
 		return map;
 	}
 	
 	public void merge(Graph graph) {
 		_graphNodes.addAll(graph._graphNodes);
 		_subgraphs.addAll(graph._subgraphs);
-		GeneralOutputter.debug("Merging graph (" + graph._id + ") to (" + _id + ")");
+		if(DebugOptions.outputGraphInfo())
+			GeneralOutputter.debug("Merging graph (" + graph._id + ") to (" + _id + ")");
 	}
 
 	public String getName() {

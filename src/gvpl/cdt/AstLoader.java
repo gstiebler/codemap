@@ -89,7 +89,9 @@ public class AstLoader {
 		String name = binding.getName();
 		
 		IVar var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
-		var.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
+		//TODO only initialize a variable that will be read. Otherwise, the nodes generated
+		// in the line below will never be used
+		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
 		_extToInVars.put(binding, var);
 		return var;
 	}
@@ -209,7 +211,7 @@ public class AstLoader {
 	}
 
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, Map<IVar, IVar> inToExtMap, int startingLine) {
+			List<InExtVarPair> ignored, InToExtVar inToExtMap, int startingLine) {
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
 			IVar extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
@@ -221,7 +223,7 @@ public class AstLoader {
 	}
 	
 	private void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
-			List<InExtVarPair> written, List<InExtVarPair> ignored, Map<IVar, IVar> inToExtMap,
+			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap,
 			int startingLine) {
 		
 		if(extVar == null)
@@ -294,7 +296,7 @@ public class AstLoader {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new LinkedHashMap<IVar, IVar>(), startingLine);
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(graph), startingLine);
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());

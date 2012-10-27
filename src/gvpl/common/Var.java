@@ -10,6 +10,8 @@ import gvpl.graph.GraphNode;
 import java.util.ArrayList;
 import java.util.List;
 
+import debug.DebugOptions;
+
 /**
  * This class is used to represent variables of primitive types
  */
@@ -31,6 +33,16 @@ public class Var implements IVar {
 		_gvplGraph = graph;
 		_name = name;
 		_id = _counter++;
+		
+		if (DebugOptions.outputVarInfo()) {
+			GeneralOutputter.debug("New var (" + _id + ") " + _name + " - Graph "
+					+ graph.getName() + " (" + graph.getId() + ")");
+
+			List<Integer> varIds = new ArrayList<Integer>();
+			//varIds.add(2034);
+			if (varIds.contains(_id))
+				GeneralOutputter.printStackTrace();
+		}
 	}
 
 	public TypeId getType() {
@@ -59,7 +71,7 @@ public class Var implements IVar {
 		return _currGraphNode;
 	}
 
-	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
+	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine) {
 		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
 	}
@@ -74,7 +86,7 @@ public class Var implements IVar {
 			GraphNode parameterNode = parameter_values.get(0).getNode(startingLine);
 			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, startingLine);
 		} else
-			initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+			initializeVar(nodeType, graph, astLoader, astInterpreter, startingLine);
 	}
 
 	/**

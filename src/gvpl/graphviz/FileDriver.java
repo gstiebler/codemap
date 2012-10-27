@@ -9,6 +9,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import debug.DebugOptions;
+
 public class FileDriver implements IGraphOutput {
 
 	PrintWriter out;
@@ -39,14 +41,14 @@ public class FileDriver implements IGraphOutput {
 		out.close();
 	}
 	
-	/*private String srcNodes(GraphNode node) {
+	private String srcNodes(GraphNode node) {
 		String srcNodes = "\"";
 		for(GraphNode src : node.getSourceNodes()) {
 			srcNodes += src.getId() + "/";
 		}
 		srcNodes += "\"";
 		return srcNodes;
-	}*/
+	}
 	
 	public void insertOperation(GraphNode node, String node_name, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
@@ -54,8 +56,8 @@ public class FileDriver implements IGraphOutput {
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#E0E0E0\""));
 		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
-		//if( node.getNumSourceNodes() > 0)
-		//	properties.add(new PropertyPair("srcNodes", srcNodes(node)));
+		if (DebugOptions.printDotSrcNodes() && node.getNumSourceNodes() > 0)
+			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
 		insertNode(node.getId(), node_name, properties);
 	}
 	
@@ -86,12 +88,14 @@ public class FileDriver implements IGraphOutput {
 	public void insertVariable(GraphNode node, String node_name, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("startingline", String.valueOf(startingLine)));
-		//if( node.getNumSourceNodes() > 0)
-		//	properties.add(new PropertyPair("srcNodes", srcNodes(node)));
+		if(DebugOptions.printDotSrcNodes() && node.getNumSourceNodes() > 0)
+			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
 		
-		//IVar parentVar = node.getParentVar();
-		//if(parentVar != null)
-		//	properties.add(new PropertyPair("parentVarId", String.valueOf(parentVar.getId())));
+		if(DebugOptions.printDotSrcVarId()) {
+			IVar parentVar = node.getParentVar();
+			if(parentVar != null)
+				properties.add(new PropertyPair("parentVarId", String.valueOf(parentVar.getId())));
+		}
 		
 		insertNode(node.getId(), node_name, properties);
 	}

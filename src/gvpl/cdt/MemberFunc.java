@@ -36,7 +36,7 @@ public class MemberFunc extends Function {
 		_parentClass = parent;
 		
 		_thisVar = new ClassVar(_gvplGraph, "THIS", parent, this);
-		_thisVar.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
+		_thisVar.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
 	}
 
 	protected String calcName() {

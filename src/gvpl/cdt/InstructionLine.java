@@ -46,6 +46,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
+import debug.DebugOptions;
+
 public class InstructionLine {
 
 	private Graph _gvplGraph;
@@ -60,6 +62,8 @@ public class InstructionLine {
 
 	public void load(IASTStatement statement) {
 		int startingLine = statement.getFileLocation().getStartingLineNumber();
+		if(DebugOptions.outputLineNumber())
+			GeneralOutputter.debug(" --- Line number: " + startingLine);
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
@@ -248,7 +252,7 @@ public class InstructionLine {
 				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
 			}
 			if (classDecl == null) {
-				lhsPointer.initializeGraphNode(NodeType.E_VARIABLE, _gvplGraph, _parentBasicBlock,
+				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _parentBasicBlock,
 						_astInterpreter, startingLine);
 				return;
 			}

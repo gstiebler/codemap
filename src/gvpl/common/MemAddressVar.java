@@ -5,6 +5,7 @@ import java.util.Map;
 
 import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
+import gvpl.cdt.InToExtVar;
 import gvpl.cdt.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
@@ -84,11 +85,11 @@ public class MemAddressVar extends Var {
 	}
 
 	@Override
-	public void initializeGraphNode(NodeType nodeType, Graph graph, AstLoader astLoader,
+	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine) {
 		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astLoader, astInterpreter);
-		var.initializeGraphNode(nodeType, graph, astLoader, astInterpreter, startingLine);
+		var.initializeVar(nodeType, graph, astLoader, astInterpreter, startingLine);
 		initializePointedVar(var);
 	}
 
@@ -112,7 +113,7 @@ public class MemAddressVar extends Var {
 		return _onceWritten;
 	}
 	
-	public MemAddressVar updateInternalVars(Map<IVar, IVar> inToExtVar) {
+	public MemAddressVar updateInternalVars(InToExtVar inToExtVar) {
 		PossiblePointedVar.updateInternalVarsRecursive(_possiblePointedVar, inToExtVar);
 		
 		return this;
