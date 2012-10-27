@@ -126,5 +126,10 @@ public class GraphNode {
 	public IVar getParentVar() {
 		return _parentVar;
 	}
+	
+	@Override
+	public String toString() {
+		return _name + " (" + _id + ")";
+	}
 
 }

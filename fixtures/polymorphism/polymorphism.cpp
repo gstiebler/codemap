@@ -53,6 +53,7 @@ int main()
 		bcPointer = new ClassB();
 	}
 	
+	int e = bcPointer->_baseMember;
 	int a = bcPointer->process(40);
 	bcPointer->_baseMember = a;
 	int b = bcPointer->_baseMember;
