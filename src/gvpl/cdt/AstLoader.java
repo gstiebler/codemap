@@ -4,6 +4,7 @@ import gvpl.common.ClassVar;
 import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.AstInterpreter;
 import gvpl.common.IClassVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
@@ -59,11 +60,11 @@ public class AstLoader {
 	
 	protected Graph _gvplGraph;
 	protected AstLoader _parent;
-	protected AstInterpreter _astInterpreter;
+	protected AstInterpreterCDT _astInterpreter;
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 	protected Map<IBinding, IVar> _extToInVars = new LinkedHashMap<IBinding, IVar>();
 
-	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
+	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter) {
 		_gvplGraph = gvplGraph;
 		_parent = parent;
 		_astInterpreter = astInterpreter;

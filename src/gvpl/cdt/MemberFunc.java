@@ -2,10 +2,10 @@ package gvpl.cdt;
 
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
-import gvpl.common.MemberId;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.IVar;
+import gvpl.common.MemberId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -31,7 +31,7 @@ public class MemberFunc extends Function {
 	 * function implements a function in a parent class. */
 	private MemberFunc _parentMemberFunc = null;
 	
-	public MemberFunc(ClassDecl parent, AstInterpreter astInterpreter, IBinding ownBinding, int startingLine) {
+	public MemberFunc(ClassDecl parent, AstInterpreterCDT astInterpreter, IBinding ownBinding, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter, ownBinding);
 		_parentClass = parent;
 		

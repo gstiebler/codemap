@@ -16,7 +16,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class BasicBlock extends AstLoader {
 
-	public BasicBlock(AstLoader parent, AstInterpreter astInterpreter) {
+	public BasicBlock(AstLoader parent, AstInterpreterCDT astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
 		_gvplGraph.setLabel("BasicBlockGraph");
 	}

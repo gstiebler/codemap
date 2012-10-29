@@ -1,7 +1,7 @@
 package tests;
 
 import static org.junit.Assert.assertTrue;
-import gvpl.cdt.AstInterpreter;
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.common.File;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
@@ -57,7 +57,7 @@ public class TestsUtil {
 			e.printStackTrace();
 		}
 
-		AstInterpreter astInterpreter = new AstInterpreter(new gvpl.graph.Graph(-1));
+		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph(-1));
 		astInterpreter.execute(translationUnit);
 		
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();

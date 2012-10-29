@@ -1,9 +1,5 @@
 package gvpl.common;
 
-import java.util.List;
-import java.util.Map;
-
-import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.cdt.InToExtVar;
 import gvpl.cdt.MemberFunc;
@@ -11,6 +7,8 @@ import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
+
+import java.util.List;
 
 public class MemAddressVar extends Var {
 

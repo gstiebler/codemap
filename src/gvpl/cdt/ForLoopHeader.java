@@ -25,7 +25,7 @@ public class ForLoopHeader extends AstLoader {
 	 */
 	private Map<IVar, IVar> _externalVars = new LinkedHashMap<IVar, IVar>();
 
-	public ForLoopHeader(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
+	public ForLoopHeader(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter) {
 		super(gvplGraph, parent, astInterpreter);
 	}
 

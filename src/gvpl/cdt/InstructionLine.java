@@ -3,13 +3,13 @@ package gvpl.cdt;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.ClassVar;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.GeneralOutputter;
+import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
-import gvpl.common.IVar;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -51,10 +51,10 @@ import debug.DebugOptions;
 public class InstructionLine {
 
 	private Graph _gvplGraph;
-	private AstInterpreter _astInterpreter;
+	private AstInterpreterCDT _astInterpreter;
 	private AstLoader _parentBasicBlock;
 
-	public InstructionLine(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter) {
+	public InstructionLine(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter) {
 		_gvplGraph = gvplGraph;
 		_astInterpreter = astInterpreter;
 		_parentBasicBlock = parent;
@@ -484,7 +484,7 @@ public class InstructionLine {
 		return _parentBasicBlock;
 	}
 	
-	public AstInterpreter getAstInterpreter() {
+	public AstInterpreterCDT getAstInterpreter() {
 		return _astInterpreter;
 	}
 	

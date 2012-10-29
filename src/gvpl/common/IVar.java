@@ -1,6 +1,5 @@
 package gvpl.common;
 
-import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;

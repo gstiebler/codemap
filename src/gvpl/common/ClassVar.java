@@ -1,6 +1,5 @@
 package gvpl.common;
 
-import gvpl.cdt.AstInterpreter;
 import gvpl.cdt.AstLoader;
 import gvpl.cdt.ClassDecl;
 import gvpl.cdt.MemberFunc;

@@ -28,7 +28,7 @@ public class ClassDecl {
 	private TypeId _typeId;
 	private IBinding _binding;
 	private String _name;
-	private AstInterpreter _astInterpreter;
+	private AstInterpreterCDT _astInterpreter;
 
 	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
@@ -37,7 +37,7 @@ public class ClassDecl {
 
 	private MemberFunc _constructorFunc = null;
 
-	public ClassDecl(AstInterpreter astInterpreter) {
+	public ClassDecl(AstInterpreterCDT astInterpreter) {
 		_typeId = new TypeId();
 		_astInterpreter = astInterpreter;
 	}
@@ -88,7 +88,7 @@ public class ClassDecl {
 		}
 	}
 	
-	void loadBaseClasses(ICPPASTBaseSpecifier[] baseSpecs, AstInterpreter astInterpreter) {
+	void loadBaseClasses(ICPPASTBaseSpecifier[] baseSpecs, AstInterpreterCDT astInterpreter) {
 		for(ICPPASTBaseSpecifier baseSpec : baseSpecs) {
 			IBinding binding = baseSpec.getName().resolveBinding();
 			TypeId type = astInterpreter.getTypeFromBinding(binding);
@@ -97,7 +97,7 @@ public class ClassDecl {
 		}
 	}
 	
-	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreter astInterpreter) {
+	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
 		int startingLine = funcDeclarator.getFileLocation().getStartingLineNumber();
 
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
@@ -112,7 +112,7 @@ public class ClassDecl {
 		return memberFunc;
 	}
 
-	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreter astInterpreter) {
+	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreterCDT astInterpreter) {
 		IASTDeclarator declarator = member.getDeclarator();
 		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
 		
@@ -124,7 +124,7 @@ public class ClassDecl {
 		return _typeId;
 	}
 
-	IBinding getBinding() {
+	public IBinding getBinding() {
 		return _binding;
 	}
 

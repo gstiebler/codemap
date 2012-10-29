@@ -15,7 +15,7 @@ public class ForLoop extends AstLoader {
 
 	AstLoader _typeSource;
 	
-	public ForLoop(AstLoader parent, AstInterpreter astInterpreter, int startingLine) {
+	public ForLoop(AstLoader parent, AstInterpreterCDT astInterpreter, int startingLine) {
 		super(new Graph(-1), null, astInterpreter);
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");

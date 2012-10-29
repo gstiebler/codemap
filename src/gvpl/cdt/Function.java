@@ -1,13 +1,13 @@
 package gvpl.cdt;
 
 import gvpl.common.ClassVar;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.GeneralOutputter;
+import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
-import gvpl.common.IVar;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -45,7 +45,7 @@ public class Function extends AstLoader {
 	protected String _funcName;
 	protected IBinding _ownBinding;
 
-	public Function(Graph gvplGraph, AstLoader parent, AstInterpreter astInterpreter, IBinding ownBinding) {
+	public Function(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(new Graph(-1), parent, astInterpreter);
 		
 		_ownBinding = ownBinding;
