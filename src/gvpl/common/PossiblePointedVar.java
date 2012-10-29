@@ -115,6 +115,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
 		if (converted == null) {
+			//It's used when a variable was allocated with the new operator inside a block
 			possiblePointedVar._finalVar.setGraph(inToExtVar.getExtGraph());
 			GeneralOutputter.debug("Var " + possiblePointedVar._finalVar.getName() + " ("
 					+ possiblePointedVar._finalVar.getId() + ")" + " is now on graph "
