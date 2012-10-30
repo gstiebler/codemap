@@ -1,4 +1,4 @@
-package gvpl.cdt;
+package gvpl.common.ifclasses;
 
 import gvpl.graph.GraphNode;
 

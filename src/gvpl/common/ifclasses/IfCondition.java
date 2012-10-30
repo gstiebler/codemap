@@ -1,8 +1,8 @@
-package gvpl.common;
+package gvpl.common.ifclasses;
 
 import gvpl.cdt.InToExtVar;
-import gvpl.cdt.PrevTrueFalseMemVar;
-import gvpl.cdt.PrevTrueFalseNode;
+import gvpl.common.IVar;
+import gvpl.common.MemAddressVar;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;

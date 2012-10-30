@@ -30,18 +30,6 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
-class InExtMAVarPair {
-	MemAddressVar _in;
-	MemAddressVar _ext;
-	
-	public InExtMAVarPair(MemAddressVar in, MemAddressVar ext) {
-		if(ext == null)
-			GeneralOutputter.fatalError("ext cannot be null");
-		_in = in;
-		_ext = ext;
-	}
-}
-
 public class AstLoaderCDT extends AstLoader {
 	
 	protected AstLoaderCDT _parent;

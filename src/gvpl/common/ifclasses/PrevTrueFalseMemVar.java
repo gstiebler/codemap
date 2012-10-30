@@ -1,6 +1,7 @@
-package gvpl.cdt;
+package gvpl.common.ifclasses;
 
 import gvpl.common.MemAddressVar;
+
 
 public class PrevTrueFalseMemVar {
 	public MemAddressVar _prev = null;
