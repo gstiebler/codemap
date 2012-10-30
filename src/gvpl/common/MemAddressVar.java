@@ -1,7 +1,6 @@
 package gvpl.common;
 
 import gvpl.cdt.AstLoaderCDT;
-import gvpl.cdt.InToExtVar;
 import gvpl.cdt.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;

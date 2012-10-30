@@ -2,10 +2,10 @@ package gvpl.common.ifclasses;
 
 import gvpl.cdt.BasicBlockCDT;
 import gvpl.cdt.InExtMAVarPair;
-import gvpl.cdt.InToExtVar;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
+import gvpl.common.InToExtVar;
 import gvpl.common.MemAddressVar;
 import gvpl.graph.GraphNode;
 

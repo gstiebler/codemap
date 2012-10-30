@@ -7,6 +7,7 @@ import gvpl.common.GeneralOutputter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
+import gvpl.common.InToExtVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;

@@ -1,7 +1,7 @@
 package gvpl.common.ifclasses;
 
-import gvpl.cdt.InToExtVar;
 import gvpl.common.IVar;
+import gvpl.common.InToExtVar;
 import gvpl.common.MemAddressVar;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;

@@ -1,6 +1,5 @@
-package gvpl.cdt;
+package gvpl.common;
 
-import gvpl.common.IVar;
 import gvpl.graph.Graph;
 
 import java.util.LinkedHashMap;

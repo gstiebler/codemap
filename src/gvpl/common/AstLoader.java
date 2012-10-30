@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import gvpl.cdt.Function;
-import gvpl.cdt.InToExtVar;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;

@@ -31,7 +31,6 @@ public class AstInterpreter extends AstLoaderCDT {
 	public AstInterpreter(Graph gvplGraph) {
 		super(gvplGraph, null, null);
 	}
-	
 
 	public ClassDeclCDT getClassDecl(TypeId type) {
 		return _typeIdToClass.get(type);
