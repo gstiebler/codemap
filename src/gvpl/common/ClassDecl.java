@@ -1,11 +1,10 @@
 package gvpl.common;
 
+import gvpl.cdt.MemberFunc;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-
-import gvpl.cdt.ClassDeclCDT;
-import gvpl.cdt.MemberFunc;
 
 
 public abstract class ClassDecl {
@@ -39,6 +38,10 @@ public abstract class ClassDecl {
 		return getAllMembersIds().keySet();
 	}
 	
+	public void addMember(ClassMember structMember) {
+		_memberVarGraphNodes.put(structMember.getMemberId(), structMember);
+	}
+	
 	private Map<MemberId, ClassMember> getAllMembersIds() {
 		Map<MemberId, ClassMember> allMembers = new LinkedHashMap<MemberId, ClassMember>();
 		allMembers.putAll(_memberVarGraphNodes);
@@ -47,6 +50,10 @@ public abstract class ClassDecl {
 			allMembers.putAll(parentClass.getAllMembersIds());
 		
 		return allMembers;
+	}
+
+	public void setConstructorFunc(MemberFunc constructorFunc) {
+		_constructorFunc = constructorFunc;
 	}
 
 	/**

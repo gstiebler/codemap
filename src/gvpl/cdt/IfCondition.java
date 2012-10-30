@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.common.InExtVarPair;
 import gvpl.common.MemAddressVar;
 import gvpl.common.IVar;
 import gvpl.graph.Graph;

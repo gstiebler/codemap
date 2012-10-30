@@ -11,6 +11,7 @@ import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
+import gvpl.common.InExtVarPair;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -28,18 +29,6 @@ import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-
-class InExtVarPair {
-	IVar _in;
-	IVar _ext;
-	
-	public InExtVarPair(IVar in, IVar ext) {
-		if(ext == null)
-			GeneralOutputter.fatalError("ext cannot be null");
-		_in = in;
-		_ext = ext;
-	}
-}
 
 class InExtMAVarPair {
 	MemAddressVar _in;

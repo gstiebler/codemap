@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.IVar;
+import gvpl.common.InExtVarPair;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;

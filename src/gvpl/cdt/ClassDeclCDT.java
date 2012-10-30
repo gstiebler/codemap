@@ -155,14 +155,6 @@ public class ClassDeclCDT extends ClassDecl{
 		
 		return null;
 	}
-
-	public void addMember(ClassMember structMember) {
-		_memberVarGraphNodes.put(structMember.getMemberId(), structMember);
-	}
-
-	public void setConstructorFunc(MemberFunc constructorFunc) {
-		_constructorFunc = constructorFunc;
-	}
 	
 	public Iterable<ClassDeclCDT> getParentClassesCDT() {
 		return _parentClasses;
