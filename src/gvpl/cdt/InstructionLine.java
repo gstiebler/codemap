@@ -96,7 +96,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTReturnStatement) {
 			loadReturnStatement((IASTReturnStatement) statement);
 		} else if (statement instanceof IASTIfStatement) {
-			IfCondition.loadIfCondition((IASTIfStatement) statement, this);
+			IfConditionCDT.loadIfCondition((IASTIfStatement) statement, this);
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
