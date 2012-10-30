@@ -2,19 +2,17 @@ package gvpl.cdt;
 
 import gvpl.common.AstInterpreter;
 import gvpl.common.AstLoader;
-import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.GeneralOutputter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
+import gvpl.common.InExtVarPair;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
-import gvpl.common.InExtVarPair;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -142,24 +140,10 @@ public class AstLoaderCDT extends AstLoader {
 		return var_decl;
 	}
 
-	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName,
-			int startLine) {
-		IVar var_decl = addVarDecl(functionName, type, null);
-		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, startLine);
-	}
-
 	public IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		return instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
-	}
-
-	public Function getFunction() {
-		return _parent.getFunction();
-	}
-
-	public Graph getGraph() {
-		return _gvplGraph;
 	}
 
 	@Override
@@ -173,50 +157,6 @@ public class AstLoaderCDT extends AstLoader {
 			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap, 
 					startingLine);
 		}
-	}
-	
-	private void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
-			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap,
-			int startingLine) {
-		
-		if(extVar == null)
-			return;
-		
-		IVar extVarInMem = extVar.getVarInMem();
-		IVar intVarInMem = intVar.getVarInMem();
-		
-		if(extVarInMem == null)
-			return;
-		
-		inToExtMap.put(intVar, extVar);
-		
-		if (intVarInMem instanceof ClassVar) {
-			ClassVar extClassVar = (ClassVar) extVarInMem;
-			ClassVar intClassVar = (ClassVar) intVarInMem;
-			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
-				IVar memberExtVar = extClassVar.getMember(memberId);
-				IVar memberIntVar = intClassVar.getMember(memberId);
-				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap,
-						startingLine);
-			}
-
-			return;
-		}
-
-		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
-		boolean accessed = false;
-		if (intVar.onceRead()) {
-			read.add(varPair);
-			accessed = true;
-		}
-
-		if (intVar.onceWritten()) {
-			written.add(varPair);
-			accessed = true;
-		}
-
-		if (!accessed)
-			ignored.add(varPair);
 	}
 
 	//TODO prepare to read member vars of each var. It's only working
@@ -236,37 +176,13 @@ public class AstLoaderCDT extends AstLoader {
 		return vars;
 	}
 	
-	/**
-	 * Connects a external graph to the internal graph
-	 * @param graph External graph
-	 * @param startingLine
-	 * @return A map from the internal graph nodes to the external graph nodes
-	 */
-	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph, int startingLine) {
-		
-		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
-
-		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(graph), startingLine);
-		
-		for(InExtVarPair readPair : readVars) {
-			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
-			GraphNode currNode = readPair._ext.getCurrentNode(startingLine);
-			currNode.addDependentNode(firstNodeInNewGraph, startingLine);
-		}
-
-		for(InExtVarPair writtenPair : writtenVars) {
-			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
-			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, startingLine);
-		}
-		
-		return map;
-	}
-	
 	@Override
 	protected AstInterpreter getAstInterpreter() {
 		return _astInterpreter;
+	}
+	
+	@Override
+	protected AstLoader getParent() {
+		return _parent;
 	}
 }
