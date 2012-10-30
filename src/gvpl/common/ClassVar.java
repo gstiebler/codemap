@@ -1,7 +1,7 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoader;
-import gvpl.cdt.ClassDecl;
+import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -36,7 +36,7 @@ public class ClassVar extends Var implements IClassVar{
 
 			String memberName = name + "." + struct_member.getName();
 			IVar member_instance = parentAstLoader.addVarDecl(memberName,
-					struct_member.getMemberType(), null);
+					struct_member.getMemberType());
 			addMember(entry.getKey(), member_instance);
 		}
 		
@@ -151,7 +151,7 @@ public class ClassVar extends Var implements IClassVar{
 	}
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoader astLoader, int startingLine) {
+			Graph graph, AstLoaderCDT astLoader, int startingLine) {
 		return memberFunc.loadMemberFuncRef(this, parameterValues, graph, astLoader, startingLine);
 	}
 }

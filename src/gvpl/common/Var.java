@@ -1,6 +1,5 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoader;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;

@@ -11,17 +11,17 @@ import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
-public class ForLoop extends AstLoader {
+public class ForLoop extends AstLoaderCDT {
 
-	AstLoader _typeSource;
+	AstLoaderCDT _typeSource;
 	
-	public ForLoop(AstLoader parent, AstInterpreterCDT astInterpreter, int startingLine) {
+	public ForLoop(AstLoaderCDT parent, AstInterpreterCDT astInterpreter, int startingLine) {
 		super(new Graph(-1), null, astInterpreter);
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}
 
-	public void load(IASTForStatement node, Graph gvplGraph, AstLoader astLoader) {
+	public void load(IASTForStatement node, Graph gvplGraph, AstLoaderCDT astLoader) {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTStatement body = node.getBody();
 

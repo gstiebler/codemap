@@ -52,9 +52,9 @@ public class InstructionLine {
 
 	private Graph _gvplGraph;
 	private AstInterpreterCDT _astInterpreter;
-	private AstLoader _parentBasicBlock;
+	private AstLoaderCDT _parentBasicBlock;
 
-	public InstructionLine(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter) {
+	public InstructionLine(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
 		_gvplGraph = gvplGraph;
 		_astInterpreter = astInterpreter;
 		_parentBasicBlock = parent;
@@ -245,7 +245,7 @@ public class InstructionLine {
 			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
 			IASTDeclSpecifier namedSpec = newExpr.getTypeId().getDeclSpecifier();
 			
-			ClassDecl classDecl = null;
+			ClassDeclCDT classDecl = null;
 			if(namedSpec instanceof CPPASTNamedTypeSpecifier) {
 				CPPASTNamedTypeSpecifier typeSpec = (CPPASTNamedTypeSpecifier) namedSpec;
 				IBinding funcBinding = typeSpec.getName().resolveBinding();
@@ -345,7 +345,7 @@ public class InstructionLine {
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		
 		TypeId typeId = var.getType();
-		ClassDecl classDecl =_astInterpreter.getClassDecl(typeId);
+		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(memberFunc, paramExpr);
@@ -421,7 +421,7 @@ public class InstructionLine {
 	 *            Address that contains the variable
 	 * @return The var that is pointed by the address
 	 */
-	public static IVar loadVarInAddress(IASTExpression address, AstLoader astLoader) {
+	public static IVar loadVarInAddress(IASTExpression address, AstLoaderCDT astLoader) {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
@@ -472,7 +472,7 @@ public class InstructionLine {
 	 * @param astLoader
 	 * @return The variable that is currently pointed by the received pointer
 	 */
-	public static IVar loadPointedVar(IASTExpression pointerExpr, AstLoader astLoader) {
+	public static IVar loadPointedVar(IASTExpression pointerExpr, AstLoaderCDT astLoader) {
 		IVar pointerVar = astLoader.getVarFromExpr(pointerExpr);
 		if (pointerVar instanceof PointerVar)
 			return ((PointerVar) pointerVar).getVarInMem();
@@ -480,7 +480,7 @@ public class InstructionLine {
 			return loadVarInAddress(pointerExpr, astLoader);
 	}
 
-	public AstLoader getParentBasicBlock() {
+	public AstLoaderCDT getParentBasicBlock() {
 		return _parentBasicBlock;
 	}
 	

@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoader;
+import gvpl.cdt.AstLoaderCDT;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -25,7 +25,7 @@ public class PointerVar extends MemAddressVar {
 	}
 
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter, TypeId type, int startingLine) {
+			AstLoaderCDT astLoader, AstInterpreter astInterpreter, TypeId type, int startingLine) {
 		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, type, startingLine);
 	}
 	

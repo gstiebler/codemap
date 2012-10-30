@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoader;
+import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.InToExtVar;
 import gvpl.cdt.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -118,7 +118,7 @@ public class MemAddressVar extends Var {
 	}
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoader astLoader, int startingLine) {
+			Graph graph, AstLoaderCDT astLoader, int startingLine) {
 		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,
 				parameterValues, graph, astLoader, startingLine);
 	}

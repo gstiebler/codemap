@@ -1,14 +1,14 @@
 package gvpl.cdt;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
 import gvpl.common.GeneralOutputter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
@@ -27,10 +27,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 public class AstInterpreterCDT extends AstInterpreter {
 
 	private Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
-	private Map<IBinding, ClassDecl> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDecl>();
+	private Map<IBinding, ClassDeclCDT> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		super(gvplGraph);
+		CppMaps.initialize();
 	}
 	
 	public void execute(IASTTranslationUnit root) {
@@ -84,7 +85,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		IASTName[] names = qn.getNames();
 		IASTName className = names[0];
 		IBinding classBinding = className.resolveBinding();
-		ClassDecl classDecl = _typeBindingToClass.get(classBinding);
+		ClassDeclCDT classDecl = _typeBindingToClass.get(classBinding);
 		classDecl.loadMemberFunc(declaration, this);
 	}
 	
@@ -99,7 +100,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		return function;
 	}
 	
-	public void addClassDeclInMaps(ClassDecl classDecl) {
+	public void addClassDeclInMaps(ClassDeclCDT classDecl) {
 		_typeBindingToClass.put(classDecl.getBinding(), classDecl);
 		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
 	}
@@ -110,7 +111,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @param strDecl
 	 */
 	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
-		ClassDecl classDecl = new ClassDecl(this);
+		ClassDeclCDT classDecl = new ClassDeclCDT(this);
 		classDecl.loadAstDecl(strDecl);
 
 		addClassDeclInMaps(classDecl);
@@ -126,7 +127,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		if (declSpec instanceof IASTNamedTypeSpecifier) {
 			IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
 			IBinding binding = namedType.getName().resolveBinding();
-			ClassDecl classDecl = _typeBindingToClass.get(binding);
+			ClassDeclCDT classDecl = _typeBindingToClass.get(binding);
 			return classDecl.getTypeId();
 		} else
 			return _primitiveType;
@@ -142,7 +143,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return The id of the member
 	 */
 	public MemberId getMemberId(TypeId typeId, IBinding memberBinding) {
-		ClassDecl loadStruct = _typeIdToClass.get(typeId);
+		ClassDeclCDT loadStruct = _typeIdToClass.get(typeId);
 		ClassMember classMember = loadStruct.getMember(memberBinding);
 		return classMember.getMemberId();
 	}
@@ -155,7 +156,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return The type id from the received binding
 	 */
 	public TypeId getTypeFromBinding(IBinding binding) {
-		ClassDecl classDecl = _typeBindingToClass.get(binding);
+		ClassDeclCDT classDecl = _typeBindingToClass.get(binding);
 		if (classDecl == null)
 			return null;
 		else
@@ -168,8 +169,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @param funcBinding
 	 * @return The class from it's binding in the AST
 	 */
-	public ClassDecl getClassFromFuncBinding(IBinding funcBinding) {
-		for (ClassDecl classDecl : _typeIdToClass.values()) {
+	public ClassDeclCDT getClassFromFuncBinding(IBinding funcBinding) {
+		for (ClassDeclCDT classDecl : _typeIdToClass.values()) {
 			if (classDecl.getMemberFunc(funcBinding) != null)
 				return classDecl;
 		}

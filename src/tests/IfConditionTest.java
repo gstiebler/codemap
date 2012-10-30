@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.BasicBlock;
-import gvpl.cdt.ClassDecl;
+import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.IfCondition;
 import gvpl.cdt.InToExtVar;
 import gvpl.cdt.PrevTrueFalseMemVar;
@@ -124,7 +124,7 @@ public class IfConditionTest {
 
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new Graph("", -1));
 
-		ClassDecl classDecl = new ClassDecl(astInterpreter);
+		ClassDeclCDT classDecl = new ClassDeclCDT(astInterpreter);
 		MemberId memberId = new MemberId();
 		ClassMember member = new ClassMember(memberId, "member",
 				astInterpreter.getPrimitiveType(), IndirectionType.E_VARIABLE);

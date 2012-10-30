@@ -1,8 +1,7 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoader;
-import gvpl.cdt.ClassDecl;
-import gvpl.cdt.CppMaps;
+import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.ClassDeclCDT;
 import gvpl.graph.Graph;
 
 import java.util.LinkedHashMap;
@@ -15,9 +14,9 @@ import java.util.Map;
  * @author stiebler
  * 
  */
-public class AstInterpreter extends AstLoader {
+public class AstInterpreter extends AstLoaderCDT {
 
-	protected Map<TypeId, ClassDecl> _typeIdToClass = new LinkedHashMap<TypeId, ClassDecl>();
+	protected Map<TypeId, ClassDeclCDT> _typeIdToClass = new LinkedHashMap<TypeId, ClassDeclCDT>();
 	/** the same for all primitive types */
 	protected TypeId _primitiveType = new TypeId();
 
@@ -31,11 +30,10 @@ public class AstInterpreter extends AstLoader {
 	 */
 	public AstInterpreter(Graph gvplGraph) {
 		super(gvplGraph, null, null);
-		CppMaps.initialize();
 	}
 	
 
-	public ClassDecl getClassDecl(TypeId type) {
+	public ClassDeclCDT getClassDecl(TypeId type) {
 		return _typeIdToClass.get(type);
 	}
 

@@ -14,9 +14,9 @@ import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-public class BasicBlock extends AstLoader {
+public class BasicBlock extends AstLoaderCDT {
 
-	public BasicBlock(AstLoader parent, AstInterpreterCDT astInterpreter) {
+	public BasicBlock(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
 		super(new Graph(-1), parent, astInterpreter);
 		_gvplGraph.setLabel("BasicBlockGraph");
 	}
@@ -45,7 +45,7 @@ public class BasicBlock extends AstLoader {
 	public Map<GraphNode, GraphNode> addToExtGraph(int startingLine) {
 		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
 		
-		Graph extGraph = _parent._gvplGraph;
+		Graph extGraph = _parent.getGraph();
 		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
@@ -85,7 +85,7 @@ public class BasicBlock extends AstLoader {
 	}
 	
 	public void bindSettedPointers() {
-		Graph extGraph = _parent._gvplGraph;
+		Graph extGraph = _parent.getGraph();
 		List<InExtMAVarPair> addressVars = getAccessedMemAddressVar();
 		for (InExtMAVarPair pair : addressVars) {
 			IVar pointedVar = pair._in.getPointedVar();

@@ -1,6 +1,6 @@
 package gvpl.graph;
 
-import gvpl.cdt.AstLoader;
+import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.CppMaps;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
@@ -73,7 +73,7 @@ public class Graph {
 		return _graphNodes.get(index);
 	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoaderCDT astLoader, int startingLine) {
 
 		class NodeChange {
 			GraphNode _originalNode;
@@ -125,7 +125,7 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoaderCDT astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
 		_subgraphs.add(graphCopy);
@@ -157,7 +157,7 @@ public class Graph {
 		return addGraphNode(value, NodeType.E_DIRECT_VALUE, startingLine);
 	}
 
-	GraphNode addUnOp(eUnOp op, GraphNode valNode, AstLoader astLoader, int startingLine) {
+	GraphNode addUnOp(eUnOp op, GraphNode valNode, AstLoaderCDT astLoader, int startingLine) {
 		GraphNode unOpNode = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
 				startingLine);
 
@@ -166,7 +166,7 @@ public class Graph {
 		return unOpNode;
 	}
 
-	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
+	public GraphNode addNotOp(GraphNode val_node, AstLoaderCDT astLoader, int startingLine) {
 		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION, startingLine);
 		val_node.addDependentNode(notOpNode, startingLine);
 
@@ -174,7 +174,7 @@ public class Graph {
 	}
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
-			AstLoader astLoader, int startingLine) {
+			AstLoaderCDT astLoader, int startingLine) {
 		GraphNode binOpNode = addGraphNode(CppMaps._bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 
@@ -185,7 +185,7 @@ public class Graph {
 	}
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, IVar lhs_varDecl, GraphNode lhsNode,
-			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
+			GraphNode rhs_node, AstLoaderCDT astLoader, int startingLine) {
 		GraphNode binOpNode = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
 				NodeType.E_OPERATION, startingLine);
 

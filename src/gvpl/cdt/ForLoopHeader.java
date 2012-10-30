@@ -15,7 +15,7 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-public class ForLoopHeader extends AstLoader {
+public class ForLoopHeader extends AstLoaderCDT {
 
 	private Set<IVar> _writtenExtVars = new HashSet<IVar>();
 	private Set<IVar> _readExtVars = new HashSet<IVar>();
@@ -25,7 +25,7 @@ public class ForLoopHeader extends AstLoader {
 	 */
 	private Map<IVar, IVar> _externalVars = new LinkedHashMap<IVar, IVar>();
 
-	public ForLoopHeader(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter) {
+	public ForLoopHeader(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
 		super(gvplGraph, parent, astInterpreter);
 	}
 

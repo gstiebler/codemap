@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.common.AstLoader;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
@@ -24,14 +25,14 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
 public class MemberFunc extends Function {
 
-	private ClassDecl _parentClass;
+	private ClassDeclCDT _parentClass;
 	/** represents the "this" pointer inside the function */
 	private ClassVar _thisVar = null;
 	/** The equivalent function in a parent class. It's only used if the current
 	 * function implements a function in a parent class. */
 	private MemberFunc _parentMemberFunc = null;
 	
-	public MemberFunc(ClassDecl parent, AstInterpreterCDT astInterpreter, IBinding ownBinding, int startingLine) {
+	public MemberFunc(ClassDeclCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding, int startingLine) {
 		super(new Graph(startingLine), null, astInterpreter, ownBinding);
 		_parentClass = parent;
 		
@@ -68,7 +69,7 @@ public class MemberFunc extends Function {
 				IVar var = getVarFromBinding(memberBinding);
 				instructionLine.loadConstructorInitializer(var, expr, startingLine);
 			} else if (memberBinding instanceof CPPConstructor) {
-				for (ClassDecl parentClass : _parentClass.getParentClasses()) {
+				for (ClassDeclCDT parentClass : _parentClass.getParentClassesCDT()) {
 					MemberFunc memberFunc = parentClass.getMemberFunc(memberBinding);
 					if (memberFunc == null)
 						continue;
@@ -147,7 +148,7 @@ public class MemberFunc extends Function {
 		return _parentMemberFunc;
 	}
 	
-	public ClassDecl getParentClass() {
+	public ClassDeclCDT getParentClass() {
 		return _parentClass;
 	}
 

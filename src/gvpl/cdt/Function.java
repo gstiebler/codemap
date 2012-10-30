@@ -34,7 +34,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
-public class Function extends AstLoader {
+public class Function extends AstLoaderCDT {
 
 	private GraphNode _returnNode = null;
 	private TypeId _returnType = null;
@@ -45,7 +45,7 @@ public class Function extends AstLoader {
 	protected String _funcName;
 	protected IBinding _ownBinding;
 
-	public Function(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
+	public Function(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(new Graph(-1), parent, astInterpreter);
 		
 		_ownBinding = ownBinding;

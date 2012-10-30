@@ -37,7 +37,7 @@ abstract class BoolValuePack {
 		
 		_inToExtVar = new InToExtVar(instructionLine.getGraph());
 
-		AstLoader parentBasicBlock = instructionLine.getParentBasicBlock();
+		AstLoaderCDT parentBasicBlock = instructionLine.getParentBasicBlock();
 		_ifBasicBlock = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
 		_ifBasicBlock.load(clause);
 

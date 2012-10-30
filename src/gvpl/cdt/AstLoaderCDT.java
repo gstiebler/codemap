@@ -1,18 +1,15 @@
 package gvpl.cdt;
 
-import gvpl.common.ClassVar;
-import gvpl.common.GeneralOutputter;
-import gvpl.common.FuncParameter;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.AstInterpreter;
+import gvpl.common.AstLoader;
+import gvpl.common.ClassVar;
+import gvpl.common.FuncParameter;
+import gvpl.common.GeneralOutputter;
 import gvpl.common.IClassVar;
+import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
-import gvpl.common.PointerVar;
-import gvpl.common.ReferenceVar;
 import gvpl.common.TypeId;
-import gvpl.common.IVar;
-import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -56,15 +53,14 @@ class InExtMAVarPair {
 	}
 }
 
-public class AstLoader {
+public class AstLoaderCDT extends AstLoader {
 	
-	protected Graph _gvplGraph;
-	protected AstLoader _parent;
+	protected AstLoaderCDT _parent;
 	protected AstInterpreterCDT _astInterpreter;
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 	protected Map<IBinding, IVar> _extToInVars = new LinkedHashMap<IBinding, IVar>();
 
-	public AstLoader(Graph gvplGraph, AstLoader parent, AstInterpreterCDT astInterpreter) {
+	public AstLoaderCDT(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
 		_gvplGraph = gvplGraph;
 		_parent = parent;
 		_astInterpreter = astInterpreter;
@@ -154,7 +150,7 @@ public class AstLoader {
 		IClassVar ownerVar = (IClassVar) varInMem;
 
 		TypeId ownerType = varOfRef.getType();
-		ClassDecl classDecl = _astInterpreter.getClassDecl(ownerType);
+		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(ownerType);
 		MemberId memberId = classDecl.getMember(fieldBinding).getMemberId();
 		IVar childVar = ownerVar.getMember(memberId);
 		
@@ -179,28 +175,6 @@ public class AstLoader {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		return instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
-	}
-
-	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
-			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
-		switch (indirectionType) {
-		case E_VARIABLE:
-			if (astInterpreter.isPrimitiveType(typeId))
-				return new Var(graph, name, typeId);
-
-			ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
-			return new ClassVar(graph, name, classDecl, astLoader);
-		case E_POINTER:
-			return new PointerVar(graph, name, typeId);
-		case E_REFERENCE:
-			return new ReferenceVar(graph, name, typeId);
-		case E_INDIFERENT:
-			{
-				GeneralOutputter.fatalError("Not expected");
-				return null;
-			}
-		}
-		return null;
 	}
 
 	public Function getFunction() {
@@ -311,5 +285,10 @@ public class AstLoader {
 		}
 		
 		return map;
+	}
+	
+	@Override
+	protected AstInterpreter getAstInterpreter() {
+		return _astInterpreter;
 	}
 }
