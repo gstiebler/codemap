@@ -3,7 +3,7 @@ package tests;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreterCDT;
-import gvpl.cdt.BasicBlock;
+import gvpl.cdt.BasicBlockCDT;
 import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.InToExtVar;
 import gvpl.common.ClassMember;
@@ -50,7 +50,7 @@ public class IfConditionTest {
 		IVar truePointedVarInTrueBlock = null;
 		{
 			// true block
-			BasicBlock trueBasicBlock = new BasicBlock(null, astInterpreter);
+			BasicBlockCDT trueBasicBlock = new BasicBlockCDT(null, astInterpreter);
 			// the graph of the true block
 			Graph trueGraph = trueBasicBlock.getGraph();
 			// the pointed var of true
@@ -71,7 +71,7 @@ public class IfConditionTest {
 		IVar falsePointedVarInFalseBlock = null;
 		{
 			// false block
-			BasicBlock falseBasicBlock = new BasicBlock(null, astInterpreter);
+			BasicBlockCDT falseBasicBlock = new BasicBlockCDT(null, astInterpreter);
 			// the graph of the true block
 			Graph falseGraph = falseBasicBlock.getGraph();
 			// the pointed var of false
@@ -131,7 +131,7 @@ public class IfConditionTest {
 		classDecl.addMember(member);
 		astInterpreter.addClassDeclInMaps(classDecl);
 
-		BasicBlock mainBasicBlock = new BasicBlock(null, astInterpreter);
+		BasicBlockCDT mainBasicBlock = new BasicBlockCDT(null, astInterpreter);
 		// the graph in the calling block
 		Graph extGraph = mainBasicBlock.getGraph();
 		InToExtVar inToExtVarTrue = new InToExtVar(extGraph);
@@ -148,7 +148,7 @@ public class IfConditionTest {
 		ClassVar truePointedVarInTrueBlock = null;
 		{
 			// true block
-			BasicBlock trueBasicBlock = new BasicBlock(mainBasicBlock, astInterpreter);
+			BasicBlockCDT trueBasicBlock = new BasicBlockCDT(mainBasicBlock, astInterpreter);
 			// the graph of the true block
 			Graph trueGraph = trueBasicBlock.getGraph();
 			// the pointed var in the true block
@@ -172,7 +172,7 @@ public class IfConditionTest {
 		ClassVar falsePointedVarInFalseBlock = null; 
 		{
 			// false block
-			BasicBlock falseBasicBlock = new BasicBlock(mainBasicBlock, astInterpreter);
+			BasicBlockCDT falseBasicBlock = new BasicBlockCDT(mainBasicBlock, astInterpreter);
 			// the graph of the true block
 			Graph falseGraph = falseBasicBlock.getGraph();
 			// the pointed var in the false block

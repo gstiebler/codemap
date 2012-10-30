@@ -1,5 +1,8 @@
 package gvpl.common;
 
+import java.util.List;
+
+import gvpl.cdt.InToExtVar;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 
@@ -33,6 +36,12 @@ public abstract class AstLoader {
 		return instanceVar(IndirectionType.E_VARIABLE, name, type, _gvplGraph, this, getAstInterpreter());
 	}
 	
+	public Graph getGraph() {
+		return _gvplGraph;
+	}
+	
 	protected abstract AstInterpreter getAstInterpreter();
+	public abstract void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
+			List<InExtVarPair> ignored, InToExtVar inToExtMap, int startingLine);
 
 }

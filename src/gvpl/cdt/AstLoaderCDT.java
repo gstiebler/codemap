@@ -162,6 +162,7 @@ public class AstLoaderCDT extends AstLoader {
 		return _gvplGraph;
 	}
 
+	@Override
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
 			List<InExtVarPair> ignored, InToExtVar inToExtMap, int startingLine) {
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {

@@ -1,7 +1,6 @@
-package gvpl.cdt;
+package gvpl.common;
 
-import gvpl.common.IVar;
-import gvpl.common.InExtVarPair;
+import gvpl.cdt.InToExtVar;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -11,31 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
-
-public class BasicBlock extends AstLoaderCDT {
-
-	public BasicBlock(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
-		super(new Graph(-1), parent, astInterpreter);
-		_gvplGraph.setLabel("BasicBlockGraph");
-	}
-
-	public void load(IASTStatement baseStatement) {
-		IASTStatement[] statements = null;
-		if (baseStatement instanceof IASTCompoundStatement)
-			statements = ((IASTCompoundStatement) baseStatement).getStatements();
-		else if (baseStatement instanceof IASTExpressionStatement) {
-			statements = new IASTStatement[1];
-			statements[0] = baseStatement;
-		}
-
-		for (IASTStatement statement : statements) {
-			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
-			instructionLine.load(statement);
-		}
-	}
+public class BasicBlock {
 	
 	/**
 	 * Add the nodes of the internal graph to the external graph
@@ -43,16 +18,14 @@ public class BasicBlock extends AstLoaderCDT {
 	 * @return Maps the nodes that were merged with others. The nodes in the key
 	 *         of the map no longer exists.
 	 */
-	public Map<GraphNode, GraphNode> addToExtGraph(int startingLine) {
+	public static Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, AstLoader astLoader, int startingLine) {
 		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
-		
-		Graph extGraph = _parent.getGraph();
 		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), startingLine);
-		extGraph.merge(_gvplGraph);
+		astLoader.getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), startingLine);
+		extGraph.merge(astLoader.getGraph());
 
 		// bind the vars from calling block to the internal read vars
 		for(InExtVarPair readPair : readVars) {
@@ -70,7 +43,7 @@ public class BasicBlock extends AstLoaderCDT {
 			// if someone has written in the internal var
 
 			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph,
-					this, _astInterpreter, startingLine);
+					astLoader, astLoader.getAstInterpreter(), startingLine);
 			GraphNode extVarCurrNode = writtenPair._ext
 					.getCurrentNode(startingLine);
 			// connect the var from the calling block to the correspodent var in this block
@@ -84,15 +57,4 @@ public class BasicBlock extends AstLoaderCDT {
 		
 		return mergedNodes;
 	}
-	
-	public void bindSettedPointers() {
-		Graph extGraph = _parent.getGraph();
-		List<InExtMAVarPair> addressVars = getAccessedMemAddressVar();
-		for (InExtMAVarPair pair : addressVars) {
-			IVar pointedVar = pair._in.getPointedVar();
-			pointedVar.setGraph(extGraph);
-			pair._ext.setPointedVar(pointedVar);
-		}
-	}
-
 }

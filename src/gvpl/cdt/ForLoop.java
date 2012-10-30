@@ -27,7 +27,7 @@ public class ForLoop extends AstLoaderCDT {
 
 		// loadHeader(node);
 
-		BasicBlock basicBlockLoader = new BasicBlock(this, _astInterpreter);
+		BasicBlockCDT basicBlockLoader = new BasicBlockCDT(this, _astInterpreter);
 		basicBlockLoader.load(body);
 		basicBlockLoader.addToExtGraph(startingLine);
 		basicBlockLoader.bindSettedPointers();

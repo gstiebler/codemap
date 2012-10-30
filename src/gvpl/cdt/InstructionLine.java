@@ -98,7 +98,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTIfStatement) {
 			IfConditionCDT.loadIfCondition((IASTIfStatement) statement, this);
 		} else if (statement instanceof IASTCompoundStatement) {
-			BasicBlock basicBlockLoader = new BasicBlock(_parentBasicBlock, _astInterpreter);
+			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
 			basicBlockLoader.addToExtGraph(startingLine);
 			basicBlockLoader.bindSettedPointers();

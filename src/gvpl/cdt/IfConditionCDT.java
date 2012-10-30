@@ -26,14 +26,14 @@ public class IfConditionCDT {
 		BoolValuePack falseBvp = null;
 		{
 			int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
-			BasicBlock basicBlock = loadBasicBlock(ifStatement.getThenClause(), instructionLine);
+			BasicBlockCDT basicBlock = loadBasicBlock(ifStatement.getThenClause(), instructionLine);
 
 			trueBvp = new trueClass(instructionLine, basicBlock, mapPrevTrueFalse,
 					mapPrevTrueFalseMV, startingLine);
 		}
 		{
 			int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
-			BasicBlock basicBlock = loadBasicBlock(ifStatement.getElseClause(), instructionLine);
+			BasicBlockCDT basicBlock = loadBasicBlock(ifStatement.getElseClause(), instructionLine);
 			if (basicBlock != null)
 				falseBvp = new falseClass(instructionLine, basicBlock, mapPrevTrueFalse,
 						mapPrevTrueFalseMV, startingLine);
@@ -50,12 +50,12 @@ public class IfConditionCDT {
 				falseBvp._inToExtVar);
 	}
 
-	static BasicBlock loadBasicBlock(IASTStatement clause, InstructionLine instructionLine) {
+	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine) {
 		if (clause == null)
 			return null;
 
 		AstLoaderCDT parentBasicBlock = instructionLine.getParentBasicBlock();
-		BasicBlock basicBlock = new BasicBlock(parentBasicBlock,
+		BasicBlockCDT basicBlock = new BasicBlockCDT(parentBasicBlock,
 				instructionLine.getAstInterpreter());
 		basicBlock.load(clause);
 		return basicBlock;

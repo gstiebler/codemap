@@ -1,6 +1,6 @@
 package gvpl.common.ifclasses;
 
-import gvpl.cdt.BasicBlock;
+import gvpl.cdt.BasicBlockCDT;
 import gvpl.cdt.InExtMAVarPair;
 import gvpl.cdt.InToExtVar;
 import gvpl.cdt.InstructionLine;
@@ -18,7 +18,7 @@ public abstract class BoolValuePack {
 	/** includes all member vars */
 	public InToExtVar _inToExtVar = null;
 
-	BoolValuePack(InstructionLine instructionLine, BasicBlock basicBlock, 
+	BoolValuePack(InstructionLine instructionLine, BasicBlockCDT basicBlock, 
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
 			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV, int startingLine) {
 		

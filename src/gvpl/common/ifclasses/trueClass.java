@@ -1,6 +1,6 @@
 package gvpl.common.ifclasses;
 
-import gvpl.cdt.BasicBlock;
+import gvpl.cdt.BasicBlockCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class trueClass extends BoolValuePack {
 
-	public trueClass(InstructionLine instructionLine, BasicBlock basicBlock,
+	public trueClass(InstructionLine instructionLine, BasicBlockCDT basicBlock,
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
 			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV, int startingLine) {
 		super(instructionLine, basicBlock, mapPrevTrueFalse, mapPrevTrueFalseMV, startingLine);
