@@ -1,5 +1,6 @@
 package gvpl.common.ifclasses;
 
+import gvpl.cdt.BasicBlock;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
@@ -7,14 +8,12 @@ import gvpl.graph.GraphNode;
 
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
-
 public class trueClass extends BoolValuePack {
 
-	public trueClass(InstructionLine instructionLine, IASTStatement clause,
+	public trueClass(InstructionLine instructionLine, BasicBlock basicBlock,
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
-		super(instructionLine, clause, mapPrevTrueFalse, mapPrevTrueFalseMV);
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV, int startingLine) {
+		super(instructionLine, basicBlock, mapPrevTrueFalse, mapPrevTrueFalseMV, startingLine);
 	}
 
 	void insertBoolNode(PrevTrueFalseNode prevTrueFalse, GraphNode node) {

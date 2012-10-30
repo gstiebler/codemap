@@ -1,6 +1,5 @@
 package gvpl.common.ifclasses;
 
-import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.BasicBlock;
 import gvpl.cdt.InExtMAVarPair;
 import gvpl.cdt.InToExtVar;
@@ -14,32 +13,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
-
 public abstract class BoolValuePack {
-	BasicBlock _ifBasicBlock = null;
 	public Map<GraphNode, GraphNode> _ifMergedNodes = null;
 	/** includes all member vars */
 	public InToExtVar _inToExtVar = null;
 
-	BoolValuePack(InstructionLine instructionLine, IASTStatement clause,
+	BoolValuePack(InstructionLine instructionLine, BasicBlock basicBlock, 
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
-		if (clause == null)
-			return;
-
-		int startingLine = clause.getFileLocation().getStartingLineNumber();
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV, int startingLine) {
 		
 		_inToExtVar = new InToExtVar(instructionLine.getGraph());
-
-		AstLoaderCDT parentBasicBlock = instructionLine.getParentBasicBlock();
-		_ifBasicBlock = new BasicBlock(parentBasicBlock, instructionLine.getAstInterpreter());
-		_ifBasicBlock.load(clause);
 
 		List<InExtVarPair> ifWrittenVars = new ArrayList<InExtVarPair>();
 		// Get the accessed vars inside the block. This functions returns the variables created
 		// inside the block, and the equivalent var from the calling block (external vars)
-		_ifBasicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), ifWrittenVars,
+		basicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), ifWrittenVars,
 				new ArrayList<InExtVarPair>(), _inToExtVar, startingLine);
 		for (InExtVarPair falseWrittenVarPair : ifWrittenVars) {
 			IVar extVar = falseWrittenVarPair._ext;
@@ -58,7 +46,7 @@ public abstract class BoolValuePack {
 		}
 
 		// the list of all pointers and reference variables
-		List<InExtMAVarPair> addressVars = _ifBasicBlock.getAccessedMemAddressVar();
+		List<InExtMAVarPair> addressVars = basicBlock.getAccessedMemAddressVar();
 		for (InExtMAVarPair pair : addressVars) {
 			PrevTrueFalseMemVar prevTrueFalse = mapPrevTrueFalseMV.get(pair._ext);
 			if (prevTrueFalse == null)
@@ -68,7 +56,7 @@ public abstract class BoolValuePack {
 			mapPrevTrueFalseMV.put(prevTrueFalse._prev, prevTrueFalse);
 		}
 
-		_ifMergedNodes = _ifBasicBlock.addToExtGraph(startingLine);
+		_ifMergedNodes = basicBlock.addToExtGraph(startingLine);
 	}
 
 	abstract void insertBoolNode(PrevTrueFalseNode prevTrueFalse, GraphNode node);
