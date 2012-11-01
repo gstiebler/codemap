@@ -1,15 +1,20 @@
 package gvpl.graph;
 
-import gvpl.common.GeneralOutputter;
 import gvpl.common.IVar;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import debug.DebugOptions;
 
 public class GraphNode {
+	
+	Logger logger = LogManager.getLogger(Graph.class.getName());
+	
 	private static int _nodeCounter = 3000; 
 	private int _id;
 	public String _name;
@@ -27,7 +32,7 @@ public class GraphNode {
 		_startingLine = startingLine;
 		
 		if(DebugOptions.outputNodeInfo())
-			GeneralOutputter.debug("new graphnode " + name + " (" + _id + ")");
+			logger.info("new graphnode {} ({})", name, _id);
 	}
 
 	public GraphNode(IVar parentVar, NodeType type, int startingLine) {
@@ -38,7 +43,7 @@ public class GraphNode {
 		_startingLine = startingLine;
 
 		if(DebugOptions.outputNodeInfo())
-			GeneralOutputter.debug("new graphnode (" + _id + ") var " + parentVar.getName() + "(" + parentVar.getId() + ")");
+			logger.info("new graphnode ({}) var {} ({})", _id, parentVar.getName(), parentVar.getId());
 	}
 
 	public GraphNode(GraphNode other) {
@@ -50,8 +55,8 @@ public class GraphNode {
 
 		if(DebugOptions.outputNodeInfo())
 		{
-			GeneralOutputter.debug("new graphnode copy " + _name + " (" + _id + ")");
-			GeneralOutputter.debug("    from " + other._name + " (" + other._id + ")");
+			logger.info("new graphnode copy " + _name + " (" + _id + ")");
+			logger.info("    from " + other._name + " (" + other._id + ")");
 		}
 	}
 	
@@ -70,12 +75,12 @@ public class GraphNode {
 	public void addDependentNode(GraphNode dependentNode, int startingLine) {
 		if (_dependentNodes.contains(dependentNode))
 		{
-			GeneralOutputter.warning("Already dependent!!");
+			logger.warn("Already dependent!!");
 			return;
 		}
 
 		if (dependentNode == null)
-			GeneralOutputter.fatalError("Inserting null depending node");
+			logger.fatal("Inserting null depending node");
 
 		_dependentNodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);

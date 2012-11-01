@@ -3,7 +3,6 @@ package gvpl.cdt;
 import gvpl.common.AstInterpreter;
 import gvpl.common.AstLoader;
 import gvpl.common.FuncParameter;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
@@ -20,6 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
@@ -30,6 +31,8 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class AstLoaderCDT extends AstLoader {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
 	protected AstLoaderCDT _parent;
 	protected AstInterpreterCDT _astInterpreter;
@@ -153,7 +156,7 @@ public class AstLoaderCDT extends AstLoader {
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
 			IVar extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
-				GeneralOutputter.fatalError("extVar cannot be null");
+				logger.fatal("extVar cannot be null");
 
 			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap, 
 					startingLine);

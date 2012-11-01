@@ -7,7 +7,13 @@ import gvpl.graph.GraphNode;
 
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class PossiblePointedVar implements IVar, IClassVar {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	
 	public PossiblePointedVar _varTrue = null;
 	public PossiblePointedVar _varFalse = null;
 	public GraphNode _conditionNode = null;
@@ -114,10 +120,9 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		if (converted == null) {
 			//It's used when a variable was allocated with the new operator inside a block
 			possiblePointedVar._finalVar.setGraph(inToExtVar.getExtGraph());
-			GeneralOutputter.debug("Var " + possiblePointedVar._finalVar.getName() + " ("
-					+ possiblePointedVar._finalVar.getId() + ")" + " is now on graph "
-					+ inToExtVar.getExtGraph().getName() + " (" + inToExtVar.getExtGraph().getId()
-					+ ")");
+			logger.debug("Var {} ({}) is now on graph {} ({})", 
+					inToExtVar.getExtGraph().getName(), inToExtVar.getExtGraph().getId(), 
+					possiblePointedVar._finalVar.getName(), possiblePointedVar._finalVar.getId());
 		} else
 			possiblePointedVar._finalVar = converted;
 		
@@ -163,12 +168,12 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter, int startingLine) {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 	}
 
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 	}
 
 	/**
@@ -193,35 +198,35 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	}
 	
 	public void updateNodes(GraphNode oldNode, GraphNode newNode) {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 	}
 
 	public IVar getVarInMem() {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 		return null;
 	}
 	
 	public void setOwner(IVar owner) {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 	}
 	
 	public List<IVar> getInternalVars() {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 		return null;
 	}
 	
 	public boolean onceRead() {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 		return false;
 	}
 	
 	public boolean onceWritten() {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 		return false;
 	}
 	
 	public void setGraph(Graph graph) {
-		GeneralOutputter.fatalError("You're doing it wrong.");
+		logger.fatal("You're doing it wrong.");
 	}
 	
 	public int getId() {

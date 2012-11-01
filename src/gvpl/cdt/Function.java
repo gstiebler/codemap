@@ -3,7 +3,6 @@ package gvpl.cdt;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
@@ -19,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -35,7 +36,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 public class Function extends AstLoaderCDT {
-
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	
 	private GraphNode _returnNode = null;
 	private TypeId _returnType = null;
 
@@ -82,7 +85,7 @@ public class Function extends AstLoaderCDT {
 				instructionLine.load(statement);
 			}
 		} else
-			GeneralOutputter.fatalError("Work here.");
+			logger.fatal("Work here.");
 	}
 	
 	public TypeId getReturnTypeId() {
@@ -135,7 +138,7 @@ public class Function extends AstLoaderCDT {
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,
 			Map<GraphNode, GraphNode> internalToMainGraphMap, int startingLine) {
 		if (_parametersMap.size() != callingParameters.size())
-			GeneralOutputter.fatalError("Number of parameters differs from func declaration!");
+			logger.fatal("Number of parameters differs from func declaration!");
 
 		for (int i = 0; i < callingParameters.size(); ++i) {
 			IVar declaredParameter = _parametersList.get(i).getVar();
@@ -259,7 +262,7 @@ public class Function extends AstLoaderCDT {
 				return IndirectionType.E_REFERENCE;
 		} else
 			return IndirectionType.E_VARIABLE;
-		GeneralOutputter.fatalError("error not expected");
+		Function.logger.fatal("error not expected");
 		return null;
 	}
 	

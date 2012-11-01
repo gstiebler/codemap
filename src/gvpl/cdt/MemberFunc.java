@@ -4,7 +4,6 @@ import gvpl.common.AstLoader;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.VarInfo;
@@ -15,6 +14,8 @@ import gvpl.graph.GraphNode;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -24,6 +25,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
 public class MemberFunc extends Function {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	private ClassDeclCDT _parentClass;
 	/** represents the "this" pointer inside the function */
@@ -81,7 +84,7 @@ public class MemberFunc extends Function {
 					break;
 				}
 			} else
-				GeneralOutputter.fatalError("not expected");
+				logger.fatal("not expected");
 		}
 	}
 
@@ -120,7 +123,7 @@ public class MemberFunc extends Function {
 	@Override
 	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph,
 			int startingLine) {
-		GeneralOutputter.fatalError("Error! Should call loadMemberFuncRef instead.");
+		logger.fatal("Error! Should call loadMemberFuncRef instead.");
 		return null;
 	}
 	

@@ -11,11 +11,16 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 /**
  * Variable (instance) of a class
  *
  */
 public class ClassVar extends Var implements IClassVar{
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	Map<MemberId, IVar> _memberInstances = new LinkedHashMap<MemberId, IVar>();
 	Map<IVar, MemberId> _memberIdFromInstance = new LinkedHashMap<IVar, MemberId>();
@@ -40,7 +45,7 @@ public class ClassVar extends Var implements IClassVar{
 		}
 		
 		for(ClassDecl parentClass : _classDecl.getParentClasses()) {
-			GeneralOutputter.debug("Parent instance of " + parentClass.getName() + " from " + name);
+			logger.debug("Parent instance of {} from {}", parentClass.getName(), name);
 			ClassVar parentInstance = new ClassVar(graph, name, parentClass, parentAstLoader);
 			_parentInstances.add(parentInstance);
 		}

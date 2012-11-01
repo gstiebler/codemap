@@ -1,6 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.common.GeneralOutputter;
 import gvpl.common.IVar;
 import gvpl.common.Var;
 import gvpl.graph.Graph;
@@ -11,12 +10,16 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
 public class ForLoopHeader extends AstLoaderCDT {
-
+	
+	Logger logger = LogManager.getLogger(Graph.class.getName());
+	
 	private Set<IVar> _writtenExtVars = new HashSet<IVar>();
 	private Set<IVar> _readExtVars = new HashSet<IVar>();
 	/**
@@ -50,7 +53,7 @@ public class ForLoopHeader extends AstLoaderCDT {
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
 		else
-			GeneralOutputter.fatalError("problem here");
+			logger.fatal("problem here");
 
 		IVar extVarDecl = _parent.getVarFromExpr(expr);
 

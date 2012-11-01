@@ -2,7 +2,6 @@ package gvpl.cdt;
 
 import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -10,6 +9,8 @@ import gvpl.graph.Graph;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -25,6 +26,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 
 public class AstInterpreterCDT extends AstInterpreter {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	private Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
 	private Map<IBinding, ClassDeclCDT> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
@@ -51,7 +54,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
 				loadStructureDecl((CPPASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
-				GeneralOutputter.fatalError("Deu merda aqui." + declaration.getClass());
+				logger.fatal("Deu merda aqui." + declaration.getClass());
 		}
 
 		_gvplGraph = mainFunction.getGraph();
@@ -76,7 +79,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			if (function.getName().equals("main"))
 				return function;
 		} else
-			GeneralOutputter.fatalError("Problem");
+			logger.fatal("Problem");
 
 		return null;
 	}

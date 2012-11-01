@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import gvpl.cdt.Function;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
@@ -11,6 +14,8 @@ import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 
 public abstract class AstLoader {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	protected Graph _gvplGraph;
 	
@@ -29,7 +34,7 @@ public abstract class AstLoader {
 			return new ReferenceVar(graph, name, typeId);
 		case E_INDIFERENT:
 			{
-				GeneralOutputter.fatalError("Not expected");
+				logger.fatal("Not expected");
 				return null;
 			}
 		}

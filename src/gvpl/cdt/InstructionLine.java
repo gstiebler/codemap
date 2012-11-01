@@ -5,7 +5,6 @@ import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
-import gvpl.common.GeneralOutputter;
 import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
@@ -17,6 +16,8 @@ import gvpl.graph.GraphNode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
@@ -49,6 +50,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import debug.DebugOptions;
 
 public class InstructionLine {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	private Graph _gvplGraph;
 	private AstInterpreterCDT _astInterpreter;
@@ -63,13 +66,13 @@ public class InstructionLine {
 	public void load(IASTStatement statement) {
 		int startingLine = statement.getFileLocation().getStartingLineNumber();
 		if(DebugOptions.outputLineNumber())
-			GeneralOutputter.debug(" --- Line number: " + startingLine);
+			logger.debug(" --- Line number: {}", startingLine);
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
 			IASTDeclaration decl = decl_statement.getDeclaration();
 			if (!(decl instanceof IASTSimpleDeclaration))
-				GeneralOutputter.fatalError("Deu merda aqui.");
+				logger.fatal("Deu merda aqui.");
 
 			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) decl;
 			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
@@ -103,7 +106,7 @@ public class InstructionLine {
 			basicBlockLoader.addToExtGraph(startingLine);
 			basicBlockLoader.bindSettedPointers();
 		} else
-			GeneralOutputter.fatalError("Node type not found!! Node: " + statement.toString());
+			logger.fatal("Node type not found!! Node: " + statement.toString());
 	}
 
 	/**
@@ -179,7 +182,7 @@ public class InstructionLine {
 		} else if (expr instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) expr);
 		} else
-			GeneralOutputter.fatalError("Node type not found!! Node: " + expr.getClass());
+			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
 		return null;
 	}
@@ -288,11 +291,11 @@ public class InstructionLine {
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr, startingLine);
 			} else
-				GeneralOutputter.fatalError("problem");
+				logger.fatal("problem");
 		} else if (nameExpr instanceof IASTFieldReference) {
 			return loadVarMethod(funcCall, paramExpr);
 		} else
-			GeneralOutputter.fatalError("problem");
+			logger.fatal("problem");
 
 		return null;
 	}
@@ -375,7 +378,7 @@ public class InstructionLine {
 		}
 		
 		if(parameters.length != func.getNumParameters())
-			GeneralOutputter.fatalError("Number of parameters are different!");
+			logger.fatal("Number of parameters are different!");
 
 		for (int i = 0; i < parameters.length; i++) {
 			IASTExpression parameter = parameters[i];
@@ -391,7 +394,7 @@ public class InstructionLine {
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
 			else
-				GeneralOutputter.fatalError("Work here ");
+				logger.fatal("Work here ");
 
 			parameter_values.add(localParameter);
 		}
@@ -427,7 +430,7 @@ public class InstructionLine {
 			// "int *b; int *a = b;"
 			IVar DirectVarDecl = astLoader.getVarFromExpr(address);
 			if (!(DirectVarDecl instanceof PointerVar))
-				GeneralOutputter.fatalError("not expected here!!");
+				logger.fatal("not expected here!!");
 			return ((PointerVar) DirectVarDecl).getVarInMem();
 		}
 
@@ -436,7 +439,7 @@ public class InstructionLine {
 		IASTUnaryExpression unaryExpr = (IASTUnaryExpression) address;
 		// Check if the operator is a reference
 		if (unaryExpr.getOperator() != IASTUnaryExpression.op_amper)
-			GeneralOutputter.fatalError("not expected here!!");
+			logger.fatal("not expected here!!");
 
 		IASTExpression op = unaryExpr.getOperand();
 		return astLoader.getVarFromExpr(op);
@@ -452,12 +455,12 @@ public class InstructionLine {
 		int startingLine = unExpr.getFileLocation().getStartingLineNumber();
 		// Check if the operator is a star
 		if (unExpr.getOperator() != CPPASTUnaryExpression.op_star)
-			GeneralOutputter.fatalError("not implemented");
+			logger.fatal("not implemented");
 
 		IASTExpression opExpr = unExpr.getOperand();
 		IVar pointerVar = _parentBasicBlock.getVarFromExpr(opExpr);
 		if (!(pointerVar instanceof PointerVar))
-			GeneralOutputter.fatalError("not expected here");
+			logger.fatal("not expected here");
 
 		return pointerVar.getCurrentNode(startingLine);
 	}

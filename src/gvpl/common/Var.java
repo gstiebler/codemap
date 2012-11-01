@@ -8,12 +8,18 @@ import gvpl.graph.GraphNode;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import debug.DebugOptions;
 
 /**
  * This class is used to represent variables of primitive types
  */
 public class Var implements IVar {
+	
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	
 	private static int _counter = 2000;
 	
 	protected String _name;
@@ -33,13 +39,7 @@ public class Var implements IVar {
 		_id = _counter++;
 		
 		if (DebugOptions.outputVarInfo()) {
-			GeneralOutputter.debug("New var (" + _id + ") " + _name + " - Graph "
-					+ graph.getName() + " (" + graph.getId() + ")");
-
-			List<Integer> varIds = new ArrayList<Integer>();
-			//varIds.add(2034);
-			if (varIds.contains(_id))
-				GeneralOutputter.printStackTrace();
+			logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
 		}
 	}
 
@@ -78,8 +78,7 @@ public class Var implements IVar {
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		if (parameter_values != null) {
 			if (parameter_values.size() > 1)
-				GeneralOutputter
-						.fatalError("Primitive type receiving more than 1 parameter in initialization");
+				logger.fatal("Primitive type receiving more than 1 parameter in initialization");
 
 			GraphNode parameterNode = parameter_values.get(0).getNode(startingLine);
 			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, startingLine);

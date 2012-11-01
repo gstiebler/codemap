@@ -28,5 +28,8 @@
 	<classpathentry kind="lib" path="C:/Programas/eclipse-europa/plugins/org.eclipse.cdt.core_4.0.3.200802251018.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-3.4-complete-no-antlrv2.jar"/>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar"/>
+	<classpathentry kind="lib" path="K:/Projetos/GVPL/lib/log4j-core-2.0-beta2.jar"/>
+	<classpathentry kind="lib" path="K:/Projetos/GVPL/lib/log4j-api-2.0-beta2.jar"/>
+	<classpathentry kind="lib" path="META-INF"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
