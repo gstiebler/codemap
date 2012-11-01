@@ -31,8 +31,7 @@ public class GraphNode {
 		_type = type;
 		_startingLine = startingLine;
 		
-		if(DebugOptions.outputNodeInfo())
-			logger.info("new graphnode {} ({})", name, _id);
+		logger.info("new graphnode {} ({})", name, _id);
 	}
 
 	public GraphNode(IVar parentVar, NodeType type, int startingLine) {
@@ -42,8 +41,7 @@ public class GraphNode {
 		_type = type;
 		_startingLine = startingLine;
 
-		if(DebugOptions.outputNodeInfo())
-			logger.info("new graphnode ({}) var {} ({})", _id, parentVar.getName(), parentVar.getId());
+		logger.info("new graphnode ({}) var {} ({})", _id, parentVar.getName(), parentVar.getId());
 	}
 
 	public GraphNode(GraphNode other) {
@@ -53,11 +51,8 @@ public class GraphNode {
 		_startingLine = other._startingLine;
 		_parentVar = other._parentVar;
 
-		if(DebugOptions.outputNodeInfo())
-		{
-			logger.info("new graphnode copy " + _name + " (" + _id + ")");
-			logger.info("    from " + other._name + " (" + other._id + ")");
-		}
+		logger.info("new graphnode copy " + _name + " (" + _id + ")");
+		logger.info("    from " + other._name + " (" + other._id + ")");
 	}
 	
 	private int getNewId() {

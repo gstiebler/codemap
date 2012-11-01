@@ -47,8 +47,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
-import debug.DebugOptions;
-
 public class InstructionLine {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -65,8 +63,7 @@ public class InstructionLine {
 
 	public void load(IASTStatement statement) {
 		int startingLine = statement.getFileLocation().getStartingLineNumber();
-		if(DebugOptions.outputLineNumber())
-			logger.debug(" --- Line number: {}", startingLine);
+		logger.debug(" --- Line number: {}", startingLine);
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;

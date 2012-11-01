@@ -37,10 +37,8 @@ public class Var implements IVar {
 		_gvplGraph = graph;
 		_name = name;
 		_id = _counter++;
-		
-		if (DebugOptions.outputVarInfo()) {
-			logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
-		}
+
+		logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
 	}
 
 	public TypeId getType() {
