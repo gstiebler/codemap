@@ -9,8 +9,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import debug.DebugOptions;
-
 public class GraphNode {
 	
 	Logger logger = LogManager.getLogger(Graph.class.getName());
