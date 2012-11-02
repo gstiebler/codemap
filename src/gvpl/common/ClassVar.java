@@ -108,8 +108,7 @@ public class ClassVar extends Var implements IClassVar{
 					startingLine);
 		}*/
 
-		// TODO só chamar para as variáveis que não foram escritas em
-		// constructorFunc.loadMemberFuncRef
+		// TODO call only the variables that wasn't written in constructorFunc.loadMemberFuncRef
 		for (IVar var : _memberInstances.values()) {
 			var.constructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter,
 					startingLine);

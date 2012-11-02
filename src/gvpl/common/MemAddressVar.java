@@ -69,12 +69,9 @@ public class MemAddressVar extends Var {
 		return _currGraphNode;
 	}
 
-	/**
-	 * Cria-se um novo nó para a
-	 */
 	@Override
 	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startLocation) {
-		// Cria-se um novo nó para a variável "ponteiro"
+		// Create a new node to the "pointer" variable
 		GraphNode newNode = super.receiveAssign(lhsType, rhsNode, startLocation);
 		_onceWritten = true;
 
