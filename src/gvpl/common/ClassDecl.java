@@ -12,6 +12,7 @@ public abstract class ClassDecl {
 	protected String _name;
 	protected TypeId _typeId;
 	protected MemberFunc _constructorFunc = null;
+	protected MemberFunc _destructorFunc = null;
 	protected Map<MemberId, ClassMember> _memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
 	
 	public ClassDecl() {
@@ -54,6 +55,10 @@ public abstract class ClassDecl {
 
 	public void setConstructorFunc(MemberFunc constructorFunc) {
 		_constructorFunc = constructorFunc;
+	}
+
+	public void setDestructorFunc(MemberFunc destructorFunc) {
+		_destructorFunc = destructorFunc;
 	}
 
 	/**

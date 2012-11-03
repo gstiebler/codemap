@@ -62,15 +62,15 @@ public class ClassDeclCDT extends ClassDecl{
 					CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
 					loadMemberFuncDecl(funcDeclarator, _astInterpreter);	
 				} else {
-					IASTName decl_name = declarator.getName();
-					MemberId member_id = new MemberId();
+					IASTName declName = declarator.getName();
+					MemberId memberId = new MemberId();
 
 					//TODO insert the correct IndirectionType
-					ClassMember struct_member = new ClassMember(member_id, decl_name.toString(),
+					ClassMember structMember = new ClassMember(memberId, declName.toString(),
 							param_type, IndirectionType.E_VARIABLE);
-					addMember(struct_member);
+					addMember(structMember);
 
-					_memberIdMap.put(decl_name.resolveBinding(), struct_member);
+					_memberIdMap.put(declName.resolveBinding(), structMember);
 				}
 			}
 		}
