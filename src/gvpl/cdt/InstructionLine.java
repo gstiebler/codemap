@@ -41,6 +41,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
@@ -64,6 +65,7 @@ public class InstructionLine {
 	public void load(IASTStatement statement) {
 		int startingLine = statement.getFileLocation().getStartingLineNumber();
 		logger.debug(" --- Line number: {}", startingLine);
+		logger.debug("statement is: {}", statement.getClass());
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
 			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
@@ -161,10 +163,11 @@ public class InstructionLine {
 	 */
 	public GraphNode loadValue(IASTExpression expr) {
 		int startingLine = expr.getFileLocation().getStartingLineNumber();
+		logger.debug("Node type {}", expr.getClass());
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			IVar var_decl = _parentBasicBlock.getVarFromExpr(expr);
-			return var_decl.getCurrentNode(startingLine);
+			IVar varDecl = _parentBasicBlock.getVarFromExpr(expr);
+			return varDecl.getCurrentNode(startingLine);
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) expr);
 		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
@@ -174,10 +177,18 @@ public class InstructionLine {
 			return loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
-			IVar var_decl = _parentBasicBlock.getVarFromFieldRef((IASTFieldReference) expr);
-			return var_decl.getCurrentNode(expr.getFileLocation().getStartingLineNumber());
+			IVar varDecl = _parentBasicBlock.getVarFromFieldRef((IASTFieldReference) expr);
+			return varDecl.getCurrentNode(expr.getFileLocation().getStartingLineNumber());
 		} else if (expr instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) expr);
+		} else if (expr instanceof CPPASTArraySubscriptExpression) {			
+			//It's an array
+			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
+			IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
+			IVar varDecl = _parentBasicBlock.getVarFromExpr(arrayExpr);
+			//TODO use the index!!
+			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
+			return varDecl.getCurrentNode(startingLine);
 		} else
 			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
@@ -215,17 +226,22 @@ public class InstructionLine {
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression lhsOp = node.getOperand1();
+		logger.debug("get lhsVar");
 		IVar lhsVar = _parentBasicBlock.getVarFromExpr(lhsOp);
 		IASTExpression rhsExpr = node.getOperand2();
 
+		logger.debug("lhsOp class: {}", lhsOp.getClass());
 		// check if we're trying to read a the instance of a pointer
 		if (lhsOp instanceof IASTUnaryExpression) {
-
+			logger.info("not implemented");
+		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
+			logger.fatal("Not imlemented");
 		} else if (lhsVar instanceof PointerVar) {
 			loadRhsPointer((PointerVar) lhsVar, rhsExpr);
 			return null;
 		}
 
+		logger.debug("loading rhs value");
 		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
@@ -241,6 +257,7 @@ public class InstructionLine {
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
 		int startingLine = rhsOp.getFileLocation().getStartingLineNumber();
+		logger.debug("loading pointer of type: {}", rhsOp.getClass());
 		if (rhsOp instanceof CPPASTNewExpression) {
 			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
 			IASTDeclSpecifier namedSpec = newExpr.getTypeId().getDeclSpecifier();

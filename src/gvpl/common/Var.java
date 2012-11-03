@@ -11,8 +11,6 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import debug.DebugOptions;
-
 /**
  * This class is used to represent variables of primitive types
  */

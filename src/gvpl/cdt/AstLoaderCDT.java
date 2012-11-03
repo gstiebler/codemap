@@ -29,6 +29,7 @@ import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 
 public class AstLoaderCDT extends AstLoader {
 	
@@ -73,11 +74,21 @@ public class AstLoaderCDT extends AstLoader {
 	}
 	
 	private IBinding getBindingFromExpr(IASTExpression expr) {
-		if (expr instanceof IASTIdExpression)
-			return ((IASTIdExpression) expr).getName().resolveBinding();
-		else if (expr instanceof IASTUnaryExpression) {
+		logger.debug("expr is {}", expr.getClass());
+		if (expr instanceof IASTIdExpression) {
+			return ((IASTIdExpression) expr).getName().resolveBinding(); 
+		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
 			return ((IASTIdExpression) opExpr).getName().resolveBinding();
+		} else if (expr instanceof CPPASTArraySubscriptExpression) {
+			//It's an array
+			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
+			IASTExpression opExpr = arraySubscrExpr.getArrayExpression();
+			//TODO use the index!!
+			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
+			return ((IASTIdExpression) opExpr).getName().resolveBinding();
+		} else {
+			logger.fatal("Type not found {}", expr.getClass());
 		}
 		return null;
 	}

@@ -113,5 +113,10 @@ public class BasicTest {
 	public void polymorphism2() {
 		TestsUtil.baseTest("polymorphism2");
 	}
+
+	@Test
+	public void array() {
+		TestsUtil.baseTest("array");
+	}
 	
 }
