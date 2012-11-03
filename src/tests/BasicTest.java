@@ -118,5 +118,10 @@ public class BasicTest {
 	public void array() {
 		TestsUtil.baseTest("array");
 	}
+
+	@Test
+	public void destructor() {
+		TestsUtil.baseTest("destructor");
+	}
 	
 }

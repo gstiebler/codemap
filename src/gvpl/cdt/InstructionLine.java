@@ -235,7 +235,7 @@ public class InstructionLine {
 		if (lhsOp instanceof IASTUnaryExpression) {
 			logger.info("not implemented");
 		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
-			logger.fatal("Not imlemented");
+			logger.info("not imlemented");
 		} else if (lhsVar instanceof PointerVar) {
 			loadRhsPointer((PointerVar) lhsVar, rhsExpr);
 			return null;
