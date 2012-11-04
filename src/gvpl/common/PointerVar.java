@@ -32,7 +32,7 @@ public class PointerVar extends MemAddressVar {
 	private void internalConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, TypeId type, int startingLine) {
 		// creates the variable allocated with the new op
-		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", type,
+		IVar var = astLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", type,
 				graph, astLoader, astInterpreter);
 		// assigns the variable created with the new op
 		initializePointedVar(var);

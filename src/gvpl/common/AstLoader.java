@@ -18,8 +18,9 @@ public abstract class AstLoader {
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	protected Graph _gvplGraph;
+	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	
-	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
+	public IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
 			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
@@ -27,7 +28,8 @@ public abstract class AstLoader {
 				return new Var(graph, name, typeId);
 
 			ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
-			return new ClassVar(graph, name, classDecl, astLoader);
+			ClassVar classVar = new ClassVar(graph, name, classDecl, astLoader);
+			return classVar;
 		case E_POINTER:
 			return new PointerVar(graph, name, typeId);
 		case E_REFERENCE:
@@ -130,6 +132,13 @@ public abstract class AstLoader {
 
 	public Function getFunction() {
 		return getParent().getFunction();
+	}
+	
+	protected void lostScope() {
+		logger.debug("Lost scope of graph {}", _gvplGraph.getName());
+		for(ClassVar classVar : _varsCreatedInThisScope) {
+			classVar.callDestructor(this, _gvplGraph, -8);
+		}
 	}
 	
 	protected abstract AstInterpreter getAstInterpreter();

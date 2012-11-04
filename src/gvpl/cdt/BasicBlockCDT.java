@@ -32,6 +32,8 @@ public class BasicBlockCDT extends AstLoaderCDT {
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			instructionLine.load(statement);
 		}
+		
+		lostScope();
 	}
 	
 	/**

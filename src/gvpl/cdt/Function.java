@@ -86,6 +86,8 @@ public class Function extends AstLoaderCDT {
 			}
 		} else
 			logger.fatal("Work here.");
+		
+		lostScope();
 	}
 	
 	public TypeId getReturnTypeId() {

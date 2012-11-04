@@ -124,9 +124,11 @@ public class ClassVar extends Var implements IClassVar{
 	public void callDestructor(AstLoader astLoader, Graph graph, int startingLine) {
 		// TODO call the parent classes destructor
 
+		logger.debug("Destructor of {}", _name);
 		MemberFunc destructorFunc = _classDecl.getDestructorFunc();
-		destructorFunc.loadMemberFuncRef(this, new ArrayList<FuncParameter>(), graph,
-				astLoader, startingLine);
+		if (destructorFunc != null)
+			destructorFunc.loadMemberFuncRef(this, new ArrayList<FuncParameter>(), graph,
+					astLoader, startingLine);
 	}
 	
 	public ClassDecl getClassDecl() {

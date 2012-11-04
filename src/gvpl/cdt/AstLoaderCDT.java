@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.AstInterpreter;
 import gvpl.common.AstLoader;
+import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
@@ -158,7 +159,10 @@ public class AstLoaderCDT extends AstLoader {
 	public IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
-		return instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
+		IVar var = instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
+		if(var instanceof ClassVar)
+			_varsCreatedInThisScope.add((ClassVar) var);
+		return var;
 	}
 
 	@Override

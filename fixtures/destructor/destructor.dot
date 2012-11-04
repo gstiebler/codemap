@@ -1,0 +1,28 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+	node_000004 [ label = "pInstance_pointed._floatMember", startingline=15 ]
+	node_000008 [ label = "pInstance_pointed._floatMember", startingline=17 ]
+	node_000012 [ label = "instance1._floatMember", startingline=-8 ]
+subgraph cluster_1 {
+label = "UniqueClass::~UniqueClass";
+parent = "G";
+startingline = 17;
+	node_000005 [ label = "THIS._floatMember", startingline=7 ]
+	node_000006 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000007 [ label = "THIS._floatMember", startingline=8 ]
+}
+subgraph cluster_2 {
+label = "UniqueClass::~UniqueClass";
+parent = "G";
+startingline = -8;
+	node_000009 [ label = "THIS._floatMember", startingline=7 ]
+	node_000010 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000011 [ label = "THIS._floatMember", startingline=8 ]
+}
+	node_000006 -> node_000007
+	node_000007 -> node_000008
+	node_000010 -> node_000011
+	node_000011 -> node_000012
+}
