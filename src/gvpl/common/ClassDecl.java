@@ -27,6 +27,10 @@ public abstract class ClassDecl {
 		return _constructorFunc;
 	}
 
+	public MemberFunc getDestructorFunc() {
+		return _destructorFunc;
+	}
+
 	public Iterable<Map.Entry<MemberId, ClassMember>> getMembersMap() {
 		return _memberVarGraphNodes.entrySet();
 	}

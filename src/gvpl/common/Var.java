@@ -70,7 +70,7 @@ public class Var implements IVar {
 		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
 	}
 
-	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
+	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		if (parameter_values != null) {
 			if (parameter_values.size() > 1)

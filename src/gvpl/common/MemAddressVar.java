@@ -118,5 +118,9 @@ public class MemAddressVar extends Var {
 		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,
 				parameterValues, graph, astLoader, startingLine);
 	}
+	
+	public void delete() {
+		_possiblePointedVar.delete();
+	}
 
 }

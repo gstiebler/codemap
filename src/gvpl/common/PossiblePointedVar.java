@@ -23,6 +23,13 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	PossiblePointedVar(IVar ownerVar) {
 		_ownerVar = ownerVar;
 	}
+	
+	public void delete() {
+		_varTrue = null;
+		_varFalse = null;
+		_conditionNode = null;
+		_finalVar = null;	
+	}
 
 	void setVar(IVar finalVar) {
 		_finalVar = finalVar;
@@ -171,7 +178,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		logger.fatal("You're doing it wrong.");
 	}
 
-	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
+	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		logger.fatal("You're doing it wrong.");
 	}

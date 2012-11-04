@@ -42,6 +42,7 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
@@ -87,7 +88,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTExpression)
 			loadValue((IASTExpression) statement);
 		else if (statement instanceof IASTForStatement)
-			load_for_stmt((IASTForStatement) statement);
+			loadForStmt((IASTForStatement) statement);
 		else if (statement instanceof IASTExpressionStatement) {
 			IASTExpressionStatement exprStat = (IASTExpressionStatement) statement;
 			IASTExpression expr = exprStat.getExpression();
@@ -95,6 +96,8 @@ public class InstructionLine {
 				loadAssignBinOp((IASTBinaryExpression) expr);
 			else if (expr instanceof IASTFunctionCallExpression)
 				loadFunctionCall((IASTFunctionCallExpression) expr);
+			else
+				loadDeleteOp((CPPASTDeleteExpression) expr);
 		} else if (statement instanceof IASTReturnStatement) {
 			loadReturnStatement((IASTReturnStatement) statement);
 		} else if (statement instanceof IASTIfStatement) {
@@ -106,6 +109,16 @@ public class InstructionLine {
 			basicBlockLoader.bindSettedPointers();
 		} else
 			logger.fatal("Node type not found!! Node: " + statement.toString());
+	}
+	
+	void loadDeleteOp(CPPASTDeleteExpression deleteExpr) {
+		int startingLine = deleteExpr.getFileLocation().getStartingLineNumber();
+		IASTExpression opExpr = deleteExpr.getOperand();
+		IVar var = _parentBasicBlock.getVarFromExpr(opExpr);
+		MemAddressVar mav = (MemAddressVar) var;
+		var = mav.getVarInMem();
+		((ClassVar) var).callDestructor(_parentBasicBlock, _gvplGraph, startingLine);
+		mav.delete();
 	}
 
 	/**
@@ -154,7 +167,7 @@ public class InstructionLine {
 			FuncParameter funcParameter = new FuncParameter(node, IndirectionType.E_INDIFERENT);
 			parameterValues.add(funcParameter);
 		}
-		lhsVar.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
+		lhsVar.callConstructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 				_parentBasicBlock, _astInterpreter, startingLine);
 	}
 
@@ -195,7 +208,7 @@ public class InstructionLine {
 		return null;
 	}
 
-	private void load_for_stmt(IASTForStatement node) {
+	private void loadForStmt(IASTForStatement node) {
 		int startingLine = node.getFileLocation().getStartingLineNumber();
 		ForLoop forLoop = new ForLoop(_parentBasicBlock, _astInterpreter, startingLine);
 		forLoop.load(node, _gvplGraph, _parentBasicBlock);

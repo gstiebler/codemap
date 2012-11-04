@@ -19,7 +19,7 @@ public class PointerVar extends MemAddressVar {
 	}
 
 	@Override
-	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
+	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
 		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, _type, startingLine);
 	}
@@ -36,7 +36,7 @@ public class PointerVar extends MemAddressVar {
 				graph, astLoader, astInterpreter);
 		// assigns the variable created with the new op
 		initializePointedVar(var);
-		var.constructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
+		var.callConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
 				startingLine);
 	}
 	
