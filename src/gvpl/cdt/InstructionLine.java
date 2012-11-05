@@ -67,7 +67,7 @@ public class InstructionLine {
 
 	public void load(IASTStatement statement) {
 		int startingLine = statement.getFileLocation().getStartingLineNumber();
-		logger.debug(" --- Line number: {}");
+		logger.debug(" --- Line number: {}", startingLine);
 		DebugOptions.setStartingLine(startingLine);
 		logger.debug("statement is: {}", statement.getClass());
 		if (statement instanceof IASTDeclarationStatement) {// variable

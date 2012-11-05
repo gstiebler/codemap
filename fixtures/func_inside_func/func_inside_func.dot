@@ -24,7 +24,7 @@ startingline = 19;
 subgraph cluster_2 {
 label = "soma";
 parent = "cluster_1";
-startingline = 19;
+startingline = 12;
 	node_000035 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000036 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000037 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]

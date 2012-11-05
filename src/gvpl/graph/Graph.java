@@ -39,9 +39,12 @@ public class Graph {
 	public Graph(String label) {
 		_label = label;
 		_id = _counter++;
+		logger.debug("New graph, label: {}, sl: {}", _label, _startingLine);
 	}
 
 	public Graph() {
+		logger.debug("New graph without label, sl: {}", _startingLine);
+		_startingLine = -1;
 		_id = _counter++;
 	}
 	
@@ -73,8 +76,10 @@ public class Graph {
 		return _graphNodes.get(index);
 	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
 
+		logger.debug("Getting copy of the graph");
+		
 		class NodeChange {
 			GraphNode _originalNode;
 			GraphNode _newNode;
@@ -85,7 +90,11 @@ public class Graph {
 			}
 		}
 
+		int usedStartingLine = startingLine;
+		if(_startingLine > 0)
+			usedStartingLine = _startingLine;
 		Graph graph = new Graph(_label);
+		graph._startingLine = usedStartingLine;
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 
 		// duplicate the nodes
@@ -97,7 +106,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader);
+			Graph copy = subgraph.getCopy(map, astLoader, startingLine);
 			graph._subgraphs.add(copy);
 		}
 
@@ -123,7 +132,7 @@ public class Graph {
 	 */
 	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader) {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
-		Graph graphCopy = graph.getCopy(map, astLoader);
+		Graph graphCopy = graph.getCopy(map, astLoader, DebugOptions.getStartingLine());
 		_subgraphs.add(graphCopy);
 		logger.info("Adding graph ({}) to ({})", graph._id, _id);
 		return map;
