@@ -24,6 +24,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
+import debug.DebugOptions;
+
 public class MemberFunc extends Function {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -64,7 +66,9 @@ public class MemberFunc extends Function {
 	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
 		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
 			IASTExpression expr = initializer.getInitializerValue();
-
+			int startingLine = expr.getFileLocation().getStartingLineNumber();
+			DebugOptions.setStartingLine(startingLine);
+			
 			IASTName memberInitId = initializer.getMemberInitializerId();
 			IBinding memberBinding = memberInitId.resolveBinding();
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);

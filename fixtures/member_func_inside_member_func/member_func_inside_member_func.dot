@@ -22,10 +22,10 @@ subgraph cluster_1 {
 label = "sSeg::setM1";
 parent = "G";
 startingline = 54;
-	node_000075 [ label = "THIS.m1", startingline=12 ]
-	node_000076 [ label = "THIS.n1", startingline=12 ]
-	node_000077 [ label = "THIS.si.soEsse", startingline=12 ]
-	node_000078 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=12 ]
+	node_000075 [ label = "THIS.m1", startingline=7 ]
+	node_000076 [ label = "THIS.n1", startingline=7 ]
+	node_000077 [ label = "THIS.si.soEsse", startingline=7 ]
+	node_000078 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000079 [ label = "THIS.m1", startingline=17 ]
 }
 subgraph cluster_2 {
@@ -56,7 +56,7 @@ startingline = 58;
 subgraph cluster_3 {
 label = "sPri::soma";
 parent = "cluster_2";
-startingline = 41;
+startingline = 58;
 	node_000106 [ label = "THIS.a", startingline=27 ]
 	node_000107 [ label = "THIS.h", startingline=27 ]
 	node_000108 [ label = "THIS.seg.m1", startingline=27 ]
@@ -69,7 +69,7 @@ startingline = 41;
 subgraph cluster_4 {
 label = "sPri::subtracao";
 parent = "cluster_2";
-startingline = 42;
+startingline = 58;
 	node_000114 [ label = "THIS.a", startingline=32 ]
 	node_000115 [ label = "THIS.h", startingline=32 ]
 	node_000116 [ label = "THIS.seg.m1", startingline=32 ]
@@ -85,11 +85,11 @@ startingline = 42;
 subgraph cluster_5 {
 label = "sSeg::setM1";
 parent = "cluster_2";
-startingline = 43;
-	node_000125 [ label = "THIS.m1", startingline=12 ]
-	node_000126 [ label = "THIS.n1", startingline=12 ]
-	node_000127 [ label = "THIS.si.soEsse", startingline=12 ]
-	node_000128 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=12 ]
+startingline = 58;
+	node_000125 [ label = "THIS.m1", startingline=7 ]
+	node_000126 [ label = "THIS.n1", startingline=7 ]
+	node_000127 [ label = "THIS.si.soEsse", startingline=7 ]
+	node_000128 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000129 [ label = "THIS.m1", startingline=17 ]
 }
 }

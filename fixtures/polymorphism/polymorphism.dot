@@ -9,17 +9,17 @@ label = "root";
 	node_000050 [ label = "bcPointer_pointed._bMember", startingline=53 ]
 	node_000062 [ label = "bcPointer_pointed._bMember", startingline=53 ]
 	node_000063 [ label = "bcPointer_pointed._baseMember", startingline=53 ]
-	node_000064 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=47 ]
+	node_000064 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=53 ]
 	node_000065 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=56 ]
 	node_000066 [ label = "e", startingline=56 ]
 	node_000067 [ label = "40", style=filled, fillcolor="#E9FFE9", startingline=57 ]
 	node_000078 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=57 ]
 	node_000079 [ label = "a", startingline=57 ]
 	node_000080 [ label = "*bcPointer", startingline=58 ]
-	node_000081 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=-5 ]
-	node_000082 [ label = "bcPointer_pointed._baseMember", startingline=-4 ]
-	node_000083 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=-5 ]
-	node_000084 [ label = "bcPointer_pointed._baseMember", startingline=-4 ]
+	node_000081 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=58 ]
+	node_000082 [ label = "bcPointer_pointed._baseMember", startingline=58 ]
+	node_000083 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=58 ]
+	node_000084 [ label = "bcPointer_pointed._baseMember", startingline=58 ]
 	node_000085 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=59 ]
 	node_000086 [ label = "b", startingline=59 ]
 subgraph cluster_1 {
@@ -34,7 +34,7 @@ startingline = 49;
 subgraph cluster_2 {
 label = "BaseClass::BaseClass";
 parent = "cluster_1";
-startingline = 20;
+startingline = 49;
 	node_000044 [ label = "THIS._baseMember", startingline=7 ]
 	node_000045 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000046 [ label = "dummy", style=filled, fillcolor="#FFE9E9", startingline=7 ]
@@ -55,7 +55,7 @@ startingline = 53;
 subgraph cluster_4 {
 label = "BaseClass::BaseClass";
 parent = "cluster_3";
-startingline = 34;
+startingline = 53;
 	node_000058 [ label = "THIS._baseMember", startingline=7 ]
 	node_000059 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000060 [ label = "dummy", style=filled, fillcolor="#FFE9E9", startingline=7 ]
