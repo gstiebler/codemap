@@ -15,4 +15,5 @@ int main()
 	UniqueClass *pInstance = new UniqueClass;
 	
 	delete pInstance;
+	int x = 5;
 }

@@ -35,8 +35,7 @@ public class IfCondition {
 	 */
 	public static void createIfNodes(Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
 			Map<GraphNode, GraphNode> ifTrueMergedNodes,
-			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode, Graph graph,
-			int startingLine) {
+			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode, Graph graph) {
 		for (Map.Entry<IVar, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
 			IVar extVar = entry.getKey();
 			PrevTrueFalseNode prevTrueFalse = entry.getValue();
@@ -71,14 +70,14 @@ public class IfCondition {
 			assert (trueNode != null);
 			assert (falseNode != null);
 
-			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION, startingLine);
+			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
 
-			trueNode.addDependentNode(ifOpNode, startingLine);
-			falseNode.addDependentNode(ifOpNode, startingLine);
-			conditionNode.addDependentNode(ifOpNode, startingLine);
+			trueNode.addDependentNode(ifOpNode);
+			falseNode.addDependentNode(ifOpNode);
+			conditionNode.addDependentNode(ifOpNode);
 
 			extVar.setGraph(graph);
-			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, startingLine);
+			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode);
 		}
 	}
 

@@ -89,24 +89,23 @@ public class ClassVar extends Var implements IClassVar{
 	 */
 	@Override
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader, 
-			AstInterpreter astInterpreter, int startingLine) {
+			AstInterpreter astInterpreter) {
 		for(ClassVar parent : _parentInstances) 
-			parent.initializeVar(nodeType, graph, astLoader, astInterpreter, startingLine);
+			parent.initializeVar(nodeType, graph, astLoader, astInterpreter);
 		
 		for (IVar var : _memberInstances.values()) {
-			var.initializeVar(NodeType.E_VARIABLE, graph, astLoader, astInterpreter, startingLine);
+			var.initializeVar(NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
 			var.setOwner(this);
 		}
 	}
 	
 	@Override
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
+			AstLoader astLoader, AstInterpreter astInterpreter) {
 
 		// TODO call only the variables that wasn't written in constructorFunc.loadMemberFuncRef
 		for (IVar var : _memberInstances.values()) {
-			var.callConstructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter,
-					startingLine);
+			var.callConstructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
 			var.setOwner(this);
 		}
 
@@ -117,18 +116,17 @@ public class ClassVar extends Var implements IClassVar{
 		if (parameterValues == null)
 			return;
 
-		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader,
-				startingLine);
+		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader);
 	}
 
-	public void callDestructor(AstLoader astLoader, Graph graph, int startingLine) {
+	public void callDestructor(AstLoader astLoader, Graph graph) {
 		// TODO call the parent classes destructor
 
 		logger.debug("Destructor of {}", _name);
 		MemberFunc destructorFunc = _classDecl.getDestructorFunc();
 		if (destructorFunc != null)
 			destructorFunc.loadMemberFuncRef(this, new ArrayList<FuncParameter>(), graph,
-					astLoader, startingLine);
+					astLoader);
 	}
 	
 	public ClassDecl getClassDecl() {
@@ -159,7 +157,7 @@ public class ClassVar extends Var implements IClassVar{
 	}
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoaderCDT astLoader, int startingLine) {
-		return memberFunc.loadMemberFuncRef(this, parameterValues, graph, astLoader, startingLine);
+			Graph graph, AstLoaderCDT astLoader) {
+		return memberFunc.loadMemberFuncRef(this, parameterValues, graph, astLoader);
 	}
 }

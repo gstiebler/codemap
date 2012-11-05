@@ -49,6 +49,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
+import debug.DebugOptions;
+
 public class InstructionLine {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -65,7 +67,8 @@ public class InstructionLine {
 
 	public void load(IASTStatement statement) {
 		int startingLine = statement.getFileLocation().getStartingLineNumber();
-		logger.debug(" --- Line number: {}", startingLine);
+		logger.debug(" --- Line number: {}");
+		DebugOptions.setStartingLine(startingLine);
 		logger.debug("statement is: {}", statement.getClass());
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
@@ -105,19 +108,18 @@ public class InstructionLine {
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentBasicBlock, _astInterpreter);
 			basicBlockLoader.load(statement);
-			basicBlockLoader.addToExtGraph(startingLine);
+			basicBlockLoader.addToExtGraph();
 			basicBlockLoader.bindSettedPointers();
 		} else
 			logger.fatal("Node type not found!! Node: " + statement.toString());
 	}
 	
 	void loadDeleteOp(CPPASTDeleteExpression deleteExpr) {
-		int startingLine = deleteExpr.getFileLocation().getStartingLineNumber();
 		IASTExpression opExpr = deleteExpr.getOperand();
 		IVar var = _parentBasicBlock.getVarFromExpr(opExpr);
 		MemAddressVar mav = (MemAddressVar) var;
 		var = mav.getVarInMem();
-		((ClassVar) var).callDestructor(_parentBasicBlock, _gvplGraph, startingLine);
+		((ClassVar) var).callDestructor(_parentBasicBlock, _gvplGraph);
 		mav.delete();
 	}
 
@@ -130,8 +132,6 @@ public class InstructionLine {
 	 *            Code with the declaration
 	 */
 	public void LoadVariableInitialization(IVar lhsVar, IASTDeclarator decl) {
-		int startingLine = decl.getFileLocation().getStartingLineNumber();
-
 		IASTInitializer initializer = decl.getInitializer();	
 		if(initializer == null) //variable is not initialized
 			return;
@@ -139,7 +139,7 @@ public class InstructionLine {
 		if (initializer instanceof ICPPASTConstructorInitializer) { 
 			// format: int a(5);
 			IASTExpression initExpr = ((ICPPASTConstructorInitializer) initializer).getExpression();
-			loadConstructorInitializer(lhsVar, initExpr, startingLine);														
+			loadConstructorInitializer(lhsVar, initExpr);														
 			return;
 		}
 		
@@ -152,10 +152,10 @@ public class InstructionLine {
 		}
 
 		GraphNode rhsValue = loadValue(rhsExpr);
-		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
+		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue);
 	}
 	
-	void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr, int startingLine) {
+	void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr) {
 		List<FuncParameter> parameterValues = null;
 		if(lhsVar instanceof ClassVar) {
 			ClassVar classVar = (ClassVar) lhsVar;
@@ -168,19 +168,18 @@ public class InstructionLine {
 			parameterValues.add(funcParameter);
 		}
 		lhsVar.callConstructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-				_parentBasicBlock, _astInterpreter, startingLine);
+				_parentBasicBlock, _astInterpreter);
 	}
 
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
 	public GraphNode loadValue(IASTExpression expr) {
-		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		logger.debug("Node type {}", expr.getClass());
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
 			IVar varDecl = _parentBasicBlock.getVarFromExpr(expr);
-			return varDecl.getCurrentNode(startingLine);
+			return varDecl.getCurrentNode();
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) expr);
 		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
@@ -191,7 +190,7 @@ public class InstructionLine {
 		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
 			IVar varDecl = _parentBasicBlock.getVarFromFieldRef((IASTFieldReference) expr);
-			return varDecl.getCurrentNode(expr.getFileLocation().getStartingLineNumber());
+			return varDecl.getCurrentNode();
 		} else if (expr instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) expr);
 		} else if (expr instanceof CPPASTArraySubscriptExpression) {			
@@ -201,7 +200,7 @@ public class InstructionLine {
 			IVar varDecl = _parentBasicBlock.getVarFromExpr(arrayExpr);
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
-			return varDecl.getCurrentNode(startingLine);
+			return varDecl.getCurrentNode();
 		} else
 			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
@@ -209,8 +208,7 @@ public class InstructionLine {
 	}
 
 	private void loadForStmt(IASTForStatement node) {
-		int startingLine = node.getFileLocation().getStartingLineNumber();
-		ForLoop forLoop = new ForLoop(_parentBasicBlock, _astInterpreter, startingLine);
+		ForLoop forLoop = new ForLoop(_parentBasicBlock, _astInterpreter);
 		forLoop.load(node, _gvplGraph, _parentBasicBlock);
 	}
 
@@ -224,7 +222,7 @@ public class InstructionLine {
 
 		// TODO set the correct type of the return value
 		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, returnType,
-				function.getName(), statement.getFileLocation().getStartingLineNumber());
+				function.getName());
 
 		function.setReturnNode(returnNode);
 	}
@@ -237,7 +235,6 @@ public class InstructionLine {
 	 * @return The graph node of the result of the operation
 	 */
 	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
-		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTExpression lhsOp = node.getOperand1();
 		logger.debug("get lhsVar");
 		IVar lhsVar = _parentBasicBlock.getVarFromExpr(lhsOp);
@@ -258,18 +255,16 @@ public class InstructionLine {
 		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (node.getOperator() == IASTBinaryExpression.op_assign) {
-			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, startingLine);
+			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue);
 			return null;
 		}
 
 		GraphNode lhsValue = loadValue(node.getOperand1());
 		eAssignBinOp op = CppMaps.getAssignBinOpTypes(node.getOperator());
-		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentBasicBlock,
-				startingLine);
+		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentBasicBlock);
 	}
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
-		int startingLine = rhsOp.getFileLocation().getStartingLineNumber();
 		logger.debug("loading pointer of type: {}", rhsOp.getClass());
 		if (rhsOp instanceof CPPASTNewExpression) {
 			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
@@ -283,7 +278,7 @@ public class InstructionLine {
 			}
 			if (classDecl == null) {
 				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _parentBasicBlock,
-						_astInterpreter, startingLine);
+						_astInterpreter);
 				return;
 			}
 
@@ -293,7 +288,7 @@ public class InstructionLine {
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-					_parentBasicBlock, _astInterpreter, classDecl.getTypeId(), startingLine);
+					_parentBasicBlock, _astInterpreter, classDecl.getTypeId());
 			return;
 		} else {
 			IVar rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
@@ -303,8 +298,6 @@ public class InstructionLine {
 	}
 
 	private GraphNode loadFunctionCall(IASTFunctionCallExpression funcCall) {
-		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
-		
 		IASTExpression paramExpr = funcCall.getParameterExpression();
 		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		
@@ -314,9 +307,9 @@ public class InstructionLine {
 			IBinding idExprBinding = idExpr.getName().resolveBinding();
 			
 			if (idExprBinding instanceof CPPMethod) {
-				return loadOwnMethod(idExprBinding, paramExpr, startingLine);
+				return loadOwnMethod(idExprBinding, paramExpr);
 			} else if (idExprBinding instanceof CPPFunction) {
-				return loadSimpleFunc(idExprBinding, paramExpr, startingLine);
+				return loadSimpleFunc(idExprBinding, paramExpr);
 			} else
 				logger.fatal("problem");
 		} else if (nameExpr instanceof IASTFieldReference) {
@@ -334,12 +327,12 @@ public class InstructionLine {
 	 * @param stLine
 	 * @return
 	 */
-	private GraphNode loadSimpleFunc(IBinding idExprBinding, IASTExpression paramExpr, int stLine) {
+	private GraphNode loadSimpleFunc(IBinding idExprBinding, IASTExpression paramExpr) {
 		Function func = _astInterpreter.getFuncId(idExprBinding);
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		Function loadFunction = _astInterpreter.getFuncId(idExprBinding);
-		return loadFunction.addFuncRef(parameterValues, _gvplGraph, stLine);
+		return loadFunction.addFuncRef(parameterValues, _gvplGraph);
 	}
 	
 	/**
@@ -349,7 +342,7 @@ public class InstructionLine {
 	 * @param stLine
 	 * @return The graph node of the result of the function
 	 */
-	private GraphNode loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr, int stLine) {
+	private GraphNode loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr) {
 		MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
 		Function func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 		
@@ -357,7 +350,7 @@ public class InstructionLine {
 		MemberFunc memberFunc = (MemberFunc) func;
 		ClassVar var = parentMF.getThisReference();
 		GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
-			_parentBasicBlock, stLine);
+			_parentBasicBlock);
 		return node;
 	}
 	
@@ -368,7 +361,6 @@ public class InstructionLine {
 	 * @return The graph node of the result of the function
 	 */
 	private GraphNode loadVarMethod(IASTFunctionCallExpression funcCall, IASTExpression paramExpr) {
-		int startingLine = funcCall.getFileLocation().getStartingLineNumber();
 		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 		IASTExpression ownerExpr = fieldRef.getFieldOwner();
 		IVar var = _parentBasicBlock.getVarFromExpr(ownerExpr);
@@ -382,10 +374,10 @@ public class InstructionLine {
 		
 		if(var instanceof ClassVar) {
 			return ((ClassVar)var).loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
-					_parentBasicBlock, startingLine);
+					_parentBasicBlock);
 		} else if(var instanceof MemAddressVar) {
 			return ((MemAddressVar)var).loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
-					_parentBasicBlock, startingLine);
+					_parentBasicBlock);
 		} 
 		return null;
 	}
@@ -430,17 +422,15 @@ public class InstructionLine {
 	}
 
 	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
-		int startingLine = bin_op.getFileLocation().getStartingLineNumber();
 		eBinOp op = CppMaps.getBinOpType(bin_op.getOperator());
 		GraphNode lvalue = loadValue(bin_op.getOperand1());
 		GraphNode rvalue = loadValue(bin_op.getOperand2());
-		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentBasicBlock, startingLine);
+		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentBasicBlock);
 	}
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
 		String value = node.toString();
-		return _gvplGraph.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value, node
-				.getFileLocation().getStartingLineNumber());
+		return _gvplGraph.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value);
 	}
 
 	/**
@@ -479,7 +469,6 @@ public class InstructionLine {
 	 * @return
 	 */
 	GraphNode loadUnaryExpr(IASTUnaryExpression unExpr) {
-		int startingLine = unExpr.getFileLocation().getStartingLineNumber();
 		// Check if the operator is a star
 		if (unExpr.getOperator() != CPPASTUnaryExpression.op_star)
 			logger.fatal("not implemented");
@@ -489,7 +478,7 @@ public class InstructionLine {
 		if (!(pointerVar instanceof PointerVar))
 			logger.fatal("not expected here");
 
-		return pointerVar.getCurrentNode(startingLine);
+		return pointerVar.getCurrentNode();
 	}
 
 	/**

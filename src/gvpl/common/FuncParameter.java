@@ -23,9 +23,9 @@ public class FuncParameter {
 		_indirectionType = type;
 	}
 	
-	public GraphNode getNode(int startingLine) {
+	public GraphNode getNode() {
 		if(_varDecl != null)
-			return _varDecl.getCurrentNode(startingLine);
+			return _varDecl.getCurrentNode();
 		
 		return _node;
 	}

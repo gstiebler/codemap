@@ -56,23 +56,23 @@ public class MemAddressVar extends Var {
 	}
 	
 	@Override
-	public GraphNode getCurrentNode(int startingLine) {
+	public GraphNode getCurrentNode() {
 		if(_possiblePointedVar._finalVar == null) {
-			return _possiblePointedVar.getIfNode(_gvplGraph, startingLine);
+			return _possiblePointedVar.getIfNode(_gvplGraph);
 		}
-		GraphNode currentPointedVarNode = _possiblePointedVar._finalVar.getCurrentNode(startingLine);
+		GraphNode currentPointedVarNode = _possiblePointedVar._finalVar.getCurrentNode();
 		if (currentPointedVarNode != _lastPointedVarNode) {
-			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE, startingLine);
-			currentPointedVarNode.addDependentNode(_currGraphNode, startingLine);
+			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE);
+			currentPointedVarNode.addDependentNode(_currGraphNode);
 		}
 		_onceRead = true;
 		return _currGraphNode;
 	}
 
 	@Override
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startLocation) {
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode) {
 		// Create a new node to the "pointer" variable
-		GraphNode newNode = super.receiveAssign(lhsType, rhsNode, startLocation);
+		GraphNode newNode = super.receiveAssign(lhsType, rhsNode);
 		_onceWritten = true;
 
 		return newNode;
@@ -80,10 +80,10 @@ public class MemAddressVar extends Var {
 
 	@Override
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
-			AstInterpreter astInterpreter, int startingLine) {
+			AstInterpreter astInterpreter) {
 		IVar var = astLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astLoader, astInterpreter);
-		var.initializeVar(nodeType, graph, astLoader, astInterpreter, startingLine);
+		var.initializeVar(nodeType, graph, astLoader, astInterpreter);
 		initializePointedVar(var);
 	}
 
@@ -114,9 +114,9 @@ public class MemAddressVar extends Var {
 	}
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoaderCDT astLoader, int startingLine) {
+			Graph graph, AstLoaderCDT astLoader) {
 		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,
-				parameterValues, graph, astLoader, startingLine);
+				parameterValues, graph, astLoader);
 	}
 	
 	public void delete() {

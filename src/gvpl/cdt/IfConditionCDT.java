@@ -25,26 +25,23 @@ public class IfConditionCDT {
 		BoolValuePack trueBvp = null;
 		BoolValuePack falseBvp = null;
 		{
-			int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
 			BasicBlockCDT basicBlock = loadBasicBlock(ifStatement.getThenClause(), instructionLine);
 
 			trueBvp = new trueClass(instructionLine, basicBlock, mapPrevTrueFalse,
-					mapPrevTrueFalseMV, startingLine);
+					mapPrevTrueFalseMV);
 		}
 		{
-			int startingLine = ifStatement.getFileLocation().getStartingLineNumber();
 			BasicBlockCDT basicBlock = loadBasicBlock(ifStatement.getElseClause(), instructionLine);
 			if (basicBlock != null)
 				falseBvp = new falseClass(instructionLine, basicBlock, mapPrevTrueFalse,
-						mapPrevTrueFalseMV, startingLine);
+						mapPrevTrueFalseMV);
 		}
 
 		IASTExpression condition = ifStatement.getConditionExpression();
 		GraphNode conditionNode = instructionLine.loadValue(condition);
 
 		IfCondition.createIfNodes(mapPrevTrueFalse, trueBvp._ifMergedNodes,
-				falseBvp._ifMergedNodes, conditionNode, instructionLine.getGraph(), ifStatement
-						.getFileLocation().getStartingLineNumber());
+				falseBvp._ifMergedNodes, conditionNode, instructionLine.getGraph());
 
 		IfCondition.mergeIfMAV(mapPrevTrueFalseMV, conditionNode, trueBvp._inToExtVar,
 				falseBvp._inToExtVar);

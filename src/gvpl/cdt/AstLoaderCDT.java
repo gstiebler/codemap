@@ -48,7 +48,6 @@ public class AstLoaderCDT extends AstLoader {
 	}
 
 	protected IVar getVarFromExpr(IASTExpression expr) {
-		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		IVar var = getVarFromExprInternal(expr);
 
 		if (var != null) 
@@ -59,17 +58,17 @@ public class AstLoaderCDT extends AstLoader {
 		if (var != null) 
 			return var; 
 		
-		return createVarFromBinding(binding, startingLine);
+		return createVarFromBinding(binding);
 	}
 	
-	protected IVar createVarFromBinding(IBinding binding, int startingLine) {
+	protected IVar createVarFromBinding(IBinding binding) {
 		VarInfo varInfo = getTypeFromVarBinding(binding);
 		String name = binding.getName();
 		
 		IVar var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
 		//TODO only initialize a variable that will be read. Otherwise, the nodes generated
 		// in the line below will never be used
-		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
+		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);
 		_extToInVars.put(binding, var);
 		return var;
 	}
@@ -167,14 +166,13 @@ public class AstLoaderCDT extends AstLoader {
 
 	@Override
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap, int startingLine) {
+			List<InExtVarPair> ignored, InToExtVar inToExtMap) {
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
 			IVar extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
 				logger.fatal("extVar cannot be null");
 
-			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap, 
-					startingLine);
+			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap);
 		}
 	}
 

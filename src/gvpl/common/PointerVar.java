@@ -19,27 +19,26 @@ public class PointerVar extends MemAddressVar {
 	}
 
 	@Override
-	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
-		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, _type, startingLine);
+	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
+			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
+		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, _type);
 	}
 
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoaderCDT astLoader, AstInterpreter astInterpreter, TypeId type, int startingLine) {
-		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, type, startingLine);
+			AstLoaderCDT astLoader, AstInterpreter astInterpreter, TypeId type) {
+		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, type);
 	}
-	
-	private void internalConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter, TypeId type, int startingLine) {
+
+	private void internalConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
+			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter, TypeId type) {
 		// creates the variable allocated with the new op
 		IVar var = astLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", type,
 				graph, astLoader, astInterpreter);
 		// assigns the variable created with the new op
 		initializePointedVar(var);
-		var.callConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter,
-				startingLine);
+		var.callConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter);
 	}
-	
+
 	@Override
 	public VarInfo getVarInfo() {
 		return new VarInfo(_type, IndirectionType.E_POINTER);

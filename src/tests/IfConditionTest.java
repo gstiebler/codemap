@@ -30,13 +30,13 @@ public class IfConditionTest {
 	
 	@Test
 	public void TestMergeIfMAV_PrimitiveType() {
-		GraphNode conditionNode = new GraphNode("true", NodeType.E_DIRECT_VALUE, -1);
+		GraphNode conditionNode = new GraphNode("true", NodeType.E_DIRECT_VALUE);
 		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
 		
-		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new Graph("", -1));
+		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new Graph(""));
 		
 		// the graph in the calling block
-		Graph extGraph = new Graph("graph", -1);
+		Graph extGraph = new Graph("graph");
 		InToExtVar inToExtVarTrue = new InToExtVar(extGraph);
 		InToExtVar inToExtVarFalse = new InToExtVar(extGraph);
 		TypeId type = null;
@@ -56,8 +56,8 @@ public class IfConditionTest {
 			// the pointed var of true
 			truePointedVar = new Var(extGraph, "truePointedVar", type);
 			truePointedVar.initializeVar(NodeType.E_VARIABLE, trueGraph, trueBasicBlock,
-					astInterpreter, -1);
-			currTruePointedVar = truePointedVar.getCurrentNode(-1);
+					astInterpreter);
+			currTruePointedVar = truePointedVar.getCurrentNode();
 			// the address var in the true block
 			ptfm._true = new MemAddressVar(trueGraph, "true", type);
 
@@ -77,8 +77,8 @@ public class IfConditionTest {
 			// the pointed var of false
 			falsePointedVar = new Var(extGraph, "falsePointedVar", type);
 			falsePointedVar.initializeVar(NodeType.E_VARIABLE, falseGraph, falseBasicBlock,
-					astInterpreter, -1);
-			currFalsePointedVar = falsePointedVar.getCurrentNode(-1);
+					astInterpreter);
+			currFalsePointedVar = falsePointedVar.getCurrentNode();
 			// the address var in the false block
 			ptfm._false = new MemAddressVar(falseGraph, "true", type);
 
@@ -107,7 +107,7 @@ public class IfConditionTest {
 		assertEquals(extGraph, ppv._varFalse._finalVar.getGraph());
 		
 		// test this node
-		GraphNode nodeFromIfVar = prev.getCurrentNode(-1);
+		GraphNode nodeFromIfVar = prev.getCurrentNode();
 		assertEquals(currTruePointedVar, nodeFromIfVar.getSourceNodes().get(0));
 		assertEquals(currFalsePointedVar, nodeFromIfVar.getSourceNodes().get(1));
 		assertEquals(conditionNode, nodeFromIfVar.getSourceNodes().get(2));
@@ -119,10 +119,10 @@ public class IfConditionTest {
 	
 	@Test
 	public void TestMergeIfMAV_ClassVar() {
-		GraphNode conditionNode = new GraphNode("true", NodeType.E_DIRECT_VALUE, -1);
+		GraphNode conditionNode = new GraphNode("true", NodeType.E_DIRECT_VALUE);
 		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
 
-		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new Graph("", -1));
+		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new Graph(""));
 
 		ClassDeclCDT classDecl = new ClassDeclCDT(astInterpreter);
 		MemberId memberId = new MemberId();
@@ -154,14 +154,14 @@ public class IfConditionTest {
 			// the pointed var in the true block
 			truePointedVar = new ClassVar(extGraph, "truePointedVar", classDecl, mainBasicBlock);
 			truePointedVar.initializeVar(NodeType.E_VARIABLE, extGraph, mainBasicBlock,
-					astInterpreter, -1);
+					astInterpreter);
 			trueVarMember = truePointedVar.getMember(memberId);
 			// the address var in the true block
 			ptfm._true = new MemAddressVar(trueGraph, "true", type);
 
 			truePointedVarInTrueBlock = new ClassVar(trueGraph, "truePointedVarInTrueBlock", classDecl, trueBasicBlock);
 			truePointedVarInTrueBlock.initializeVar(NodeType.E_VARIABLE, trueGraph,
-					trueBasicBlock, astInterpreter, -1);
+					trueBasicBlock, astInterpreter);
 			trueVarMemberInBlock = truePointedVarInTrueBlock.getMember(memberId);
 			ptfm._true.setPointedVar(truePointedVarInTrueBlock);
 		}
@@ -178,14 +178,14 @@ public class IfConditionTest {
 			// the pointed var in the false block
 			falsePointedVar = new ClassVar(extGraph, "falsePointedVar", classDecl, mainBasicBlock);
 			falsePointedVar.initializeVar(NodeType.E_VARIABLE, extGraph, mainBasicBlock,
-					astInterpreter, -1);
+					astInterpreter);
 			falseVarMember = falsePointedVar.getMember(memberId);
 			// the address var in the false block
 			ptfm._false = new MemAddressVar(falseGraph, "true", type);
 
 			falsePointedVarInFalseBlock = new ClassVar(falseGraph, "falsePointedVarInFalseBlock", classDecl, falseBasicBlock);
 			falsePointedVarInFalseBlock.initializeVar(NodeType.E_VARIABLE, falseGraph,
-					falseBasicBlock, astInterpreter, -1);
+					falseBasicBlock, astInterpreter);
 			falseVarMemberInBlock = falsePointedVarInFalseBlock.getMember(memberId);
 			ptfm._false.setPointedVar(falsePointedVar);
 		}

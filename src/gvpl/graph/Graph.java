@@ -19,6 +19,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import debug.DebugOptions;
+
 public class Graph {
 	
 	Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -30,18 +32,16 @@ public class Graph {
 	private String _label;
 	private List<GraphNode> _graphNodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
-	private int _startingLine = -1;
+	private int _startingLine = DebugOptions.getStartingLine();
 	private static int _counter = 1000;
 	private int _id;
 
-	public Graph(String label, int startingLine) {
+	public Graph(String label) {
 		_label = label;
-		_startingLine = startingLine;
 		_id = _counter++;
 	}
 
-	public Graph(int startingLine) {
-		_startingLine = startingLine;
+	public Graph() {
 		_id = _counter++;
 	}
 	
@@ -49,16 +49,16 @@ public class Graph {
 		return _id;
 	}
 
-	public GraphNode addGraphNode(String name, NodeType type, int startingLine) {
-		GraphNode graphNode = new GraphNode(name, type, startingLine);
+	public GraphNode addGraphNode(String name, NodeType type) {
+		GraphNode graphNode = new GraphNode(name, type);
 		_graphNodes.add(graphNode);
 		
 		logger.info("Add node {} ({}) graph {} ({})", graphNode.getName(), graphNode.getId(), _label, _id);
 		return graphNode;
 	}
 
-	public GraphNode addGraphNode(IVar parentVar, NodeType type, int startingLine) {
-		GraphNode graphNode = new GraphNode(parentVar, type, startingLine);
+	public GraphNode addGraphNode(IVar parentVar, NodeType type) {
+		GraphNode graphNode = new GraphNode(parentVar, type);
 		_graphNodes.add(graphNode);
 
 		logger.info("Add node {} ({}) graph {} ({})", graphNode.getName(), graphNode.getId(), _label, _id);
@@ -73,7 +73,7 @@ public class Graph {
 		return _graphNodes.get(index);
 	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader) {
 
 		class NodeChange {
 			GraphNode _originalNode;
@@ -85,10 +85,7 @@ public class Graph {
 			}
 		}
 
-		int usedStartingLine = startingLine;
-		if(_startingLine > 0)
-			usedStartingLine = _startingLine;
-		Graph graph = new Graph(_label, usedStartingLine);
+		Graph graph = new Graph(_label);
 		List<NodeChange> nodesList = new ArrayList<NodeChange>();
 
 		// duplicate the nodes
@@ -100,7 +97,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader, startingLine);
+			Graph copy = subgraph.getCopy(map, astLoader);
 			graph._subgraphs.add(copy);
 		}
 
@@ -108,10 +105,9 @@ public class Graph {
 		for (NodeChange nodeChange : nodesList) {
 			GraphNode oldNode = nodeChange._originalNode;
 			GraphNode newNode = nodeChange._newNode;
-			int onSL = oldNode.getStartingLine();
 			for (GraphNode dependentNode : oldNode.getDependentNodes()) {
 				GraphNode mappedNode = map.get(dependentNode);
-				newNode.addDependentNode(mappedNode, onSL);
+				newNode.addDependentNode(mappedNode);
 			}
 		}
 
@@ -125,9 +121,9 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader, int startingLine) {
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader) {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
-		Graph graphCopy = graph.getCopy(map, astLoader, startingLine);
+		Graph graphCopy = graph.getCopy(map, astLoader);
 		_subgraphs.add(graphCopy);
 		logger.info("Adding graph ({}) to ({})", graph._id, _id);
 		return map;
@@ -151,51 +147,50 @@ public class Graph {
 		return _startingLine;
 	}
 
-	public GraphNode addDirectVal(eValueType type, String value, int startingLine) {
-		return addGraphNode(value, NodeType.E_DIRECT_VALUE, startingLine);
+	public GraphNode addDirectVal(eValueType type, String value) {
+		return addGraphNode(value, NodeType.E_DIRECT_VALUE);
 	}
 
-	GraphNode addUnOp(eUnOp op, GraphNode valNode, AstLoader astLoader, int startingLine) {
-		GraphNode unOpNode = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION,
-				startingLine);
+	GraphNode addUnOp(eUnOp op, GraphNode valNode, AstLoader astLoader) {
+		GraphNode unOpNode = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION);
 
-		valNode.addDependentNode(unOpNode, startingLine);
+		valNode.addDependentNode(unOpNode);
 
 		return unOpNode;
 	}
 
-	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader, int startingLine) {
-		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION, startingLine);
-		val_node.addDependentNode(notOpNode, startingLine);
+	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader) {
+		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION);
+		val_node.addDependentNode(notOpNode);
 
 		return notOpNode;
 	}
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
-			AstLoader astLoader, int startingLine) {
+			AstLoader astLoader) {
 		GraphNode binOpNode = addGraphNode(CppMaps._bin_op_strings.get(op),
-				NodeType.E_OPERATION, startingLine);
+				NodeType.E_OPERATION);
 
-		val1_node.addDependentNode(binOpNode, startingLine);
-		val2_node.addDependentNode(binOpNode, startingLine);
+		val1_node.addDependentNode(binOpNode);
+		val2_node.addDependentNode(binOpNode);
 
 		return binOpNode;
 	}
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, IVar lhs_varDecl, GraphNode lhsNode,
-			GraphNode rhs_node, AstLoader astLoader, int startingLine) {
+			GraphNode rhs_node, AstLoader astLoader) {
 		GraphNode binOpNode = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
-				NodeType.E_OPERATION, startingLine);
+				NodeType.E_OPERATION);
 
-		lhsNode.addDependentNode(binOpNode, startingLine);
-		rhs_node.addDependentNode(binOpNode, startingLine);
+		lhsNode.addDependentNode(binOpNode);
+		rhs_node.addDependentNode(binOpNode);
 
 		return lhs_varDecl
-				.receiveAssign(NodeType.E_VARIABLE, binOpNode, startingLine);
+				.receiveAssign(NodeType.E_VARIABLE, binOpNode);
 	}
 	
-	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode, int startingLine) {
-		primaryNode.merge(secondaryNode, startingLine);
+	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode) {
+		primaryNode.merge(secondaryNode);
 		logger.info("Merging node ({}) to ({})", secondaryNode.getId(), primaryNode.getId());
 		_graphNodes.remove(secondaryNode);
 		if(!_graphNodes.contains(primaryNode))

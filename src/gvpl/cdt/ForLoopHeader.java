@@ -48,7 +48,6 @@ public class ForLoopHeader extends AstLoaderCDT {
 	 */
 	@Override
 	public IVar getVarFromExpr(IASTExpression expr) {
-		int startingLine = expr.getFileLocation().getStartingLineNumber();
 		IASTIdExpression id_expr = null;
 		if (expr instanceof IASTIdExpression)
 			id_expr = (IASTIdExpression) expr;
@@ -63,8 +62,7 @@ public class ForLoopHeader extends AstLoaderCDT {
 
 		String varName = id_expr.getName().toString();
 		intVarDecl = new Var(_gvplGraph, varName, null);
-		intVarDecl.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter,
-				startingLine);
+		intVarDecl.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);
 		_externalVars.put(extVarDecl, intVarDecl);
 		return intVarDecl;
 	}

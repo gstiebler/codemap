@@ -49,14 +49,14 @@ public class Function extends AstLoaderCDT {
 	protected IBinding _ownBinding;
 
 	public Function(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
-		super(new Graph(-1), parent, astInterpreter);
+		super(new Graph(), parent, astInterpreter);
 		
 		_ownBinding = ownBinding;
 		//TODO FIX!!
 		_returnType = _astInterpreter.getPrimitiveType();
 	}
 	
-	public void loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
+	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
 		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName astName = decl.getName();
 		// Gets the name of the function
@@ -71,7 +71,7 @@ public class Function extends AstLoaderCDT {
 
 		for (Map.Entry<IBinding, FuncParameter> entry : _parametersMap.entrySet()) {
 			entry.getValue().getVar().initializeVar(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
-					_astInterpreter, startingLine);
+					_astInterpreter);
 		}
 	}
 	
@@ -129,16 +129,13 @@ public class Function extends AstLoaderCDT {
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph,
-			int startingLine) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = gvplGraph.addSubGraph(_gvplGraph, this,
-				startingLine);
-		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap,
-				startingLine);
+	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph) {
+		Map<GraphNode, GraphNode> internalToMainGraphMap = gvplGraph.addSubGraph(_gvplGraph, this);
+		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap);
 	}
 
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,
-			Map<GraphNode, GraphNode> internalToMainGraphMap, int startingLine) {
+			Map<GraphNode, GraphNode> internalToMainGraphMap) {
 		if (_parametersMap.size() != callingParameters.size())
 			logger.fatal("Number of parameters differs from func declaration!");
 
@@ -152,9 +149,9 @@ public class Function extends AstLoaderCDT {
 			if (receivedVar instanceof ClassVar) {
 				// Binds the received parameter to the function parameter
 				bindInParameter(internalToMainGraphMap, (ClassVar) receivedVar,
-						declaredParameter.getVarInMem(), startingLine);
+						declaredParameter.getVarInMem());
 			} else {
-				GraphNode receivedParameter = callingParameter.getNode(startingLine);
+				GraphNode receivedParameter = callingParameter.getNode();
 
 				// Point the received values to the received parameters ([in]
 				// parameters)
@@ -162,8 +159,7 @@ public class Function extends AstLoaderCDT {
 					GraphNode declParamNodeInMainGraph = internalToMainGraphMap
 							.get(declaredParameter.getFirstNode());
 
-					receivedParameter
-							.addDependentNode(declParamNodeInMainGraph, startingLine);
+					receivedParameter.addDependentNode(declParamNodeInMainGraph);
 				}
 			}
 
@@ -172,7 +168,7 @@ public class Function extends AstLoaderCDT {
 			// ([out] parameters)
 			if (declaredParameter instanceof MemAddressVar) {
 				bindOutParameter(internalToMainGraphMap, callingParameter.getVar().getVarInMem(),
-						declaredParameter.getVarInMem(), startingLine);
+						declaredParameter.getVarInMem());
 			}
 		}
 
@@ -180,7 +176,7 @@ public class Function extends AstLoaderCDT {
 	}
 
 	protected void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap,
-			IVar callingParameter, IVar declaredParameter, int startingLine) {
+			IVar callingParameter, IVar declaredParameter) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
 			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
@@ -193,25 +189,25 @@ public class Function extends AstLoaderCDT {
 					continue;
 
 				bindInParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
-						declaredParameterChild.getVarInMem(), startingLine);
+						declaredParameterChild.getVarInMem());
 			}
 			return;
 		}
 
 		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
 				.getFirstNode());
-		GraphNode callingParameterNode = callingParameter.getCurrentNode(startingLine);
+		GraphNode callingParameterNode = callingParameter.getCurrentNode();
 
 		// Point the received values to the received parameters ([in]
 		// parameters)
 		if (callingParameterNode != null && declParamNodeInMainGraph != null
 				&& (declParamNodeInMainGraph.getNumDependentNodes() > 0)) {
-			callingParameterNode.addDependentNode(declParamNodeInMainGraph, startingLine);
+			callingParameterNode.addDependentNode(declParamNodeInMainGraph);
 		}
 	}
 
-	protected void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap, IVar callingParameter,
-			IVar declaredParameter, int startingLine) {
+	protected void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap,
+			IVar callingParameter, IVar declaredParameter) {
 		if (callingParameter instanceof ClassVar) {
 			ClassVar callingParameterClass = (ClassVar) callingParameter;
 			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
@@ -219,20 +215,20 @@ public class Function extends AstLoaderCDT {
 				IVar callingParameterChild = callingParameterClass.getMember(memberId);
 				IVar declaredParameterChild = declaredParameterClass.getMember(memberId);
 
-				if(declaredParameterChild == null)
+				if (declaredParameterChild == null)
 					continue;
 
 				bindOutParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
-						declaredParameterChild.getVarInMem(), startingLine);
+						declaredParameterChild.getVarInMem());
 			}
 			return;
 		}
 
 		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
-				.getCurrentNode(startingLine));
+				.getCurrentNode());
 
-		if(declaredParameter.onceWritten())
-			callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph, startingLine);
+		if (declaredParameter.onceWritten())
+			callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph);
 	}
 
 	private void setName(String name) {

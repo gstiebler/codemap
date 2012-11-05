@@ -12,8 +12,8 @@ public class trueClass extends BoolValuePack {
 
 	public trueClass(InstructionLine instructionLine, BasicBlockCDT basicBlock,
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV, int startingLine) {
-		super(instructionLine, basicBlock, mapPrevTrueFalse, mapPrevTrueFalseMV, startingLine);
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
+		super(instructionLine, basicBlock, mapPrevTrueFalse, mapPrevTrueFalseMV);
 	}
 
 	void insertBoolNode(PrevTrueFalseNode prevTrueFalse, GraphNode node) {

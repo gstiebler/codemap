@@ -20,7 +20,7 @@ public abstract class BoolValuePack {
 
 	BoolValuePack(InstructionLine instructionLine, BasicBlockCDT basicBlock, 
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV, int startingLine) {
+			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
 		
 		_inToExtVar = new InToExtVar(instructionLine.getGraph());
 
@@ -28,11 +28,11 @@ public abstract class BoolValuePack {
 		// Get the accessed vars inside the block. This functions returns the variables created
 		// inside the block, and the equivalent var from the calling block (external vars)
 		basicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), ifWrittenVars,
-				new ArrayList<InExtVarPair>(), _inToExtVar, startingLine);
+				new ArrayList<InExtVarPair>(), _inToExtVar);
 		for (InExtVarPair falseWrittenVarPair : ifWrittenVars) {
 			IVar extVar = falseWrittenVarPair._ext;
-			GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode(startingLine);
-			GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode(startingLine);
+			GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode();
+			GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode();
 
 			PrevTrueFalseNode prevTrueFalse = mapPrevTrueFalse.get(extVar);
 			if (prevTrueFalse == null)
@@ -56,7 +56,7 @@ public abstract class BoolValuePack {
 			mapPrevTrueFalseMV.put(prevTrueFalse._prev, prevTrueFalse);
 		}
 
-		_ifMergedNodes = basicBlock.addToExtGraph(startingLine);
+		_ifMergedNodes = basicBlock.addToExtGraph();
 	}
 
 	abstract void insertBoolNode(PrevTrueFalseNode prevTrueFalse, GraphNode node);

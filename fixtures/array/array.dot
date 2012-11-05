@@ -8,7 +8,7 @@ label = "root";
 	node_000004 [ label = "array_p_pointed", startingline=8 ]
 	node_000005 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=9 ]
 	node_000006 [ label = "*array_p", startingline=9 ]
-	node_000007 [ label = "array_p_pointed", startingline=-4 ]
+	node_000007 [ label = "array_p_pointed", startingline=9 ]
 	node_000008 [ label = "*array_p", startingline=10 ]
 	node_000009 [ label = "b", startingline=10 ]
 	node_000001 -> node_000002

@@ -23,6 +23,8 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 
+import debug.DebugOptions;
+
 public class ClassDeclCDT extends ClassDecl{
 
 	private IBinding _binding;
@@ -93,14 +95,12 @@ public class ClassDeclCDT extends ClassDecl{
 	}
 	
 	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
-		int startingLine = funcDeclarator.getFileLocation().getStartingLineNumber();
-
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
 		MemberFunc memberFunc = _memberFuncIdMap.get(memberFuncBinding);
 		// check if the function declaration has already been loaded
 		if(memberFunc == null) {
-			memberFunc = new MemberFunc(this, astInterpreter, memberFuncBinding, startingLine);
-			memberFunc.loadDeclaration(funcDeclarator, startingLine);
+			memberFunc = new MemberFunc(this, astInterpreter, memberFuncBinding);
+			memberFunc.loadDeclaration(funcDeclarator);
 		}
 		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
 		
@@ -109,6 +109,7 @@ public class ClassDeclCDT extends ClassDecl{
 
 	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreterCDT astInterpreter) {
 		IASTDeclarator declarator = member.getDeclarator();
+		DebugOptions.setStartingLine(declarator.getFileLocation().getStartingLineNumber());
 		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
 		
 		MemberFunc memberFunc = loadMemberFuncDecl(funcDeclarator, astInterpreter);

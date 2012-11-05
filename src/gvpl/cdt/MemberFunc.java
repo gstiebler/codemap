@@ -35,12 +35,12 @@ public class MemberFunc extends Function {
 	 * function implements a function in a parent class. */
 	private MemberFunc _parentMemberFunc = null;
 	
-	public MemberFunc(ClassDeclCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding, int startingLine) {
-		super(new Graph(startingLine), null, astInterpreter, ownBinding);
+	public MemberFunc(ClassDeclCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
+		super(new Graph(), null, astInterpreter, ownBinding);
 		_parentClass = parent;
 		
 		_thisVar = new ClassVar(_gvplGraph, "THIS", parent, this);
-		_thisVar.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter, startingLine);
+		_thisVar.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);
 	}
 
 	protected String calcName() {
@@ -48,8 +48,8 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	public void loadDeclaration(CPPASTFunctionDeclarator decl, int startingLine) {
-		super.loadDeclaration(decl, startingLine);
+	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
+		super.loadDeclaration(decl);
 		
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
@@ -63,8 +63,6 @@ public class MemberFunc extends Function {
 	@Override
 	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
 		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
-			int startingLine = initializer.getFileLocation().getStartingLineNumber();
-
 			IASTExpression expr = initializer.getInitializerValue();
 
 			IASTName memberInitId = initializer.getMemberInitializerId();
@@ -73,7 +71,7 @@ public class MemberFunc extends Function {
 
 			if (memberBinding instanceof CPPField) {
 				IVar var = getVarFromBinding(memberBinding);
-				instructionLine.loadConstructorInitializer(var, expr, startingLine);
+				instructionLine.loadConstructorInitializer(var, expr);
 			} else if (memberBinding instanceof CPPConstructor) {
 				for (ClassDeclCDT parentClass : _parentClass.getParentClassesCDT()) {
 					MemberFunc memberFunc = parentClass.getMemberFunc(memberBinding);
@@ -83,7 +81,7 @@ public class MemberFunc extends Function {
 					IASTExpression initValue = initializer.getInitializerValue();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
 							memberFunc, initValue);
-					memberFunc.loadMemberFuncRef(_thisVar, parameters, _gvplGraph, this, startingLine);
+					memberFunc.loadMemberFuncRef(_thisVar, parameters, _gvplGraph, this);
 					break;
 				}
 			} else
@@ -107,7 +105,7 @@ public class MemberFunc extends Function {
 			return var;
 		
 		//if the variable isn't in scope, create it
-		return createVarFromBinding(binding, -2);
+		return createVarFromBinding(binding);
 	}
 	
 	@Override
@@ -124,8 +122,7 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph,
-			int startingLine) {
+	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph) {
 		logger.fatal("Error! Should call loadMemberFuncRef instead.");
 		return null;
 	}
@@ -138,16 +135,14 @@ public class MemberFunc extends Function {
 	 * @param graphBuilder
 	 */
 	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameterValues,
-			Graph graph, AstLoader astLoader, int startingLine) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_gvplGraph, this,
-				startingLine);
+			Graph graph, AstLoader astLoader) {
+		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_gvplGraph, this);
 		
 		// binds the "this" pointer as a normal parameter
-		bindInParameter(internalToMainGraphMap, classVar, _thisVar, startingLine); 
-		bindOutParameter(internalToMainGraphMap, classVar, _thisVar, startingLine);
+		bindInParameter(internalToMainGraphMap, classVar, _thisVar); 
+		bindOutParameter(internalToMainGraphMap, classVar, _thisVar);
 		
-		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap,
-				startingLine);
+		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap);
 	}
 	
 	public MemberFunc getParentMemberFunc() {

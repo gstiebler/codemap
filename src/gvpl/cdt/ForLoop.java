@@ -15,25 +15,24 @@ public class ForLoop extends AstLoaderCDT {
 
 	AstLoaderCDT _typeSource;
 	
-	public ForLoop(AstLoaderCDT parent, AstInterpreterCDT astInterpreter, int startingLine) {
-		super(new Graph(-1), null, astInterpreter);
+	public ForLoop(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
+		super(new Graph(), null, astInterpreter);
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}
 
 	public void load(IASTForStatement node, Graph gvplGraph, AstLoaderCDT astLoader) {
-		int startingLine = node.getFileLocation().getStartingLineNumber();
 		IASTStatement body = node.getBody();
 
 		// loadHeader(node);
 
 		BasicBlockCDT basicBlockLoader = new BasicBlockCDT(this, _astInterpreter);
 		basicBlockLoader.load(body);
-		basicBlockLoader.addToExtGraph(startingLine);
+		basicBlockLoader.addToExtGraph();
 		basicBlockLoader.bindSettedPointers();
 
 		_parent = _typeSource;
-		addSubGraph(gvplGraph, startingLine);
+		addSubGraph(gvplGraph);
 	}
 	
 	@Override
@@ -45,7 +44,7 @@ public class ForLoop extends AstLoaderCDT {
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
 		if(_parent == null)
-			return createVarFromBinding(binding, -2);
+			return createVarFromBinding(binding);
 		return _parent.getVarFromBinding(binding);
 	}
 
@@ -56,11 +55,9 @@ public class ForLoop extends AstLoaderCDT {
 		ForLoopHeader header = new ForLoopHeader(_gvplGraph, this, _astInterpreter);
 		header.load(initializer, condition);
 
-		int startingLine = node.getFileLocation().getStartingLineNumber();
-		GraphNode headerNode = _gvplGraph.addGraphNode("ForHeader", NodeType.E_LOOP_HEADER,
-				startingLine);
+		GraphNode headerNode = _gvplGraph.addGraphNode("ForHeader", NodeType.E_LOOP_HEADER);
 		for (IVar readVar : header.getReadVars()) {
-			readVar.getCurrentNode(startingLine).addDependentNode(headerNode, startingLine);
+			readVar.getCurrentNode().addDependentNode(headerNode);
 		}
 	}
 

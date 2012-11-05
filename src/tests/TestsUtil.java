@@ -26,12 +26,13 @@ import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 import org.eclipse.core.runtime.CoreException;
 
 public class TestsUtil {
-	
+
 	public static void baseTest(String testName) {
 		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
 		GraphNode.resetCounter();
-        
+		FileDriver.resetCounter();
+
 		IParserLogService log = new DefaultLogService();
 		String code = "";
 		try {
@@ -50,19 +51,19 @@ public class TestsUtil {
 
 		IASTTranslationUnit translationUnit = null;
 		try {
-			translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(
-					reader, info, readerFactory, null, log);
+			translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info,
+					readerFactory, null, log);
 		} catch (CoreException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph(-1));
+		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
 		astInterpreter.execute(translationUnit);
-		
+
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
-		
+
 		FileWriter outFile = null;
 		try {
 			outFile = new FileWriter(examplePath + "generated.dot");
@@ -70,10 +71,10 @@ public class TestsUtil {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		fileDriver.print(astInterpreter.getGraph(), outFile, visualizer);
 
-        Graph gvGraph = DotTree.getGraphFromDot(examplePath + testName + ".dot");
+		Graph gvGraph = DotTree.getGraphFromDot(examplePath + testName + ".dot");
 		assertTrue(GraphCompare.isEqual(astInterpreter.getGraph(), gvGraph));
 	}
 }

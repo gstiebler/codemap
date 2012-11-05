@@ -52,8 +52,7 @@ public abstract class AstLoader {
 	}
 	
 	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
-			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap,
-			int startingLine) {
+			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap) {
 		
 		if(extVar == null)
 			return;
@@ -72,8 +71,7 @@ public abstract class AstLoader {
 			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
 				IVar memberExtVar = extClassVar.getMember(memberId);
 				IVar memberIntVar = intClassVar.getMember(memberId);
-				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap,
-						startingLine);
+				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap);
 			}
 
 			return;
@@ -101,33 +99,32 @@ public abstract class AstLoader {
 	 * @param startingLine
 	 * @return A map from the internal graph nodes to the external graph nodes
 	 */
-	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph, int startingLine) {
+	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph) {
 		
-		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this, startingLine);
+		Map<GraphNode, GraphNode> map = graph.addSubGraph(_gvplGraph, this);
 
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(graph), startingLine);
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(graph));
 		
 		for(InExtVarPair readPair : readVars) {
 			GraphNode firstNodeInNewGraph = map.get(readPair._in.getFirstNode());
-			GraphNode currNode = readPair._ext.getCurrentNode(startingLine);
-			currNode.addDependentNode(firstNodeInNewGraph, startingLine);
+			GraphNode currNode = readPair._ext.getCurrentNode();
+			currNode.addDependentNode(firstNodeInNewGraph);
 		}
 
 		for(InExtVarPair writtenPair : writtenVars) {
-			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode(startingLine));
-			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph, startingLine);
+			GraphNode currNodeInNewGraph = map.get(writtenPair._in.getCurrentNode());
+			writtenPair._ext.receiveAssign(NodeType.E_VARIABLE, currNodeInNewGraph);
 		}
 		
 		return map;
 	}
 
-	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName,
-			int startLine) {
+	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
 		IVar var_decl = addVarDecl(functionName, type);
-		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, startLine);
+		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue);
 	}
 
 	public Function getFunction() {
@@ -137,13 +134,13 @@ public abstract class AstLoader {
 	protected void lostScope() {
 		logger.debug("Lost scope of graph {}", _gvplGraph.getName());
 		for(ClassVar classVar : _varsCreatedInThisScope) {
-			classVar.callDestructor(this, _gvplGraph, -8);
+			classVar.callDestructor(this, _gvplGraph);
 		}
 	}
 	
 	protected abstract AstInterpreter getAstInterpreter();
 	protected abstract AstLoader getParent();
 	public abstract void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap, int startingLine);
+			List<InExtVarPair> ignored, InToExtVar inToExtMap);
 
 }

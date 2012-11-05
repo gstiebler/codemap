@@ -9,6 +9,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import debug.DebugOptions;
+
 public class GraphNode {
 	
 	Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -21,23 +23,21 @@ public class GraphNode {
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
-	private int _startingLine;
+	private int _startingLine = DebugOptions.getStartingLine();
 
-	public GraphNode(String name, NodeType type, int startingLine) {
+	public GraphNode(String name, NodeType type) {
 		_id = getNewId();
 		_name = name;
 		_type = type;
-		_startingLine = startingLine;
 		
 		logger.info("new graphnode {} ({})", name, _id);
 	}
 
-	public GraphNode(IVar parentVar, NodeType type, int startingLine) {
+	public GraphNode(IVar parentVar, NodeType type) {
 		_id = getNewId();
 		_parentVar = parentVar;
 		_name = parentVar.getName();
 		_type = type;
-		_startingLine = startingLine;
 
 		logger.info("new graphnode ({}) var {} ({})", _id, parentVar.getName(), parentVar.getId());
 	}
@@ -65,7 +65,7 @@ public class GraphNode {
 		return _name;
 	}
 
-	public void addDependentNode(GraphNode dependentNode, int startingLine) {
+	public void addDependentNode(GraphNode dependentNode) {
 		if (_dependentNodes.contains(dependentNode))
 		{
 			logger.warn("Already dependent!!");
@@ -79,16 +79,16 @@ public class GraphNode {
 		dependentNode._sourceNodes.add(this);
 	}
 	
-	public void merge(GraphNode node, int startingLine) {
+	public void merge(GraphNode node) {
 		for(GraphNode dependentNode : node._dependentNodes) {
-			addDependentNode(dependentNode, startingLine);
+			addDependentNode(dependentNode);
 			dependentNode._sourceNodes.remove(node);
 			dependentNode._sourceNodes.add(this);
 		}
 		
 		for(GraphNode sourceNode : node._sourceNodes) {
 			sourceNode._dependentNodes.remove(node);
-			sourceNode.addDependentNode(this, startingLine);
+			sourceNode.addDependentNode(this);
 		}
 		
 		node._parentVar.updateNodes(node, this);

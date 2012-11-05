@@ -17,20 +17,20 @@ public interface IVar {
 
 	public GraphNode getFirstNode();
 
-	public GraphNode getCurrentNode(int startingLine);
+	public GraphNode getCurrentNode();
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
-			AstInterpreter astInterpreter, int startingLine);
+			AstInterpreter astInterpreter);
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine);
+			AstLoader astLoader, AstInterpreter astInterpreter);
 
 	/**
 	 * Creates an assignment to this variable
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startingLine);
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode);
 
 	public String getName();
 

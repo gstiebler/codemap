@@ -61,25 +61,25 @@ public class Var implements IVar {
 		return _firstGraphNode;
 	}
 
-	public GraphNode getCurrentNode(int startingLine) {
+	public GraphNode getCurrentNode() {
 		return _currGraphNode;
 	}
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
-			AstInterpreter astInterpreter, int startingLine) {
-		updateNode(_gvplGraph.addGraphNode(this, nodeType, startingLine));
+			AstInterpreter astInterpreter) {
+		updateNode(_gvplGraph.addGraphNode(this, nodeType));
 	}
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter, int startingLine) {
+			AstLoader astLoader, AstInterpreter astInterpreter) {
 		if (parameter_values != null) {
 			if (parameter_values.size() > 1)
 				logger.fatal("Primitive type receiving more than 1 parameter in initialization");
 
-			GraphNode parameterNode = parameter_values.get(0).getNode(startingLine);
-			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, startingLine);
+			GraphNode parameterNode = parameter_values.get(0).getNode();
+			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode);
 		} else
-			initializeVar(nodeType, graph, astLoader, astInterpreter, startingLine);
+			initializeVar(nodeType, graph, astLoader, astInterpreter);
 	}
 
 	/**
@@ -87,9 +87,9 @@ public class Var implements IVar {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, int startingLine) {
-		GraphNode lhsNode = _gvplGraph.addGraphNode(this, lhsType, startingLine);
-		rhsNode.addDependentNode(lhsNode, startingLine);
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode) {
+		GraphNode lhsNode = _gvplGraph.addGraphNode(this, lhsType);
+		rhsNode.addDependentNode(lhsNode);
 		updateNode(lhsNode);
 
 		return lhsNode;

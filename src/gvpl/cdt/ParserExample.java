@@ -37,7 +37,7 @@ public class ParserExample {
 		IASTTranslationUnit translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(
 				reader, info, readerFactory, null, log);
 
-		Graph gvplGraph = new Graph(-1);
+		Graph gvplGraph = new Graph();
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(gvplGraph);
 		astInterpreter.execute(translationUnit);
 

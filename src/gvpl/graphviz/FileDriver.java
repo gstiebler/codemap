@@ -136,4 +136,8 @@ public class FileDriver implements IGraphOutput {
 	public static String nodeInternalName(int node_id) {
 		return "node_" + String.format("%06d", node_id);
 	}
+	
+	public static void resetCounter() {
+		subGraphCounter = 1;
+	}
 }

@@ -11,18 +11,18 @@ label = "root";
 	node_000067 [ label = "classB._baseMember", startingline=47 ]
 	node_000068 [ label = "bcPointer_pointed._baseMember", startingline=51 ]
 	node_000071 [ label = "bcPointer_pointed._baseMember", startingline=55 ]
-	node_000074 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=49 ]
+	node_000074 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=55 ]
 	node_000075 [ label = "40", style=filled, fillcolor="#E9FFE9", startingline=58 ]
 	node_000086 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=58 ]
 	node_000087 [ label = "a", startingline=58 ]
 	node_000088 [ label = "*bcPointer", startingline=59 ]
-	node_000089 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=-5 ]
-	node_000090 [ label = "classA._baseMember", startingline=-4 ]
-	node_000091 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=-5 ]
-	node_000092 [ label = "classB._baseMember", startingline=-4 ]
+	node_000089 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=59 ]
+	node_000090 [ label = "classA._baseMember", startingline=59 ]
+	node_000091 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=59 ]
+	node_000092 [ label = "classB._baseMember", startingline=59 ]
 	node_000093 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=60 ]
 	node_000094 [ label = "b", startingline=60 ]
-subgraph cluster_38 {
+subgraph cluster_1 {
 label = "ClassA::ClassA";
 parent = "G";
 startingline = 46;
@@ -32,17 +32,17 @@ startingline = 46;
 	node_000044 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=20 ]
 	node_000045 [ label = "55", style=filled, fillcolor="#E9FFE9", startingline=20 ]
 	node_000046 [ label = "THIS._baseMember", startingline=20 ]
-subgraph cluster_39 {
+subgraph cluster_2 {
 label = "BaseClass::BaseClass";
-parent = "cluster_38";
-startingline = 20;
+parent = "cluster_1";
+startingline = 46;
 	node_000047 [ label = "THIS._baseMember", startingline=7 ]
 	node_000048 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000049 [ label = "dummy", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000050 [ label = "THIS._baseMember", startingline=9 ]
 }
 }
-subgraph cluster_40 {
+subgraph cluster_3 {
 label = "ClassB::ClassB";
 parent = "G";
 startingline = 47;
@@ -54,17 +54,17 @@ startingline = 47;
 	node_000059 [ label = "THIS._baseMember", startingline=34 ]
 	node_000060 [ label = "30", style=filled, fillcolor="#E9FFE9", startingline=34 ]
 	node_000061 [ label = "THIS._bMember", style=filled, fillcolor="#FFE9E9", startingline=34 ]
-subgraph cluster_41 {
+subgraph cluster_4 {
 label = "BaseClass::BaseClass";
-parent = "cluster_40";
-startingline = 34;
+parent = "cluster_3";
+startingline = 47;
 	node_000062 [ label = "THIS._baseMember", startingline=7 ]
 	node_000063 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000064 [ label = "dummy", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000065 [ label = "THIS._baseMember", startingline=9 ]
 }
 }
-subgraph cluster_42 {
+subgraph cluster_5 {
 label = "ClassA::process";
 parent = "G";
 startingline = 58;
@@ -74,7 +74,7 @@ startingline = 58;
 	node_000079 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=25 ]
 	node_000080 [ label = "ClassA::process", style=filled, fillcolor="#FFFFD0", startingline=25 ]
 }
-subgraph cluster_43 {
+subgraph cluster_6 {
 label = "ClassB::process";
 parent = "G";
 startingline = 58;

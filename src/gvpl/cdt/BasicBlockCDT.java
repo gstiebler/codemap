@@ -15,7 +15,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 public class BasicBlockCDT extends AstLoaderCDT {
 
 	public BasicBlockCDT(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
-		super(new Graph(-1), parent, astInterpreter);
+		super(new Graph(), parent, astInterpreter);
 		_gvplGraph.setLabel("BasicBlockGraph");
 	}
 
@@ -42,8 +42,8 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	 * @return Maps the nodes that were merged with others. The nodes in the key
 	 *         of the map no longer exists.
 	 */
-	public Map<GraphNode, GraphNode> addToExtGraph(int startingLine) {
-		return BasicBlock.addToExtGraph(_parent.getGraph(), this, startingLine);
+	public Map<GraphNode, GraphNode> addToExtGraph() {
+		return BasicBlock.addToExtGraph(_parent.getGraph(), this);
 	}
 	
 	public void bindSettedPointers() {

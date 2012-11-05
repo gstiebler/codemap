@@ -25,6 +25,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 
+import debug.DebugOptions;
+
 public class AstInterpreterCDT extends AstInterpreter {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -52,6 +54,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			} // if it's a class/struct
 			else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
+				DebugOptions.setStartingLine(declaration.getFileLocation().getStartingLineNumber());
 				loadStructureDecl((CPPASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
 			} else
 				logger.fatal("Deu merda aqui." + declaration.getClass());
@@ -93,11 +96,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	private Function loadSimpleFunction(IASTName name, CPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition declaration) {
-		int startingLine = funcDeclarator.getFileLocation().getStartingLineNumber();
 		IBinding binding = name.resolveBinding();
+		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
 		Function function = new Function(_gvplGraph, this, this, binding);
 
-		function.loadDeclaration(funcDeclarator, startingLine);
+		function.loadDeclaration(funcDeclarator);
+		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
 		function.loadDefinition(funcDeclarator.getConstructorChain(), declaration.getBody());
 		_funcIdMap.put(binding, function);
 		return function;
