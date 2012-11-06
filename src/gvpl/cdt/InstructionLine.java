@@ -72,17 +72,17 @@ public class InstructionLine {
 		logger.debug("statement is: {}", statement.getClass());
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
-			IASTDeclarationStatement decl_statement = (IASTDeclarationStatement) statement;
-			IASTDeclaration decl = decl_statement.getDeclaration();
+			IASTDeclarationStatement declStatement = (IASTDeclarationStatement) statement;
+			IASTDeclaration decl = declStatement.getDeclaration();
 			if (!(decl instanceof IASTSimpleDeclaration))
 				logger.fatal("Deu merda aqui.");
 
-			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) decl;
-			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
+			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) decl;
+			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
 
-			TypeId type = _astInterpreter.getType(decl_spec);
+			TypeId type = _astInterpreter.getType(declSpec);
 
-			IASTDeclarator[] declarators = simple_decl.getDeclarators();
+			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			for (IASTDeclarator declarator : declarators) {
 				// possibly more than one variable per line
 				IVar var_decl = _parentBasicBlock.loadVarDecl(declarator, type);
@@ -470,15 +470,18 @@ public class InstructionLine {
 	 */
 	GraphNode loadUnaryExpr(IASTUnaryExpression unExpr) {
 		// Check if the operator is a star
-		if (unExpr.getOperator() != CPPASTUnaryExpression.op_star)
+		if (unExpr.getOperator() == CPPASTUnaryExpression.op_star){
+			IASTExpression opExpr = unExpr.getOperand();
+			IVar pointerVar = _parentBasicBlock.getVarFromExpr(opExpr);
+			if (!(pointerVar instanceof PointerVar))
+				logger.fatal("not expected here");
+
+			return pointerVar.getCurrentNode();
+		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_bracketedPrimary) {
+			return loadValue(unExpr.getOperand());
+		} else
 			logger.fatal("not implemented");
-
-		IASTExpression opExpr = unExpr.getOperand();
-		IVar pointerVar = _parentBasicBlock.getVarFromExpr(opExpr);
-		if (!(pointerVar instanceof PointerVar))
-			logger.fatal("not expected here");
-
-		return pointerVar.getCurrentNode();
+		return null;
 	}
 
 	/**
