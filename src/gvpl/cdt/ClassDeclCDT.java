@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
 import gvpl.common.FuncParameter.IndirectionType;

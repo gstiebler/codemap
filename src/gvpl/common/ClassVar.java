@@ -1,7 +1,7 @@
 package gvpl.common;
 
 import gvpl.cdt.AstLoaderCDT;
-import gvpl.cdt.MemberFunc;
+import gvpl.cdt.function.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -109,7 +109,7 @@ public class ClassVar extends Var implements IClassVar{
 			var.setOwner(this);
 		}
 
-		MemberFunc constructorFunc = _classDecl.getConstructorFunc();
+		MemberFunc constructorFunc = _classDecl.getConstructorFunc(parameterValues);
 		if (constructorFunc == null)
 			return;
 
@@ -117,6 +117,17 @@ public class ClassVar extends Var implements IClassVar{
 			return;
 
 		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader);
+		
+		for (Map.Entry<MemberId, IVar> entry : _memberInstances.entrySet()) {
+			if(!(entry.getValue() instanceof ClassVar))
+				continue;
+			
+			if(constructorFunc.memberIsInitialized(entry.getKey()))
+				continue;
+			
+			ClassVar member = (ClassVar) entry.getValue();
+			member.callConstructor(new ArrayList<FuncParameter>(), nodeType, graph, astLoader, astInterpreter);
+		}
 	}
 
 	public void callDestructor(AstLoader astLoader, Graph graph) {

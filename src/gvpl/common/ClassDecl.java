@@ -1,8 +1,10 @@
 package gvpl.common;
 
-import gvpl.cdt.MemberFunc;
+import gvpl.cdt.function.MemberFunc;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -11,7 +13,7 @@ public abstract class ClassDecl {
 
 	protected String _name;
 	protected TypeId _typeId;
-	protected MemberFunc _constructorFunc = null;
+	protected List<MemberFunc> _constructorFuncs = new ArrayList<MemberFunc>();
 	protected MemberFunc _destructorFunc = null;
 	protected Map<MemberId, ClassMember> _memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
 	
@@ -23,8 +25,16 @@ public abstract class ClassDecl {
 		return _typeId;
 	}
 
-	public MemberFunc getConstructorFunc() {
-		return _constructorFunc;
+	public MemberFunc getConstructorFunc(List<FuncParameter> parametersList) {
+//		for(MemberFunc constructor : _constructorFuncs) {
+//			if(constructor.isEquivalentParameterList(parametersList));
+//				return constructor;
+//		}
+		
+		if(_constructorFuncs.size() > 0)
+			return _constructorFuncs.get(0);
+		
+		return null;
 	}
 
 	public MemberFunc getDestructorFunc() {
@@ -58,7 +68,8 @@ public abstract class ClassDecl {
 	}
 
 	public void setConstructorFunc(MemberFunc constructorFunc) {
-		_constructorFunc = constructorFunc;
+		_constructorFuncs.add(constructorFunc);
+		constructorFunc.setIsConstructor();
 	}
 
 	public void setDestructorFunc(MemberFunc destructorFunc) {

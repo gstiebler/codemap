@@ -1,5 +1,8 @@
-package gvpl.cdt;
+package gvpl.cdt.function;
 
+import gvpl.cdt.AstInterpreterCDT;
+import gvpl.cdt.ClassDeclCDT;
+import gvpl.cdt.InstructionLine;
 import gvpl.common.AstLoader;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
@@ -36,6 +39,8 @@ public class MemberFunc extends Function {
 	/** The equivalent function in a parent class. It's only used if the current
 	 * function implements a function in a parent class. */
 	private MemberFunc _parentMemberFunc = null;
+	
+	private InitializedMembers _initializedMembers = null;
 	
 	public MemberFunc(ClassDeclCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(new Graph(), null, astInterpreter, ownBinding);
@@ -76,6 +81,8 @@ public class MemberFunc extends Function {
 			if (memberBinding instanceof CPPField) {
 				IVar var = getVarFromBinding(memberBinding);
 				instructionLine.loadConstructorInitializer(var, expr);
+				MemberId memberId = _parentClass.getMember(memberBinding).getMemberId();
+				_initializedMembers._members.add(memberId);
 			} else if (memberBinding instanceof CPPConstructor) {
 				for (ClassDeclCDT parentClass : _parentClass.getParentClassesCDT()) {
 					MemberFunc memberFunc = parentClass.getMemberFunc(memberBinding);
@@ -113,7 +120,7 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	protected VarInfo getTypeFromVarBinding(IBinding binding) {
+	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		ClassMember classMember = _parentClass.getMember(binding);
 		if(classMember != null)
 			return classMember.getVarInfo();
@@ -159,5 +166,13 @@ public class MemberFunc extends Function {
 
 	public ClassVar getThisReference() {
 		return _thisVar;
+	}
+	
+	public void setIsConstructor() {
+		_initializedMembers = new InitializedMembers();
+	}
+	
+	public boolean memberIsInitialized(MemberId memberId) {
+		return _initializedMembers.contains(memberId);
 	}
 }

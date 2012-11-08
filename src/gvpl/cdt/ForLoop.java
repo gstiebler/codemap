@@ -36,7 +36,7 @@ public class ForLoop extends AstLoaderCDT {
 	}
 	
 	@Override
-	protected VarInfo getTypeFromVarBinding(IBinding binding) {
+	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		return _typeSource.getTypeFromVarBinding(binding);
 	}
 	

@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.MemberFunc;
+import gvpl.cdt.function.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;

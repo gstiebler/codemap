@@ -1,5 +1,8 @@
-package gvpl.cdt;
+package gvpl.cdt.function;
 
+import gvpl.cdt.AstInterpreterCDT;
+import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.InstructionLine;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -287,7 +290,7 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	@Override
-	protected VarInfo getTypeFromVarBinding(IBinding binding) {
+	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null)
 			return funcParameter.getVar().getVarInfo();
@@ -317,9 +320,13 @@ public class Function extends AstLoaderCDT {
 		if(_parametersList.size() != other._parametersList.size())
 			return false;
 		
+		return isEquivalentParameterList(other._parametersList);
+	}
+	
+	public boolean isEquivalentParameterList(List<FuncParameter> parametersList) {
 		for(int i = 0; i < _parametersList.size(); ++i) {
 			FuncParameter internal = _parametersList.get(i);
-			FuncParameter external = other._parametersList.get(i);
+			FuncParameter external = parametersList.get(i);
 			if(!internal.isEquivalent(external))
 				return false;
 		}

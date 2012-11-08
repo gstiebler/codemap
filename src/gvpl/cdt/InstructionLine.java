@@ -2,6 +2,8 @@ package gvpl.cdt;
 
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
+import gvpl.cdt.function.Function;
+import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -155,11 +157,11 @@ public class InstructionLine {
 		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue);
 	}
 	
-	void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr) {
+	public void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr) {
 		List<FuncParameter> parameterValues = null;
 		if(lhsVar instanceof ClassVar) {
 			ClassVar classVar = (ClassVar) lhsVar;
-			Function constructorFunc = classVar.getClassDecl().getConstructorFunc();
+			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(null);
 			parameterValues = loadFunctionParameters(constructorFunc, initExpr);
 		} else {
 			parameterValues = new ArrayList<FuncParameter>();
@@ -276,13 +278,14 @@ public class InstructionLine {
 				IBinding funcBinding = typeSpec.getName().resolveBinding();
 				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
 			}
+			
 			if (classDecl == null) {
 				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _parentBasicBlock,
 						_astInterpreter);
 				return;
 			}
 
-			Function constructorFunc = classDecl.getConstructorFunc();
+			Function constructorFunc = classDecl.getConstructorFunc(null);
 
 			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
@@ -382,15 +385,15 @@ public class InstructionLine {
 		return null;
 	}
 
-	List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
-		List<FuncParameter> parameter_values = new ArrayList<FuncParameter>();
+	public List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
+		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		if (paramExpr == null)
-			return parameter_values;
+			return parameterValues;
 
 		IASTExpression[] parameters;
 		if (paramExpr instanceof IASTExpressionList) {
-			IASTExpressionList expr_list = (IASTExpressionList) paramExpr;
-			parameters = expr_list.getExpressions();
+			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
+			parameters = exprList.getExpressions();
 		} else {
 			parameters = new IASTExpression[1];
 			parameters[0] = paramExpr;
@@ -415,10 +418,10 @@ public class InstructionLine {
 			else
 				logger.fatal("Work here ");
 
-			parameter_values.add(localParameter);
+			parameterValues.add(localParameter);
 		}
 
-		return parameter_values;
+		return parameterValues;
 	}
 
 	GraphNode loadBinOp(IASTBinaryExpression bin_op) {

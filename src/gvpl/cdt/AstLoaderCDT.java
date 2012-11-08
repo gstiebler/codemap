@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.cdt.function.Function;
 import gvpl.common.AstInterpreter;
 import gvpl.common.AstLoader;
 import gvpl.common.ClassVar;
@@ -101,7 +102,7 @@ public class AstLoaderCDT extends AstLoader {
 		return _localVariables.get(binding);
 	}
 	
-	protected VarInfo getTypeFromVarBinding(IBinding binding) {
+	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var.getVarInfo();

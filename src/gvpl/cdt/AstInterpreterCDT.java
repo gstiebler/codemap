@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.cdt.function.Function;
 import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
 import gvpl.common.MemberId;
