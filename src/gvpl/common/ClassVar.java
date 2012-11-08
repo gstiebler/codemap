@@ -107,8 +107,8 @@ public class ClassVar extends Var implements IClassVar{
 		if (constructorFunc == null)
 			return;
 
-		if (parameterValues == null)
-			return;
+		//if (parameterValues == null)
+		//	return;
 		
 		for (Map.Entry<MemberId, IVar> entry : _memberInstances.entrySet()) {
 			if(constructorFunc.memberIsInitialized(entry.getKey()))

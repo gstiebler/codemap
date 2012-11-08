@@ -139,6 +139,9 @@ public class Function extends AstLoaderCDT {
 
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,
 			Map<GraphNode, GraphNode> internalToMainGraphMap) {
+		if(callingParameters == null)
+			return null;
+		
 		if (_parametersMap.size() != callingParameters.size())
 			logger.fatal("Number of parameters differs from func declaration!");
 

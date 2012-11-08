@@ -12,12 +12,12 @@ public:
 
 class sPri
 {
+public:
 	float a;
 	float h;
 	
 	sInterno sint;
 	
-public:
 	sPri(float add, int dummy)
 	{
 		a = 23.4 + add;
@@ -44,11 +44,8 @@ int main() {
 	float g = str1.a - str1.h;
 	float k = str2->a * str2->h;
 	
-	sInterno s();
+	sInterno s;
 	float x = s.soEsse;
-	
-	//sInterno s2;
-	//float y = s2.soEsse;
 	
 	//sSeg seg;
 	//float z = seg.interno.soEsse;
