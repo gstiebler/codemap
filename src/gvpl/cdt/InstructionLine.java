@@ -87,8 +87,8 @@ public class InstructionLine {
 			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			for (IASTDeclarator declarator : declarators) {
 				// possibly more than one variable per line
-				IVar var_decl = _parentBasicBlock.loadVarDecl(declarator, type);
-				LoadVariableInitialization(var_decl, declarator);
+				IVar varDecl = _parentBasicBlock.loadVarDecl(declarator, type);
+				LoadVariableInitialization(varDecl, declarator);
 			}
 		} else if (statement instanceof IASTExpression)
 			loadValue((IASTExpression) statement);
@@ -136,7 +136,15 @@ public class InstructionLine {
 	public void LoadVariableInitialization(IVar lhsVar, IASTDeclarator decl) {
 		IASTInitializer initializer = decl.getInitializer();	
 		if(initializer == null) //variable is not initialized
+		{
+			if(!(lhsVar instanceof ClassVar))
+				return;
+			
+			ClassVar classVar = (ClassVar) lhsVar;
+			classVar.callConstructor(new ArrayList<FuncParameter>(), NodeType.E_VARIABLE, _gvplGraph, 
+						_parentBasicBlock, _astInterpreter);
 			return;
+		}
 		
 		if (initializer instanceof ICPPASTConstructorInitializer) { 
 			// format: int a(5);

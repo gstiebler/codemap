@@ -102,32 +102,25 @@ public class ClassVar extends Var implements IClassVar{
 	@Override
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter) {
-
-		// TODO call only the variables that wasn't written in constructorFunc.loadMemberFuncRef
-		for (IVar var : _memberInstances.values()) {
-			var.callConstructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
-			var.setOwner(this);
-		}
-
+		
 		MemberFunc constructorFunc = _classDecl.getConstructorFunc(parameterValues);
 		if (constructorFunc == null)
 			return;
 
 		if (parameterValues == null)
 			return;
-
-		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader);
 		
 		for (Map.Entry<MemberId, IVar> entry : _memberInstances.entrySet()) {
-			if(!(entry.getValue() instanceof ClassVar))
-				continue;
-			
 			if(constructorFunc.memberIsInitialized(entry.getKey()))
 				continue;
 			
-			ClassVar member = (ClassVar) entry.getValue();
-			member.callConstructor(new ArrayList<FuncParameter>(), nodeType, graph, astLoader, astInterpreter);
+			IVar member = entry.getValue();
+			
+			member.callConstructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
+			member.setOwner(this);
 		}
+
+		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader);
 	}
 
 	public void callDestructor(AstLoader astLoader, Graph graph) {

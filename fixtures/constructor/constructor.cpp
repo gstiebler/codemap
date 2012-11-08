@@ -45,7 +45,7 @@ int main() {
 	float k = str2->a * str2->h;
 	
 	sInterno s();
-	//float x = s.soEsse;
+	float x = s.soEsse;
 	
 	//sInterno s2;
 	//float y = s2.soEsse;
