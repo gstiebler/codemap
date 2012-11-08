@@ -47,6 +47,6 @@ int main() {
 	sInterno s;
 	float x = s.soEsse;
 	
-	//sSeg seg;
-	//float z = seg.interno.soEsse;
+	sSeg seg;
+	float z = seg.interno.soEsse;
 }

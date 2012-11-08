@@ -2,142 +2,147 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000070 [ label = "45.98", style=filled, fillcolor="#E9FFE9", startingline=51 ]
-	node_000071 [ label = "str2.a", startingline=51 ]
-	node_000072 [ label = "9099.0", style=filled, fillcolor="#E9FFE9", startingline=52 ]
-	node_000073 [ label = "str2.h", startingline=52 ]
-	node_000074 [ label = "15", style=filled, fillcolor="#E9FFE9", startingline=54 ]
-	node_000080 [ label = "str2.seg.m1", startingline=54 ]
-	node_000081 [ label = "b", startingline=55 ]
-	node_000082 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startingline=56 ]
-	node_000083 [ label = "str2.seg.si.soEsse", startingline=56 ]
-	node_000084 [ label = "6.0", style=filled, fillcolor="#E9FFE9", startingline=58 ]
-	node_000130 [ label = "str2.a", startingline=58 ]
-	node_000131 [ label = "str2.h", startingline=58 ]
-	node_000132 [ label = "str2.seg.m1", startingline=58 ]
-	node_000133 [ label = "str2.seg.si.soEsse", startingline=58 ]
-	node_000134 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=60 ]
-	node_000135 [ label = "p", startingline=60 ]
+	node_000070 [ label = "str2.a", startingline=49 ]
+	node_000071 [ label = "str2.h", startingline=49 ]
+	node_000072 [ label = "str2.seg.m1", startingline=49 ]
+	node_000073 [ label = "str2.seg.n1", startingline=49 ]
+	node_000074 [ label = "str2.seg.si.soEsse", startingline=49 ]
+	node_000075 [ label = "45.98", style=filled, fillcolor="#E9FFE9", startingline=51 ]
+	node_000076 [ label = "str2.a", startingline=51 ]
+	node_000077 [ label = "9099.0", style=filled, fillcolor="#E9FFE9", startingline=52 ]
+	node_000078 [ label = "str2.h", startingline=52 ]
+	node_000079 [ label = "15", style=filled, fillcolor="#E9FFE9", startingline=54 ]
+	node_000085 [ label = "str2.seg.m1", startingline=54 ]
+	node_000086 [ label = "b", startingline=55 ]
+	node_000087 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startingline=56 ]
+	node_000088 [ label = "str2.seg.si.soEsse", startingline=56 ]
+	node_000089 [ label = "6.0", style=filled, fillcolor="#E9FFE9", startingline=58 ]
+	node_000135 [ label = "str2.a", startingline=58 ]
+	node_000136 [ label = "str2.h", startingline=58 ]
+	node_000137 [ label = "str2.seg.m1", startingline=58 ]
+	node_000138 [ label = "str2.seg.si.soEsse", startingline=58 ]
+	node_000139 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=60 ]
+	node_000140 [ label = "p", startingline=60 ]
 subgraph cluster_1 {
 label = "sSeg::setM1";
 parent = "G";
 startingline = 54;
-	node_000075 [ label = "THIS.m1", startingline=7 ]
-	node_000076 [ label = "THIS.n1", startingline=7 ]
-	node_000077 [ label = "THIS.si.soEsse", startingline=7 ]
-	node_000078 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
-	node_000079 [ label = "THIS.m1", startingline=17 ]
+	node_000080 [ label = "THIS.m1", startingline=7 ]
+	node_000081 [ label = "THIS.n1", startingline=7 ]
+	node_000082 [ label = "THIS.si.soEsse", startingline=7 ]
+	node_000083 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
+	node_000084 [ label = "THIS.m1", startingline=17 ]
 }
 subgraph cluster_2 {
 label = "sPri::inc_a5";
 parent = "G";
 startingline = 58;
-	node_000085 [ label = "THIS.a", startingline=38 ]
-	node_000086 [ label = "THIS.h", startingline=38 ]
-	node_000087 [ label = "THIS.seg.m1", startingline=38 ]
-	node_000088 [ label = "THIS.seg.n1", startingline=38 ]
-	node_000089 [ label = "THIS.seg.si.soEsse", startingline=38 ]
-	node_000090 [ label = "w", style=filled, fillcolor="#FFE9E9", startingline=38 ]
-	node_000091 [ label = "5.0", style=filled, fillcolor="#E9FFE9", startingline=40 ]
-	node_000092 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=40 ]
-	node_000093 [ label = "THIS.a", startingline=40 ]
-	node_000094 [ label = "3.0", style=filled, fillcolor="#E9FFE9", startingline=41 ]
-	node_000095 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=41 ]
-	node_000096 [ label = "THIS.h", startingline=41 ]
-	node_000097 [ label = "9.3", style=filled, fillcolor="#E9FFE9", startingline=42 ]
-	node_000098 [ label = "THIS.h", startingline=42 ]
-	node_000099 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=42 ]
-	node_000100 [ label = "THIS.h", startingline=42 ]
-	node_000101 [ label = "16", style=filled, fillcolor="#E9FFE9", startingline=43 ]
-	node_000102 [ label = "THIS.seg.m1", startingline=43 ]
-	node_000103 [ label = "18.20", style=filled, fillcolor="#E9FFE9", startingline=44 ]
-	node_000104 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=44 ]
-	node_000105 [ label = "THIS.seg.si.soEsse", startingline=44 ]
+	node_000090 [ label = "THIS.a", startingline=38 ]
+	node_000091 [ label = "THIS.h", startingline=38 ]
+	node_000092 [ label = "THIS.seg.m1", startingline=38 ]
+	node_000093 [ label = "THIS.seg.n1", startingline=38 ]
+	node_000094 [ label = "THIS.seg.si.soEsse", startingline=38 ]
+	node_000095 [ label = "w", style=filled, fillcolor="#FFE9E9", startingline=38 ]
+	node_000096 [ label = "5.0", style=filled, fillcolor="#E9FFE9", startingline=40 ]
+	node_000097 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=40 ]
+	node_000098 [ label = "THIS.a", startingline=40 ]
+	node_000099 [ label = "3.0", style=filled, fillcolor="#E9FFE9", startingline=41 ]
+	node_000100 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=41 ]
+	node_000101 [ label = "THIS.h", startingline=41 ]
+	node_000102 [ label = "9.3", style=filled, fillcolor="#E9FFE9", startingline=42 ]
+	node_000103 [ label = "THIS.h", startingline=42 ]
+	node_000104 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=42 ]
+	node_000105 [ label = "THIS.h", startingline=42 ]
+	node_000106 [ label = "16", style=filled, fillcolor="#E9FFE9", startingline=43 ]
+	node_000107 [ label = "THIS.seg.m1", startingline=43 ]
+	node_000108 [ label = "18.20", style=filled, fillcolor="#E9FFE9", startingline=44 ]
+	node_000109 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=44 ]
+	node_000110 [ label = "THIS.seg.si.soEsse", startingline=44 ]
 subgraph cluster_3 {
 label = "sPri::soma";
 parent = "cluster_2";
 startingline = 41;
-	node_000106 [ label = "THIS.a", startingline=27 ]
-	node_000107 [ label = "THIS.h", startingline=27 ]
-	node_000108 [ label = "THIS.seg.m1", startingline=27 ]
-	node_000109 [ label = "THIS.seg.n1", startingline=27 ]
-	node_000110 [ label = "THIS.seg.si.soEsse", startingline=27 ]
-	node_000111 [ label = "x", style=filled, fillcolor="#FFE9E9", startingline=27 ]
-	node_000112 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=29 ]
-	node_000113 [ label = "sPri::soma", style=filled, fillcolor="#FFFFD0", startingline=29 ]
+	node_000111 [ label = "THIS.a", startingline=27 ]
+	node_000112 [ label = "THIS.h", startingline=27 ]
+	node_000113 [ label = "THIS.seg.m1", startingline=27 ]
+	node_000114 [ label = "THIS.seg.n1", startingline=27 ]
+	node_000115 [ label = "THIS.seg.si.soEsse", startingline=27 ]
+	node_000116 [ label = "x", style=filled, fillcolor="#FFE9E9", startingline=27 ]
+	node_000117 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=29 ]
+	node_000118 [ label = "sPri::soma", style=filled, fillcolor="#FFFFD0", startingline=29 ]
 }
 subgraph cluster_4 {
 label = "sPri::subtracao";
 parent = "cluster_2";
 startingline = 42;
-	node_000114 [ label = "THIS.a", startingline=32 ]
-	node_000115 [ label = "THIS.h", startingline=32 ]
-	node_000116 [ label = "THIS.seg.m1", startingline=32 ]
-	node_000117 [ label = "THIS.seg.n1", startingline=32 ]
-	node_000118 [ label = "THIS.seg.si.soEsse", startingline=32 ]
-	node_000119 [ label = "y", style=filled, fillcolor="#FFE9E9", startingline=32 ]
-	node_000120 [ label = "8.0", style=filled, fillcolor="#E9FFE9", startingline=34 ]
-	node_000121 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=34 ]
-	node_000122 [ label = "THIS.h", startingline=34 ]
-	node_000123 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=35 ]
-	node_000124 [ label = "sPri::subtracao", style=filled, fillcolor="#FFFFD0", startingline=35 ]
+	node_000119 [ label = "THIS.a", startingline=32 ]
+	node_000120 [ label = "THIS.h", startingline=32 ]
+	node_000121 [ label = "THIS.seg.m1", startingline=32 ]
+	node_000122 [ label = "THIS.seg.n1", startingline=32 ]
+	node_000123 [ label = "THIS.seg.si.soEsse", startingline=32 ]
+	node_000124 [ label = "y", style=filled, fillcolor="#FFE9E9", startingline=32 ]
+	node_000125 [ label = "8.0", style=filled, fillcolor="#E9FFE9", startingline=34 ]
+	node_000126 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=34 ]
+	node_000127 [ label = "THIS.h", startingline=34 ]
+	node_000128 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=35 ]
+	node_000129 [ label = "sPri::subtracao", style=filled, fillcolor="#FFFFD0", startingline=35 ]
 }
 subgraph cluster_5 {
 label = "sSeg::setM1";
 parent = "cluster_2";
 startingline = 43;
-	node_000125 [ label = "THIS.m1", startingline=7 ]
-	node_000126 [ label = "THIS.n1", startingline=7 ]
-	node_000127 [ label = "THIS.si.soEsse", startingline=7 ]
-	node_000128 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
-	node_000129 [ label = "THIS.m1", startingline=17 ]
+	node_000130 [ label = "THIS.m1", startingline=7 ]
+	node_000131 [ label = "THIS.n1", startingline=7 ]
+	node_000132 [ label = "THIS.si.soEsse", startingline=7 ]
+	node_000133 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
+	node_000134 [ label = "THIS.m1", startingline=17 ]
 }
 }
-	node_000070 -> node_000071
-	node_000071 -> node_000085
-	node_000072 -> node_000073
-	node_000073 -> node_000086
-	node_000074 -> node_000078
-	node_000080 -> node_000081
-	node_000082 -> node_000083
-	node_000083 -> node_000089
-	node_000084 -> node_000090
-	node_000132 -> node_000134
-	node_000133 -> node_000134
-	node_000134 -> node_000135
-	node_000078 -> node_000079
-	node_000079 -> node_000080
-	node_000085 -> node_000092
-	node_000086 -> node_000095
-	node_000089 -> node_000104
-	node_000091 -> node_000092
-	node_000092 -> node_000093
-	node_000093 -> node_000106
-	node_000093 -> node_000130
-	node_000094 -> node_000111
-	node_000095 -> node_000096
-	node_000096 -> node_000115
-	node_000097 -> node_000119
-	node_000098 -> node_000099
-	node_000099 -> node_000100
-	node_000100 -> node_000131
-	node_000101 -> node_000128
-	node_000102 -> node_000132
+	node_000075 -> node_000076
+	node_000076 -> node_000090
+	node_000077 -> node_000078
+	node_000078 -> node_000091
+	node_000079 -> node_000083
+	node_000085 -> node_000086
+	node_000087 -> node_000088
+	node_000088 -> node_000094
+	node_000089 -> node_000095
+	node_000137 -> node_000139
+	node_000138 -> node_000139
+	node_000139 -> node_000140
+	node_000083 -> node_000084
+	node_000084 -> node_000085
+	node_000090 -> node_000097
+	node_000091 -> node_000100
+	node_000094 -> node_000109
+	node_000096 -> node_000097
+	node_000097 -> node_000098
+	node_000098 -> node_000111
+	node_000098 -> node_000135
+	node_000099 -> node_000116
+	node_000100 -> node_000101
+	node_000101 -> node_000120
+	node_000102 -> node_000124
 	node_000103 -> node_000104
 	node_000104 -> node_000105
-	node_000105 -> node_000133
-	node_000106 -> node_000112
-	node_000111 -> node_000112
-	node_000112 -> node_000113
-	node_000113 -> node_000095
-	node_000115 -> node_000121
-	node_000119 -> node_000123
-	node_000120 -> node_000121
-	node_000121 -> node_000122
-	node_000122 -> node_000123
-	node_000122 -> node_000098
-	node_000123 -> node_000124
-	node_000124 -> node_000099
+	node_000105 -> node_000136
+	node_000106 -> node_000133
+	node_000107 -> node_000137
+	node_000108 -> node_000109
+	node_000109 -> node_000110
+	node_000110 -> node_000138
+	node_000111 -> node_000117
+	node_000116 -> node_000117
+	node_000117 -> node_000118
+	node_000118 -> node_000100
+	node_000120 -> node_000126
+	node_000124 -> node_000128
+	node_000125 -> node_000126
+	node_000126 -> node_000127
+	node_000127 -> node_000128
+	node_000127 -> node_000103
 	node_000128 -> node_000129
-	node_000129 -> node_000102
+	node_000129 -> node_000104
+	node_000133 -> node_000134
+	node_000134 -> node_000107
 }

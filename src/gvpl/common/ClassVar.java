@@ -104,14 +104,12 @@ public class ClassVar extends Var implements IClassVar{
 			AstLoader astLoader, AstInterpreter astInterpreter) {
 		
 		MemberFunc constructorFunc = _classDecl.getConstructorFunc(parameterValues);
-		if (constructorFunc == null)
-			return;
 
 		//if (parameterValues == null)
 		//	return;
 		
 		for (Map.Entry<MemberId, IVar> entry : _memberInstances.entrySet()) {
-			if(constructorFunc.memberIsInitialized(entry.getKey()))
+			if((constructorFunc != null) && constructorFunc.memberIsInitialized(entry.getKey()))
 				continue;
 			
 			IVar member = entry.getValue();
@@ -119,6 +117,9 @@ public class ClassVar extends Var implements IClassVar{
 			member.callConstructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
 			member.setOwner(this);
 		}
+		
+		if (constructorFunc == null)
+			return;
 
 		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader);
 	}
