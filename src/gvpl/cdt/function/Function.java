@@ -132,9 +132,9 @@ public class Function extends AstLoaderCDT {
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph) {
+	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph) {
 		Map<GraphNode, GraphNode> internalToMainGraphMap = gvplGraph.addSubGraph(_gvplGraph, this);
-		return addParametersReferenceAndReturn(parameter_values, internalToMainGraphMap);
+		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap);
 	}
 
 	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,

@@ -11,6 +11,14 @@ int soma(int a, int b, float fator)
 	return (a + b) * fator;
 }
 
+class ClassTest
+{
+	static int staticFunc(int c)
+	{
+		return c + 7;
+	}
+};
+
 int main() 
 {
 	int x;
@@ -19,4 +27,6 @@ int main()
 	int c = soma(a, b);
 	
 	int d = soma(a, b, 0.3);
+	
+	int e = ClassTest::staticFunc(8);
 }

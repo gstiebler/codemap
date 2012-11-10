@@ -132,12 +132,6 @@ public class MemberFunc extends Function {
 		return _parent.getTypeFromVarBinding(binding);
 	}
 	
-	@Override
-	public GraphNode addFuncRef(List<FuncParameter> parameter_values, Graph gvplGraph) {
-		logger.fatal("Error! Should call loadMemberFuncRef instead.");
-		return null;
-	}
-	
 	/**
 	 * Copy the internal graph to the main graph and bind the variables of the
 	 * structure to the used variables in the member function

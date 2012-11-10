@@ -37,6 +37,7 @@ import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
@@ -45,8 +46,10 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
@@ -315,10 +318,17 @@ public class InstructionLine {
 		if (nameExpr instanceof IASTIdExpression)
 		{
 			IASTIdExpression idExpr = (IASTIdExpression) nameExpr;
-			IBinding idExprBinding = idExpr.getName().resolveBinding();
+			IASTName name = idExpr.getName();
+			IBinding idExprBinding = name.resolveBinding();
 			
 			if (idExprBinding instanceof CPPMethod) {
-				return loadOwnMethod(idExprBinding, paramExpr);
+				if (name instanceof CPPASTQualifiedName) { // static function
+					return loadStaticMethod((CPPASTQualifiedName) name, paramExpr);
+				} else if (name instanceof CPPASTName) // method from own class
+					return loadOwnMethod(idExprBinding, paramExpr);
+				else
+					logger.fatal("you're doing it wrong");
+				return null;
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
 			} else
@@ -329,6 +339,17 @@ public class InstructionLine {
 			logger.fatal("problem");
 
 		return null;
+	}
+	
+	GraphNode loadStaticMethod(CPPASTQualifiedName qName, IASTExpression paramExpr) {
+		IASTName[] names = qName.getNames();
+		IASTName className = names[0];
+		IASTName funcName = names[1];
+		TypeId typeId = _astInterpreter.getTypeFromBinding(className.resolveBinding());
+		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(typeId);
+		Function func = classDecl.getMemberFunc(funcName.resolveBinding());
+		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
+		return func.addFuncRef(parameterValues, _gvplGraph);
 	}
 	
 	/**
