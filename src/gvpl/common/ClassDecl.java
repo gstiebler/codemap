@@ -16,6 +16,7 @@ public abstract class ClassDecl {
 	protected List<MemberFunc> _constructorFuncs = new ArrayList<MemberFunc>();
 	protected MemberFunc _destructorFunc = null;
 	protected Map<MemberId, ClassMember> _memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
+	protected Map<Integer, MemberFunc> _opOverloadMethods = new LinkedHashMap<Integer, MemberFunc>();
 	
 	public ClassDecl() {
 		_typeId = new TypeId();
@@ -94,6 +95,10 @@ public abstract class ClassDecl {
 		}
 		
 		return null;
+	}
+	
+	public MemberFunc getOpFunc(int operator) {
+		return _opOverloadMethods.get(operator);
 	}
 	
 	public abstract Iterable<ClassDecl> getParentClasses();

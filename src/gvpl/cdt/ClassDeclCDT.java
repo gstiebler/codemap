@@ -23,6 +23,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTOperatorName;
 
 import debug.DebugOptions;
 
@@ -50,10 +51,10 @@ public class ClassDeclCDT extends ClassDecl{
 			if (!(member instanceof IASTSimpleDeclaration))
 				continue;
 
-			IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) member;
-			IASTDeclSpecifier decl_spec = simple_decl.getDeclSpecifier();
+			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) member;
+			IASTDeclSpecifier decl_spec = simpleDecl.getDeclSpecifier();
 			TypeId param_type = _astInterpreter.getType(decl_spec);
-			IASTDeclarator[] declarators = simple_decl.getDeclarators();
+			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
 				if (declarator instanceof IASTFunctionDeclarator) {
@@ -106,6 +107,14 @@ public class ClassDeclCDT extends ClassDecl{
 			memberFunc.loadDeclaration(funcDeclarator);
 		}
 		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
+		
+		if(funcDeclarator.getName() instanceof CPPASTOperatorName)
+		{
+			String name = memberFunc.getName();
+			String op = name.substring(name.length() - 1);
+			Integer opId = CppMaps._opAssignStrToId.get(op);
+			_opOverloadMethods.put(opId, memberFunc);
+		}
 		
 		return memberFunc;
 	}

@@ -243,15 +243,20 @@ public class InstructionLine {
 	/**
 	 * Loads a binary operation with an assignment
 	 * 
-	 * @param node
+	 * @param binExpr
 	 *            The cpp node of this operation
 	 * @return The graph node of the result of the operation
 	 */
-	GraphNode loadAssignBinOp(IASTBinaryExpression node) {
-		IASTExpression lhsOp = node.getOperand1();
+	GraphNode loadAssignBinOp(IASTBinaryExpression binExpr) {
+		IASTExpression lhsOp = binExpr.getOperand1();
 		logger.debug("get lhsVar");
 		IVar lhsVar = _parentBasicBlock.getVarFromExpr(lhsOp);
-		IASTExpression rhsExpr = node.getOperand2();
+		
+		if(lhsVar instanceof ClassVar) {
+			return loadOperatorOverload(binExpr);
+		}
+		
+		IASTExpression rhsExpr = binExpr.getOperand2();
 
 		logger.debug("lhsOp class: {}", lhsOp.getClass());
 		// check if we're trying to read a the instance of a pointer
@@ -267,14 +272,27 @@ public class InstructionLine {
 		logger.debug("loading rhs value");
 		GraphNode rhsValue = loadValue(rhsExpr);
 
-		if (node.getOperator() == IASTBinaryExpression.op_assign) {
+		if (binExpr.getOperator() == IASTBinaryExpression.op_assign) {
 			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue);
 			return null;
 		}
 
-		GraphNode lhsValue = loadValue(node.getOperand1());
-		eAssignBinOp op = CppMaps.getAssignBinOpTypes(node.getOperator());
+		GraphNode lhsValue = loadValue(binExpr.getOperand1());
+		eAssignBinOp op = CppMaps.getAssignBinOpTypes(binExpr.getOperator());
 		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentBasicBlock);
+	}
+	
+	private GraphNode loadOperatorOverload(IASTBinaryExpression binExpr) {
+		IASTExpression lhsOp = binExpr.getOperand1();
+		ClassVar lhsVar = (ClassVar) _parentBasicBlock.getVarFromExpr(lhsOp);
+		
+		IASTExpression rhsOp = binExpr.getOperand2();
+		IVar rhsVar = _parentBasicBlock.getVarFromExpr(rhsOp);
+		
+		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
+		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
+		parameterValues.add(new FuncParameter(rhsVar, IndirectionType.E_REFERENCE));
+		return opFunc.loadMemberFuncRef(lhsVar, parameterValues, _gvplGraph, _parentBasicBlock);
 	}
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {

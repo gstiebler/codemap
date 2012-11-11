@@ -128,5 +128,10 @@ public class BasicTest {
 	public void thisPointer() {
 		TestsUtil.baseTest("this");
 	}
+
+	@Test
+	public void operatorOverload() {
+		TestsUtil.baseTest("operator_overload");
+	}
 	
 }

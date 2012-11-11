@@ -177,7 +177,7 @@ public class Graph {
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1_node, GraphNode val2_node,
 			AstLoader astLoader) {
-		GraphNode binOpNode = addGraphNode(CppMaps._bin_op_strings.get(op),
+		GraphNode binOpNode = addGraphNode(CppMaps._binOpStrings.get(op),
 				NodeType.E_OPERATION);
 
 		val1_node.addDependentNode(binOpNode);
@@ -188,7 +188,7 @@ public class Graph {
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, IVar lhs_varDecl, GraphNode lhsNode,
 			GraphNode rhs_node, AstLoader astLoader) {
-		GraphNode binOpNode = addGraphNode(CppMaps._assign_bin_op_strings.get(op),
+		GraphNode binOpNode = addGraphNode(CppMaps._assignBinOpStrings.get(op),
 				NodeType.E_OPERATION);
 
 		lhsNode.addDependentNode(binOpNode);
