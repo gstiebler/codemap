@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
+import gvpl.cdt.function.MemberFunc;
 import gvpl.common.AstInterpreter;
 import gvpl.common.AstLoader;
 import gvpl.common.ClassVar;
@@ -53,6 +54,13 @@ public class AstLoaderCDT extends AstLoader {
 
 		if (var != null) 
 			return var; 
+		
+		String exprStr = expr.getRawSignature();
+		if (exprStr.equals("this")) {
+			// quite weird, but to deal with "this" in source code, i had to use "this" here
+			MemberFunc thisMemberFunc = (MemberFunc) this;
+			return thisMemberFunc.getThisReference();
+		}
 		
 		IBinding binding = getBindingFromExpr(expr);
 		var = getVarFromBinding(binding);
@@ -136,7 +144,15 @@ public class AstLoaderCDT extends AstLoader {
 		IASTExpression owner = fieldRef.getFieldOwner();
 		IBinding fieldBinding = fieldRef.getFieldName().resolveBinding();
 
-		IVar varOfRef = getVarFromExpr(owner);
+		IVar varOfRef = null;
+		String ownerStr = owner.getRawSignature();
+		if (ownerStr.equals("this")) {
+			// quite weird, but to deal with "this" in source code, i had to use "this" here
+			MemberFunc thisMemberFunc = (MemberFunc) this;
+			varOfRef = thisMemberFunc.getThisReference();
+		} else {
+			varOfRef = getVarFromExpr(owner);
+		}
 		IVar varInMem = varOfRef.getVarInMem();
 		IClassVar ownerVar = (IClassVar) varInMem;
 

@@ -43,10 +43,6 @@ public class ClassDeclCDT extends ClassDecl{
 	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl) {
 		loadBaseClasses(classDecl.getBaseSpecifiers(), _astInterpreter);
 
-		IASTName name = classDecl.getName();
-		_binding = name.resolveBinding();
-		_name = name.toString();
-
 		IASTDeclaration[] members = classDecl.getMembers();
 
 		// load every field
@@ -84,6 +80,12 @@ public class ClassDeclCDT extends ClassDecl{
 
 			loadMemberFunc((IASTFunctionDefinition) member, _astInterpreter);
 		}
+	}
+	
+	public void setBinding(CPPASTCompositeTypeSpecifier classDecl) {
+		IASTName name = classDecl.getName();
+		_binding = name.resolveBinding();
+		_name = name.toString();
 	}
 	
 	void loadBaseClasses(ICPPASTBaseSpecifier[] baseSpecs, AstInterpreterCDT astInterpreter) {

@@ -478,9 +478,10 @@ public class InstructionLine {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
 			IVar DirectVarDecl = astLoader.getVarFromExpr(address);
-			if (!(DirectVarDecl instanceof PointerVar))
-				logger.fatal("not expected here!!");
-			return ((PointerVar) DirectVarDecl).getVarInMem();
+			if (DirectVarDecl instanceof PointerVar)
+				return ((PointerVar) DirectVarDecl).getVarInMem();
+			else
+				return DirectVarDecl;
 		}
 
 		// It's getting the address of a reference, like "int a = &b;"

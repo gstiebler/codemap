@@ -22,6 +22,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
@@ -54,9 +55,17 @@ public class AstInterpreterCDT extends AstInterpreter {
 					mainFunction = func;
 			} // if it's a class/struct
 			else if (declaration instanceof IASTSimpleDeclaration) {
-				IASTSimpleDeclaration simple_decl = (IASTSimpleDeclaration) declaration;
+				IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) declaration;
 				DebugOptions.setStartingLine(declaration.getFileLocation().getStartingLineNumber());
-				loadStructureDecl((CPPASTCompositeTypeSpecifier) simple_decl.getDeclSpecifier());
+				IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
+				logger.debug(declSpec.getClass());
+
+				if(declSpec instanceof CPPASTCompositeTypeSpecifier) {
+					loadStructureDecl((CPPASTCompositeTypeSpecifier) declSpec);
+				} else if(declSpec instanceof CPPASTElaboratedTypeSpecifier) {
+					
+				} else
+					logger.fatal("you're doing it wrong");
 			} else
 				logger.fatal("Deu merda aqui." + declaration.getClass());
 		}
@@ -120,9 +129,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 */
 	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
 		ClassDeclCDT classDecl = new ClassDeclCDT(this);
-		classDecl.loadAstDecl(strDecl);
-
+		classDecl.setBinding(strDecl);
 		addClassDeclInMaps(classDecl);
+		classDecl.loadAstDecl(strDecl);
 	}
 
 	/**

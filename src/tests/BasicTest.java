@@ -123,5 +123,10 @@ public class BasicTest {
 	public void destructor() {
 		TestsUtil.baseTest("destructor");
 	}
+
+	@Test
+	public void thisPointer() {
+		TestsUtil.baseTest("this");
+	}
 	
 }
