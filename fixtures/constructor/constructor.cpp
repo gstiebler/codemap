@@ -18,6 +18,11 @@ public:
 	
 	sInterno sint;
 	
+	sPri(float init)
+	{
+		a = init;
+	}
+	
 	sPri(float add, int dummy)
 	{
 		a = 23.4 + add;
@@ -35,11 +40,12 @@ int main() {
 	sPri str1(a, 1);
 	float q = str1.sint.soEsse;
 	sPri *str2 = new sPri(4.0, 2);
+	sPri str3(3);
 	
 	str2->h = 9099.0;
 	str1.sint.soEsse = 17.95;
 	
-	float p = 8.0 * str1.sint.soEsse;
+	float p = str3.a * str1.sint.soEsse;
 	
 	float g = str1.a - str1.h;
 	float k = str2->a * str2->h;

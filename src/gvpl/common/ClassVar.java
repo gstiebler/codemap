@@ -103,7 +103,10 @@ public class ClassVar extends Var implements IClassVar{
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter) {
 		
-		MemberFunc constructorFunc = _classDecl.getConstructorFunc(parameterValues);
+		int numParameter = 0;
+		if(parameterValues != null)
+			numParameter = parameterValues.size();
+		MemberFunc constructorFunc = _classDecl.getConstructorFunc(numParameter);
 
 		//if (parameterValues == null)
 		//	return;

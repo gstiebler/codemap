@@ -26,14 +26,12 @@ public abstract class ClassDecl {
 		return _typeId;
 	}
 
-	public MemberFunc getConstructorFunc(List<FuncParameter> parametersList) {
-//		for(MemberFunc constructor : _constructorFuncs) {
-//			if(constructor.isEquivalentParameterList(parametersList));
-//				return constructor;
-//		}
-		
-		if(_constructorFuncs.size() > 0)
-			return _constructorFuncs.get(0);
+	//TODO check parameters types too
+	public MemberFunc getConstructorFunc(int numParameters) {
+		for(MemberFunc constructor : _constructorFuncs) {
+			if(constructor.getNumParameters() == numParameters)
+				return constructor;
+		}
 		
 		return null;
 	}

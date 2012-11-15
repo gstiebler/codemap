@@ -4,6 +4,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
+import gvpl.common.ClassDecl;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -43,8 +44,8 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
@@ -149,9 +150,10 @@ public class InstructionLine {
 			return;
 		}
 		
-		if (initializer instanceof ICPPASTConstructorInitializer) { 
+		if (initializer instanceof CPPASTConstructorInitializer) { 
 			// format: int a(5);
-			IASTExpression initExpr = ((ICPPASTConstructorInitializer) initializer).getExpression();
+			CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) initializer;
+			IASTExpression initExpr = constrInit.getExpression();
 			loadConstructorInitializer(lhsVar, initExpr);														
 			return;
 		}
@@ -172,7 +174,8 @@ public class InstructionLine {
 		List<FuncParameter> parameterValues = null;
 		if(lhsVar instanceof ClassVar) {
 			ClassVar classVar = (ClassVar) lhsVar;
-			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(null);
+			int numParameters = parametersFromExpr(initExpr).length;
+			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(numParameters);
 			parameterValues = loadFunctionParameters(constructorFunc, initExpr);
 		} else {
 			parameterValues = new ArrayList<FuncParameter>();
@@ -314,10 +317,11 @@ public class InstructionLine {
 				return;
 			}
 
-			Function constructorFunc = classDecl.getConstructorFunc(null);
 
 			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
+			int numParameters = parametersFromExpr(expr).length;
+			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBasicBlock, _astInterpreter, classDecl.getTypeId());
@@ -432,20 +436,23 @@ public class InstructionLine {
 		return null;
 	}
 
+	private IASTExpression[] parametersFromExpr(IASTExpression paramExpr) {
+		if (paramExpr instanceof IASTExpressionList) {
+			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
+			return exprList.getExpressions();
+		} else {
+			IASTExpression[] parameters = new IASTExpression[1];
+			parameters[0] = paramExpr;
+			return parameters;
+		}
+	}
+	
 	public List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		if (paramExpr == null)
 			return parameterValues;
 
-		IASTExpression[] parameters;
-		if (paramExpr instanceof IASTExpressionList) {
-			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
-			parameters = exprList.getExpressions();
-		} else {
-			parameters = new IASTExpression[1];
-			parameters[0] = paramExpr;
-		}
-		
+		IASTExpression[] parameters = parametersFromExpr(paramExpr);
 		if(parameters.length != func.getNumParameters())
 			logger.fatal("Number of parameters are different!");
 
