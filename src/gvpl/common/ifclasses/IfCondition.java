@@ -56,11 +56,13 @@ public class IfCondition {
 				falseNode = prevTrueFalse._prev;
 
 			// get the nodes in the current graph, if necessary
+			if(ifTrueMergedNodes != null)
 			{
 				GraphNode newNode = ifTrueMergedNodes.get(trueNode);
 				if (newNode != null)
 					trueNode = newNode;
 			}
+			if(ifFalseMergedNodes != null)
 			{
 				GraphNode newNode = ifFalseMergedNodes.get(falseNode);
 				if (newNode != null)
