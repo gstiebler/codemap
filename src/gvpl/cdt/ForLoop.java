@@ -42,10 +42,10 @@ public class ForLoop extends AstLoaderCDT {
 	
 
 	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
+	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
 		if(_parent == null)
 			return createVarFromBinding(binding);
-		return _parent.getVarFromBinding(binding);
+		return _parent.getPreLoadedVarFromBinding(binding);
 	}
 
 	private void loadHeader(IASTForStatement node) {

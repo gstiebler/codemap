@@ -284,12 +284,12 @@ public class Function extends AstLoaderCDT {
 	}
 
 	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
+	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null)
 			return funcParameter.getVar().getVarInMem();
 		
-		return super.getVarFromBinding(binding);
+		return super.getPreLoadedVarFromBinding(binding);
 	}
 	
 	@Override

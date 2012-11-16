@@ -62,12 +62,15 @@ public class AstLoaderCDT extends AstLoader {
 			return thisMemberFunc.getThisReference();
 		}
 		
-		IBinding binding = getBindingFromExpr(expr);
-		var = getVarFromBinding(binding);
+		return getVarFromBinding(getBindingFromExpr(expr));
+	}
+	
+	protected IVar getVarFromBinding(IBinding binding) {
+		IVar var = getPreLoadedVarFromBinding(binding);
 		if (var != null) 
 			return var; 
 		
-		return createVarFromBinding(binding);
+		return createVarFromBinding(binding);	
 	}
 	
 	protected IVar createVarFromBinding(IBinding binding) {
@@ -102,7 +105,7 @@ public class AstLoaderCDT extends AstLoader {
 		return null;
 	}
 	
-	protected IVar getVarFromBinding(IBinding binding) {		
+	protected IVar getPreLoadedVarFromBinding(IBinding binding) {		
 		IVar var = _extToInVars.get(binding);
 		if(var != null)
 			return var;

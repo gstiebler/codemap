@@ -79,7 +79,7 @@ public class MemberFunc extends Function {
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 
 			if (memberBinding instanceof CPPField) {
-				IVar var = getVarFromBinding(memberBinding);
+				IVar var = getPreLoadedVarFromBinding(memberBinding);
 				instructionLine.loadConstructorInitializer(var, expr);
 				MemberId memberId = _parentClass.getMember(memberBinding).getMemberId();
 				_initializedMembers._members.add(memberId);
@@ -101,7 +101,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
+	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
 		ClassMember member = _parentClass.getMember(binding);
 		if(member != null) {
 			MemberId memberId = member.getMemberId();
@@ -111,7 +111,7 @@ public class MemberFunc extends Function {
 		}
 		
 		// search the variable in the function parameters
-		IVar var = super.getVarFromBinding(binding);
+		IVar var = super.getPreLoadedVarFromBinding(binding);
 		if(var != null)
 			return var;
 		
