@@ -133,5 +133,10 @@ public class BasicTest {
 	public void operatorOverload() {
 		TestsUtil.baseTest("operator_overload");
 	}
+
+	@Test
+	public void nestedIf() {
+		TestsUtil.baseTest("nested_if");
+	}
 	
 }
