@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.common.IVar;
+import gvpl.common.InToExtVar;
 import gvpl.common.ifclasses.BoolValuePack;
 import gvpl.common.ifclasses.IfCondition;
 import gvpl.common.ifclasses.PrevTrueFalseMemVar;
@@ -40,11 +41,23 @@ public class IfConditionCDT {
 		IASTExpression condition = ifStatement.getConditionExpression();
 		GraphNode conditionNode = instructionLine.loadValue(condition);
 
-		IfCondition.createIfNodes(mapPrevTrueFalse, trueBvp._ifMergedNodes,
-				falseBvp._ifMergedNodes, conditionNode, instructionLine.getGraph());
+		Map<GraphNode, GraphNode> trueIfMergedNodes = null;
+		Map<GraphNode, GraphNode> falseIfMergedNodes = null;
+		InToExtVar trueInToExtVar = null;
+		InToExtVar falseInToExtVar = null;
+		if(trueBvp != null) {
+			trueIfMergedNodes = trueBvp._ifMergedNodes;
+			trueInToExtVar = trueBvp._inToExtVar;
+		}
+		if(falseBvp != null) {
+			falseIfMergedNodes = falseBvp._ifMergedNodes;
+			falseInToExtVar = falseBvp._inToExtVar;
+		}
+		
+		IfCondition.createIfNodes(mapPrevTrueFalse, trueIfMergedNodes, falseIfMergedNodes,
+				conditionNode, instructionLine.getGraph());
 
-		IfCondition.mergeIfMAV(mapPrevTrueFalseMV, conditionNode, trueBvp._inToExtVar,
-				falseBvp._inToExtVar);
+		IfCondition.mergeIfMAV(mapPrevTrueFalseMV, conditionNode, trueInToExtVar, falseInToExtVar);
 	}
 
 	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine) {
