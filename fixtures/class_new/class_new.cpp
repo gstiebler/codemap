@@ -39,4 +39,6 @@ int main() {
 	
 	float g = str1->a - str1->h;
 	float k = str2->a * str2->h;
+	
+	float x = (*str1).a;
 }

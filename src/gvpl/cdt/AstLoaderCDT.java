@@ -128,7 +128,7 @@ public class AstLoaderCDT extends AstLoader {
 			return getVarFromFieldRef((IASTFieldReference) expr);
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
-			return getLocalVarFromIdExpr((IASTIdExpression) opExpr);
+			return getVarFromExprInternal(opExpr);
 		}
 		return null;
 	}
