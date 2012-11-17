@@ -24,12 +24,16 @@ public abstract class AstLoader {
 			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
-			if (astInterpreter.isPrimitiveType(typeId))
-				return new Var(graph, name, typeId);
-
-			ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
-			ClassVar classVar = new ClassVar(graph, name, classDecl, astLoader);
-			return classVar;
+			IVar result = null;
+			if (astInterpreter.isPrimitiveType(typeId)){
+				result = new Var(graph, name, typeId);
+			} else {
+				ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
+				result = new ClassVar(graph, name, classDecl, astLoader);
+			}
+			//result.initializeGarbage(graph, astLoader, astInterpreter);
+			
+			return result;
 		case E_POINTER:
 			return new PointerVar(graph, name, typeId);
 		case E_REFERENCE:

@@ -68,6 +68,14 @@ public class FileDriver implements IGraphOutput {
 		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
 		insertNode(node_id, node_name, properties);
 	}
+	
+	public void insertGarbageNode(int node_id, String node_name, int startingLine) {
+		List<PropertyPair> properties = new ArrayList<PropertyPair>();
+		properties.add(new PropertyPair("style", "filled"));
+		properties.add(new PropertyPair("fillcolor", "\"#FF8080\""));
+		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
+		insertNode(node_id, node_name + " (GARBAGE)", properties);
+	}
 
 	public void insertDeclaredParameter(int node_id, String node_name, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();

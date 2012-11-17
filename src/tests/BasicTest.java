@@ -143,5 +143,10 @@ public class BasicTest {
 	public void switchTest() {
 		TestsUtil.baseTest("switch");
 	}
+
+	@Test
+	public void garbage() {
+		TestsUtil.baseTest("garbage");
+	}
 	
 }

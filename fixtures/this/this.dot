@@ -2,8 +2,6 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000016 [ label = "str1._a", startingline=27 ]
-	node_000017 [ label = "str1._b", startingline=27 ]
 	node_000028 [ label = "str1._a", startingline=28 ]
 	node_000029 [ label = "str1._b", startingline=28 ]
 	node_000030 [ label = "c", startingline=29 ]
@@ -11,8 +9,6 @@ subgraph cluster_1 {
 label = "sPri::func1";
 parent = "G";
 startingline = 28;
-	node_000018 [ label = "THIS._a", startingline=6 ]
-	node_000019 [ label = "THIS._b", startingline=6 ]
 	node_000020 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=22 ]
 	node_000021 [ label = "THIS._a", startingline=22 ]
 	node_000022 [ label = "THIS._b", startingline=23 ]
@@ -21,7 +17,6 @@ label = "globalFunc";
 parent = "cluster_1";
 startingline = 23;
 	node_000023 [ label = "param_pointed._a", startingline=15 ]
-	node_000024 [ label = "param_pointed._b", startingline=15 ]
 	node_000025 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=17 ]
 	node_000026 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=17 ]
 	node_000027 [ label = "globalFunc", style=filled, fillcolor="#FFFFD0", startingline=17 ]

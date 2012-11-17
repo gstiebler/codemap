@@ -69,6 +69,10 @@ public class Var implements IVar {
 			AstInterpreter astInterpreter) {
 		updateNode(_gvplGraph.addGraphNode(this, nodeType));
 	}
+	
+	public void initializeGarbage(Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
+		initializeVar(NodeType.E_GARBAGE, graph, astLoader, astInterpreter);
+	}
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter) {

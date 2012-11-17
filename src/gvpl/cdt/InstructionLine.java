@@ -11,7 +11,6 @@ import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
-import gvpl.common.ifclasses.IfCondition;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;

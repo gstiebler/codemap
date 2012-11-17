@@ -22,8 +22,6 @@ parent = "G";
 startingline = 13;
 	node_000015 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000016 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000017 [ label = "soma_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000018 [ label = "sub_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000019 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=4 ]
 	node_000020 [ label = "*soma", startingline=4 ]
 	node_000021 [ label = "soma_pointed", startingline=4 ]

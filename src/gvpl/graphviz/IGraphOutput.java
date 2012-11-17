@@ -6,6 +6,7 @@ public interface IGraphOutput {
 	
 	void insertOperation(GraphNode node, String node_name, int startingLine);
 	void insertValueNode(int node_id, String node_name, int startingLine);
+	void insertGarbageNode(int node_id, String node_name, int startingLine);
 	void insertDeclaredParameter(int node_id, String node_name, int startingLine);
 	void insertReturnValue(int node_id, String node_name, int startingLine);
 	void insertVariable(GraphNode node, String node_name, int startingLine);

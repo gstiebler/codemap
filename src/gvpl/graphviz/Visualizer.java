@@ -53,10 +53,15 @@ public class Visualizer {
 	}
 	
 	public static void printNode(GraphNode graphNode, IGraphOutput graphOutput) {
+		if(graphNode.getNumDependentNodes() == 0 && graphNode.getNumSourceNodes() == 0)
+			return;
+		
 		if (graphNode._type == Graph.NodeType.E_OPERATION)
 			graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_DIRECT_VALUE)
 			graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+		else if (graphNode._type == Graph.NodeType.E_GARBAGE)
+			graphOutput.insertGarbageNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_DECLARED_PARAMETER)
 			graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_RETURN_VALUE)

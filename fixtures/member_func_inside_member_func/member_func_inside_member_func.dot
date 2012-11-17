@@ -2,11 +2,6 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000070 [ label = "str2.a", startingline=49 ]
-	node_000071 [ label = "str2.h", startingline=49 ]
-	node_000072 [ label = "str2.seg.m1", startingline=49 ]
-	node_000073 [ label = "str2.seg.n1", startingline=49 ]
-	node_000074 [ label = "str2.seg.si.soEsse", startingline=49 ]
 	node_000075 [ label = "45.98", style=filled, fillcolor="#E9FFE9", startingline=51 ]
 	node_000076 [ label = "str2.a", startingline=51 ]
 	node_000077 [ label = "9099.0", style=filled, fillcolor="#E9FFE9", startingline=52 ]
@@ -27,9 +22,6 @@ subgraph cluster_1 {
 label = "sSeg::setM1";
 parent = "G";
 startingline = 54;
-	node_000080 [ label = "THIS.m1", startingline=7 ]
-	node_000081 [ label = "THIS.n1", startingline=7 ]
-	node_000082 [ label = "THIS.si.soEsse", startingline=7 ]
 	node_000083 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000084 [ label = "THIS.m1", startingline=17 ]
 }
@@ -39,8 +31,6 @@ parent = "G";
 startingline = 58;
 	node_000090 [ label = "THIS.a", startingline=38 ]
 	node_000091 [ label = "THIS.h", startingline=38 ]
-	node_000092 [ label = "THIS.seg.m1", startingline=38 ]
-	node_000093 [ label = "THIS.seg.n1", startingline=38 ]
 	node_000094 [ label = "THIS.seg.si.soEsse", startingline=38 ]
 	node_000095 [ label = "w", style=filled, fillcolor="#FFE9E9", startingline=38 ]
 	node_000096 [ label = "5.0", style=filled, fillcolor="#E9FFE9", startingline=40 ]
@@ -63,10 +53,6 @@ label = "sPri::soma";
 parent = "cluster_2";
 startingline = 41;
 	node_000111 [ label = "THIS.a", startingline=27 ]
-	node_000112 [ label = "THIS.h", startingline=27 ]
-	node_000113 [ label = "THIS.seg.m1", startingline=27 ]
-	node_000114 [ label = "THIS.seg.n1", startingline=27 ]
-	node_000115 [ label = "THIS.seg.si.soEsse", startingline=27 ]
 	node_000116 [ label = "x", style=filled, fillcolor="#FFE9E9", startingline=27 ]
 	node_000117 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=29 ]
 	node_000118 [ label = "sPri::soma", style=filled, fillcolor="#FFFFD0", startingline=29 ]
@@ -75,11 +61,7 @@ subgraph cluster_4 {
 label = "sPri::subtracao";
 parent = "cluster_2";
 startingline = 42;
-	node_000119 [ label = "THIS.a", startingline=32 ]
 	node_000120 [ label = "THIS.h", startingline=32 ]
-	node_000121 [ label = "THIS.seg.m1", startingline=32 ]
-	node_000122 [ label = "THIS.seg.n1", startingline=32 ]
-	node_000123 [ label = "THIS.seg.si.soEsse", startingline=32 ]
 	node_000124 [ label = "y", style=filled, fillcolor="#FFE9E9", startingline=32 ]
 	node_000125 [ label = "8.0", style=filled, fillcolor="#E9FFE9", startingline=34 ]
 	node_000126 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=34 ]
@@ -91,9 +73,6 @@ subgraph cluster_5 {
 label = "sSeg::setM1";
 parent = "cluster_2";
 startingline = 43;
-	node_000130 [ label = "THIS.m1", startingline=7 ]
-	node_000131 [ label = "THIS.n1", startingline=7 ]
-	node_000132 [ label = "THIS.si.soEsse", startingline=7 ]
 	node_000133 [ label = "value", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000134 [ label = "THIS.m1", startingline=17 ]
 }

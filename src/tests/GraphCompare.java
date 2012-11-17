@@ -108,6 +108,10 @@ public class GraphCompare {
 		int numNodes = gvplGraph.getNumNodes();
 		for (int i = 0; i < numNodes; i++) {
 			GraphNode gvplNode = gvplGraph.getNode(i);
+			
+			if(gvplNode.getNumDependentNodes() == 0 && gvplNode.getNumSourceNodes() == 0)
+				continue;
+			
 			String label = gvplNode.getName();
 			
 			LinkedList<DotTree.Node> list = gvNodes.get(label);

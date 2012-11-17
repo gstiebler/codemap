@@ -26,7 +26,15 @@ public class Graph {
 	Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	public enum NodeType {
-		E_INVALID_NODE_TYPE, E_DIRECT_VALUE, E_VARIABLE, E_OPERATION, E_FOR_LOOP, E_DECLARED_PARAMETER, E_RETURN_VALUE, E_LOOP_HEADER
+		E_INVALID_NODE_TYPE, 
+		E_DIRECT_VALUE, 
+		E_VARIABLE, 
+		E_OPERATION, 
+		E_FOR_LOOP, 
+		E_DECLARED_PARAMETER, 
+		E_RETURN_VALUE, 
+		E_LOOP_HEADER,
+		E_GARBAGE
 	}
 
 	private String _label;

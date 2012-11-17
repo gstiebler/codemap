@@ -2,8 +2,6 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000007 [ label = "str1.sIntA.soEsse", startingline=20 ]
-	node_000008 [ label = "str1.sIntB.soEsse", startingline=20 ]
 	node_000015 [ label = "str1.sIntA.soEsse", startingline=21 ]
 	node_000016 [ label = "str1.sIntB.soEsse", startingline=21 ]
 	node_000017 [ label = "x", startingline=23 ]
@@ -12,8 +10,6 @@ subgraph cluster_1 {
 label = "sPri::func1";
 parent = "G";
 startingline = 21;
-	node_000009 [ label = "THIS.sIntA.soEsse", startingline=12 ]
-	node_000010 [ label = "THIS.sIntB.soEsse", startingline=12 ]
 	node_000011 [ label = "20.0", style=filled, fillcolor="#E9FFE9", startingline=14 ]
 	node_000012 [ label = "THIS.sIntA.soEsse", startingline=14 ]
 	node_000013 [ label = "30.0", style=filled, fillcolor="#E9FFE9", startingline=15 ]

@@ -174,6 +174,10 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			AstInterpreter astInterpreter) {
 		logger.fatal("You're doing it wrong.");
 	}
+	
+	public void initializeGarbage(Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
+		logger.fatal("You're doing it wrong.");
+	}
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
 			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {

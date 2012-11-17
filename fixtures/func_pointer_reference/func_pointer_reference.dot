@@ -3,16 +3,12 @@ digraph G
 rankdir=LR;
 label = "root";
 	node_000008 [ label = "1", style=filled, fillcolor="#E9FFE9", startingline=20 ]
-	node_000009 [ label = "ucRef1._memberInt", startingline=20 ]
 	node_000013 [ label = "ucRef1._memberInt", startingline=20 ]
 	node_000014 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=21 ]
-	node_000015 [ label = "ucRef2._memberInt", startingline=21 ]
 	node_000019 [ label = "ucRef2._memberInt", startingline=21 ]
 	node_000020 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=23 ]
-	node_000021 [ label = "ucP1_pointed._memberInt", startingline=23 ]
 	node_000025 [ label = "ucP1_pointed._memberInt", startingline=23 ]
 	node_000026 [ label = "20", style=filled, fillcolor="#E9FFE9", startingline=24 ]
-	node_000027 [ label = "ucP2_pointed._memberInt", startingline=24 ]
 	node_000031 [ label = "ucP2_pointed._memberInt", startingline=24 ]
 	node_000036 [ label = "natural11", startingline=26 ]
 	node_000041 [ label = "refRef3", startingline=27 ]
@@ -20,7 +16,6 @@ subgraph cluster_1 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 20;
-	node_000010 [ label = "THIS._memberInt", startingline=7 ]
 	node_000011 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000012 [ label = "THIS._memberInt", startingline=9 ]
 }
@@ -28,7 +23,6 @@ subgraph cluster_2 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 21;
-	node_000016 [ label = "THIS._memberInt", startingline=7 ]
 	node_000017 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000018 [ label = "THIS._memberInt", startingline=9 ]
 }
@@ -36,7 +30,6 @@ subgraph cluster_3 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 23;
-	node_000022 [ label = "THIS._memberInt", startingline=7 ]
 	node_000023 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000024 [ label = "THIS._memberInt", startingline=9 ]
 }
@@ -44,7 +37,6 @@ subgraph cluster_4 {
 label = "UnicaClass::UnicaClass";
 parent = "G";
 startingline = 24;
-	node_000028 [ label = "THIS._memberInt", startingline=7 ]
 	node_000029 [ label = "init", style=filled, fillcolor="#FFE9E9", startingline=7 ]
 	node_000030 [ label = "THIS._memberInt", startingline=9 ]
 }

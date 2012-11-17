@@ -5,7 +5,6 @@ label = "root";
 	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=5 ]
 	node_000002 [ label = "array", startingline=5 ]
 	node_000003 [ label = "a", startingline=6 ]
-	node_000004 [ label = "array_p_pointed", startingline=8 ]
 	node_000005 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=9 ]
 	node_000006 [ label = "*array_p", startingline=9 ]
 	node_000007 [ label = "array_p_pointed", startingline=9 ]

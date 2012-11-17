@@ -16,8 +16,6 @@ subgraph cluster_1 {
 label = "sPri::sPri";
 parent = "G";
 startingline = 24;
-	node_000019 [ label = "THIS._a", startingline=8 ]
-	node_000020 [ label = "THIS._b", startingline=8 ]
 	node_000021 [ label = "0.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
 	node_000022 [ label = "THIS._a", style=filled, fillcolor="#FFE9E9", startingline=8 ]
 	node_000023 [ label = "1.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
@@ -27,8 +25,6 @@ subgraph cluster_2 {
 label = "sPri::sPri";
 parent = "G";
 startingline = 25;
-	node_000027 [ label = "THIS._a", startingline=8 ]
-	node_000028 [ label = "THIS._b", startingline=8 ]
 	node_000029 [ label = "0.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
 	node_000030 [ label = "THIS._a", style=filled, fillcolor="#FFE9E9", startingline=8 ]
 	node_000031 [ label = "1.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
@@ -39,9 +35,7 @@ label = "sPri::operator +";
 parent = "G";
 startingline = 27;
 	node_000037 [ label = "THIS._a", startingline=10 ]
-	node_000038 [ label = "THIS._b", startingline=10 ]
 	node_000039 [ label = "other_pointed._a", startingline=10 ]
-	node_000040 [ label = "other_pointed._b", startingline=10 ]
 	node_000041 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
 	node_000042 [ label = "THIS._a", startingline=12 ]
 }
@@ -50,9 +44,7 @@ label = "sPri::operator -";
 parent = "G";
 startingline = 29;
 	node_000045 [ label = "THIS._a", startingline=2 ]
-	node_000046 [ label = "THIS._b", startingline=2 ]
 	node_000047 [ label = "other_pointed._a", startingline=2 ]
-	node_000048 [ label = "other_pointed._b", startingline=2 ]
 	node_000049 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=20 ]
 	node_000050 [ label = "THIS._a", startingline=20 ]
 }
