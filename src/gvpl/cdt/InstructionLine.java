@@ -4,7 +4,6 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
-import gvpl.common.ClassDecl;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -12,6 +11,7 @@ import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
+import gvpl.common.ifclasses.IfCondition;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -45,12 +45,17 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
@@ -116,8 +121,57 @@ public class InstructionLine {
 			basicBlockLoader.load(statement);
 			basicBlockLoader.addToExtGraph();
 			basicBlockLoader.bindSettedPointers();
+		} else if (statement instanceof CPPASTSwitchStatement) {
+			loadSwitch((CPPASTSwitchStatement) statement);
 		} else
 			logger.fatal("Node type not found!! Node: " + statement.toString());
+	}
+	
+	private void loadSwitch(CPPASTSwitchStatement switchStatement) {
+		IASTExpression controlExpr = switchStatement.getControllerExpression();
+		CPPASTCompoundStatement body = (CPPASTCompoundStatement) switchStatement.getBody();
+		GraphNode controlNode = loadValue(controlExpr);
+		int numStatements = body.getStatements().length;
+		
+		IASTStatement defaultStatement = null;
+		for (int i = 0; i < numStatements; i++) {
+			IASTStatement statement = null;
+			statement = body.getStatements()[i];
+			if (!(statement instanceof CPPASTDefaultStatement)) continue;
+			
+			defaultStatement = body.getStatements()[i + 1];
+		}
+		
+		boolean first = true;
+		for(int i = 0; i < numStatements; ) {
+			IASTStatement statement = null;
+			GraphNode condExpr = null;
+			for(;i < numStatements; i++){
+				statement = body.getStatements()[i];
+				if(statement instanceof CPPASTCaseStatement) {
+					IASTExpression caseExpr = ((CPPASTCaseStatement) statement).getExpression();
+					condExpr = loadValue(caseExpr);
+				} else if (statement instanceof CPPASTExpressionStatement) {
+					i++;
+					break;
+				}
+			}
+			
+			//TODO deal with default in switch
+			if(condExpr == null)
+				break;
+			
+			IASTStatement elseStatement = null;
+			if(first == true)
+				elseStatement = defaultStatement;
+			
+			GraphNode compareOpNode = _gvplGraph.addGraphNode("==", NodeType.E_OPERATION);
+			condExpr.addDependentNode(compareOpNode);
+			controlNode.addDependentNode(compareOpNode);
+
+			IfConditionCDT.loadIfCondition(compareOpNode, statement, elseStatement, this);
+			first = false;
+		}
 	}
 	
 	void loadDeleteOp(CPPASTDeleteExpression deleteExpr) {
@@ -174,7 +228,7 @@ public class InstructionLine {
 		List<FuncParameter> parameterValues = null;
 		if(lhsVar instanceof ClassVar) {
 			ClassVar classVar = (ClassVar) lhsVar;
-			int numParameters = parametersFromExpr(initExpr).length;
+			int numParameters = getChildExpressions(initExpr).length;
 			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(numParameters);
 			parameterValues = loadFunctionParameters(constructorFunc, initExpr);
 		} else {
@@ -320,7 +374,7 @@ public class InstructionLine {
 
 			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
-			int numParameters = parametersFromExpr(expr).length;
+			int numParameters = getChildExpressions(expr).length;
 			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
@@ -436,7 +490,7 @@ public class InstructionLine {
 		return null;
 	}
 
-	private IASTExpression[] parametersFromExpr(IASTExpression paramExpr) {
+	private IASTExpression[] getChildExpressions(IASTExpression paramExpr) {
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
 			return exprList.getExpressions();
@@ -452,7 +506,7 @@ public class InstructionLine {
 		if (paramExpr == null)
 			return parameterValues;
 
-		IASTExpression[] parameters = parametersFromExpr(paramExpr);
+		IASTExpression[] parameters = getChildExpressions(paramExpr);
 		if(parameters.length != func.getNumParameters())
 			logger.fatal("Number of parameters are different!");
 

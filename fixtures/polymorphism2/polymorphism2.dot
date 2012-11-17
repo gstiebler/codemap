@@ -8,9 +8,9 @@ label = "root";
 	node_000052 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=47 ]
 	node_000065 [ label = "classB._bMember", startingline=47 ]
 	node_000066 [ label = "classB._baseMember", startingline=47 ]
-	node_000067 [ label = "bcPointer_pointed._baseMember", startingline=51 ]
-	node_000070 [ label = "bcPointer_pointed._baseMember", startingline=55 ]
-	node_000073 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=55 ]
+	node_000067 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=49 ]
+	node_000068 [ label = "bcPointer_pointed._baseMember", startingline=51 ]
+	node_000071 [ label = "bcPointer_pointed._baseMember", startingline=55 ]
 	node_000074 [ label = "40", style=filled, fillcolor="#E9FFE9", startingline=58 ]
 	node_000085 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=58 ]
 	node_000086 [ label = "a", startingline=58 ]
@@ -90,10 +90,10 @@ startingline = 58;
 	node_000065 -> node_000081
 	node_000066 -> node_000080
 	node_000066 -> node_000090
-	node_000073 -> node_000085
-	node_000073 -> node_000088
-	node_000073 -> node_000090
-	node_000073 -> node_000092
+	node_000067 -> node_000085
+	node_000067 -> node_000088
+	node_000067 -> node_000090
+	node_000067 -> node_000092
 	node_000074 -> node_000077
 	node_000074 -> node_000082
 	node_000085 -> node_000086

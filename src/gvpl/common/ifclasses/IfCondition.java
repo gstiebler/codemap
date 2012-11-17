@@ -72,15 +72,22 @@ public class IfCondition {
 			assert (trueNode != null);
 			assert (falseNode != null);
 
-			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
-
-			trueNode.addDependentNode(ifOpNode);
-			falseNode.addDependentNode(ifOpNode);
-			conditionNode.addDependentNode(ifOpNode);
+			GraphNode ifOpNode = createIfNode(graph, conditionNode, trueNode, falseNode);
 
 			extVar.setGraph(graph);
 			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode);
 		}
+	}
+
+	public static GraphNode createIfNode(Graph graph, GraphNode conditionNode, GraphNode trueNode,
+			GraphNode falseNode) {
+		GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
+
+		trueNode.addDependentNode(ifOpNode);
+		falseNode.addDependentNode(ifOpNode);
+		conditionNode.addDependentNode(ifOpNode);
+
+		return ifOpNode;
 	}
 
 	/**

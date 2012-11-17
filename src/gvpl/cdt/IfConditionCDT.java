@@ -20,26 +20,31 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 public class IfConditionCDT {
 
 	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
+		IASTExpression condition = ifStatement.getConditionExpression();
+		GraphNode conditionNode = instructionLine.loadValue(condition);
+		loadIfCondition(conditionNode, ifStatement.getThenClause(), ifStatement.getElseClause(),
+				instructionLine);
+	}
+	
+	static void loadIfCondition(GraphNode conditionNode, IASTStatement thenClause,
+			IASTStatement elseClause, InstructionLine instructionLine) {
 		Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse = new LinkedHashMap<IVar, PrevTrueFalseNode>();
 		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
 
 		BoolValuePack trueBvp = null;
 		BoolValuePack falseBvp = null;
 		{
-			BasicBlockCDT basicBlock = loadBasicBlock(ifStatement.getThenClause(), instructionLine);
+			BasicBlockCDT basicBlock = loadBasicBlock(thenClause, instructionLine);
 
 			trueBvp = new trueClass(instructionLine, basicBlock, mapPrevTrueFalse,
 					mapPrevTrueFalseMV);
 		}
 		{
-			BasicBlockCDT basicBlock = loadBasicBlock(ifStatement.getElseClause(), instructionLine);
+			BasicBlockCDT basicBlock = loadBasicBlock(elseClause, instructionLine);
 			if (basicBlock != null)
 				falseBvp = new falseClass(instructionLine, basicBlock, mapPrevTrueFalse,
 						mapPrevTrueFalseMV);
 		}
-
-		IASTExpression condition = ifStatement.getConditionExpression();
-		GraphNode conditionNode = instructionLine.loadValue(condition);
 
 		Map<GraphNode, GraphNode> trueIfMergedNodes = null;
 		Map<GraphNode, GraphNode> falseIfMergedNodes = null;

@@ -138,5 +138,10 @@ public class BasicTest {
 	public void nestedIf() {
 		TestsUtil.baseTest("nested_if");
 	}
+
+	@Test
+	public void switchTest() {
+		TestsUtil.baseTest("switch");
+	}
 	
 }
