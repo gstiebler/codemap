@@ -4,21 +4,15 @@
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%-5p %l - %m%n "/>
     </Console>    
-	<File name="MyFile" fileName="logs/app.log">
+	<File name="MyFile" fileName="logs/app.log" append="false">
       <PatternLayout>
         <pattern>%-5p %l - %m%n </pattern>
       </PatternLayout>
     </File>
-    <Asynch name="Asynch">
-      <appender-ref ref="MyFile"/>
-    </Asynch>
   </appenders>
   <loggers>=
     <root level="debug">
-      <appender-ref ref="Asynch"/>
+      <appender-ref ref="MyFile"/>
     </root>
-    <logger name="gvpl" level="warn">
-      <appender-ref ref="STDOUT"/>
-    </logger>
   </loggers>
 </configuration>

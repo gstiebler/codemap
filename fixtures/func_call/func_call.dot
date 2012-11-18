@@ -36,7 +36,7 @@ subgraph cluster_3 {
 label = "ClassTest::staticFunc";
 parent = "G";
 startingline = 31;
-	node_000035 [ label = "c", style=filled, fillcolor="#FFE9E9", startingline=16 ]
+	node_000035 [ label = "staticParam", style=filled, fillcolor="#FFE9E9", startingline=16 ]
 	node_000036 [ label = "7", style=filled, fillcolor="#E9FFE9", startingline=18 ]
 	node_000037 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
 	node_000038 [ label = "ClassTest::staticFunc", style=filled, fillcolor="#FFFFD0", startingline=18 ]

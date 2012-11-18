@@ -6,18 +6,22 @@ label = "root";
 	node_000012 [ label = "a", startingline=10 ]
 	node_000013 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=11 ]
 	node_000014 [ label = "b", startingline=11 ]
-	node_000025 [ label = "c", startingline=13 ]
-	node_000026 [ label = "d", startingline=13 ]
-	node_000027 [ label = "e", startingline=14 ]
-	node_000028 [ label = "f", startingline=15 ]
-	node_000029 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=17 ]
-	node_000030 [ label = "k", startingline=17 ]
+	node_000025 [ label = "c (GARBAGE)", style=filled, fillcolor="#FF8080", startingline=13 ]
+	node_000026 [ label = "c", startingline=13 ]
+	node_000027 [ label = "d (GARBAGE)", style=filled, fillcolor="#FF8080", startingline=13 ]
+	node_000028 [ label = "d", startingline=13 ]
+	node_000029 [ label = "e", startingline=14 ]
+	node_000030 [ label = "f", startingline=15 ]
+	node_000031 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=17 ]
+	node_000032 [ label = "k", startingline=17 ]
 subgraph cluster_1 {
 label = "soma_sub";
 parent = "G";
 startingline = 13;
 	node_000015 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000016 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000017 [ label = "soma_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000018 [ label = "sub_pointed", style=filled, fillcolor="#FFE9E9", startingline=2 ]
 	node_000019 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=4 ]
 	node_000020 [ label = "soma", startingline=4 ]
 	node_000021 [ label = "soma_pointed", startingline=4 ]
@@ -29,19 +33,21 @@ startingline = 13;
 	node_000012 -> node_000015
 	node_000013 -> node_000014
 	node_000014 -> node_000016
-	node_000025 -> node_000027
-	node_000026 -> node_000028
-	node_000027 -> node_000029
-	node_000028 -> node_000029
-	node_000029 -> node_000030
+	node_000025 -> node_000017
+	node_000026 -> node_000029
+	node_000027 -> node_000018
+	node_000028 -> node_000030
+	node_000029 -> node_000031
+	node_000030 -> node_000031
+	node_000031 -> node_000032
 	node_000015 -> node_000019
 	node_000015 -> node_000022
 	node_000016 -> node_000019
 	node_000016 -> node_000022
 	node_000019 -> node_000020
 	node_000020 -> node_000021
-	node_000021 -> node_000025
+	node_000021 -> node_000026
 	node_000022 -> node_000023
 	node_000023 -> node_000024
-	node_000024 -> node_000026
+	node_000024 -> node_000028
 }
