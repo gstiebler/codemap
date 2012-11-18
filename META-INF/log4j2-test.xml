@@ -3,12 +3,22 @@
   <appenders>
     <Console name="STDOUT" target="SYSTEM_OUT">
       <PatternLayout pattern="%-5p %l - %m%n "/>
-    </Console>
+    </Console>    
+	<File name="MyFile" fileName="logs/app.log">
+      <PatternLayout>
+        <pattern>%-5p %l - %m%n </pattern>
+      </PatternLayout>
+    </File>
+    <Asynch name="Asynch">
+      <appender-ref ref="MyFile"/>
+    </Asynch>
   </appenders>
-  <loggers>
-    <logger name="org.apache.log4j.xml" level="info"/>
+  <loggers>=
     <root level="debug">
-      <appender-ref ref="STDOUT"/>
+      <appender-ref ref="Asynch"/>
     </root>
+    <logger name="gvpl" level="warn">
+      <appender-ref ref="STDOUT"/>
+    </logger>
   </loggers>
 </configuration>
