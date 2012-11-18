@@ -15,7 +15,7 @@ import gvpl.graph.Graph.NodeType;
 
 public abstract class AstLoader {
 	
-	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	static Logger logger = LogManager.getLogger(AstLoader.class.getName());
 
 	protected Graph _gvplGraph;
 	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
@@ -31,7 +31,6 @@ public abstract class AstLoader {
 				ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
 				result = new ClassVar(graph, name, classDecl, astLoader);
 			}
-			//result.initializeGarbage(graph, astLoader, astInterpreter);
 			
 			return result;
 		case E_POINTER:

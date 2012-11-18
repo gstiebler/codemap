@@ -13,9 +13,9 @@ int soma(int a, int b, float fator)
 
 class ClassTest
 {
-	static int staticFunc(int c)
+	static int staticFunc(int staticParam)
 	{
-		return c + 7;
+		return staticParam + 7;
 	}
 };
 

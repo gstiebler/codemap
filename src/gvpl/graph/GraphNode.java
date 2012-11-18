@@ -132,6 +132,10 @@ public class GraphNode {
 		return _parentVar;
 	}
 	
+	public static GraphNode newGarbageNode(Graph graph, String name) {
+		return graph.addGraphNode(name + " (GARBAGE)", NodeType.E_GARBAGE);
+	}
+	
 	@Override
 	public String toString() {
 		return _name + " (" + _id + ")";

@@ -21,8 +21,6 @@ public interface IVar {
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter);
-	
-	public void initializeGarbage(Graph graph, AstLoader astLoader, AstInterpreter astInterpreter);
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter);

@@ -157,6 +157,10 @@ public class AstLoaderCDT extends AstLoader {
 			varOfRef = getVarFromExpr(owner);
 		}
 		IVar varInMem = varOfRef.getVarInMem();
+		
+		if(varInMem ==  null)
+			return null;
+		
 		IClassVar ownerVar = (IClassVar) varInMem;
 
 		TypeId ownerType = varOfRef.getType();

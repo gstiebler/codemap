@@ -45,8 +45,11 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	}
 
 	GraphNode getIfNode(Graph graph) {
-		if (_conditionNode == null)
+		if (_conditionNode == null){
+			if(_finalVar == null)
+				return GraphNode.newGarbageNode(graph, "INVALID_READ");
 			return _finalVar.getCurrentNode();
+		}
 
 		GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
 
@@ -172,10 +175,6 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter) {
-		logger.fatal("You're doing it wrong.");
-	}
-	
-	public void initializeGarbage(Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		logger.fatal("You're doing it wrong.");
 	}
 

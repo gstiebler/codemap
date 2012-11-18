@@ -63,7 +63,7 @@ import debug.DebugOptions;
 
 public class InstructionLine {
 	
-	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	static Logger logger = LogManager.getLogger(InstructionLine.class.getName());
 
 	private Graph _gvplGraph;
 	private AstInterpreterCDT _astInterpreter;
@@ -259,6 +259,8 @@ public class InstructionLine {
 		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
 			IVar varDecl = _parentBasicBlock.getVarFromFieldRef((IASTFieldReference) expr);
+			if(varDecl == null)
+				return GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ");
 			return varDecl.getCurrentNode();
 		} else if (expr instanceof IASTUnaryExpression) {
 			return loadUnaryExpr((IASTUnaryExpression) expr);
@@ -317,9 +319,9 @@ public class InstructionLine {
 		logger.debug("lhsOp class: {}", lhsOp.getClass());
 		// check if we're trying to read a the instance of a pointer
 		if (lhsOp instanceof IASTUnaryExpression) {
-			logger.info("not implemented");
+			logger.warn("not implemented");
 		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
-			logger.info("not imlemented");
+			logger.warn("not imlemented");
 		} else if (lhsVar instanceof PointerVar) {
 			loadRhsPointer((PointerVar) lhsVar, rhsExpr);
 			return null;
