@@ -148,10 +148,5 @@ public class BasicTest {
 	public void garbage() {
 		TestsUtil.baseTest("garbage");
 	}
-
-	@Test
-	public void pureVirtual() {
-		TestsUtil.baseTest("pure_virtual");
-	}
 	
 }
