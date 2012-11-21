@@ -10,6 +10,15 @@ class BaseClassTest
 	}
 };
 
+class ClassDummy : public BaseClassTest
+{
+public:
+	int func(int param)
+	{
+		return 10 + param;
+	}
+};
+
 class ClassTest : public BaseClassTest
 {
 public:
