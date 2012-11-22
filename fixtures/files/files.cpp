@@ -1,5 +1,7 @@
 
-#include "second.cpp"
+#include "inc_folder/soma2.cpp"
+#include "sub_folder/soma3.cpp"
+#include "static_func.cpp"
 
 int main() 
 {
