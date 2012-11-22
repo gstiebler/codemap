@@ -21,7 +21,6 @@ import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit.IDependencyTree;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
@@ -44,7 +43,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	public void execute(IASTTranslationUnit root) {
 		IASTDeclaration[] declarations = root.getDeclarations();
-		IDependencyTree depTree = root.getDependencyTree();
 		Function mainFunction = null;
 
 		// Iterate through function, class e structs declarations

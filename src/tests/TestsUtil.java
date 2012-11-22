@@ -7,9 +7,10 @@ import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.cesta.parsers.dot.DotTree;
@@ -27,6 +28,21 @@ import org.eclipse.core.runtime.CoreException;
 
 public class TestsUtil {
 
+	  public static List<String> readLines(java.io.File file) throws Exception {
+	      if (!file.exists()) {
+	          return new ArrayList<String>();
+	      }
+	      BufferedReader reader = new BufferedReader(new FileReader(file));
+	      List<String> results = new ArrayList<String>();
+	      String line = reader.readLine();
+	      while (line != null) {
+	          results.add(line);
+	          line = reader.readLine();
+	      }
+	      reader.close();
+	      return results;
+	  }
+	
 	public static void baseTest(String testName) {
 		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
@@ -45,8 +61,26 @@ public class TestsUtil {
 		CodeReader reader = new CodeReader(code.toCharArray());
 		@SuppressWarnings("rawtypes")
 		Map definedSymbols = new LinkedHashMap();
-		String[] includePaths = new String[1];
-		includePaths[0] = examplePath;
+
+		List<String> readIncludePaths = null;
+		try {
+			readIncludePaths = readLines(new java.io.File(examplePath + "includes.txt"));
+		} catch (Exception e1) {
+			readIncludePaths = null;
+		}
+		
+		String[] includePaths = null;
+		if(readIncludePaths == null){
+			includePaths = new String[0];
+			includePaths[0] = examplePath;
+		} else {
+			for(int i = 0; i < readIncludePaths.size(); i++)
+				readIncludePaths.set(i, examplePath + readIncludePaths.get(i));
+			includePaths = new String[readIncludePaths.size() + 1];
+			readIncludePaths.add(examplePath);
+			readIncludePaths.toArray(includePaths);
+		}
+		
 		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
 		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 
