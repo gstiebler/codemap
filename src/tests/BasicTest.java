@@ -148,5 +148,10 @@ public class BasicTest {
 	public void garbage() {
 		TestsUtil.baseTest("garbage");
 	}
+
+	@Test
+	public void files() {
+		TestsUtil.baseTest("files");
+	}
 	
 }

@@ -45,7 +45,8 @@ public class TestsUtil {
 		CodeReader reader = new CodeReader(code.toCharArray());
 		@SuppressWarnings("rawtypes")
 		Map definedSymbols = new LinkedHashMap();
-		String[] includePaths = new String[0];
+		String[] includePaths = new String[1];
+		includePaths[0] = examplePath;
 		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
 		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 

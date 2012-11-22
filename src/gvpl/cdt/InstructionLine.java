@@ -409,7 +409,7 @@ public class InstructionLine {
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
 			} else
-				logger.fatal("problem");
+				logger.fatal("problem: instance: {}", idExprBinding.getClass());
 		} else if (nameExpr instanceof IASTFieldReference) {
 			return loadVarMethod(funcCall, paramExpr);
 		} else
