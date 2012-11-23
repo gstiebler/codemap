@@ -9,6 +9,7 @@ import gvpl.graphviz.Visualizer;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,25 +61,32 @@ public class TestsUtil {
 		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
 		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 
-		String code = "";
-		try {
-			code = FileFuncs.readFileToString(examplePath + testName + ".cpp");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		CodeReader reader = new CodeReader(code.toCharArray());
-		IASTTranslationUnit translationUnit = null;
-		try {
-			translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info,
-					readerFactory, null, log);
-		} catch (CoreException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
-		astInterpreter.execute(translationUnit);
+		
+		List<String> fileNames = new ArrayList<String>();
+		fileNames.add(examplePath + testName + ".cpp");
+		
+		for(String fileName : fileNames)
+		{
+			String code = "";
+			try {
+				code = FileFuncs.readFileToString(fileName);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			CodeReader reader = new CodeReader(code.toCharArray());
+			IASTTranslationUnit translationUnit = null;
+			try {
+				translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info,
+						readerFactory, null, log);
+			} catch (CoreException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			astInterpreter.execute(translationUnit);
+		}
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
