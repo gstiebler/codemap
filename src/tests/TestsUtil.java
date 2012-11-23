@@ -2,13 +2,13 @@ package tests;
 
 import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreterCDT;
-import gvpl.common.File;
+import gvpl.common.FileFuncs;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,21 +28,6 @@ import org.eclipse.core.runtime.CoreException;
 
 public class TestsUtil {
 
-	  public static List<String> readLines(java.io.File file) throws Exception {
-	      if (!file.exists()) {
-	          return new ArrayList<String>();
-	      }
-	      BufferedReader reader = new BufferedReader(new FileReader(file));
-	      List<String> results = new ArrayList<String>();
-	      String line = reader.readLine();
-	      while (line != null) {
-	          results.add(line);
-	          line = reader.readLine();
-	      }
-	      reader.close();
-	      return results;
-	  }
-	
 	public static void baseTest(String testName) {
 		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
@@ -50,40 +35,39 @@ public class TestsUtil {
 		FileDriver.resetCounter();
 
 		IParserLogService log = new DefaultLogService();
-		String code = "";
-		try {
-			code = File.readFileToString(examplePath + testName + ".cpp");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 
-		CodeReader reader = new CodeReader(code.toCharArray());
-		@SuppressWarnings("rawtypes")
-		Map definedSymbols = new LinkedHashMap();
+		Map<String, String> definedSymbols = new LinkedHashMap<String, String>();
 
 		List<String> readIncludePaths = null;
 		try {
-			readIncludePaths = readLines(new java.io.File(examplePath + "includes.txt"));
+			readIncludePaths = FileFuncs.readLines(new java.io.File(examplePath + "includes.txt"));
 		} catch (Exception e1) {
 			readIncludePaths = null;
 		}
-		
+
 		String[] includePaths = null;
-		if(readIncludePaths == null){
+		if (readIncludePaths == null) {
 			includePaths = new String[0];
 			includePaths[0] = examplePath;
 		} else {
-			for(int i = 0; i < readIncludePaths.size(); i++)
+			for (int i = 0; i < readIncludePaths.size(); i++)
 				readIncludePaths.set(i, examplePath + readIncludePaths.get(i));
 			includePaths = new String[readIncludePaths.size() + 1];
 			readIncludePaths.add(examplePath);
 			readIncludePaths.toArray(includePaths);
 		}
-		
+
 		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
 		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 
+		String code = "";
+		try {
+			code = FileFuncs.readFileToString(examplePath + testName + ".cpp");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		CodeReader reader = new CodeReader(code.toCharArray());
 		IASTTranslationUnit translationUnit = null;
 		try {
 			translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info,

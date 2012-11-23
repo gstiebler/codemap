@@ -1,5 +1,5 @@
 
-#include <soma2.cpp>
+#include <soma2.h>
 #include "sub_folder/soma3.cpp"
 #include "static_func.cpp"
 

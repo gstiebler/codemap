@@ -1,6 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.File;
+import gvpl.common.FileFuncs;
 import gvpl.graph.Graph;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
@@ -25,7 +25,7 @@ public class ParserExample {
 	public static void main(String[] args) throws Exception {
 		IParserLogService log = new DefaultLogService();
 		
-		String code = File.readFileToString(File.examplesPath() + "main.cpp");
+		String code = FileFuncs.readFileToString(FileFuncs.examplesPath() + "main.cpp");
 
 		CodeReader reader = new CodeReader(code.toCharArray());
 		@SuppressWarnings("rawtypes")
@@ -46,7 +46,7 @@ public class ParserExample {
 		
 		FileWriter outFile = null;
 		try {
-			outFile = new FileWriter(File.examplesPath() + "first.dot");
+			outFile = new FileWriter(FileFuncs.examplesPath() + "first.dot");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

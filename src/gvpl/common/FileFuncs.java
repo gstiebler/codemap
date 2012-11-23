@@ -3,8 +3,10 @@ package gvpl.common;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class File {
+public class FileFuncs {
 	
 	//read file content into a string
 	public static String readFileToString(String filePath) throws IOException {
@@ -22,6 +24,21 @@ public class File {
 		reader.close();
  
 		return  fileData.toString();	
+	}
+	
+	public static List<String> readLines(java.io.File file) throws Exception {
+		if (!file.exists()) {
+			return new ArrayList<String>();
+		}
+		BufferedReader reader = new BufferedReader(new FileReader(file));
+		List<String> results = new ArrayList<String>();
+		String line = reader.readLine();
+		while (line != null) {
+			results.add(line);
+			line = reader.readLine();
+		}
+		reader.close();
+		return results;
 	}
 	
 	public static String examplesPath(){
