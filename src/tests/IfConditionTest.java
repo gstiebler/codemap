@@ -124,7 +124,7 @@ public class IfConditionTest {
 
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new Graph(""));
 
-		ClassDeclCDT classDecl = new ClassDeclCDT(astInterpreter);
+		ClassDeclCDT classDecl = new ClassDeclCDT(astInterpreter, null);
 		MemberId memberId = new MemberId();
 		ClassMember member = new ClassMember(memberId, "member",
 				astInterpreter.getPrimitiveType(), IndirectionType.E_VARIABLE);

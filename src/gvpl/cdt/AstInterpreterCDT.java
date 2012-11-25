@@ -69,7 +69,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 				logger.fatal("Deu merda aqui." + declaration.getClass());
 		}
 
-		_gvplGraph = mainFunction.getGraph();
+		if(mainFunction != null)
+			_gvplGraph = mainFunction.getGraph();
 	}
 
 	/**
@@ -127,7 +128,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @param strDecl
 	 */
 	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
-		ClassDeclCDT classDecl = new ClassDeclCDT(this);
+		ClassDeclCDT classDecl = new ClassDeclCDT(this, CodeLocationCDT.NewFromDecl(strDecl));
 		classDecl.setBinding(strDecl);
 		addClassDeclInMaps(classDecl);
 		classDecl.loadAstDecl(strDecl);

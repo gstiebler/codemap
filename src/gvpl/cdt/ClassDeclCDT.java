@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
+import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
@@ -36,8 +37,8 @@ public class ClassDeclCDT extends ClassDecl{
 	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 	private List<ClassDeclCDT> _parentClasses = new ArrayList<ClassDeclCDT>();
 
-	public ClassDeclCDT(AstInterpreterCDT astInterpreter) {
-		super();
+	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location) {
+		super(location);
 		_astInterpreter = astInterpreter;
 	}
 	

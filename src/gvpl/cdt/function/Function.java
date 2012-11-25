@@ -2,8 +2,10 @@ package gvpl.cdt.function;
 
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.ClassVar;
+import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
@@ -50,6 +52,8 @@ public class Function extends AstLoaderCDT {
 	private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
 	protected String _funcName;
 	protected IBinding _ownBinding;
+	CodeLocation _declLocation = null;
+	CodeLocation _implLocation = null;
 
 	public Function(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(new Graph(), parent, astInterpreter);
@@ -76,6 +80,8 @@ public class Function extends AstLoaderCDT {
 			entry.getValue().getVar().initializeVar(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
 					_astInterpreter);
 		}
+		
+		_declLocation = CodeLocationCDT.NewFromDecl(decl);
 	}
 	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
@@ -89,6 +95,8 @@ public class Function extends AstLoaderCDT {
 			}
 		} else
 			logger.fatal("Work here.");
+		
+		_implLocation = CodeLocationCDT.NewFromDecl(body);
 		
 		lostScope();
 	}

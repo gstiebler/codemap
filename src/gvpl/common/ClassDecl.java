@@ -17,9 +17,11 @@ public abstract class ClassDecl {
 	protected MemberFunc _destructorFunc = null;
 	protected Map<MemberId, ClassMember> _memberVarGraphNodes = new LinkedHashMap<MemberId, ClassMember>();
 	protected Map<Integer, MemberFunc> _opOverloadMethods = new LinkedHashMap<Integer, MemberFunc>();
+	CodeLocation _location;
 	
-	public ClassDecl() {
+	public ClassDecl(CodeLocation location) {
 		_typeId = new TypeId();
+		_location = location;
 	}
 
 	public TypeId getTypeId() {
