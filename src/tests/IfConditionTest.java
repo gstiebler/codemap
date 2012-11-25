@@ -24,6 +24,7 @@ import gvpl.graph.GraphNode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.junit.Test;
 
 public class IfConditionTest {
@@ -129,7 +130,7 @@ public class IfConditionTest {
 		ClassMember member = new ClassMember(memberId, "member",
 				astInterpreter.getPrimitiveType(), IndirectionType.E_VARIABLE);
 		classDecl.addMember(member);
-		astInterpreter.addClassDeclInMaps(classDecl);
+		astInterpreter.addClassDeclInMaps(classDecl, null);
 
 		BasicBlockCDT mainBasicBlock = new BasicBlockCDT(null, astInterpreter);
 		// the graph in the calling block

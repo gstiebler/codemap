@@ -101,6 +101,10 @@ public abstract class ClassDecl {
 		return _opOverloadMethods.get(operator);
 	}
 	
+	public CodeLocation getCodeLocation() {
+		return _location;
+	}
+	
 	public abstract Iterable<ClassDecl> getParentClasses();
 	protected abstract Iterable<MemberFunc> getMemberFuncList();
 }

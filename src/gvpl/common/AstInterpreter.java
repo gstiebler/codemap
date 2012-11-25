@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class AstInterpreter extends AstLoaderCDT {
 
-	protected Map<TypeId, ClassDeclCDT> _typeIdToClass = new LinkedHashMap<TypeId, ClassDeclCDT>();
+	protected Map<TypeId, ClassDeclCDT> _typeIdToClass;
 	/** the same for all primitive types */
 	protected TypeId _primitiveType = new TypeId();
 
@@ -30,6 +30,7 @@ public class AstInterpreter extends AstLoaderCDT {
 	 */
 	public AstInterpreter(Graph gvplGraph) {
 		super(gvplGraph, null, null);
+		_typeIdToClass = new LinkedHashMap<TypeId, ClassDeclCDT>();
 	}
 
 	public ClassDeclCDT getClassDecl(TypeId type) {

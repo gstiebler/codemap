@@ -10,6 +10,7 @@ import gvpl.graph.Graph;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -36,9 +37,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	private Map<IBinding, Function> _funcIdMap;
-	private Map<CodeLocation, Function> _funcByLocation = new LinkedHashMap<CodeLocation, Function>();
+	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	private Map<IBinding, ClassDeclCDT> _typeBindingToClass;
-	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new LinkedHashMap<CodeLocation, ClassDeclCDT>();
+	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		super(gvplGraph);
@@ -123,7 +124,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 		IBinding binding = decl.getName().resolveBinding();
-		Function function = _funcByLocation.get(funcLocation);
+		Function function = _funcIdMap.get(binding);
+		if(function != null)
+			return function;
+		
+		function = _funcByLocation.get(funcLocation);
 		// the function declaration has already been loaded by other .h file
 		if(function != null) {
 			_funcIdMap.put(binding, function);
@@ -131,28 +136,26 @@ public class AstInterpreterCDT extends AstInterpreter {
 		}
 		
 		function = new Function(_gvplGraph, this, this, binding);
+		_funcIdMap.put(binding, function);
+		_funcByLocation.put(funcLocation, function);
 		function.loadDeclaration(decl);
 		
 		return function;
 	}
 	
 	private Function loadSimpleFunction(IASTName name, CPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition funcDefinition) {
-		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator.getFileLocation());
-		IBinding binding = name.resolveBinding();
-		
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
 		Function function = loadFunctionDeclaration(funcDeclarator);
 
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
 		function.loadDefinition(funcDeclarator.getConstructorChain(), funcDefinition.getBody());
-		_funcIdMap.put(binding, function);
-		_funcByLocation.put(funcLocation, function);
 		return function;
 	}
 	
-	public void addClassDeclInMaps(ClassDeclCDT classDecl) {
-		_typeBindingToClass.put(classDecl.getBinding(), classDecl);
+	public void addClassDeclInMaps(ClassDeclCDT classDecl, IBinding binding) {
+		_typeBindingToClass.put(binding, classDecl);
 		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
+		_classByLocation.put(classDecl.getCodeLocation(), classDecl);
 	}
 
 	/**
@@ -161,18 +164,19 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @param strDecl
 	 */
 	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
+		IBinding binding = strDecl.getName().resolveBinding();
 		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl.getFileLocation());
 		ClassDeclCDT classDecl = _classByLocation.get(classLocation);
 
 		// the class declaration has already been loaded by other .h file
 		if(classDecl != null) {
-			addClassDeclInMaps(classDecl);
+			addClassDeclInMaps(classDecl, binding);
 			return;
 		}
 		
 		classDecl = new ClassDeclCDT(this, classLocation);
 		classDecl.setBinding(strDecl);
-		addClassDeclInMaps(classDecl);
+		addClassDeclInMaps(classDecl, binding);
 		classDecl.loadAstDecl(strDecl);
 	}
 
@@ -190,6 +194,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return classDecl.getTypeId();
 		} else
 			return _primitiveType;
+	}
+	
+	public ClassDeclCDT getClassDecl(IBinding binding) {
+		return _typeBindingToClass.get(binding);
 	}
 
 	/**

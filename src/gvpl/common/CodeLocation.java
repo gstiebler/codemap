@@ -11,8 +11,12 @@ public class CodeLocation implements Comparable<CodeLocation> {
 		if(fileName.equals("<text>"))
 			_fileName = _currentFileName;
 		else
-			_fileName = fileName;
+			_fileName = normalizeFileName(fileName);
 		_startingLine = startingLine;
+	}
+	
+	private static String normalizeFileName(String weirdFileName) {
+		return weirdFileName.replace('\\', '/');
 	}
 	
 	public int getStartingLine() {
@@ -24,7 +28,7 @@ public class CodeLocation implements Comparable<CodeLocation> {
 	}
 	
 	public static void setCurrentFileName(String currentFileName) {
-		_currentFileName = currentFileName;
+		_currentFileName = normalizeFileName(currentFileName);
 	}
 	
 	@Override

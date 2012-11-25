@@ -30,7 +30,6 @@ import debug.DebugOptions;
 
 public class ClassDeclCDT extends ClassDecl{
 
-	private IBinding _binding;
 	private AstInterpreterCDT _astInterpreter;
 
 	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
@@ -86,7 +85,6 @@ public class ClassDeclCDT extends ClassDecl{
 	
 	public void setBinding(CPPASTCompositeTypeSpecifier classDecl) {
 		IASTName name = classDecl.getName();
-		_binding = name.resolveBinding();
 		_name = name.toString();
 	}
 	
@@ -127,10 +125,6 @@ public class ClassDeclCDT extends ClassDecl{
 		
 		MemberFunc memberFunc = loadMemberFuncDecl(funcDeclarator, astInterpreter);
 		memberFunc.loadDefinition(funcDeclarator.getConstructorChain(), member.getBody());
-	}
-
-	public IBinding getBinding() {
-		return _binding;
 	}
 
 	public ClassMember getMember(IBinding binding) {
@@ -185,6 +179,5 @@ public class ClassDeclCDT extends ClassDecl{
 	@Override
 	protected Iterable<MemberFunc> getMemberFuncList() {
 		return _memberFuncIdMap.values();
-		
 	}
 }

@@ -15,6 +15,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.cesta.parsers.dot.DotTree;
 import org.cesta.parsers.dot.DotTree.Graph;
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
@@ -29,7 +31,9 @@ import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 import org.eclipse.core.runtime.CoreException;
 
 public class TestsUtil {
-
+	
+	static Logger logger = LogManager.getLogger(TestsUtil.class.getName());
+	
 	public static void baseTest(String testName) {
 		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
@@ -65,16 +69,17 @@ public class TestsUtil {
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
 		
 		List<String> fileNames = new ArrayList<String>();
-		String currentFileName = examplePath + testName + ".cpp";
+		String mainTestFileName = examplePath + testName + ".cpp";
 		
 		fileNames.add("C:/Projetos/GVPL/fixtures/files/inc_folder/soma2.cpp");
-		fileNames.add("C:/Projetos/GVPL/fixtures/files/inc_folder/soma3.cpp");
+		fileNames.add("C:/Projetos/GVPL/fixtures/files/sub_folder/soma3.cpp");
 		fileNames.add("C:/Projetos/GVPL/fixtures/files/static_func.cpp");
-		fileNames.add(currentFileName);
-		CodeLocation.setCurrentFileName(currentFileName);
+		fileNames.add(mainTestFileName);
 		
 		for(String fileName : fileNames)
 		{
+			logger.debug(" -- ** Processing cpp: {}", fileName);
+			CodeLocation.setCurrentFileName(fileName);
 			String code = "";
 			try {
 				code = FileFuncs.readFileToString(fileName);

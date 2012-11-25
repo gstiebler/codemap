@@ -423,8 +423,7 @@ public class InstructionLine {
 		IASTName[] names = qName.getNames();
 		IASTName className = names[0];
 		IASTName funcName = names[1];
-		TypeId typeId = _astInterpreter.getTypeFromBinding(className.resolveBinding());
-		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(typeId);
+		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(className.resolveBinding());
 		Function func = classDecl.getMemberFunc(funcName.resolveBinding());
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		return func.addFuncRef(parameterValues, _gvplGraph);
