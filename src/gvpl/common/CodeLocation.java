@@ -1,12 +1,17 @@
 package gvpl.common;
 
-public class CodeLocation {
+public class CodeLocation implements Comparable<CodeLocation> {
+	
+	static String _currentFileName;
 	
 	int _startingLine;
 	String _fileName;
 	
 	public CodeLocation(String fileName, int startingLine) {
-		_fileName = fileName;
+		if(fileName.equals("<text>"))
+			_fileName = _currentFileName;
+		else
+			_fileName = fileName;
 		_startingLine = startingLine;
 	}
 	
@@ -18,14 +23,38 @@ public class CodeLocation {
 		return _fileName;
 	}
 	
-	public boolean equals(CodeLocation other) {
-		if(other._startingLine != _startingLine)
+	public static void setCurrentFileName(String currentFileName) {
+		_currentFileName = currentFileName;
+	}
+	
+	@Override
+	public String toString() {
+		return _fileName + " - " + _startingLine;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof CodeLocation))
+			return false;
+		
+		CodeLocation otherCL = (CodeLocation) other; 
+		if(otherCL._startingLine != _startingLine)
 			return false;
 			
-		if(!other._fileName.equals(_fileName))
+		if(!otherCL._fileName.equals(_fileName))
 			return false;
 		
 		return true;
+	}
+
+	@Override
+	public int compareTo(CodeLocation other) {
+		if(other._startingLine < _startingLine)
+			return -1;
+		if(other._startingLine > _startingLine)
+			return 1;
+		
+		return other._fileName.compareTo(_fileName);
 	}
 
 }

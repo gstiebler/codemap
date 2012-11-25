@@ -5,6 +5,7 @@ import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassVar;
+import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
@@ -76,9 +77,9 @@ public class InstructionLine {
 	}
 
 	public void load(IASTStatement statement) {
-		int startingLine = statement.getFileLocation().getStartingLineNumber();
-		logger.debug(" --- Line number: {}", startingLine);
-		DebugOptions.setStartingLine(startingLine);
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(statement.getFileLocation());
+		logger.debug(" --- Code location: {}", codeLocation);
+		DebugOptions.setStartingLine(codeLocation.getStartingLine());
 		logger.debug("statement is: {}", statement.getClass());
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration

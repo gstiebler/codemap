@@ -72,6 +72,8 @@ public class Function extends AstLoaderCDT {
 		else
 			_funcName = astName.toString();
 
+		logger.debug("Loading declaration of func {}", _funcName);
+		
 		setName(calcName());
 
 		loadFuncParameters(parameters);
@@ -81,7 +83,7 @@ public class Function extends AstLoaderCDT {
 					_astInterpreter);
 		}
 		
-		_declLocation = CodeLocationCDT.NewFromDecl(decl);
+		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 	}
 	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
@@ -96,7 +98,7 @@ public class Function extends AstLoaderCDT {
 		} else
 			logger.fatal("Work here.");
 		
-		_implLocation = CodeLocationCDT.NewFromDecl(body);
+		_implLocation = CodeLocationCDT.NewFromFileLocation(body.getFileLocation());
 		
 		lostScope();
 	}

@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.function.Function;
 import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
+import gvpl.common.CodeLocation;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -26,6 +27,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifie
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 import debug.DebugOptions;
 
@@ -33,8 +35,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
-	private Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
-	private Map<IBinding, ClassDeclCDT> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
+	private Map<IBinding, Function> _funcIdMap;
+	private Map<CodeLocation, Function> _funcByLocation = new LinkedHashMap<CodeLocation, Function>();
+	private Map<IBinding, ClassDeclCDT> _typeBindingToClass;
+	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new LinkedHashMap<CodeLocation, ClassDeclCDT>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		super(gvplGraph);
@@ -42,11 +46,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public void execute(IASTTranslationUnit root) {
+		_funcIdMap = new LinkedHashMap<IBinding, Function>();
+		_typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
+		
 		IASTDeclaration[] declarations = root.getDeclarations();
 		Function mainFunction = null;
 
 		// Iterate through function, class e structs declarations
 		for (IASTDeclaration declaration : declarations) {
+			logger.debug("Location of declaration: {}", CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
+			
 			// If the declaration is a function
 			if (declaration instanceof IASTFunctionDefinition) {
 				Function func = loadFunction((IASTFunctionDefinition) declaration);
@@ -63,8 +72,14 @@ public class AstInterpreterCDT extends AstInterpreter {
 					loadStructureDecl((CPPASTCompositeTypeSpecifier) declSpec);
 				} else if(declSpec instanceof CPPASTElaboratedTypeSpecifier) {
 					
+				} else if(declSpec instanceof CPPASTSimpleDeclSpecifier) {
+					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
+					if(declarators.length > 1)
+						logger.fatal("you're doing it wrong");
+					
+					loadFunctionDeclaration((CPPASTFunctionDeclarator) declarators[0]);
 				} else
-					logger.fatal("you're doing it wrong");
+					logger.fatal("you're doing it wrong. {}", declSpec.getClass());
 			} else
 				logger.fatal("Deu merda aqui." + declaration.getClass());
 		}
@@ -76,19 +91,19 @@ public class AstInterpreterCDT extends AstInterpreter {
 	/**
 	 * Loads a function from the AST
 	 * 
-	 * @param declaration
+	 * @param funcDefinition
 	 * @return A instance of Function
 	 */
-	private Function loadFunction(IASTFunctionDefinition declaration) {
-		IASTDeclarator declarator = declaration.getDeclarator();
+	private Function loadFunction(IASTFunctionDefinition funcDefinition) {
+		IASTDeclarator declarator = funcDefinition.getDeclarator();
 		IASTName name = declarator.getName();
 
 		// method function
 		if (name instanceof CPPASTQualifiedName) {
-			loadMethod(declaration, (CPPASTQualifiedName) name);
+			loadMethod(funcDefinition, (CPPASTQualifiedName) name);
 		} // a function that is not a method
 		else if (name instanceof CPPASTName) {
-			Function function = loadSimpleFunction(name, (CPPASTFunctionDeclarator) declarator, declaration);
+			Function function = loadSimpleFunction(name, (CPPASTFunctionDeclarator) declarator, funcDefinition);
 			if (function.getName().equals("main"))
 				return function;
 		} else
@@ -105,15 +120,33 @@ public class AstInterpreterCDT extends AstInterpreter {
 		classDecl.loadMemberFunc(declaration, this);
 	}
 	
-	private Function loadSimpleFunction(IASTName name, CPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition declaration) {
+	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
+		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
+		IBinding binding = decl.getName().resolveBinding();
+		Function function = _funcByLocation.get(funcLocation);
+		// the function declaration has already been loaded by other .h file
+		if(function != null) {
+			_funcIdMap.put(binding, function);
+			return function;
+		}
+		
+		function = new Function(_gvplGraph, this, this, binding);
+		function.loadDeclaration(decl);
+		
+		return function;
+	}
+	
+	private Function loadSimpleFunction(IASTName name, CPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition funcDefinition) {
+		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator.getFileLocation());
 		IBinding binding = name.resolveBinding();
+		
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
-		Function function = new Function(_gvplGraph, this, this, binding);
+		Function function = loadFunctionDeclaration(funcDeclarator);
 
-		function.loadDeclaration(funcDeclarator);
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
-		function.loadDefinition(funcDeclarator.getConstructorChain(), declaration.getBody());
+		function.loadDefinition(funcDeclarator.getConstructorChain(), funcDefinition.getBody());
 		_funcIdMap.put(binding, function);
+		_funcByLocation.put(funcLocation, function);
 		return function;
 	}
 	
@@ -128,7 +161,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @param strDecl
 	 */
 	private void loadStructureDecl(CPPASTCompositeTypeSpecifier strDecl) {
-		ClassDeclCDT classDecl = new ClassDeclCDT(this, CodeLocationCDT.NewFromDecl(strDecl));
+		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl.getFileLocation());
+		ClassDeclCDT classDecl = _classByLocation.get(classLocation);
+
+		// the class declaration has already been loaded by other .h file
+		if(classDecl != null) {
+			addClassDeclInMaps(classDecl);
+			return;
+		}
+		
+		classDecl = new ClassDeclCDT(this, classLocation);
 		classDecl.setBinding(strDecl);
 		addClassDeclInMaps(classDecl);
 		classDecl.loadAstDecl(strDecl);

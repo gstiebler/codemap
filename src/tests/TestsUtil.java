@@ -2,6 +2,7 @@ package tests;
 
 import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreterCDT;
+import gvpl.common.CodeLocation;
 import gvpl.common.FileFuncs;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
@@ -64,7 +65,13 @@ public class TestsUtil {
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
 		
 		List<String> fileNames = new ArrayList<String>();
-		fileNames.add(examplePath + testName + ".cpp");
+		String currentFileName = examplePath + testName + ".cpp";
+		
+		fileNames.add("C:/Projetos/GVPL/fixtures/files/inc_folder/soma2.cpp");
+		fileNames.add("C:/Projetos/GVPL/fixtures/files/inc_folder/soma3.cpp");
+		fileNames.add("C:/Projetos/GVPL/fixtures/files/static_func.cpp");
+		fileNames.add(currentFileName);
+		CodeLocation.setCurrentFileName(currentFileName);
 		
 		for(String fileName : fileNames)
 		{
