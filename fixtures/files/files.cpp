@@ -1,7 +1,7 @@
 
 #include <soma2.h>
-#include "sub_folder/soma3.cpp"
-#include "static_func.cpp"
+#include "sub_folder/soma3.h"
+#include "static_func.h"
 
 int main() 
 {
