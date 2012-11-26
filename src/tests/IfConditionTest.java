@@ -7,7 +7,6 @@ import gvpl.cdt.BasicBlockCDT;
 import gvpl.cdt.ClassDeclCDT;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
 import gvpl.common.InToExtVar;
 import gvpl.common.MemAddressVar;
@@ -24,7 +23,6 @@ import gvpl.graph.GraphNode;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.junit.Test;
 
 public class IfConditionTest {
@@ -127,8 +125,7 @@ public class IfConditionTest {
 
 		ClassDeclCDT classDecl = new ClassDeclCDT(astInterpreter, null);
 		MemberId memberId = new MemberId();
-		ClassMember member = new ClassMember(memberId, "member",
-				astInterpreter.getPrimitiveType(), IndirectionType.E_VARIABLE);
+		ClassMember member = new ClassMember(memberId, "member", astInterpreter.getPrimitiveType());
 		classDecl.addMember(member);
 		astInterpreter.addClassDeclInMaps(classDecl, null);
 

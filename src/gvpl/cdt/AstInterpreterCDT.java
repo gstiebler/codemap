@@ -170,6 +170,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 
 		// the class declaration has already been loaded by other .h file
 		if(classDecl != null) {
+			classDecl.updateBindings(strDecl);
 			addClassDeclInMaps(classDecl, binding);
 			return;
 		}

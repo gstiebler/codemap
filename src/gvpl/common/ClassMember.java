@@ -12,11 +12,11 @@ public class ClassMember {
 	private TypeId _type;
 	private IndirectionType _indirectionType;
 
-	public ClassMember(MemberId id, String name, TypeId type, IndirectionType indirectionType) {
+	public ClassMember(MemberId id, String name, TypeId type) {
 		_id = id;
 		_name = name;
 		_type = type;
-		_indirectionType = indirectionType;
+		_indirectionType = IndirectionType.E_VARIABLE;
 	}
 
 	public MemberId getMemberId() {

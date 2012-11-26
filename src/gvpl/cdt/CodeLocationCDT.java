@@ -9,7 +9,8 @@ public class CodeLocationCDT {
 	static public CodeLocation NewFromFileLocation(IASTFileLocation fileLocation) {
 		String fileName = fileLocation.getFileName();
 		int startingLine = fileLocation.getStartingLineNumber();
-		return new CodeLocation(fileName, startingLine);
+		int offset = fileLocation.getNodeOffset();
+		return new CodeLocation(fileName, startingLine, offset);
 	}
 	
 }

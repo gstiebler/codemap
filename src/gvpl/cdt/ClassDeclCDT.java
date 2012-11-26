@@ -4,7 +4,6 @@ import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 
@@ -12,8 +11,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
-import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
@@ -32,8 +31,10 @@ public class ClassDeclCDT extends ClassDecl{
 
 	private AstInterpreterCDT _astInterpreter;
 
-	private Map<IBinding, ClassMember> _memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
-	private Map<IBinding, MemberFunc> _memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
+	private Map<IBinding, ClassMember> _memberIdMap;
+	private Map<CodeLocation, ClassMember> _membersLocation = new TreeMap<CodeLocation, ClassMember>();
+	private Map<IBinding, MemberFunc> _memberFuncIdMap;
+	private Map<CodeLocation, MemberFunc> _membersFuncLocation = new TreeMap<CodeLocation, MemberFunc>();
 	private List<ClassDeclCDT> _parentClasses = new ArrayList<ClassDeclCDT>();
 
 	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location) {
@@ -41,45 +42,88 @@ public class ClassDeclCDT extends ClassDecl{
 		_astInterpreter = astInterpreter;
 	}
 	
-	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl) {
-		loadBaseClasses(classDecl.getBaseSpecifiers(), _astInterpreter);
-
+	private void getCDTMembers(CPPASTCompositeTypeSpecifier classDecl, 
+			List<CPPASTFunctionDeclarator> functionDeclarators, 
+			List<IASTFunctionDefinition> functionDefinitions, 
+			List<IASTDeclarator> membersDeclaration) {
 		IASTDeclaration[] members = classDecl.getMembers();
 
 		// load every field
 		for (IASTDeclaration member : members) {
+			if (member instanceof IASTFunctionDefinition)
+				functionDefinitions.add((IASTFunctionDefinition) member);
+			
 			if (!(member instanceof IASTSimpleDeclaration))
 				continue;
 
 			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) member;
-			IASTDeclSpecifier decl_spec = simpleDecl.getDeclSpecifier();
-			TypeId param_type = _astInterpreter.getType(decl_spec);
 			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
-				if (declarator instanceof IASTFunctionDeclarator) {
-					//Load function declaration
-					CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
-					loadMemberFuncDecl(funcDeclarator, _astInterpreter);	
-				} else {
-					IASTName declName = declarator.getName();
-					MemberId memberId = new MemberId();
-
-					//TODO insert the correct IndirectionType
-					ClassMember structMember = new ClassMember(memberId, declName.toString(),
-							param_type, IndirectionType.E_VARIABLE);
-					addMember(structMember);
-
-					_memberIdMap.put(declName.resolveBinding(), structMember);
-				}
+				if (declarator instanceof IASTFunctionDeclarator)
+					functionDeclarators.add((CPPASTFunctionDeclarator) declarator);	
+				else
+					membersDeclaration.add(declarator);
 			}
 		}
+	}
+	
+	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl) {
+		loadBaseClasses(classDecl.getBaseSpecifiers(), _astInterpreter);
 
-		for (IASTDeclaration member : members) {
-			if (!(member instanceof IASTFunctionDefinition))
-				continue;
+		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
+		_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
+		
+		List<CPPASTFunctionDeclarator> functionDeclarators = new ArrayList<CPPASTFunctionDeclarator>();
+		List<IASTFunctionDefinition> functionDefinitions = new ArrayList<IASTFunctionDefinition>();
+		List<IASTDeclarator> membersDeclaration = new ArrayList<IASTDeclarator>();
+		getCDTMembers(classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
+		
+		for(IASTDeclarator memberDeclarator : membersDeclaration) {
+			MemberId memberId = new MemberId();
+			
+			IASTName memberName = memberDeclarator.getName();
+			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) memberDeclarator.getParent();
 
-			loadMemberFunc((IASTFunctionDefinition) member, _astInterpreter);
+			TypeId paramType = _astInterpreter.getType(simpleDecl.getDeclSpecifier());
+			
+			//TODO insert the correct IndirectionType
+			ClassMember structMember = new ClassMember(memberId, memberName.toString(),
+					paramType);
+			_memberVarGraphNodes.put(structMember.getMemberId(), structMember);
+			_memberIdMap.put(memberName.resolveBinding(), structMember);
+			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
+			_membersLocation.put(memberLocation, structMember);
+		}
+		
+		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)
+			loadMemberFuncDecl(functionDeclarator, _astInterpreter);	
+		
+		for(IASTFunctionDefinition functionDefinition : functionDefinitions)
+			loadMemberFunc(functionDefinition, _astInterpreter);
+	}
+	
+	public void updateBindings(CPPASTCompositeTypeSpecifier classDecl) {
+		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
+		_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
+		
+		List<CPPASTFunctionDeclarator> functionDeclarators = new ArrayList<CPPASTFunctionDeclarator>();
+		List<IASTFunctionDefinition> functionDefinitions = new ArrayList<IASTFunctionDefinition>();
+		List<IASTDeclarator> membersDeclaration = new ArrayList<IASTDeclarator>();
+		getCDTMembers(classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
+		
+		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators){
+			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(functionDeclarator.getFileLocation());
+			IBinding memberFuncBinding = functionDeclarator.getName().resolveBinding();
+			MemberFunc memberFunc = _membersFuncLocation.get(funcLocation);
+			_memberFuncIdMap.put(memberFuncBinding, memberFunc);
+		}
+		
+		for(IASTDeclarator memberDeclarator : membersDeclaration) {
+			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
+			IASTName memberName = memberDeclarator.getName();
+			ClassMember structMember = _membersLocation.get(memberLocation);
+			_memberIdMap.put(memberName.resolveBinding(), structMember);
 		}
 	}
 	
@@ -91,21 +135,24 @@ public class ClassDeclCDT extends ClassDecl{
 	void loadBaseClasses(ICPPASTBaseSpecifier[] baseSpecs, AstInterpreterCDT astInterpreter) {
 		for(ICPPASTBaseSpecifier baseSpec : baseSpecs) {
 			IBinding binding = baseSpec.getName().resolveBinding();
-			TypeId type = astInterpreter.getTypeFromBinding(binding);
-			ClassDeclCDT parentClass = astInterpreter.getClassDecl(type);
+			ClassDeclCDT parentClass = astInterpreter.getClassDecl(binding);
 			_parentClasses.add(parentClass);
 		}
 	}
 	
 	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
+		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator.getFileLocation());
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
+		
 		MemberFunc memberFunc = _memberFuncIdMap.get(memberFuncBinding);
-		// check if the function declaration has already been loaded
-		if(memberFunc == null) {
-			memberFunc = new MemberFunc(this, astInterpreter, memberFuncBinding);
-			memberFunc.loadDeclaration(funcDeclarator);
-		}
+		if(memberFunc != null)
+			return memberFunc;
+		
+		memberFunc = new MemberFunc(this, astInterpreter, memberFuncBinding);
+		memberFunc.loadDeclaration(funcDeclarator);
+
 		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
+		_membersFuncLocation.put(funcLocation, memberFunc);
 		
 		if(funcDeclarator.getName() instanceof CPPASTOperatorName)
 		{

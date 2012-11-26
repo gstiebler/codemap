@@ -3,16 +3,18 @@ package gvpl.common;
 public class CodeLocation implements Comparable<CodeLocation> {
 	
 	static String _currentFileName;
-	
-	int _startingLine;
+
 	String _fileName;
+	int _startingLine;
+	int _offset;
 	
-	public CodeLocation(String fileName, int startingLine) {
+	public CodeLocation(String fileName, int startingLine, int offset) {
 		if(fileName.equals("<text>"))
 			_fileName = _currentFileName;
 		else
 			_fileName = normalizeFileName(fileName);
 		_startingLine = startingLine;
+		_offset = offset;
 	}
 	
 	private static String normalizeFileName(String weirdFileName) {
@@ -42,6 +44,9 @@ public class CodeLocation implements Comparable<CodeLocation> {
 			return false;
 		
 		CodeLocation otherCL = (CodeLocation) other; 
+		if(otherCL._offset != _offset)
+			return false;
+		
 		if(otherCL._startingLine != _startingLine)
 			return false;
 			
@@ -53,6 +58,11 @@ public class CodeLocation implements Comparable<CodeLocation> {
 
 	@Override
 	public int compareTo(CodeLocation other) {
+		if(other._offset < _offset)
+			return -1;
+		if(other._offset > _offset)
+			return 1;
+		
 		if(other._startingLine < _startingLine)
 			return -1;
 		if(other._startingLine > _startingLine)
