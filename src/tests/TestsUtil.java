@@ -71,9 +71,18 @@ public class TestsUtil {
 		List<String> fileNames = new ArrayList<String>();
 		String mainTestFileName = examplePath + testName + ".cpp";
 		
-		fileNames.add("C:/Projetos/GVPL/fixtures/files/inc_folder/soma2.cpp");
-		fileNames.add("C:/Projetos/GVPL/fixtures/files/sub_folder/soma3.cpp");
-		fileNames.add("C:/Projetos/GVPL/fixtures/files/static_func.cpp");
+		List<String> readBuildFiles = null;
+		try {
+			readBuildFiles = FileFuncs.readLines(new java.io.File(examplePath + "files.txt"));
+		} catch (Exception e1) {
+			readBuildFiles = null;
+		}
+		
+		if(readBuildFiles != null){
+			for (String buildFile : readBuildFiles)
+				fileNames.add(examplePath + buildFile);
+		}
+		
 		fileNames.add(mainTestFileName);
 		
 		for(String fileName : fileNames)

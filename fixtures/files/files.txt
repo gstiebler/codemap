@@ -1,0 +1,3 @@
+inc_folder/soma2.cpp
+sub_folder/soma3.cpp
+static_func.cpp
