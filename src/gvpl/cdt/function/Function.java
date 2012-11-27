@@ -77,16 +77,20 @@ public class Function extends AstLoaderCDT {
 		setName(calcName());
 
 		loadFuncParameters(parameters);
-
-		for (Map.Entry<IBinding, FuncParameter> entry : _parametersMap.entrySet()) {
-			entry.getValue().getVar().initializeVar(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
-					_astInterpreter);
-		}
 		
 		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 	}
 	
+	private void initializeParameters() {
+		for (Map.Entry<IBinding, FuncParameter> entry : _parametersMap.entrySet()) {
+			entry.getValue().getVar().initializeVar(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
+					_astInterpreter);
+		}
+	}
+	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
+		initializeParameters();
+		
 		loadConstructorChain(ccInitializer);
 		
 		if (body instanceof IASTCompoundStatement) {

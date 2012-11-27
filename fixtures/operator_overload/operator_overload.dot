@@ -2,16 +2,16 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000025 [ label = "strIn._a", startingline=24 ]
-	node_000026 [ label = "strIn._b", startingline=24 ]
-	node_000033 [ label = "strOut._a", startingline=25 ]
-	node_000034 [ label = "strOut._b", startingline=25 ]
-	node_000035 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=26 ]
-	node_000036 [ label = "strIn._a", startingline=26 ]
-	node_000043 [ label = "strOut._a", startingline=27 ]
-	node_000044 [ label = "c", startingline=28 ]
-	node_000051 [ label = "strOut._a", startingline=29 ]
-	node_000052 [ label = "d", startingline=30 ]
+	node_000027 [ label = "strIn._a", startingline=24 ]
+	node_000028 [ label = "strIn._b", startingline=24 ]
+	node_000037 [ label = "strOut._a", startingline=25 ]
+	node_000038 [ label = "strOut._b", startingline=25 ]
+	node_000039 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=26 ]
+	node_000040 [ label = "strIn._a", startingline=26 ]
+	node_000047 [ label = "strOut._a", startingline=27 ]
+	node_000048 [ label = "c", startingline=28 ]
+	node_000055 [ label = "strOut._a", startingline=29 ]
+	node_000056 [ label = "d", startingline=30 ]
 subgraph cluster_1 {
 label = "sPri::sPri";
 parent = "G";
@@ -25,50 +25,50 @@ subgraph cluster_2 {
 label = "sPri::sPri";
 parent = "G";
 startingline = 25;
-	node_000029 [ label = "0.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
-	node_000030 [ label = "THIS._a", style=filled, fillcolor="#FFE9E9", startingline=8 ]
-	node_000031 [ label = "1.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
-	node_000032 [ label = "THIS._b", style=filled, fillcolor="#FFE9E9", startingline=8 ]
+	node_000031 [ label = "0.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000032 [ label = "THIS._a", style=filled, fillcolor="#FFE9E9", startingline=8 ]
+	node_000033 [ label = "1.0", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000034 [ label = "THIS._b", style=filled, fillcolor="#FFE9E9", startingline=8 ]
 }
 subgraph cluster_3 {
 label = "sPri::operator +";
 parent = "G";
 startingline = 27;
-	node_000037 [ label = "THIS._a", startingline=10 ]
-	node_000039 [ label = "other_pointed._a", startingline=10 ]
-	node_000041 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
-	node_000042 [ label = "THIS._a", startingline=12 ]
+	node_000041 [ label = "THIS._a", startingline=10 ]
+	node_000043 [ label = "other_pointed._a", startingline=10 ]
+	node_000045 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
+	node_000046 [ label = "THIS._a", startingline=12 ]
 }
 subgraph cluster_4 {
 label = "sPri::operator -";
 parent = "G";
 startingline = 29;
-	node_000045 [ label = "THIS._a", startingline=2 ]
-	node_000047 [ label = "other_pointed._a", startingline=2 ]
-	node_000049 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=20 ]
-	node_000050 [ label = "THIS._a", startingline=20 ]
+	node_000049 [ label = "THIS._a", startingline=2 ]
+	node_000051 [ label = "other_pointed._a", startingline=18 ]
+	node_000053 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=20 ]
+	node_000054 [ label = "THIS._a", startingline=20 ]
 }
-	node_000033 -> node_000037
-	node_000035 -> node_000036
-	node_000036 -> node_000039
-	node_000036 -> node_000047
-	node_000043 -> node_000044
-	node_000043 -> node_000045
-	node_000051 -> node_000052
-	node_000021 -> node_000022
-	node_000022 -> node_000025
-	node_000023 -> node_000024
-	node_000024 -> node_000026
-	node_000029 -> node_000030
-	node_000030 -> node_000033
-	node_000031 -> node_000032
-	node_000032 -> node_000034
 	node_000037 -> node_000041
-	node_000039 -> node_000041
-	node_000041 -> node_000042
-	node_000042 -> node_000043
-	node_000045 -> node_000049
+	node_000039 -> node_000040
+	node_000040 -> node_000043
+	node_000040 -> node_000051
+	node_000047 -> node_000048
 	node_000047 -> node_000049
-	node_000049 -> node_000050
-	node_000050 -> node_000051
+	node_000055 -> node_000056
+	node_000021 -> node_000022
+	node_000022 -> node_000027
+	node_000023 -> node_000024
+	node_000024 -> node_000028
+	node_000031 -> node_000032
+	node_000032 -> node_000037
+	node_000033 -> node_000034
+	node_000034 -> node_000038
+	node_000041 -> node_000045
+	node_000043 -> node_000045
+	node_000045 -> node_000046
+	node_000046 -> node_000047
+	node_000049 -> node_000053
+	node_000051 -> node_000053
+	node_000053 -> node_000054
+	node_000054 -> node_000055
 }

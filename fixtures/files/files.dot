@@ -15,8 +15,8 @@ subgraph cluster_1 {
 label = "soma";
 parent = "G";
 startingline = 11;
-	node_000020 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000021 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000020 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=4 ]
+	node_000021 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=4 ]
 	node_000022 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=7 ]
 	node_000023 [ label = "resultado", startingline=7 ]
 	node_000024 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=8 ]
@@ -25,9 +25,9 @@ subgraph cluster_2 {
 label = "soma";
 parent = "G";
 startingline = 13;
-	node_000027 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000028 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000029 [ label = "fator", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000027 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=4 ]
+	node_000028 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=4 ]
+	node_000029 [ label = "fator", style=filled, fillcolor="#FFE9E9", startingline=4 ]
 	node_000030 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=6 ]
 	node_000031 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=6 ]
 	node_000032 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=6 ]
@@ -36,7 +36,7 @@ subgraph cluster_3 {
 label = "ClassTest::staticFunc";
 parent = "G";
 startingline = 15;
-	node_000035 [ label = "staticParam", style=filled, fillcolor="#FFE9E9", startingline=2 ]
+	node_000035 [ label = "staticParam", style=filled, fillcolor="#FFE9E9", startingline=4 ]
 	node_000036 [ label = "7", style=filled, fillcolor="#E9FFE9", startingline=6 ]
 	node_000037 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=6 ]
 	node_000038 [ label = "ClassTest::staticFunc", style=filled, fillcolor="#FFFFD0", startingline=6 ]

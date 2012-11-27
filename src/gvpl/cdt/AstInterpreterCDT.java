@@ -73,11 +73,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 				if(declSpec instanceof CPPASTCompositeTypeSpecifier) {
 					loadClassImplementation((CPPASTCompositeTypeSpecifier) declSpec);
 				} else if(declSpec instanceof CPPASTElaboratedTypeSpecifier) {
+					// forward declaration (always?)
 					loadClassDecl((CPPASTElaboratedTypeSpecifier) declSpec);
 				} else if(declSpec instanceof CPPASTSimpleDeclSpecifier) {
 					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 					if(declarators.length > 1)
-						logger.fatal("you're doing it wrong");
+						logger.fatal("what to do?");
 					
 					loadFunctionDeclaration((CPPASTFunctionDeclarator) declarators[0]);
 				} else

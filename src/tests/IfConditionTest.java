@@ -116,7 +116,7 @@ public class IfConditionTest {
 		assertTrue(conditionNode.isDependentNode(nodeFromIfVar));
 	}
 	
-	@Test
+	/*@Test
 	public void TestMergeIfMAV_ClassVar() {
 		GraphNode conditionNode = new GraphNode("true", NodeType.E_DIRECT_VALUE);
 		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
@@ -228,6 +228,6 @@ public class IfConditionTest {
 		assertTrue(currTruePointedVar.isDependentNode(nodeFromIfVar));
 		assertTrue(currFalsePointedVar.isDependentNode(nodeFromIfVar));
 		assertTrue(conditionNode.isDependentNode(nodeFromIfVar));*/
-	}
+	//}
 	
 }
