@@ -127,8 +127,7 @@ public class ClassDeclCDT extends ClassDecl{
 		}
 	}
 	
-	public void setBinding(CPPASTCompositeTypeSpecifier classDecl) {
-		IASTName name = classDecl.getName();
+	public void setBinding(IASTName name) {
 		_name = name.toString();
 	}
 	

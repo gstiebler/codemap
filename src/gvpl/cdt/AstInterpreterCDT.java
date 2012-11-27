@@ -23,6 +23,7 @@ import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
@@ -158,8 +159,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 		_classByLocation.put(classDecl.getCodeLocation(), classDecl);
 	}
 	
-	private ClassDeclCDT loadClassDecl(CPPASTElaboratedTypeSpecifier strDecl) {
-		IBinding binding = strDecl.getName().resolveBinding();
+	private ClassDeclCDT loadClassDecl(CPPASTBaseDeclSpecifier strDecl) {
+		IASTName name = null;
+		if(strDecl instanceof CPPASTCompositeTypeSpecifier)
+			name = ((CPPASTCompositeTypeSpecifier)strDecl).getName();
+		else if(strDecl instanceof CPPASTElaboratedTypeSpecifier)
+			name = ((CPPASTElaboratedTypeSpecifier)strDecl).getName();
+		else
+			logger.fatal("you're doing it wrong. {}", strDecl.getClass());
+		
+		IBinding binding = name.resolveBinding();
 		ClassDeclCDT classDecl = _typeBindingToClass.get(binding);
 		if(classDecl != null)
 			return classDecl;
@@ -168,13 +177,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 		classDecl = _classByLocation.get(classLocation);
 		// the class declaration has already been loaded by other .h file
 		if(classDecl != null) {
-			classDecl.updateBindings(strDecl);
 			addClassDeclInMaps(classDecl, binding);
 			return classDecl;
 		}
 		
 		classDecl = new ClassDeclCDT(this, classLocation);
-		classDecl.setBinding(strDecl);
+		classDecl.setBinding(name);
 		addClassDeclInMaps(classDecl, binding);
 		return classDecl;
 	}
@@ -184,9 +192,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * 
 	 * @param strDecl
 	 */
-	private void loadClassImplementation(CPPASTCompositeTypeSpecifier strDecl) {
-		ClassDeclCDT classDecl = loadClassDecl(strDecl);
-		classDecl.loadAstDecl(strDecl);
+	private void loadClassImplementation(CPPASTCompositeTypeSpecifier strDecl) {		
+		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl.getFileLocation());
+		ClassDeclCDT classDecl = _classByLocation.get(classLocation);
+		if(classDecl == null) {
+			classDecl = loadClassDecl(strDecl);
+			classDecl.loadAstDecl(strDecl);
+		} else {
+			addClassDeclInMaps(classDecl, strDecl.getName().resolveBinding());
+			classDecl.updateBindings(strDecl);
+		}
 	}
 
 	/**
