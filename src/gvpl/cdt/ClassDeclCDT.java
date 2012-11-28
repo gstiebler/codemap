@@ -119,6 +119,14 @@ public class ClassDeclCDT extends ClassDecl{
 			_memberFuncIdMap.put(memberFuncBinding, memberFunc);
 		}
 		
+		for(IASTFunctionDefinition functionDefinition : functionDefinitions) {
+			IASTFunctionDeclarator funcDecl = functionDefinition.getDeclarator();
+			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDecl.getFileLocation());
+			IBinding memberFuncBinding = funcDecl.getName().resolveBinding();
+			MemberFunc memberFunc = _membersFuncLocation.get(funcLocation);
+			_memberFuncIdMap.put(memberFuncBinding, memberFunc);
+		}
+		
 		for(IASTDeclarator memberDeclarator : membersDeclaration) {
 			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
 			IASTName memberName = memberDeclarator.getName();
