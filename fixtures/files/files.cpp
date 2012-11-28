@@ -17,4 +17,9 @@ int main()
 	int g = sub(15, 20);
 	
 	int f = ClassTest::staticFuncSub(10);
+	
+	ClassTest ct;
+	ct._member = f;
+	
+	int h = ct.somaCT(a, b);
 }
