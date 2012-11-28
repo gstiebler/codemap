@@ -89,6 +89,9 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
+		if(_implLocation != null) //function definition has already been loaded
+			return;
+		
 		initializeParameters();
 		
 		loadConstructorChain(ccInitializer);
@@ -353,6 +356,11 @@ public class Function extends AstLoaderCDT {
 	
 	public IBinding getBinding() {
 		return _ownBinding;
+	}
+	
+	@Override
+	public String toString() {
+		return _externalName;
 	}
 
 }

@@ -13,4 +13,8 @@ int main()
 	int d = soma(a, b, 0.3);
 	
 	int e = ClassTest::staticFunc(8);
+	
+	int g = sub(15, 20);
+	
+	int f = ClassTest::staticFuncSub(10);
 }
