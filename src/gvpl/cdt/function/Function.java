@@ -42,6 +42,16 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 public class Function extends AstLoaderCDT {
 	
+	class NodeAndFunc {
+		Function _func;
+		GraphNode _node;
+		
+		public NodeAndFunc(Function func, GraphNode node) {
+			_func = func;
+			_node = node;
+		}
+	}
+	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
 	private GraphNode _returnNode = null;
@@ -54,6 +64,7 @@ public class Function extends AstLoaderCDT {
 	protected IBinding _ownBinding;
 	CodeLocation _declLocation = null;
 	CodeLocation _implLocation = null;
+	List<NodeAndFunc> _waitingFuncResult = new ArrayList<NodeAndFunc>();
 
 	public Function(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(new Graph(), parent, astInterpreter);
@@ -149,16 +160,16 @@ public class Function extends AstLoaderCDT {
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph) {
+	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, InstructionLine ilParent) {
 		//if the implementation was not loaded yet
 		if(_implLocation == null) {
 			GraphNode tempResult = new GraphNode("WAITING_FUNC_RESULT", NodeType.E_DIRECT_VALUE);
 			//add unimplemented func to the parent func
-			AstLoaderCDT parentFunc = _parent;
+			AstLoaderCDT parentFunc = ilParent.getParentBasicBlock();
 			while(!(parentFunc instanceof Function))
 				parentFunc = parentFunc.getParent();
 			
-			//((Function) parentFunc).addWaitingResultNode(tempResult);
+			((Function) parentFunc)._waitingFuncResult.add(new NodeAndFunc(this, tempResult));
 			 
 			return tempResult;
 		}

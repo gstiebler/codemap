@@ -426,7 +426,7 @@ public class InstructionLine {
 		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(className.resolveBinding());
 		Function func = classDecl.getMemberFunc(funcName.resolveBinding());
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-		return func.addFuncRef(parameterValues, _gvplGraph);
+		return func.addFuncRef(parameterValues, _gvplGraph, this);
 	}
 	
 	/**
@@ -441,7 +441,7 @@ public class InstructionLine {
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		Function loadFunction = _astInterpreter.getFuncId(idExprBinding);
-		return loadFunction.addFuncRef(parameterValues, _gvplGraph);
+		return loadFunction.addFuncRef(parameterValues, _gvplGraph, this);
 	}
 	
 	/**
