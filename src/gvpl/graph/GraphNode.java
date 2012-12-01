@@ -1,5 +1,6 @@
 package gvpl.graph;
 
+import gvpl.common.CodeLocation;
 import gvpl.common.IVar;
 import gvpl.graph.Graph.NodeType;
 
@@ -23,7 +24,7 @@ public class GraphNode {
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
-	private int _startingLine = DebugOptions.getStartingLine();
+	private CodeLocation _codeLocation = DebugOptions.getCurrentCodeLocation();
 
 	public GraphNode(String name, NodeType type) {
 		_id = getNewId();
@@ -46,7 +47,7 @@ public class GraphNode {
 		_id = getNewId();
 		_name = other._name;
 		_type = other._type;
-		_startingLine = other._startingLine;
+		_codeLocation = other._codeLocation;
 		_parentVar = other._parentVar;
 
 		logger.info("new graphnode copy " + _name + " (" + _id + ")");
@@ -124,8 +125,8 @@ public class GraphNode {
 		_nodeCounter = 1;
 	}
 
-	public int getStartingLine() {
-		return _startingLine;
+	public CodeLocation getCodeLocation() {
+		return _codeLocation;
 	}
 	
 	public IVar getParentVar() {

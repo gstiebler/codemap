@@ -57,16 +57,16 @@ public class Visualizer {
 			return;
 		
 		if (graphNode._type == Graph.NodeType.E_OPERATION)
-			graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getCodeLocation().getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_DIRECT_VALUE)
-			graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getCodeLocation().getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_GARBAGE)
-			graphOutput.insertGarbageNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			graphOutput.insertGarbageNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getCodeLocation().getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_DECLARED_PARAMETER)
-			graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getCodeLocation().getStartingLine());
 		else if (graphNode._type == Graph.NodeType.E_RETURN_VALUE)
-			graphOutput.insertReturnValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			graphOutput.insertReturnValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getCodeLocation().getStartingLine());
 		else
-			graphOutput.insertVariable(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			graphOutput.insertVariable(graphNode, graphNode._name + debugStr(graphNode), graphNode.getCodeLocation().getStartingLine());
 	}
 }

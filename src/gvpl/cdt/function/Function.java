@@ -150,6 +150,18 @@ public class Function extends AstLoaderCDT {
 	}
 
 	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph) {
+		//if the implementation was not loaded yet
+		if(_implLocation == null) {
+			GraphNode tempResult = new GraphNode("WAITING_FUNC_RESULT", NodeType.E_DIRECT_VALUE);
+			//add unimplemented func to the parent func
+			AstLoaderCDT parentFunc = _parent;
+			while(!(parentFunc instanceof Function))
+				parentFunc = parentFunc.getParent();
+			
+			//((Function) parentFunc).addWaitingResultNode(tempResult);
+			 
+			return tempResult;
+		}
 		Map<GraphNode, GraphNode> internalToMainGraphMap = gvplGraph.addSubGraph(_gvplGraph, this);
 		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap);
 	}

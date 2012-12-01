@@ -223,7 +223,7 @@ public class AstLoaderCDT extends AstLoader {
 	}
 	
 	@Override
-	protected AstLoader getParent() {
+	public AstLoaderCDT getParent() {
 		return _parent;
 	}
 }
