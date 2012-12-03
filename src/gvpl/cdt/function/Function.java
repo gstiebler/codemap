@@ -28,6 +28,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
@@ -45,10 +46,12 @@ public class Function extends AstLoaderCDT {
 	class NodeAndFunc {
 		Function _func;
 		GraphNode _node;
+		List<FuncParameter> _parameterValues;
 		
-		public NodeAndFunc(Function func, GraphNode node) {
+		public NodeAndFunc(Function func, GraphNode node, List<FuncParameter> parameterValues) {
 			_func = func;
 			_node = node;
+			_parameterValues = parameterValues;
 		}
 	}
 	
@@ -169,7 +172,7 @@ public class Function extends AstLoaderCDT {
 			while(!(parentFunc instanceof Function))
 				parentFunc = parentFunc.getParent();
 			
-			((Function) parentFunc)._waitingFuncResult.add(new NodeAndFunc(this, tempResult));
+			((Function) parentFunc)._waitingFuncResult.add(new NodeAndFunc(this, tempResult, parameterValues));
 			 
 			return tempResult;
 		}
@@ -379,6 +382,12 @@ public class Function extends AstLoaderCDT {
 	
 	public IBinding getBinding() {
 		return _ownBinding;
+	}
+	
+	public void UnitePostImplementedFuncs() {
+		for(NodeAndFunc naf : _waitingFuncResult){
+			naf._func.addFuncRef(naf._parameterValues, _gvplGraph, null);
+		}
 	}
 	
 	@Override

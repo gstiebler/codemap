@@ -87,8 +87,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 				logger.fatal("Deu merda aqui." + declaration.getClass());
 		}
 
+		UnitePostImplementedFuncs();
+		
 		if(mainFunction != null)
 			_gvplGraph = mainFunction.getGraph();
+	}
+	
+	private void UnitePostImplementedFuncs() {
+		for(Function func : _funcByLocation.values()) {
+			func.UnitePostImplementedFuncs();
+		}
 	}
 
 	/**
