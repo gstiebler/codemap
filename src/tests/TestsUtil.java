@@ -85,6 +85,8 @@ public class TestsUtil {
 		
 		fileNames.add(mainTestFileName);
 		
+		List<IASTTranslationUnit> translationUnits = new ArrayList<IASTTranslationUnit>();
+		
 		for(String fileName : fileNames)
 		{
 			logger.debug(" -- ** Processing cpp: {}", fileName);
@@ -101,13 +103,18 @@ public class TestsUtil {
 			try {
 				translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info,
 						readerFactory, null, log);
+				translationUnits.add(translationUnit);
 			} catch (CoreException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			astInterpreter.execute(translationUnit);
 		}
+		
+		for(IASTTranslationUnit translationUnit : translationUnits)
+			astInterpreter.loadDeclarations(translationUnit);
+
+		for(IASTTranslationUnit translationUnit : translationUnits)
+			astInterpreter.loadDefinitions(translationUnit);
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);

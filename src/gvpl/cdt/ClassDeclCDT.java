@@ -36,6 +36,7 @@ public class ClassDeclCDT extends ClassDecl{
 	private Map<IBinding, MemberFunc> _memberFuncIdMap;
 	private Map<CodeLocation, MemberFunc> _membersFuncLocation = new TreeMap<CodeLocation, MemberFunc>();
 	private List<ClassDeclCDT> _parentClasses = new ArrayList<ClassDeclCDT>();
+	CPPASTCompositeTypeSpecifier _classDecl;
 
 	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location) {
 		super(location);
@@ -69,15 +70,17 @@ public class ClassDeclCDT extends ClassDecl{
 	}
 	
 	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl) {
-		loadBaseClasses(classDecl.getBaseSpecifiers(), _astInterpreter);
+		_classDecl = classDecl;
 
 		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 		_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 		
+		loadBaseClasses(_classDecl.getBaseSpecifiers(), _astInterpreter);
+		
 		List<CPPASTFunctionDeclarator> functionDeclarators = new ArrayList<CPPASTFunctionDeclarator>();
 		List<IASTFunctionDefinition> functionDefinitions = new ArrayList<IASTFunctionDefinition>();
 		List<IASTDeclarator> membersDeclaration = new ArrayList<IASTDeclarator>();
-		getCDTMembers(classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
+		getCDTMembers(_classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
 		
 		for(IASTDeclarator memberDeclarator : membersDeclaration) {
 			MemberId memberId = new MemberId();
@@ -97,10 +100,15 @@ public class ClassDeclCDT extends ClassDecl{
 		}
 		
 		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)
-			loadMemberFuncDecl(functionDeclarator, _astInterpreter);	
+			loadMemberFuncDecl(functionDeclarator, _astInterpreter);
 		
 		for(IASTFunctionDefinition functionDefinition : functionDefinitions)
-			loadMemberFunc(functionDefinition, _astInterpreter);
+			loadMemberFunc(functionDefinition, _astInterpreter);	
+	}
+	
+	public void loadAstDecl() {
+		for(MemberFunc memberFunc : _membersFuncLocation.values())
+			memberFunc.loadDefinition();
 	}
 	
 	public void updateBindings(CPPASTCompositeTypeSpecifier classDecl) {

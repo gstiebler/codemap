@@ -54,6 +54,9 @@ public class Function extends AstLoaderCDT {
 	protected IBinding _ownBinding;
 	CodeLocation _declLocation = null;
 	CodeLocation _implLocation = null;
+	
+	ICPPASTConstructorChainInitializer[] _ccInitializer;
+	IASTStatement _body;
 
 	public Function(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(new Graph(), parent, astInterpreter);
@@ -89,15 +92,20 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
+		_ccInitializer = ccInitializer;
+		_body = body;
+	}
+	
+	public void loadDefinition() {
 		if(_implLocation != null) //function definition has already been loaded
 			return;
 		
 		initializeParameters();
 		
-		loadConstructorChain(ccInitializer);
+		loadConstructorChain(_ccInitializer);
 		
-		if (body instanceof IASTCompoundStatement) {
-			IASTStatement[] statements = ((IASTCompoundStatement)body).getStatements();
+		if (_body instanceof IASTCompoundStatement) {
+			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
 			for (IASTStatement statement : statements) {
 				InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 				instructionLine.load(statement);
@@ -105,7 +113,7 @@ public class Function extends AstLoaderCDT {
 		} else
 			logger.fatal("Work here.");
 		
-		_implLocation = CodeLocationCDT.NewFromFileLocation(body.getFileLocation());
+		_implLocation = CodeLocationCDT.NewFromFileLocation(_body.getFileLocation());
 		
 		lostScope();
 	}

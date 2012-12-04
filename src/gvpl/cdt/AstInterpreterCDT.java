@@ -8,6 +8,7 @@ import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -35,11 +36,16 @@ import debug.DebugOptions;
 
 public class AstInterpreterCDT extends AstInterpreter {
 	
+	class CppFile {
+		Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
+		Map<IBinding, ClassDeclCDT> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
+	}
+	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
-	private Map<IBinding, Function> _funcIdMap;
+	CppFile _currCppFile;
+	private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
-	private Map<IBinding, ClassDeclCDT> _typeBindingToClass;
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
@@ -47,9 +53,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 		CppMaps.initialize();
 	}
 	
-	public void execute(IASTTranslationUnit root) {
-		_funcIdMap = new LinkedHashMap<IBinding, Function>();
-		_typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
+	public void loadDeclarations(IASTTranslationUnit root) {
+		_currCppFile = new CppFile();
+		_cppFiles.put(root, _currCppFile);
 		
 		IASTDeclaration[] declarations = root.getDeclarations();
 		Function mainFunction = null;
@@ -90,6 +96,18 @@ public class AstInterpreterCDT extends AstInterpreter {
 		if(mainFunction != null)
 			_gvplGraph = mainFunction.getGraph();
 	}
+	
+	public void loadDefinitions(IASTTranslationUnit root) {
+		_currCppFile = _cppFiles.get(root);
+		
+		for(Function func : _funcByLocation.values()) {
+			func.loadDefinition();
+		}
+		
+		for(ClassDeclCDT classDecl : _classByLocation.values()) {
+			classDecl.loadAstDecl();
+		}
+	}
 
 	/**
 	 * Loads a function from the AST
@@ -119,26 +137,26 @@ public class AstInterpreterCDT extends AstInterpreter {
 		IASTName[] names = qn.getNames();
 		IASTName className = names[0];
 		IBinding classBinding = className.resolveBinding();
-		ClassDeclCDT classDecl = _typeBindingToClass.get(classBinding);
+		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(classBinding);
 		classDecl.loadMemberFunc(declaration, this);
 	}
 	
 	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 		IBinding binding = decl.getName().resolveBinding();
-		Function function = _funcIdMap.get(binding);
+		Function function = _currCppFile._funcIdMap.get(binding);
 		if(function != null)
 			return function;
 		
 		function = _funcByLocation.get(funcLocation);
 		// the function declaration has already been loaded by other .h file
 		if(function != null) {
-			_funcIdMap.put(binding, function);
+			_currCppFile._funcIdMap.put(binding, function);
 			return function;
 		}
 		
 		function = new Function(_gvplGraph, this, this, binding);
-		_funcIdMap.put(binding, function);
+		_currCppFile._funcIdMap.put(binding, function);
 		_funcByLocation.put(funcLocation, function);
 		function.loadDeclaration(decl);
 		
@@ -155,7 +173,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public void addClassDeclInMaps(ClassDeclCDT classDecl, IBinding binding) {
-		_typeBindingToClass.put(binding, classDecl);
+		_currCppFile._typeBindingToClass.put(binding, classDecl);
 		_typeIdToClass.put(classDecl.getTypeId(), classDecl);
 		_classByLocation.put(classDecl.getCodeLocation(), classDecl);
 	}
@@ -170,7 +188,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.fatal("you're doing it wrong. {}", strDecl.getClass());
 		
 		IBinding binding = name.resolveBinding();
-		ClassDeclCDT classDecl = _typeBindingToClass.get(binding);
+		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
 		if(classDecl != null)
 			return classDecl;
 		
@@ -215,14 +233,14 @@ public class AstInterpreterCDT extends AstInterpreter {
 		if (declSpec instanceof IASTNamedTypeSpecifier) {
 			IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
 			IBinding binding = namedType.getName().resolveBinding();
-			ClassDeclCDT classDecl = _typeBindingToClass.get(binding);
+			ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
 			return classDecl.getTypeId();
 		} else
 			return _primitiveType;
 	}
 	
 	public ClassDeclCDT getClassDecl(IBinding binding) {
-		return _typeBindingToClass.get(binding);
+		return _currCppFile._typeBindingToClass.get(binding);
 	}
 
 	/**
@@ -248,7 +266,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return The type id from the received binding
 	 */
 	public TypeId getTypeFromBinding(IBinding binding) {
-		ClassDeclCDT classDecl = _typeBindingToClass.get(binding);
+		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
 		if (classDecl == null)
 			return null;
 		else
@@ -271,6 +289,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 
 	public Function getFuncId(IBinding binding) {
-		return _funcIdMap.get(binding);
+		return _currCppFile._funcIdMap.get(binding);
 	}
 }
