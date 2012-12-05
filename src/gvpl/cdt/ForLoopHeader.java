@@ -16,7 +16,7 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
-public class ForLoopHeader extends AstLoaderCDT {
+public class ForLoopHeader extends BasicBlockCDT {
 	
 	Logger logger = LogManager.getLogger(Graph.class.getName());
 	
@@ -29,7 +29,7 @@ public class ForLoopHeader extends AstLoaderCDT {
 	private Map<IVar, IVar> _externalVars = new LinkedHashMap<IVar, IVar>();
 
 	public ForLoopHeader(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
-		super(gvplGraph, parent, astInterpreter);
+		super(parent, astInterpreter);
 	}
 
 	public void load(IASTStatement initializer, IASTExpression condition) {

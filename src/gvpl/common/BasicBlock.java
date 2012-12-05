@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BasicBlock {
+public abstract class BasicBlock {
 	
 	/**
 	 * Add the nodes of the internal graph to the external graph
@@ -17,13 +17,13 @@ public class BasicBlock {
 	 * @return Maps the nodes that were merged with others. The nodes in the key
 	 *         of the map no longer exists.
 	 */
-	public static Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, AstLoader astLoader) {
+	public Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, AstLoader astLoader) {
 		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
 		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		astLoader.getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph));
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph));
 		extGraph.merge(astLoader.getGraph());
 
 		// bind the vars from calling block to the internal read vars
@@ -56,4 +56,7 @@ public class BasicBlock {
 		
 		return mergedNodes;
 	}
+	
+	public abstract void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
+			List<InExtVarPair> ignored, InToExtVar inToExtMap);
 }

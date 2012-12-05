@@ -9,19 +9,15 @@ import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
-import gvpl.common.MemAddressVar;
-import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -58,8 +54,8 @@ public class Function extends AstLoaderCDT {
 	ICPPASTConstructorChainInitializer[] _ccInitializer;
 	IASTStatement _body;
 
-	public Function(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
-		super(new Graph(), parent, astInterpreter);
+	public Function(Graph gvplGraph, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
+		super(astInterpreter);
 		
 		_ownBinding = ownBinding;
 		//TODO FIX!!
@@ -84,30 +80,21 @@ public class Function extends AstLoaderCDT {
 		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 	}
 	
-	private void initializeParameters() {
-		for (Map.Entry<IBinding, FuncParameter> entry : _parametersMap.entrySet()) {
-			entry.getValue().getVar().initializeVar(NodeType.E_DECLARED_PARAMETER, _gvplGraph, this,
-					_astInterpreter);
-		}
-	}
-	
 	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
 		_ccInitializer = ccInitializer;
 		_body = body;
 	}
 	
-	public void loadDefinition() {
+	public void loadDefinition(Graph gvplGraph) {
 		if(_implLocation != null) //function definition has already been loaded
 			return;
-		
-		initializeParameters();
 		
 		loadConstructorChain(_ccInitializer);
 		
 		if (_body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
 			for (IASTStatement statement : statements) {
-				InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
+				InstructionLine instructionLine = new InstructionLine(gvplGraph, this, _astInterpreter);
 				instructionLine.load(statement);
 			}
 		} else
@@ -122,7 +109,7 @@ public class Function extends AstLoaderCDT {
 		return _returnType;
 	}
 
-	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
+	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit, Graph graph, ClassVar thisVar) {
 	}
 
 	protected String calcName() {
@@ -158,113 +145,20 @@ public class Function extends AstLoaderCDT {
 	}
 
 	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = gvplGraph.addSubGraph(_gvplGraph, this);
-		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap);
-	}
-
-	protected GraphNode addParametersReferenceAndReturn(List<FuncParameter> callingParameters,
-			Map<GraphNode, GraphNode> internalToMainGraphMap) {
-		if(callingParameters == null)
-			return null;
+		Graph funcGraph = new Graph(_externalName);
 		
-		if (_parametersMap.size() != callingParameters.size())
-			logger.fatal("Number of parameters differs from func declaration!");
-
-		for (int i = 0; i < callingParameters.size(); ++i) {
-			IVar declaredParameter = _parametersList.get(i).getVar();
-			FuncParameter callingParameter = callingParameters.get(i);
-
-			IVar receivedVar = callingParameter.getVar();
-			if(receivedVar != null)
-				receivedVar = receivedVar.getVarInMem();
-			if (receivedVar instanceof ClassVar) {
-				// Binds the received parameter to the function parameter
-				bindInParameter(internalToMainGraphMap, (ClassVar) receivedVar,
-						declaredParameter.getVarInMem());
-			} else {
-				GraphNode receivedParameter = callingParameter.getNode();
-
-				// Point the received values to the received parameters ([in]
-				// parameters)
-				if (receivedParameter != null) {
-					GraphNode declParamNodeInMainGraph = internalToMainGraphMap
-							.get(declaredParameter.getFirstNode());
-
-					receivedParameter.addDependentNode(declParamNodeInMainGraph);
-				}
-			}
-
-			// Writes the written pointer parameter values to the pointed
-			// variables in the main graph
-			// ([out] parameters)
-			if (declaredParameter instanceof MemAddressVar) {
-				bindOutParameter(internalToMainGraphMap, callingParameter.getVar().getVarInMem(),
-						declaredParameter.getVarInMem());
-			}
-		}
-
-		return internalToMainGraphMap.get(_returnNode);
-	}
-
-	protected void bindInParameter(Map<GraphNode, GraphNode> internalToMainGraphMap,
-			IVar callingParameter, IVar declaredParameter) {
-		if (callingParameter instanceof ClassVar) {
-			ClassVar callingParameterClass = (ClassVar) callingParameter;
-			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
-			Set<MemberId> members = callingParameterClass.getClassDecl().getMemberIds();
-			for (MemberId memberId : members) {
-				IVar callingParameterChild = callingParameterClass.getMember(memberId);
-				IVar declaredParameterChild = declaredParameterClass.getMember(memberId);
-
-				if (declaredParameterChild == null)
-					continue;
-
-				bindInParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
-						declaredParameterChild.getVarInMem());
-			}
-			return;
-		}
-
-		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
-				.getFirstNode());
-		GraphNode callingParameterNode = callingParameter.getCurrentNode();
-
-		// Point the received values to the received parameters ([in]
-		// parameters)
-		if (callingParameterNode != null && declParamNodeInMainGraph != null
-				&& (declParamNodeInMainGraph.getNumDependentNodes() > 0)) {
-			callingParameterNode.addDependentNode(declParamNodeInMainGraph);
-		}
-	}
-
-	protected void bindOutParameter(Map<GraphNode, GraphNode> internalToMainGraphMap,
-			IVar callingParameter, IVar declaredParameter) {
-		if (callingParameter instanceof ClassVar) {
-			ClassVar callingParameterClass = (ClassVar) callingParameter;
-			ClassVar declaredParameterClass = (ClassVar) declaredParameter;
-			for (MemberId memberId : callingParameterClass.getClassDecl().getMemberIds()) {
-				IVar callingParameterChild = callingParameterClass.getMember(memberId);
-				IVar declaredParameterChild = declaredParameterClass.getMember(memberId);
-
-				if (declaredParameterChild == null)
-					continue;
-
-				bindOutParameter(internalToMainGraphMap, callingParameterChild.getVarInMem(),
-						declaredParameterChild.getVarInMem());
-			}
-			return;
-		}
-
-		GraphNode declParamNodeInMainGraph = internalToMainGraphMap.get(declaredParameter
-				.getCurrentNode());
-
-		if (declaredParameter.onceWritten())
-			callingParameter.receiveAssign(NodeType.E_VARIABLE, declParamNodeInMainGraph);
+		private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
+		private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
+		
+		loadDefinition(funcGraph);
+		gvplGraph.addSubGraph(funcGraph, this);
+		
+		return _returnNode;
 	}
 
 	private void setName(String name) {
 		_externalName = name;
-		_gvplGraph.setLabel(name);
+		//_gvplGraph.setLabel(name);
 	}
 
 	public String getName() {
@@ -307,28 +201,6 @@ public class Function extends AstLoaderCDT {
 	public int getNumParameters() {
 		return _parametersList.size();
 	}
-
-	@Override
-	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
-		FuncParameter funcParameter = _parametersMap.get(binding);
-		if(funcParameter != null)
-			return funcParameter.getVar().getVarInMem();
-		
-		return super.getPreLoadedVarFromBinding(binding);
-	}
-	
-	@Override
-	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		FuncParameter funcParameter = _parametersMap.get(binding);
-		if(funcParameter != null)
-			return funcParameter.getVar().getVarInfo();
-		
-		VarInfo varInfo = super.getTypeFromVarBinding(binding);
-		if(varInfo != null)
-			return varInfo;
-		
-		return _parent.getTypeFromVarBinding(binding);
-	}
 	
 	//TODO improve! Can be done with bindings? There is a function in Eclipse IDE that
 	// do this. It points the implementations of a function
@@ -369,6 +241,25 @@ public class Function extends AstLoaderCDT {
 	@Override
 	public String toString() {
 		return _externalName;
+	}
+
+	@Override
+	protected IVar getVarFromBinding(IBinding binding) {
+		FuncParameter funcParameter = _parametersMap.get(binding);
+		if(funcParameter != null)
+			return funcParameter.getVar();
+		
+		return getLocalVar(binding);
+	}
+
+	@Override
+	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
+		return getVarFromBinding(binding);
+	}
+	
+	@Override
+	public VarInfo getTypeFromVarBinding(IBinding binding) {
+		return getVarFromBinding(binding).getVarInfo();
 	}
 
 }

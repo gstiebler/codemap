@@ -124,7 +124,7 @@ public class ClassVar extends Var implements IClassVar{
 		if (constructorFunc == null)
 			return;
 
-		constructorFunc.loadMemberFuncRef(this, parameterValues, _gvplGraph, astLoader);
+		constructorFunc.addFuncRef(parameterValues, _gvplGraph, this);
 	}
 
 	public void callDestructor(AstLoader astLoader, Graph graph) {
@@ -133,8 +133,7 @@ public class ClassVar extends Var implements IClassVar{
 		logger.debug("Destructor of {}", _name);
 		MemberFunc destructorFunc = _classDecl.getDestructorFunc();
 		if (destructorFunc != null)
-			destructorFunc.loadMemberFuncRef(this, new ArrayList<FuncParameter>(), graph,
-					astLoader);
+			destructorFunc.addFuncRef(new ArrayList<FuncParameter>(), graph, this);
 	}
 	
 	public ClassDecl getClassDecl() {
@@ -166,6 +165,6 @@ public class ClassVar extends Var implements IClassVar{
 	
 	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, AstLoaderCDT astLoader) {
-		return memberFunc.loadMemberFuncRef(this, parameterValues, graph, astLoader);
+		return memberFunc.addFuncRef(parameterValues, graph, this);
 	}
 }

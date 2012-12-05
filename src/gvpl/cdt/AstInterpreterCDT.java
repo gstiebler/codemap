@@ -47,6 +47,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
+	Function _mainFunction = null;
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		super(gvplGraph);
@@ -58,7 +59,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 		_cppFiles.put(root, _currCppFile);
 		
 		IASTDeclaration[] declarations = root.getDeclarations();
-		Function mainFunction = null;
 
 		// Iterate through function, class e structs declarations
 		for (IASTDeclaration declaration : declarations) {
@@ -68,7 +68,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			if (declaration instanceof IASTFunctionDefinition) {
 				Function func = loadFunction((IASTFunctionDefinition) declaration);
 				if (func != null)
-					mainFunction = func;
+					_mainFunction = func;
 			} // if it's a class/struct
 			else if (declaration instanceof IASTSimpleDeclaration) {
 				IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) declaration;
@@ -92,21 +92,14 @@ public class AstInterpreterCDT extends AstInterpreter {
 			} else
 				logger.fatal("Deu merda aqui." + declaration.getClass());
 		}
-
-		if(mainFunction != null)
-			_gvplGraph = mainFunction.getGraph();
 	}
 	
 	public void loadDefinitions(IASTTranslationUnit root) {
 		_currCppFile = _cppFiles.get(root);
 		
-		for(Function func : _funcByLocation.values()) {
-			func.loadDefinition();
-		}
-		
-		for(ClassDeclCDT classDecl : _classByLocation.values()) {
-			classDecl.loadAstDecl();
-		}
+		_mainFunction.loadDefinition();
+
+		_gvplGraph = _mainFunction.getGraph();
 	}
 
 	/**
@@ -155,7 +148,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return function;
 		}
 		
-		function = new Function(_gvplGraph, this, this, binding);
+		function = new Function(_gvplGraph, this, binding);
 		_currCppFile._funcIdMap.put(binding, function);
 		_funcByLocation.put(funcLocation, function);
 		function.loadDeclaration(decl);

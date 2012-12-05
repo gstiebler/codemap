@@ -3,19 +3,15 @@ package gvpl.cdt.function;
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.InstructionLine;
-import gvpl.common.AstLoader;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
-import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,11 +39,8 @@ public class MemberFunc extends Function {
 	private InitializedMembers _initializedMembers = null;
 	
 	public MemberFunc(ClassDeclCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
-		super(new Graph(), null, astInterpreter, ownBinding);
+		super(new Graph(), astInterpreter, ownBinding);
 		_parentClass = parent;
-		
-		_thisVar = new ClassVar(_gvplGraph, "THIS", parent, this);
-		_thisVar.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);
 	}
 
 	protected String calcName() {
@@ -68,7 +61,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit) {
+	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit, Graph graph, ClassVar thisVar) {
 		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
 			IASTExpression expr = initializer.getInitializerValue();
 			int startingLine = expr.getFileLocation().getStartingLineNumber();
@@ -76,7 +69,7 @@ public class MemberFunc extends Function {
 			
 			IASTName memberInitId = initializer.getMemberInitializerId();
 			IBinding memberBinding = memberInitId.resolveBinding();
-			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
+			InstructionLine instructionLine = new InstructionLine(graph, this, _astInterpreter);
 
 			if (memberBinding instanceof CPPField) {
 				IVar var = getPreLoadedVarFromBinding(memberBinding);
@@ -92,7 +85,7 @@ public class MemberFunc extends Function {
 					IASTExpression initValue = initializer.getInitializerValue();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
 							memberFunc, initValue);
-					memberFunc.loadMemberFuncRef(_thisVar, parameters, _gvplGraph, this);
+					memberFunc.addFuncRef(parameters, graph, thisVar);
 					break;
 				}
 			} else
@@ -101,7 +94,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
+	protected IVar getVarFromBinding(IBinding binding) {
 		ClassMember member = _parentClass.getMember(binding);
 		if(member != null) {
 			MemberId memberId = member.getMemberId();
@@ -111,43 +104,14 @@ public class MemberFunc extends Function {
 		}
 		
 		// search the variable in the function parameters
-		IVar var = super.getPreLoadedVarFromBinding(binding);
-		if(var != null)
-			return var;
-		
-		//if the variable isn't in scope, create it
-		return createVarFromBinding(binding);
+		return super.getVarFromBinding(binding);
 	}
-	
-	@Override
-	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		ClassMember classMember = _parentClass.getMember(binding);
-		if(classMember != null)
-			return classMember.getVarInfo();
-		
-		VarInfo varInfo = super.getTypeFromVarBinding(binding);
-		if(varInfo != null)
-			return varInfo;
-		
-		return _parent.getTypeFromVarBinding(binding);
-	}
-	
-	/**
-	 * Copy the internal graph to the main graph and bind the variables of the
-	 * structure to the used variables in the member function
-	 * 
-	 * @param classVar
-	 * @param graphBuilder
-	 */
-	public GraphNode loadMemberFuncRef(ClassVar classVar, List<FuncParameter> parameterValues,
-			Graph graph, AstLoader astLoader) {
-		Map<GraphNode, GraphNode> internalToMainGraphMap = graph.addSubGraph(_gvplGraph, this);
-		
-		// binds the "this" pointer as a normal parameter
-		bindInParameter(internalToMainGraphMap, classVar, _thisVar); 
-		bindOutParameter(internalToMainGraphMap, classVar, _thisVar);
-		
-		return addParametersReferenceAndReturn(parameterValues, internalToMainGraphMap);
+
+	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar) {
+		_thisVar = thisVar;
+		GraphNode result = super.addFuncRef(parameterValues, gvplGraph);
+		_thisVar = null;
+		return result;
 	}
 	
 	public MemberFunc getParentMemberFunc() {

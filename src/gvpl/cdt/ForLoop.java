@@ -11,12 +11,12 @@ import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
-public class ForLoop extends AstLoaderCDT {
+public class ForLoop extends BasicBlockCDT {
 
 	AstLoaderCDT _typeSource;
 	
 	public ForLoop(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
-		super(new Graph(), null, astInterpreter);
+		super(null, astInterpreter);
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}

@@ -106,11 +106,6 @@ public class ClassDeclCDT extends ClassDecl{
 			loadMemberFunc(functionDefinition, _astInterpreter);	
 	}
 	
-	public void loadAstDecl() {
-		for(MemberFunc memberFunc : _membersFuncLocation.values())
-			memberFunc.loadDefinition();
-	}
-	
 	public void updateBindings(CPPASTCompositeTypeSpecifier classDecl) {
 		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 		_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();

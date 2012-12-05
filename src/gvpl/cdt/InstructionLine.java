@@ -96,7 +96,7 @@ public class InstructionLine {
 			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			for (IASTDeclarator declarator : declarators) {
 				// possibly more than one variable per line
-				IVar varDecl = _parentBasicBlock.loadVarDecl(declarator, type);
+				IVar varDecl = _parentBasicBlock.loadVarDecl(declarator, type, _gvplGraph);
 				LoadVariableInitialization(varDecl, declarator);
 			}
 		} else if (statement instanceof IASTExpression)
@@ -294,7 +294,7 @@ public class InstructionLine {
 
 		// TODO set the correct type of the return value
 		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, returnType,
-				function.getName());
+				function.getName(), _gvplGraph);
 
 		function.setReturnNode(returnNode);
 	}
@@ -351,7 +351,7 @@ public class InstructionLine {
 		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsVar, IndirectionType.E_REFERENCE));
-		return opFunc.loadMemberFuncRef(lhsVar, parameterValues, _gvplGraph, _parentBasicBlock);
+		return opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar);
 	}
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
@@ -458,8 +458,7 @@ public class InstructionLine {
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		MemberFunc memberFunc = (MemberFunc) func;
 		ClassVar var = parentMF.getThisReference();
-		GraphNode node =  memberFunc.loadMemberFuncRef(var, parameterValues, _gvplGraph,
-			_parentBasicBlock);
+		GraphNode node =  memberFunc.addFuncRef(parameterValues, _gvplGraph, var);
 		return node;
 	}
 	

@@ -157,7 +157,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		} else {
 			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
 			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);
-			return eqFunc.loadMemberFuncRef(classVar, parameterValues, graph, astLoader);
+			return eqFunc.addFuncRef(parameterValues, graph, classVar);
 		}
 	}
 

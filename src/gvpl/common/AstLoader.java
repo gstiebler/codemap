@@ -17,7 +17,6 @@ public abstract class AstLoader {
 	
 	static Logger logger = LogManager.getLogger(AstLoader.class.getName());
 
-	protected Graph _gvplGraph;
 	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	
 	public IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
@@ -46,12 +45,8 @@ public abstract class AstLoader {
 		return null;
 	}
 	
-	public IVar addVarDecl(String name, TypeId type) {
-		return instanceVar(IndirectionType.E_VARIABLE, name, type, _gvplGraph, this, getAstInterpreter());
-	}
-	
-	public Graph getGraph() {
-		return _gvplGraph;
+	public IVar addVarDecl(String name, TypeId type, Graph graph) {
+		return instanceVar(IndirectionType.E_VARIABLE, name, type, graph, this, getAstInterpreter());
 	}
 	
 	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
@@ -125,8 +120,8 @@ public abstract class AstLoader {
 		return map;
 	}
 
-	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName) {
-		IVar var_decl = addVarDecl(functionName, type);
+	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {
+		IVar var_decl = addVarDecl(functionName, type, graph);
 		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue);
 	}
 
@@ -142,8 +137,5 @@ public abstract class AstLoader {
 	}
 	
 	protected abstract AstInterpreter getAstInterpreter();
-	protected abstract AstLoader getParent();
-	public abstract void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap);
 
 }

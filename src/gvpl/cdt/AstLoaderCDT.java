@@ -15,7 +15,6 @@ import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,18 +33,15 @@ import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 
-public class AstLoaderCDT extends AstLoader {
+public abstract class AstLoaderCDT extends AstLoader {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
-	protected AstLoaderCDT _parent;
 	protected AstInterpreterCDT _astInterpreter;
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 	protected Map<IBinding, IVar> _extToInVars = new LinkedHashMap<IBinding, IVar>();
 
-	public AstLoaderCDT(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
-		_gvplGraph = gvplGraph;
-		_parent = parent;
+	public AstLoaderCDT(AstInterpreterCDT astInterpreter) {
 		_astInterpreter = astInterpreter;
 	}
 
@@ -65,24 +61,10 @@ public class AstLoaderCDT extends AstLoader {
 		return getVarFromBinding(getBindingFromExpr(expr));
 	}
 	
-	protected IVar getVarFromBinding(IBinding binding) {
-		IVar var = getPreLoadedVarFromBinding(binding);
-		if (var != null) 
-			return var; 
-		
-		return createVarFromBinding(binding);	
-	}
+	abstract protected IVar getVarFromBinding(IBinding binding);
 	
-	protected IVar createVarFromBinding(IBinding binding) {
-		VarInfo varInfo = getTypeFromVarBinding(binding);
-		String name = binding.getName();
-		
-		IVar var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
-		//TODO only initialize a variable that will be read. Otherwise, the nodes generated
-		// in the line below will never be used
-		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);
-		_extToInVars.put(binding, var);
-		return var;
+	protected IVar getLocalVar(IBinding binding) {
+		return _localVariables.get(binding);
 	}
 	
 	private IBinding getBindingFromExpr(IASTExpression expr) {
@@ -114,11 +96,7 @@ public class AstLoaderCDT extends AstLoader {
 	}
 	
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		IVar var = _localVariables.get(binding);
-		if(var != null)
-			return var.getVarInfo();
-		
-		return _parent.getTypeFromVarBinding(binding);
+		return _localVariables.get(binding).getVarInfo();
 	}
 	
 	protected IVar getVarFromExprInternal(IASTExpression expr) {
@@ -171,33 +149,21 @@ public class AstLoaderCDT extends AstLoader {
 		return childVar;
 	}
 
-	public IVar loadVarDecl(IASTDeclarator decl, TypeId type) {
+	public IVar loadVarDecl(IASTDeclarator decl, TypeId type, Graph graph) {
 		IASTName name = decl.getName();
-		IVar var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators());
+		IVar var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph);
 		_localVariables.put(name.resolveBinding(), var_decl);
 
 		return var_decl;
 	}
 
-	public IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps) {
+	public IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps, Graph graph) {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
-		IVar var = instanceVar(parameterVarType, name, type, _gvplGraph, this, _astInterpreter);
+		IVar var = instanceVar(parameterVarType, name, type, graph, this, _astInterpreter);
 		if(var instanceof ClassVar)
 			_varsCreatedInThisScope.add((ClassVar) var);
 		return var;
-	}
-
-	@Override
-	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap) {
-		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
-			IVar extVar = _parent.getVarFromBinding(entry.getKey());
-			if (extVar == null)
-				logger.fatal("extVar cannot be null");
-
-			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap);
-		}
 	}
 
 	//TODO prepare to read member vars of each var. It's only working
@@ -220,10 +186,5 @@ public class AstLoaderCDT extends AstLoader {
 	@Override
 	protected AstInterpreter getAstInterpreter() {
 		return _astInterpreter;
-	}
-	
-	@Override
-	protected AstLoader getParent() {
-		return _parent;
 	}
 }
