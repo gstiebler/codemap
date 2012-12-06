@@ -197,7 +197,7 @@ public class ClassDeclCDT extends ClassDecl{
 		
 		return null;
 	}
-
+//
 	public MemberFunc getMemberFunc(IBinding binding) {
 		MemberFunc memberFunc = _memberFuncIdMap.get(binding);
 		if(memberFunc != null)
