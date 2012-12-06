@@ -39,9 +39,9 @@ public class ClassVar extends Var implements IClassVar{
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			IVar member_instance = parentAstLoader.addVarDecl(memberName,
-					struct_member.getMemberType());
-			addMember(entry.getKey(), member_instance);
+			IVar memberInstance = parentAstLoader.addVarDecl(memberName,
+					struct_member.getMemberType(), _gvplGraph);
+			addMember(entry.getKey(), memberInstance);
 		}
 		
 		for(ClassDecl parentClass : _classDecl.getParentClasses()) {

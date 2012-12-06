@@ -34,7 +34,7 @@ public class AstInterpreter extends AstLoaderCDT {
 	 * @param root
 	 *            The root of the program
 	 */
-	public AstInterpreter(Graph gvplGraph) {
+	public AstInterpreter() {
 		super(null);
 		_typeIdToClass = new LinkedHashMap<TypeId, ClassDeclCDT>();
 	}

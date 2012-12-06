@@ -48,9 +48,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	Function _mainFunction = null;
+	Graph _gvplGraph;
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
-		super(gvplGraph);
+		_gvplGraph = gvplGraph;
 		CppMaps.initialize();
 	}
 	
@@ -97,9 +98,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	public void loadDefinitions(IASTTranslationUnit root) {
 		_currCppFile = _cppFiles.get(root);
 		
-		_mainFunction.loadDefinition();
-
-		_gvplGraph = _mainFunction.getGraph();
+		_mainFunction.addFuncRef(null, _gvplGraph);
 	}
 
 	/**

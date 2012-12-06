@@ -165,23 +165,6 @@ public abstract class AstLoaderCDT extends AstLoader {
 			_varsCreatedInThisScope.add((ClassVar) var);
 		return var;
 	}
-
-	//TODO prepare to read member vars of each var. It's only working
-	// for primitive types
-	public List<InExtMAVarPair> getAccessedMemAddressVar() {
-		List<InExtMAVarPair> vars = new ArrayList<InExtMAVarPair>();
-		
-		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
-			IVar intVar = entry.getValue();
-			if(intVar instanceof MemAddressVar) {
-				MemAddressVar extVar = (MemAddressVar) _parent.getVarFromBinding(entry.getKey());
-				
-				vars.add(new InExtMAVarPair((MemAddressVar)intVar, extVar));
-			}
-		}
-		
-		return vars;
-	}
 	
 	@Override
 	protected AstInterpreter getAstInterpreter() {
