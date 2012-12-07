@@ -1,15 +1,19 @@
 package gvpl.cdt;
 
 import gvpl.common.AstLoader;
-import gvpl.common.BasicBlock;
+import gvpl.common.ClassVar;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
 import gvpl.common.InToExtVar;
+import gvpl.common.MemAddressVar;
+import gvpl.common.MemberId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +57,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	 *         of the map no longer exists.
 	 */
 	public Map<GraphNode, GraphNode> addToExtGraph() {
-		return BasicBlock.addToExtGraph(_parent.getGraph(), this);
+		return addToExtGraph(_parent.getGraph(), this);
 	}
 	
 	public void bindSettedPointers() {
@@ -95,7 +99,6 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		return _parent;
 	}
 	
-	@Override
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
 			List<InExtVarPair> ignored, InToExtVar inToExtMap) {
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
@@ -105,6 +108,112 @@ public class BasicBlockCDT extends AstLoaderCDT {
 
 			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap);
 		}
+	}
+	
+	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
+			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap) {
+		
+		if(extVar == null)
+			return;
+		
+		IVar extVarInMem = extVar.getVarInMem();
+		IVar intVarInMem = intVar.getVarInMem();
+		
+		if(extVarInMem == null)
+			return;
+		
+		inToExtMap.put(intVar, extVar);
+		
+		if (intVarInMem instanceof ClassVar) {
+			ClassVar extClassVar = (ClassVar) extVarInMem;
+			ClassVar intClassVar = (ClassVar) intVarInMem;
+			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
+				IVar memberExtVar = extClassVar.getMember(memberId);
+				IVar memberIntVar = intClassVar.getMember(memberId);
+				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap);
+			}
+
+			return;
+		}
+
+		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
+		boolean accessed = false;
+		if (intVar.onceRead()) {
+			read.add(varPair);
+			accessed = true;
+		}
+
+		if (intVar.onceWritten()) {
+			written.add(varPair);
+			accessed = true;
+		}
+
+		if (!accessed)
+			ignored.add(varPair);
+	}
+	
+
+	/**
+	 * Add the nodes of the internal graph to the external graph
+	 * @param startingLine
+	 * @return Maps the nodes that were merged with others. The nodes in the key
+	 *         of the map no longer exists.
+	 */
+	public Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, AstLoader astLoader) {
+		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
+		
+		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph));
+		extGraph.merge(astLoader.getGraph());
+
+		// bind the vars from calling block to the internal read vars
+		for(InExtVarPair readPair : readVars) {
+			GraphNode intVarFirstNode = readPair._in.getFirstNode();
+			// if someone read from internal var
+			GraphNode extVarCurrNode = readPair._ext.getCurrentNode();
+			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode);
+			// connect the var from the calling block to the correspodent var in this block
+			mergedNodes.put(intVarFirstNode, extVarCurrNode);
+		}
+		
+		// bind the vars from calling block to the internal written vars
+		for (InExtVarPair writtenPair : writtenVars) {
+			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode();
+			// if someone has written in the internal var
+
+			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph,
+					astLoader, astLoader.getAstInterpreter());
+			GraphNode extVarCurrNode = writtenPair._ext
+					.getCurrentNode();
+			// connect the var from the calling block to the correspodent var in this block
+			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
+			mergedNodes.put(intVarCurrNode, extVarCurrNode);
+		}
+		
+		for(InExtVarPair ignoredPair : ignoredVars) {
+			extGraph.removeNode(ignoredPair._in.getFirstNode());
+		}
+		
+		return mergedNodes;
+	}
+	
+	//TODO prepare to read member vars of each var. It's only working
+	// for primitive types
+	public List<InExtMAVarPair> getAccessedMemAddressVar() {
+		List<InExtMAVarPair> vars = new ArrayList<InExtMAVarPair>();
+		
+		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
+			IVar intVar = entry.getValue();
+			if(intVar instanceof MemAddressVar) {
+				MemAddressVar extVar = (MemAddressVar) _parent.getVarFromBinding(entry.getKey());
+				
+				vars.add(new InExtMAVarPair((MemAddressVar)intVar, extVar));
+			}
+		}
+		
+		return vars;
 	}
 	
 }

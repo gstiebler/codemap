@@ -68,12 +68,12 @@ public class InstructionLine {
 
 	private Graph _gvplGraph;
 	private AstInterpreterCDT _astInterpreter;
-	private AstLoaderCDT _parentBasicBlock;
+	private AstLoaderCDT _parentAstLoader;
 
 	public InstructionLine(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
 		_gvplGraph = gvplGraph;
 		_astInterpreter = astInterpreter;
-		_parentBasicBlock = parent;
+		_parentAstLoader = parent;
 	}
 
 	public void load(IASTStatement statement) {
@@ -96,7 +96,7 @@ public class InstructionLine {
 			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			for (IASTDeclarator declarator : declarators) {
 				// possibly more than one variable per line
-				IVar varDecl = _parentBasicBlock.loadVarDecl(declarator, type, _gvplGraph);
+				IVar varDecl = _parentAstLoader.loadVarDecl(declarator, type, _gvplGraph);
 				LoadVariableInitialization(varDecl, declarator);
 			}
 		} else if (statement instanceof IASTExpression)
@@ -117,7 +117,7 @@ public class InstructionLine {
 		} else if (statement instanceof IASTIfStatement) {
 			IfConditionCDT.loadIfCondition((IASTIfStatement) statement, this);
 		} else if (statement instanceof IASTCompoundStatement) {
-			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentBasicBlock, _astInterpreter);
+			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentAstLoader, _astInterpreter);
 			basicBlockLoader.load(statement);
 			basicBlockLoader.addToExtGraph();
 			basicBlockLoader.bindSettedPointers();
@@ -176,10 +176,10 @@ public class InstructionLine {
 	
 	void loadDeleteOp(CPPASTDeleteExpression deleteExpr) {
 		IASTExpression opExpr = deleteExpr.getOperand();
-		IVar var = _parentBasicBlock.getVarFromExpr(opExpr);
+		IVar var = _parentAstLoader.getVarFromExpr(opExpr);
 		MemAddressVar mav = (MemAddressVar) var;
 		var = mav.getVarInMem();
-		((ClassVar) var).callDestructor(_parentBasicBlock, _gvplGraph);
+		((ClassVar) var).callDestructor(_parentAstLoader, _gvplGraph);
 		mav.delete();
 	}
 
@@ -200,7 +200,7 @@ public class InstructionLine {
 			
 			ClassVar classVar = (ClassVar) lhsVar;
 			classVar.callConstructor(new ArrayList<FuncParameter>(), NodeType.E_VARIABLE, _gvplGraph, 
-						_parentBasicBlock, _astInterpreter);
+						_parentAstLoader, _astInterpreter);
 			return;
 		}
 		
@@ -238,7 +238,7 @@ public class InstructionLine {
 			parameterValues.add(funcParameter);
 		}
 		lhsVar.callConstructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-				_parentBasicBlock, _astInterpreter);
+				_parentAstLoader, _astInterpreter);
 	}
 
 	/*
@@ -248,7 +248,7 @@ public class InstructionLine {
 		logger.debug("Node type {}", expr.getClass());
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			IVar varDecl = _parentBasicBlock.getVarFromExpr(expr);
+			IVar varDecl = _parentAstLoader.getVarFromExpr(expr);
 			return varDecl.getCurrentNode();
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) expr);
@@ -259,7 +259,7 @@ public class InstructionLine {
 			return loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
-			IVar varDecl = _parentBasicBlock.getVarFromFieldRef((IASTFieldReference) expr);
+			IVar varDecl = _parentAstLoader.getVarFromFieldRef((IASTFieldReference) expr);
 			if(varDecl == null)
 				return GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ");
 			return varDecl.getCurrentNode();
@@ -269,7 +269,7 @@ public class InstructionLine {
 			//It's an array
 			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
 			IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
-			IVar varDecl = _parentBasicBlock.getVarFromExpr(arrayExpr);
+			IVar varDecl = _parentAstLoader.getVarFromExpr(arrayExpr);
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
 			return varDecl.getCurrentNode();
@@ -280,8 +280,8 @@ public class InstructionLine {
 	}
 
 	private void loadForStmt(IASTForStatement node) {
-		ForLoop forLoop = new ForLoop(_parentBasicBlock, _astInterpreter);
-		forLoop.load(node, _gvplGraph, _parentBasicBlock);
+		ForLoop forLoop = new ForLoop(_parentAstLoader, _astInterpreter);
+		forLoop.load(node, _gvplGraph, _parentAstLoader);
 	}
 
 	private void loadReturnStatement(IASTReturnStatement statement) {
@@ -289,11 +289,11 @@ public class InstructionLine {
 
 		GraphNode rvalue = loadValue(return_node.getReturnValue());
 
-		Function function = _parentBasicBlock.getFunction();
+		Function function = _parentAstLoader.getFunction();
 		TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
-		GraphNode returnNode = _parentBasicBlock.addReturnStatement(rvalue, returnType,
+		GraphNode returnNode = _parentAstLoader.addReturnStatement(rvalue, returnType,
 				function.getName(), _gvplGraph);
 
 		function.setReturnNode(returnNode);
@@ -309,7 +309,7 @@ public class InstructionLine {
 	GraphNode loadAssignBinOp(IASTBinaryExpression binExpr) {
 		IASTExpression lhsOp = binExpr.getOperand1();
 		logger.debug("get lhsVar");
-		IVar lhsVar = _parentBasicBlock.getVarFromExpr(lhsOp);
+		IVar lhsVar = _parentAstLoader.getVarFromExpr(lhsOp);
 		
 		if(lhsVar instanceof ClassVar) {
 			return loadOperatorOverload(binExpr);
@@ -338,15 +338,15 @@ public class InstructionLine {
 
 		GraphNode lhsValue = loadValue(binExpr.getOperand1());
 		eAssignBinOp op = CppMaps.getAssignBinOpTypes(binExpr.getOperator());
-		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentBasicBlock);
+		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentAstLoader);
 	}
 	
 	private GraphNode loadOperatorOverload(IASTBinaryExpression binExpr) {
 		IASTExpression lhsOp = binExpr.getOperand1();
-		ClassVar lhsVar = (ClassVar) _parentBasicBlock.getVarFromExpr(lhsOp);
+		ClassVar lhsVar = (ClassVar) _parentAstLoader.getVarFromExpr(lhsOp);
 		
 		IASTExpression rhsOp = binExpr.getOperand2();
-		IVar rhsVar = _parentBasicBlock.getVarFromExpr(rhsOp);
+		IVar rhsVar = _parentAstLoader.getVarFromExpr(rhsOp);
 		
 		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
@@ -368,7 +368,7 @@ public class InstructionLine {
 			}
 			
 			if (classDecl == null) {
-				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _parentBasicBlock,
+				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _parentAstLoader,
 						_astInterpreter);
 				return;
 			}
@@ -380,10 +380,10 @@ public class InstructionLine {
 			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-					_parentBasicBlock, _astInterpreter, classDecl.getTypeId());
+					_parentAstLoader, _astInterpreter, classDecl.getTypeId());
 			return;
 		} else {
-			IVar rhsPointer = loadPointedVar(rhsOp, _parentBasicBlock);
+			IVar rhsPointer = loadPointedVar(rhsOp, _parentAstLoader);
 			lhsPointer.setPointedVar(rhsPointer);
 			return;
 		}
@@ -452,7 +452,7 @@ public class InstructionLine {
 	 * @return The graph node of the result of the function
 	 */
 	private GraphNode loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr) {
-		MemberFunc parentMF = (MemberFunc) _parentBasicBlock;
+		MemberFunc parentMF = (MemberFunc) _parentAstLoader;
 		Function func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 		
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
@@ -471,7 +471,7 @@ public class InstructionLine {
 	private GraphNode loadVarMethod(IASTFunctionCallExpression funcCall, IASTExpression paramExpr) {
 		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 		IASTExpression ownerExpr = fieldRef.getFieldOwner();
-		IVar var = _parentBasicBlock.getVarFromExpr(ownerExpr);
+		IVar var = _parentAstLoader.getVarFromExpr(ownerExpr);
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		
 		TypeId typeId = var.getType();
@@ -482,10 +482,10 @@ public class InstructionLine {
 		
 		if(var instanceof ClassVar) {
 			return ((ClassVar)var).loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
-					_parentBasicBlock);
+					_parentAstLoader);
 		} else if(var instanceof MemAddressVar) {
 			return ((MemAddressVar)var).loadMemberFuncRef(memberFunc, parameterValues, _gvplGraph,
-					_parentBasicBlock);
+					_parentAstLoader);
 		} 
 		return null;
 	}
@@ -516,10 +516,10 @@ public class InstructionLine {
 			FuncParameter insideFuncParameter = func.getParameter(i);
 
 			if (insideFuncParameter.getType() == IndirectionType.E_POINTER)
-				localParameter = new FuncParameter(loadVarInAddress(parameter, _parentBasicBlock),
+				localParameter = new FuncParameter(loadVarInAddress(parameter, _parentAstLoader),
 						IndirectionType.E_POINTER);
 			else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
-				IVar var = _parentBasicBlock.getVarFromExpr(parameter);
+				IVar var = _parentAstLoader.getVarFromExpr(parameter);
 				localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
@@ -536,7 +536,7 @@ public class InstructionLine {
 		eBinOp op = CppMaps.getBinOpType(bin_op.getOperator());
 		GraphNode lvalue = loadValue(bin_op.getOperand1());
 		GraphNode rvalue = loadValue(bin_op.getOperand2());
-		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentBasicBlock);
+		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentAstLoader);
 	}
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
@@ -584,7 +584,7 @@ public class InstructionLine {
 		// Check if the operator is a star
 		if (unExpr.getOperator() == CPPASTUnaryExpression.op_star){
 			IASTExpression opExpr = unExpr.getOperand();
-			IVar pointerVar = _parentBasicBlock.getVarFromExpr(opExpr);
+			IVar pointerVar = _parentAstLoader.getVarFromExpr(opExpr);
 			if (!(pointerVar instanceof PointerVar))
 				logger.fatal("not expected here");
 
@@ -615,7 +615,7 @@ public class InstructionLine {
 	}
 
 	public AstLoaderCDT getParentBasicBlock() {
-		return _parentBasicBlock;
+		return _parentAstLoader;
 	}
 	
 	public AstInterpreterCDT getAstInterpreter() {

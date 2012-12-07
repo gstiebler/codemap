@@ -8,17 +8,12 @@ import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
-import gvpl.common.InExtVarPair;
-import gvpl.common.InToExtVar;
-import gvpl.common.MemAddressVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -167,7 +162,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	@Override
-	protected AstInterpreter getAstInterpreter() {
+	public AstInterpreter getAstInterpreter() {
 		return _astInterpreter;
 	}
 }

@@ -144,14 +144,15 @@ public class Function extends AstLoaderCDT {
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph) {
-		Graph funcGraph = new Graph(_externalName);
+	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
+		_gvplGraph = new Graph(_externalName);
 		
 		private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 		private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
 		
 		loadDefinition(funcGraph);
-		gvplGraph.addSubGraph(funcGraph, this);
+		extGraph.addSubGraph(funcGraph, this);
+		_gvplGraph = null;
 		
 		return _returnNode;
 	}

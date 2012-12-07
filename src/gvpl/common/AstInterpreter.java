@@ -2,7 +2,6 @@ package gvpl.common;
 
 import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.ClassDeclCDT;
-import gvpl.graph.Graph;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
