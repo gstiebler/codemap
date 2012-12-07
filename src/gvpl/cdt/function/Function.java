@@ -89,7 +89,7 @@ public class Function extends AstLoaderCDT {
 		if(_implLocation != null) //function definition has already been loaded
 			return;
 		
-		loadConstructorChain(_ccInitializer);
+		loadConstructorChain(_ccInitializer, gvplGraph, null);
 		
 		if (_body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
@@ -131,12 +131,12 @@ public class Function extends AstLoaderCDT {
 			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
 			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(declSpec);
-			IVar var_decl = loadVarDecl(parameterVarDecl, type);
+			IVar varDecl = loadVarDecl(parameterVarDecl, type, _gvplGraph);
 			IBinding binding = parameterVarDecl.getName().resolveBinding();
 
 			FuncParameter.IndirectionType parameterVarType = null;
 			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
-			FuncParameter funcParameter = new FuncParameter(var_decl, parameterVarType);
+			FuncParameter funcParameter = new FuncParameter(varDecl, parameterVarType);
 			if(declSpec instanceof CPPASTSimpleDeclSpecifier)
 				funcParameter.setType(((CPPASTSimpleDeclSpecifier)declSpec).getType());
 
@@ -150,8 +150,8 @@ public class Function extends AstLoaderCDT {
 		private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 		private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
 		
-		loadDefinition(funcGraph);
-		extGraph.addSubGraph(funcGraph, this);
+		loadDefinition(_gvplGraph);
+		extGraph.addSubGraph(_gvplGraph, this);
 		_gvplGraph = null;
 		
 		return _returnNode;
