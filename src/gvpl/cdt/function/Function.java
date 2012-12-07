@@ -44,8 +44,9 @@ public class Function extends AstLoaderCDT {
 	private TypeId _returnType = null;
 
 	private String _externalName = "";
-	private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
-	private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
+	private Map<IBinding, FuncParameter> _originalParametersMap = new LinkedHashMap<IBinding, FuncParameter>();
+	private List<FuncParameter> _originalParameters = new ArrayList<FuncParameter>();
+	private List<FuncParameter> _parametersList = null;
 	protected String _funcName;
 	protected IBinding _ownBinding;
 	CodeLocation _declLocation = null;
@@ -146,13 +147,12 @@ public class Function extends AstLoaderCDT {
 
 	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
 		_gvplGraph = new Graph(_externalName);
-		
-		private Map<IBinding, FuncParameter> _parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
-		private List<FuncParameter> _parametersList = new ArrayList<FuncParameter>();
+		_parametersList = parameterValues;
 		
 		loadDefinition(_gvplGraph);
 		extGraph.addSubGraph(_gvplGraph, this);
 		_gvplGraph = null;
+		_parametersList = null;
 		
 		return _returnNode;
 	}
@@ -191,8 +191,8 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	private void addParameter(IBinding binding, FuncParameter parameter) {
-		_parametersMap.put(binding, parameter);
-		_parametersList.add(parameter);
+		_originalParametersMap.put(binding, parameter);
+		_originalParameters.add(parameter);
 	}
 	
 	public FuncParameter getParameter(int index) {
@@ -200,7 +200,7 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	public int getNumParameters() {
-		return _parametersList.size();
+		return _originalParameters.size();
 	}
 	
 	//TODO improve! Can be done with bindings? There is a function in Eclipse IDE that
@@ -218,15 +218,15 @@ public class Function extends AstLoaderCDT {
 		if(_returnType != other._returnType)
 			return false;
 		
-		if(_parametersList.size() != other._parametersList.size())
+		if(_originalParameters.size() != other._originalParameters.size())
 			return false;
 		
-		return isEquivalentParameterList(other._parametersList);
+		return isEquivalentParameterList(other._originalParameters);
 	}
 	
 	public boolean isEquivalentParameterList(List<FuncParameter> parametersList) {
-		for(int i = 0; i < _parametersList.size(); ++i) {
-			FuncParameter internal = _parametersList.get(i);
+		for(int i = 0; i < _originalParameters.size(); ++i) {
+			FuncParameter internal = _originalParameters.get(i);
 			FuncParameter external = parametersList.get(i);
 			if(!internal.isEquivalent(external))
 				return false;
@@ -246,7 +246,7 @@ public class Function extends AstLoaderCDT {
 
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
-		FuncParameter funcParameter = _parametersMap.get(binding);
+		FuncParameter funcParameter = _originalParametersMap.get(binding);
 		if(funcParameter != null)
 			return funcParameter.getVar();
 		
