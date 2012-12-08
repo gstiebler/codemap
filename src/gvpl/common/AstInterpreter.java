@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.cdt.core.dom.ast.IBinding;
 
 
 /**
@@ -17,7 +16,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
  * @author stiebler
  * 
  */
-public class AstInterpreter extends AstLoaderCDT {
+public class AstInterpreter {
 	
 	static Logger logger = LogManager.getLogger(AstLoaderCDT.class.getName());
 
@@ -34,7 +33,6 @@ public class AstInterpreter extends AstLoaderCDT {
 	 *            The root of the program
 	 */
 	public AstInterpreter() {
-		super(null);
 		_typeIdToClass = new LinkedHashMap<TypeId, ClassDeclCDT>();
 	}
 
@@ -48,13 +46,6 @@ public class AstInterpreter extends AstLoaderCDT {
 
 	public TypeId getPrimitiveType() {
 		return _primitiveType;
-	}
-
-	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
-		// TODO Global funcs??
-		logger.fatal("not implemented (?)");
-		return null;
 	}
 
 }

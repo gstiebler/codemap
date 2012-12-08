@@ -283,4 +283,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	public Function getFuncId(IBinding binding) {
 		return _currCppFile._funcIdMap.get(binding);
 	}
+	
+	public Graph getGraph() {
+		return _gvplGraph;
+	}
 }

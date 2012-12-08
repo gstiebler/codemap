@@ -132,12 +132,11 @@ public class Function extends AstLoaderCDT {
 			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
 			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();
 			TypeId type = _astInterpreter.getType(declSpec);
-			IVar varDecl = loadVarDecl(parameterVarDecl, type, _gvplGraph);
 			IBinding binding = parameterVarDecl.getName().resolveBinding();
 
 			FuncParameter.IndirectionType parameterVarType = null;
 			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
-			FuncParameter funcParameter = new FuncParameter(varDecl, parameterVarType);
+			FuncParameter funcParameter = new FuncParameter((IVar)null, parameterVarType);
 			if(declSpec instanceof CPPASTSimpleDeclSpecifier)
 				funcParameter.setType(((CPPASTSimpleDeclSpecifier)declSpec).getType());
 
