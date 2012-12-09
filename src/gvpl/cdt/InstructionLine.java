@@ -531,10 +531,10 @@ public class InstructionLine {
 		return parameterValues;
 	}
 
-	GraphNode loadBinOp(IASTBinaryExpression bin_op) {
-		eBinOp op = CppMaps.getBinOpType(bin_op.getOperator());
-		GraphNode lvalue = loadValue(bin_op.getOperand1());
-		GraphNode rvalue = loadValue(bin_op.getOperand2());
+	GraphNode loadBinOp(IASTBinaryExpression binOp) {
+		eBinOp op = CppMaps.getBinOpType(binOp.getOperator());
+		GraphNode lvalue = loadValue(binOp.getOperand1());
+		GraphNode rvalue = loadValue(binOp.getOperand2());
 		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentAstLoader);
 	}
 

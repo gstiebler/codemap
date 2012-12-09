@@ -83,6 +83,10 @@ public class Graph {
 	public GraphNode getNode(int index) {
 		return _graphNodes.get(index);
 	}
+	
+	public void addSubGraph(Graph graph) {
+		_subgraphs.add(graph);
+	}
 
 	public Graph getCopy(Map<GraphNode, GraphNode> map, int startingLine) {
 
@@ -138,7 +142,7 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph) {
+	public Map<GraphNode, GraphNode> addSubGraphCopy(Graph graph) {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
 		Graph graphCopy = graph.getCopy(map, DebugOptions.getStartingLine());
 		_subgraphs.add(graphCopy);
