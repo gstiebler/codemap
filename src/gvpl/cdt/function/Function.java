@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
@@ -45,8 +46,9 @@ public class Function extends AstLoaderCDT {
 
 	private String _externalName = "";
 	private Map<IBinding, FuncParameter> _originalParametersMap = new LinkedHashMap<IBinding, FuncParameter>();
-	private List<FuncParameter> _originalParameters = new ArrayList<FuncParameter>();
-	private List<FuncParameter> _parametersList = null;
+	private List<IBinding> _originalParameters = new ArrayList<IBinding>();
+	
+	private Map<IBinding, FuncParameter> _parametersMap = null;
 	protected String _funcName;
 	protected IBinding _ownBinding;
 	CodeLocation _declLocation = null;
@@ -146,12 +148,15 @@ public class Function extends AstLoaderCDT {
 
 	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
 		_gvplGraph = new Graph(_externalName);
-		_parametersList = parameterValues;
+		
+		_parametersMap = new LinkedHashMap<>();
+		for(int i = 0; i < parameterValues.size(); ++i)
+			_parametersMap.put(_originalParameters.get(i), parameterValues.get(i));
 		
 		loadDefinition(_gvplGraph);
-		extGraph.addSubGraph(_gvplGraph, this);
+		extGraph.addSubGraph(_gvplGraph);
 		_gvplGraph = null;
-		_parametersList = null;
+		_parametersMap = null;
 		
 		return _returnNode;
 	}
@@ -191,11 +196,11 @@ public class Function extends AstLoaderCDT {
 	
 	private void addParameter(IBinding binding, FuncParameter parameter) {
 		_originalParametersMap.put(binding, parameter);
-		_originalParameters.add(parameter);
+		_originalParameters.add(binding);
 	}
 	
-	public FuncParameter getParameter(int index) {
-		return _parametersList.get(index);
+	public FuncParameter getOriginalParameter(int index) {
+		return _originalParametersMap.get(_originalParameters.get(index));
 	}
 	
 	public int getNumParameters() {
@@ -220,12 +225,17 @@ public class Function extends AstLoaderCDT {
 		if(_originalParameters.size() != other._originalParameters.size())
 			return false;
 		
-		return isEquivalentParameterList(other._originalParameters);
+		//TODO review if this have to be done every time
+		List<FuncParameter> parameters = new ArrayList<FuncParameter>();
+		for(int i = 0; i < getNumParameters(); i++)
+			parameters.add(getOriginalParameter(i));
+			
+		return isEquivalentParameterList(parameters);
 	}
 	
 	public boolean isEquivalentParameterList(List<FuncParameter> parametersList) {
 		for(int i = 0; i < _originalParameters.size(); ++i) {
-			FuncParameter internal = _originalParameters.get(i);
+			FuncParameter internal = getOriginalParameter(i);
 			FuncParameter external = parametersList.get(i);
 			if(!internal.isEquivalent(external))
 				return false;
@@ -244,6 +254,21 @@ public class Function extends AstLoaderCDT {
 	}
 
 	@Override
+	protected GraphNode getNodeFromExpr(IASTExpression expr) {
+		GraphNode node = super.getNodeFromExpr(expr);
+		if(node != null)
+			return node;
+		
+		IBinding parameterBinding = getBindingFromExpr(expr);
+		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
+		if(funcParameter != null)
+			return funcParameter.getNode();
+		
+		logger.fatal("should not be here");
+		return null;
+	}
+	
+	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
 		FuncParameter funcParameter = _originalParametersMap.get(binding);
 		if(funcParameter != null)
@@ -252,6 +277,21 @@ public class Function extends AstLoaderCDT {
 		return getLocalVar(binding);
 	}
 
+	@Override
+	protected IVar getVarFromExpr(IASTExpression expr) {
+		IVar var = super.getVarFromExpr(expr);
+
+		if (var != null) 
+			return var; 
+		
+		IBinding parameterBinding = getBindingFromExpr(expr);
+		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
+		if(funcParameter != null)
+			return funcParameter.getVar();
+		
+		return null;
+	}
+	
 	@Override
 	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
 		return getVarFromBinding(binding);

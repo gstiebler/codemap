@@ -248,8 +248,7 @@ public class InstructionLine {
 		logger.debug("Node type {}", expr.getClass());
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			IVar varDecl = _parentAstLoader.getVarFromExpr(expr);
-			return varDecl.getCurrentNode();
+			return _parentAstLoader.getNodeFromExpr(expr);
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
 			return loadBinOp((IASTBinaryExpression) expr);
 		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
@@ -513,7 +512,7 @@ public class InstructionLine {
 		for (int i = 0; i < parameters.length; i++) {
 			IASTExpression parameter = parameters[i];
 			FuncParameter localParameter = null;
-			FuncParameter insideFuncParameter = func.getParameter(i);
+			FuncParameter insideFuncParameter = func.getOriginalParameter(i);
 
 			if (insideFuncParameter.getType() == IndirectionType.E_POINTER)
 				localParameter = new FuncParameter(loadVarInAddress(parameter, _parentAstLoader),

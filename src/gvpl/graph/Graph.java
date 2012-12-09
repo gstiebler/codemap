@@ -84,7 +84,7 @@ public class Graph {
 		return _graphNodes.get(index);
 	}
 
-	public Graph getCopy(Map<GraphNode, GraphNode> map, AstLoader astLoader, int startingLine) {
+	public Graph getCopy(Map<GraphNode, GraphNode> map, int startingLine) {
 
 		logger.debug("Getting copy of the graph");
 		
@@ -114,7 +114,7 @@ public class Graph {
 		}
 
 		for (Graph subgraph : _subgraphs) {
-			Graph copy = subgraph.getCopy(map, astLoader, startingLine);
+			Graph copy = subgraph.getCopy(map, startingLine);
 			graph._subgraphs.add(copy);
 		}
 
@@ -138,9 +138,9 @@ public class Graph {
 	 * @param name
 	 * @return The map between the nodes in the old graph and in the new
 	 */
-	public Map<GraphNode, GraphNode> addSubGraph(Graph graph, AstLoader astLoader) {
+	public Map<GraphNode, GraphNode> addSubGraph(Graph graph) {
 		Map<GraphNode, GraphNode> map = new LinkedHashMap<GraphNode, GraphNode>();
-		Graph graphCopy = graph.getCopy(map, astLoader, DebugOptions.getStartingLine());
+		Graph graphCopy = graph.getCopy(map, DebugOptions.getStartingLine());
 		_subgraphs.add(graphCopy);
 		logger.info("Adding graph ({}) to ({})", graph._id, _id);
 		return map;

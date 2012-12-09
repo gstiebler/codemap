@@ -114,6 +114,24 @@ public class MemberFunc extends Function {
 		return result;
 	}
 	
+	@Override
+	protected IVar getVarFromExpr(IASTExpression expr) {
+		IVar var = super.getVarFromExpr(expr);
+
+		if (var != null) 
+			return var; 
+		
+		String exprStr = expr.getRawSignature();
+		if (exprStr.equals("this")) {
+			// quite weird, but to deal with "this" in source code, i had to use "this" here
+			MemberFunc thisMemberFunc = (MemberFunc) this;
+			return thisMemberFunc.getThisReference();
+		}
+		
+		logger.fatal("not supposed to be here");
+		return null;
+	}
+	
 	public MemberFunc getParentMemberFunc() {
 		return _parentMemberFunc;
 	}

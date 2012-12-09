@@ -4,10 +4,12 @@ import gvpl.cdt.function.Function;
 import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
+import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -98,7 +100,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	public void loadDefinitions(IASTTranslationUnit root) {
 		_currCppFile = _cppFiles.get(root);
 		
-		_mainFunction.addFuncRef(null, _gvplGraph);
+		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph);
 	}
 
 	/**

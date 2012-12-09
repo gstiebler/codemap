@@ -57,7 +57,7 @@ public abstract class AstLoader {
 	 * @return A map from the internal graph nodes to the external graph nodes
 	 */
 	protected Map<GraphNode, GraphNode> addSubGraph(Graph graph) {
-		return graph.addSubGraph(_gvplGraph, this);
+		return graph.addSubGraph(_gvplGraph);
 	}
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {

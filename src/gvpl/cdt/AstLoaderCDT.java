@@ -12,6 +12,7 @@ import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
+import gvpl.graph.GraphNode;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -46,14 +47,14 @@ public abstract class AstLoaderCDT extends AstLoader {
 		if (var != null) 
 			return var; 
 		
-		String exprStr = expr.getRawSignature();
-		if (exprStr.equals("this")) {
-			// quite weird, but to deal with "this" in source code, i had to use "this" here
-			MemberFunc thisMemberFunc = (MemberFunc) this;
-			return thisMemberFunc.getThisReference();
-		}
-		
 		return getVarFromBinding(getBindingFromExpr(expr));
+	}
+	
+	protected GraphNode getNodeFromExpr(IASTExpression expr) {
+		IVar var = getVarFromExpr(expr);
+		if(var != null)
+			return var.getCurrentNode();
+		return null;
 	}
 	
 	abstract protected IVar getVarFromBinding(IBinding binding);
@@ -62,7 +63,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 		return _localVariables.get(binding);
 	}
 	
-	private IBinding getBindingFromExpr(IASTExpression expr) {
+	protected IBinding getBindingFromExpr(IASTExpression expr) {
 		logger.debug("expr is {}", expr.getClass());
 		if (expr instanceof IASTIdExpression) {
 			return ((IASTIdExpression) expr).getName().resolveBinding(); 
