@@ -25,10 +25,10 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 public class BasicBlockCDT extends AstLoaderCDT {
 
 	protected AstLoaderCDT _parent;
-	protected Graph _gvplGraph = new Graph();
 	
 	public BasicBlockCDT(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
 		super(astInterpreter);
+		_gvplGraph = new Graph();
 		_parent = parent;
 		_gvplGraph.setLabel("BasicBlockGraph");
 	}
@@ -77,6 +77,16 @@ public class BasicBlockCDT extends AstLoaderCDT {
 			return var; 
 		
 		return createVarFromBinding(binding);	
+	}
+	
+	@Override
+	public VarInfo getTypeFromVarBinding(IBinding binding) {
+		VarInfo vi = _parent.getTypeFromVarBinding(binding);
+		
+		if(vi != null)
+			return vi;
+		else
+			return super.getTypeFromVarBinding(binding);
 	}
 	
 	protected IVar createVarFromBinding(IBinding binding) {

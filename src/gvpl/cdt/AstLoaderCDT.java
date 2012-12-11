@@ -92,7 +92,11 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		return _localVariables.get(binding).getVarInfo();
+		IVar var = _localVariables.get(binding);
+		if(var == null)
+			return null;
+		
+		return var.getVarInfo();
 	}
 	
 	protected IVar getVarFromExprInternal(IASTExpression expr) {
