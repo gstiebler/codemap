@@ -92,8 +92,6 @@ public class Function extends AstLoaderCDT {
 		if(_implLocation != null) //function definition has already been loaded
 			return;
 		
-		loadConstructorChain(_ccInitializer, gvplGraph, null);
-		
 		if (_body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
 			for (IASTStatement statement : statements) {
