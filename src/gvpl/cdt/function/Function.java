@@ -150,8 +150,12 @@ public class Function extends AstLoaderCDT {
 		_gvplGraph = new Graph(_externalName);
 		
 		_parametersMap = new LinkedHashMap<>();
-		for(int i = 0; i < parameterValues.size(); ++i)
+		int size = 0;
+		if(parameterValues != null)
+			size = parameterValues.size();
+		for(int i = 0; i < size; ++i) {
 			_parametersMap.put(_originalParameters.get(i), parameterValues.get(i));
+		}
 		
 		loadDefinition(_gvplGraph);
 		extGraph.addSubGraph(_gvplGraph);

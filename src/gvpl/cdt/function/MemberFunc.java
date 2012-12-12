@@ -2,6 +2,7 @@ package gvpl.cdt.function;
 
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.ClassDeclCDT;
+import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
@@ -15,8 +16,10 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
@@ -112,6 +115,15 @@ public class MemberFunc extends Function {
 		GraphNode result = super.addFuncRef(parameterValues, gvplGraph);
 		_thisVar = null;
 		return result;
+	}
+	
+	@Override
+	public void loadDefinition(Graph gvplGraph) {
+		if(_implLocation != null) //function definition has already been loaded
+			return;
+		
+		loadConstructorChain(_ccInitializer, gvplGraph, _thisVar);
+		super.loadDefinition(gvplGraph);
 	}
 	
 	@Override
