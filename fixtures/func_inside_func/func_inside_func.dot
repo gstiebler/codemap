@@ -2,54 +2,51 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000021 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=17 ]
-	node_000022 [ label = "a", startingline=17 ]
-	node_000023 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=18 ]
-	node_000024 [ label = "b", startingline=18 ]
-	node_000040 [ label = "l", startingline=19 ]
 subgraph cluster_1 {
-label = "func1";
+label = "main";
 parent = "G";
-startingline = 19;
-	node_000025 [ label = "x", style=filled, fillcolor="#FFE9E9", startingline=9 ]
-	node_000026 [ label = "y", style=filled, fillcolor="#FFE9E9", startingline=9 ]
-	node_000027 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=11 ]
-	node_000028 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=11 ]
-	node_000029 [ label = "resultado", startingline=11 ]
-	node_000030 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=12 ]
-	node_000031 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
-	node_000032 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
-	node_000033 [ label = "resultado", startingline=12 ]
-	node_000034 [ label = "func1", style=filled, fillcolor="#FFFFD0", startingline=13 ]
+startingline = 16;
+	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=17 ]
+	node_000002 [ label = "a", startingline=17 ]
+	node_000003 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=18 ]
+	node_000004 [ label = "b", startingline=18 ]
+	node_000016 [ label = "l", startingline=13 ]
 subgraph cluster_2 {
-label = "soma";
+label = "func1";
 parent = "cluster_1";
+startingline = 19;
+	node_000005 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=11 ]
+	node_000006 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=11 ]
+	node_000007 [ label = "resultado", startingline=11 ]
+	node_000008 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=12 ]
+	node_000009 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=12 ]
+	node_000013 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=6 ]
+	node_000014 [ label = "resultado", startingline=6 ]
+	node_000015 [ label = "func1", style=filled, fillcolor="#FFFFD0", startingline=13 ]
+subgraph cluster_3 {
+label = "soma";
+parent = "cluster_2";
 startingline = 12;
-	node_000035 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000036 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000037 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
-	node_000038 [ label = "resultado", startingline=5 ]
-	node_000039 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=6 ]
+	node_000010 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
+	node_000011 [ label = "resultado", startingline=5 ]
+	node_000012 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=6 ]
 }
 }
-	node_000021 -> node_000022
-	node_000022 -> node_000025
-	node_000023 -> node_000024
-	node_000024 -> node_000026
-	node_000025 -> node_000028
-	node_000025 -> node_000031
-	node_000026 -> node_000031
-	node_000027 -> node_000028
-	node_000028 -> node_000029
-	node_000029 -> node_000032
-	node_000030 -> node_000035
-	node_000031 -> node_000036
-	node_000032 -> node_000033
-	node_000033 -> node_000034
-	node_000034 -> node_000040
-	node_000035 -> node_000037
-	node_000036 -> node_000037
-	node_000037 -> node_000038
-	node_000038 -> node_000039
-	node_000039 -> node_000032
+}
+	node_000001 -> node_000002
+	node_000002 -> node_000006
+	node_000002 -> node_000009
+	node_000003 -> node_000004
+	node_000004 -> node_000009
+	node_000005 -> node_000006
+	node_000006 -> node_000007
+	node_000007 -> node_000013
+	node_000008 -> node_000010
+	node_000009 -> node_000010
+	node_000013 -> node_000014
+	node_000014 -> node_000015
+	node_000015 -> node_000016
+	node_000010 -> node_000011
+	node_000011 -> node_000012
+	node_000012 -> node_000013
 }
