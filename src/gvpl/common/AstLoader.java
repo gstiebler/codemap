@@ -62,7 +62,7 @@ public abstract class AstLoader {
 
 	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {
 		IVar var_decl = addVarDecl(functionName, type, graph);
-		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue);
+		return var_decl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph);
 	}
 
 	public Function getFunction() {

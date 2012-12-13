@@ -221,7 +221,7 @@ public class InstructionLine {
 		}
 
 		GraphNode rhsValue = loadValue(rhsExpr);
-		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue);
+		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentAstLoader.getGraph());
 	}
 	
 	public void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr) {
@@ -331,7 +331,7 @@ public class InstructionLine {
 		GraphNode rhsValue = loadValue(rhsExpr);
 
 		if (binExpr.getOperator() == IASTBinaryExpression.op_assign) {
-			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue);
+			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentAstLoader.getGraph());
 			return null;
 		}
 
@@ -540,7 +540,7 @@ public class InstructionLine {
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
 		String value = node.toString();
-		return _gvplGraph.addDirectVal(CppMaps.eValueType.E_INVALID_TYPE, value);
+		return _gvplGraph.addDirectVal(value);
 	}
 
 	/**

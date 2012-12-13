@@ -30,7 +30,7 @@ public interface IVar {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode);
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, Graph graph);
 
 	public String getName();
 

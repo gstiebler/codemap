@@ -80,7 +80,7 @@ public class Var implements IVar {
 				logger.fatal("Primitive type receiving more than 1 parameter in initialization");
 
 			GraphNode parameterNode = parameter_values.get(0).getNode();
-			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode);
+			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, _gvplGraph);
 		} else
 			initializeVar(nodeType, graph, astLoader, astInterpreter);
 	}
@@ -90,8 +90,8 @@ public class Var implements IVar {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode) {
-		GraphNode lhsNode = _gvplGraph.addGraphNode(this, lhsType);
+	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, Graph graph) {
+		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
 		rhsNode.addDependentNode(lhsNode);
 		updateNode(lhsNode);
 

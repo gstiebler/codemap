@@ -75,7 +75,7 @@ public class IfCondition {
 			GraphNode ifOpNode = createIfNode(graph, conditionNode, trueNode, falseNode);
 
 			extVar.setGraph(graph);
-			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode);
+			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, graph);
 		}
 	}
 

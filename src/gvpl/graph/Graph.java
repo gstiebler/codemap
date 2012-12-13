@@ -4,7 +4,6 @@ import gvpl.cdt.CppMaps;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
-import gvpl.cdt.CppMaps.eValueType;
 import gvpl.common.AstLoader;
 import gvpl.common.IVar;
 import gvpl.graphviz.FileDriver;
@@ -168,7 +167,7 @@ public class Graph {
 		return _startingLine;
 	}
 
-	public GraphNode addDirectVal(eValueType type, String value) {
+	public GraphNode addDirectVal(String value) {
 		return addGraphNode(value, NodeType.E_DIRECT_VALUE);
 	}
 
@@ -199,15 +198,15 @@ public class Graph {
 	}
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, IVar lhs_varDecl, GraphNode lhsNode,
-			GraphNode rhs_node, AstLoader astLoader) {
+			GraphNode rhsNode, AstLoader astLoader) {
 		GraphNode binOpNode = addGraphNode(CppMaps._assignBinOpStrings.get(op),
 				NodeType.E_OPERATION);
 
 		lhsNode.addDependentNode(binOpNode);
-		rhs_node.addDependentNode(binOpNode);
+		rhsNode.addDependentNode(binOpNode);
 
 		return lhs_varDecl
-				.receiveAssign(NodeType.E_VARIABLE, binOpNode);
+				.receiveAssign(NodeType.E_VARIABLE, binOpNode, this);
 	}
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode) {

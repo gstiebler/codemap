@@ -2,66 +2,59 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000016 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=25 ]
-	node_000017 [ label = "a", startingline=25 ]
-	node_000018 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=26 ]
-	node_000019 [ label = "b", startingline=26 ]
-	node_000025 [ label = "c", startingline=27 ]
-	node_000026 [ label = "0.3", style=filled, fillcolor="#E9FFE9", startingline=29 ]
-	node_000033 [ label = "d", startingline=29 ]
-	node_000034 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=31 ]
-	node_000039 [ label = "e", startingline=31 ]
 subgraph cluster_1 {
-label = "soma";
+label = "main";
 parent = "G";
-startingline = 27;
-	node_000020 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000021 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=2 ]
-	node_000022 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
-	node_000023 [ label = "resultado", startingline=5 ]
-	node_000024 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=6 ]
-}
+startingline = 22;
+	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=25 ]
+	node_000002 [ label = "a", startingline=25 ]
+	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=26 ]
+	node_000004 [ label = "b", startingline=26 ]
+	node_000008 [ label = "c", startingline=6 ]
+	node_000009 [ label = "0.3", style=filled, fillcolor="#E9FFE9", startingline=29 ]
+	node_000013 [ label = "d", startingline=11 ]
+	node_000014 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=31 ]
+	node_000018 [ label = "e", startingline=18 ]
 subgraph cluster_2 {
 label = "soma";
-parent = "G";
-startingline = 29;
-	node_000027 [ label = "a", style=filled, fillcolor="#FFE9E9", startingline=9 ]
-	node_000028 [ label = "b", style=filled, fillcolor="#FFE9E9", startingline=9 ]
-	node_000029 [ label = "fator", style=filled, fillcolor="#FFE9E9", startingline=9 ]
-	node_000030 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=11 ]
-	node_000031 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=11 ]
-	node_000032 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=11 ]
+parent = "cluster_1";
+startingline = 27;
+	node_000005 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
+	node_000006 [ label = "resultado", startingline=5 ]
+	node_000007 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=6 ]
 }
 subgraph cluster_3 {
-label = "ClassTest::staticFunc";
-parent = "G";
-startingline = 31;
-	node_000035 [ label = "staticParam", style=filled, fillcolor="#FFE9E9", startingline=16 ]
-	node_000036 [ label = "7", style=filled, fillcolor="#E9FFE9", startingline=18 ]
-	node_000037 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
-	node_000038 [ label = "ClassTest::staticFunc", style=filled, fillcolor="#FFFFD0", startingline=18 ]
+label = "soma";
+parent = "cluster_1";
+startingline = 29;
+	node_000010 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=11 ]
+	node_000011 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=11 ]
+	node_000012 [ label = "soma", style=filled, fillcolor="#FFFFD0", startingline=11 ]
 }
+subgraph cluster_4 {
+label = "ClassTest::staticFunc";
+parent = "cluster_1";
+startingline = 31;
+	node_000015 [ label = "7", style=filled, fillcolor="#E9FFE9", startingline=18 ]
+	node_000016 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=18 ]
+	node_000017 [ label = "ClassTest::staticFunc", style=filled, fillcolor="#FFFFD0", startingline=18 ]
+}
+}
+	node_000001 -> node_000002
+	node_000002 -> node_000005
+	node_000002 -> node_000010
+	node_000003 -> node_000004
+	node_000004 -> node_000005
+	node_000004 -> node_000010
+	node_000009 -> node_000011
+	node_000014 -> node_000016
+	node_000005 -> node_000006
+	node_000006 -> node_000007
+	node_000007 -> node_000008
+	node_000010 -> node_000011
+	node_000011 -> node_000012
+	node_000012 -> node_000013
+	node_000015 -> node_000016
 	node_000016 -> node_000017
-	node_000017 -> node_000020
-	node_000017 -> node_000027
-	node_000018 -> node_000019
-	node_000019 -> node_000021
-	node_000019 -> node_000028
-	node_000026 -> node_000029
-	node_000034 -> node_000035
-	node_000020 -> node_000022
-	node_000021 -> node_000022
-	node_000022 -> node_000023
-	node_000023 -> node_000024
-	node_000024 -> node_000025
-	node_000027 -> node_000030
-	node_000028 -> node_000030
-	node_000029 -> node_000031
-	node_000030 -> node_000031
-	node_000031 -> node_000032
-	node_000032 -> node_000033
-	node_000035 -> node_000037
-	node_000036 -> node_000037
-	node_000037 -> node_000038
-	node_000038 -> node_000039
+	node_000017 -> node_000018
 }

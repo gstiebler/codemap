@@ -2,23 +2,24 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000015 [ label = "str1.sIntA.soEsse", startingline=21 ]
-	node_000016 [ label = "str1.sIntB.soEsse", startingline=21 ]
-	node_000017 [ label = "x", startingline=23 ]
-	node_000018 [ label = "y", startingline=24 ]
 subgraph cluster_1 {
-label = "sPri::func1";
+label = "main";
 parent = "G";
+startingline = 19;
+	node_000007 [ label = "x", startingline=23 ]
+	node_000008 [ label = "y", startingline=24 ]
+subgraph cluster_2 {
+label = "sPri::func1";
+parent = "cluster_1";
 startingline = 21;
-	node_000011 [ label = "20.0", style=filled, fillcolor="#E9FFE9", startingline=14 ]
-	node_000012 [ label = "THIS.sIntA.soEsse", startingline=14 ]
-	node_000013 [ label = "30.0", style=filled, fillcolor="#E9FFE9", startingline=15 ]
-	node_000014 [ label = "THIS.sIntB.soEsse", startingline=15 ]
+	node_000003 [ label = "20.0", style=filled, fillcolor="#E9FFE9", startingline=14 ]
+	node_000004 [ label = "str1.sIntA.soEsse", startingline=14 ]
+	node_000005 [ label = "30.0", style=filled, fillcolor="#E9FFE9", startingline=15 ]
+	node_000006 [ label = "str1.sIntB.soEsse", startingline=15 ]
 }
-	node_000015 -> node_000017
-	node_000016 -> node_000018
-	node_000011 -> node_000012
-	node_000012 -> node_000015
-	node_000013 -> node_000014
-	node_000014 -> node_000016
+}
+	node_000003 -> node_000004
+	node_000004 -> node_000007
+	node_000005 -> node_000006
+	node_000006 -> node_000008
 }
