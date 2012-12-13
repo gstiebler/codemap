@@ -89,9 +89,6 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	public void loadDefinition(Graph gvplGraph) {
-		if(_implLocation != null) //function definition has already been loaded
-			return;
-		
 		if (_body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
 			for (IASTStatement statement : statements) {

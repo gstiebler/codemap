@@ -116,9 +116,6 @@ public class MemberFunc extends Function {
 	
 	@Override
 	public void loadDefinition(Graph gvplGraph) {
-		if(_implLocation != null) //function definition has already been loaded
-			return;
-		
 		loadConstructorChain(_ccInitializer, gvplGraph, _thisVar);
 		super.loadDefinition(gvplGraph);
 	}
