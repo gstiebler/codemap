@@ -2,27 +2,28 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000009 [ label = "pInstance_pointed._floatMember", startingline=17 ]
-	node_000010 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=18 ]
-	node_000011 [ label = "x", startingline=18 ]
-	node_000015 [ label = "instance1._floatMember", startingline=18 ]
 subgraph cluster_1 {
-label = "UniqueClass::~UniqueClass";
+label = "main";
 parent = "G";
-startingline = 17;
-	node_000007 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=8 ]
-	node_000008 [ label = "THIS._floatMember", startingline=8 ]
-}
+startingline = 12;
+	node_000005 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=18 ]
+	node_000006 [ label = "x", startingline=18 ]
 subgraph cluster_2 {
 label = "UniqueClass::~UniqueClass";
-parent = "G";
-startingline = 18;
-	node_000013 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=8 ]
-	node_000014 [ label = "THIS._floatMember", startingline=8 ]
+parent = "cluster_1";
+startingline = 17;
+	node_000003 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000004 [ label = "pInstance_pointed._floatMember", startingline=8 ]
 }
-	node_000010 -> node_000011
+subgraph cluster_3 {
+label = "UniqueClass::~UniqueClass";
+parent = "cluster_1";
+startingline = 18;
+	node_000007 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=8 ]
+	node_000008 [ label = "instance1._floatMember", startingline=8 ]
+}
+}
+	node_000005 -> node_000006
+	node_000003 -> node_000004
 	node_000007 -> node_000008
-	node_000008 -> node_000009
-	node_000013 -> node_000014
-	node_000014 -> node_000015
 }

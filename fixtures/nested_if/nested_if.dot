@@ -2,6 +2,10 @@ digraph G
 {
 rankdir=LR;
 label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startingline = 2;
 	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=4 ]
 	node_000002 [ label = "a", startingline=4 ]
 	node_000003 [ label = "true", style=filled, fillcolor="#E9FFE9", startingline=6 ]
@@ -24,6 +28,7 @@ label = "root";
 	node_000031 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=17 ]
 	node_000032 [ label = "b", startingline=17 ]
 	node_000033 [ label = "c", startingline=20 ]
+}
 	node_000001 -> node_000002
 	node_000002 -> node_000029
 	node_000003 -> node_000004
