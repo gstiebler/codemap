@@ -3,6 +3,7 @@
 package org.cesta.parsers.dot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -292,16 +293,35 @@ public class DotTree extends TreeParser {
 			return attributes.get("label").replace("\"", "");
 		}
 		
-		public int getStartingLine() {
-			return Integer.parseInt(attributes.get("startingline").replace("\"", ""));
+		public List<Integer> getStartingLines() {
+			String integers = attributes.get("startinglines").replace("\"", "");
+			String[] integersArray = integers.split("_");
+			
+			List<Integer> result = new ArrayList<Integer>();
+			for(String intStr : integersArray)
+				result.add(Integer.parseInt(intStr));
+			
+			return result;
 		}
 
 		@Override
 		public int compareTo(Graph other) {
-			Integer thisSL = new Integer(getStartingLine());
-			Integer otherSL = new Integer(other.attributes.get("startingline"));
+			List<Integer> thisSL = getStartingLines();
+			List<Integer> otherSL = getStartingLines();
 			
-			return thisSL.compareTo(otherSL);
+			if(thisSL.size() > otherSL.size())
+				return -1;
+			if(thisSL.size() < otherSL.size())
+				return 1;
+			
+			for(int i = 0; i < thisSL.size(); ++i) {
+				if(thisSL.get(i) > otherSL.get(i))
+					return -1;
+				else if (thisSL.get(i) < otherSL.get(i))
+					return 1;
+			}
+			
+			return 0;
 		}
 
 	};

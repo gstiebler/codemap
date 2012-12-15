@@ -16,7 +16,7 @@ public class FileDriver implements IGraphOutput {
 	PrintWriter out;
 
 	static int subGraphCounter = 1;
-	static String startingLineStr = "startingline";
+	static String startingLinesStr = "startinglines";
 	
 	public class PropertyPair {
 		public String _key;
@@ -55,7 +55,7 @@ public class FileDriver implements IGraphOutput {
 		properties.add(new PropertyPair("shape", "invtriangle"));
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#E0E0E0\""));
-		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
+		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
 		if (DebugOptions.printDotSrcNodes() && node.getNumSourceNodes() > 0)
 			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
 		insertNode(node.getId(), node_name, properties);
@@ -65,7 +65,7 @@ public class FileDriver implements IGraphOutput {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#E9FFE9\""));
-		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
+		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
 		insertNode(node_id, node_name, properties);
 	}
 	
@@ -73,7 +73,7 @@ public class FileDriver implements IGraphOutput {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#FF8080\""));
-		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
+		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
 		insertNode(node_id, node_name, properties);
 	}
 
@@ -81,7 +81,7 @@ public class FileDriver implements IGraphOutput {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#FFE9E9\""));
-		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
+		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
 		insertNode(node_id, node_name, properties);
 	}
 	
@@ -89,7 +89,7 @@ public class FileDriver implements IGraphOutput {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#FFFFD0\""));
-		properties.add(new PropertyPair(startingLineStr, String.valueOf(startingLine)));
+		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
 		insertNode(node_id, node_name, properties);
 	}
 	
@@ -117,13 +117,19 @@ public class FileDriver implements IGraphOutput {
 		out.println("\t" + internalName + " [ label = \"" + nodeLabel + "\"" + propertiesString + " ]");
 	}
 	
-    public String insertSubGraphStart(String name, String parent, int startingLine) {
+    public String insertSubGraphStart(String name, String parent, List<Integer> linesHistory) {
     	String clusterName = genClusterName(subGraphCounter++);
     	out.println("subgraph " + clusterName + " {");
     	if(name != null)
     		out.println("label = \"" + name + "\";");
     	out.println("parent = \"" + parent + "\";");
-    	out.println(startingLineStr + " = " + startingLine + ";");
+    	String lines = startingLinesStr + " = \"";
+    	for(Integer line : linesHistory)
+    		lines += line.toString() + "_";
+    	lines = lines.substring(0, lines.length() - 1);
+    	lines += "\";";
+    	
+    	out.println(lines);
     	return clusterName;
     }
     

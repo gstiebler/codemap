@@ -1,5 +1,7 @@
 package gvpl.graphviz;
 
+import java.util.List;
+
 import gvpl.graph.GraphNode;
 
 public interface IGraphOutput {
@@ -10,7 +12,7 @@ public interface IGraphOutput {
 	void insertDeclaredParameter(int node_id, String node_name, int startingLine);
 	void insertReturnValue(int node_id, String node_name, int startingLine);
 	void insertVariable(GraphNode node, String node_name, int startingLine);
-	String insertSubGraphStart(String name, String parent, int startingLine);
+	String insertSubGraphStart(String name, String parent, List<Integer> linesHistory);
 	void insertSubGraphEnd();
 	
 	void insertDependency(int node_id, int dep_node_id);

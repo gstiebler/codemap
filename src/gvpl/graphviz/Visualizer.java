@@ -22,8 +22,9 @@ public class Visualizer {
 			printNode(graph.getNode(i), _graphOutput);
 		}
 		
-		for(Graph subgraph : graph._subgraphs) {
-			String clusterName = _graphOutput.insertSubGraphStart(subgraph.getName(), parentName, subgraph.getStartingLine());
+		for (Graph subgraph : graph._subgraphs) {
+			String clusterName = _graphOutput.insertSubGraphStart(subgraph.getName(), parentName,
+					subgraph.getLinesHistory());
 			printNodes(subgraph, clusterName);
 			_graphOutput.insertSubGraphEnd();
 		}

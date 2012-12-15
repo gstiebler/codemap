@@ -58,9 +58,9 @@ public class ProcessedNodes {
 		for (DotTree.SubGraph subGraph : subGraphs) {
 			SubGraphNodes subGraphNodes = new SubGraphNodes();
 			subGraphNodes._id = subGraph.id;
-			subGraphNodes._startingLine = subGraph.getStartingLine();
+			subGraphNodes._startingLines = subGraph.getStartingLines();
 			processRecursive(subGraph, nodesByName, subGraphNodes, subGraphsByParent);
-			String strId = subGraph.getLabel() + "_" + subGraphNodes._startingLine;
+			String strId = subGraph.getLabel() + "_" + subGraphNodes._startingLines;
 			graphNodes._subGraphs.put(strId, subGraphNodes);
 		}
 	}

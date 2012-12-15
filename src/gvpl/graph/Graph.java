@@ -40,6 +40,7 @@ public class Graph {
 	private List<GraphNode> _graphNodes = new ArrayList<GraphNode>();
 	public List<Graph> _subgraphs = new ArrayList<Graph>();
 	private int _startingLine = DebugOptions.getStartingLine();
+	private List<Integer> _linesHistory = DebugOptions.lastVisitedLines();
 	private static int _counter = 1000;
 	private int _id;
 
@@ -163,9 +164,9 @@ public class Graph {
 		_label = label;
 	}
 
-	public int getStartingLine() {
-		return _startingLine;
-	}
+//	public int getStartingLine() {
+//		return _startingLine;
+//	}
 
 	public GraphNode addDirectVal(String value) {
 		return addGraphNode(value, NodeType.E_DIRECT_VALUE);
@@ -230,5 +231,9 @@ public class Graph {
 		fileDriver.print(this, outString, visualizer);
 		
 		return outString.toString();
+	}
+	
+	public List<Integer> getLinesHistory() {
+		return _linesHistory;
 	}
 }
