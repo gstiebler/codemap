@@ -16,7 +16,7 @@ public class ForLoop extends BasicBlockCDT {
 	AstLoaderCDT _typeSource;
 	
 	public ForLoop(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
-		super(null, astInterpreter);
+		super(parent, astInterpreter);
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}
@@ -26,13 +26,10 @@ public class ForLoop extends BasicBlockCDT {
 
 		// loadHeader(node);
 
-		BasicBlockCDT basicBlockLoader = new BasicBlockCDT(this, _astInterpreter);
-		basicBlockLoader.load(body);
-		basicBlockLoader.addToExtGraph();
-		basicBlockLoader.bindSettedPointers();
-
-		_parent = _typeSource;
-		addSubGraph(gvplGraph);
+		load(body);
+		addToExtGraph();
+		bindSettedPointers();
+		//addSubGraph(gvplGraph);
 	}
 	
 	@Override
