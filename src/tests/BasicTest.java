@@ -150,6 +150,11 @@ public class BasicTest {
 	}
 
 	@Test
+	public void postInitFunc() {
+		TestsUtil.baseTest("post_init_func");
+	}
+
+	@Test
 	public void files() {
 		TestsUtil.baseTest("files");
 	}
