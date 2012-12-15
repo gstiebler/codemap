@@ -124,7 +124,7 @@ public class ClassVar extends Var implements IClassVar{
 		if (constructorFunc == null)
 			return;
 
-		constructorFunc.addFuncRef(parameterValues, _gvplGraph, this);
+		constructorFunc.addFuncRef(parameterValues, graph, this);
 	}
 
 	public void callDestructor(AstLoader astLoader, Graph graph) {

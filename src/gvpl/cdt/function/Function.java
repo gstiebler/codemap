@@ -4,7 +4,6 @@ import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
-import gvpl.common.ClassVar;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
