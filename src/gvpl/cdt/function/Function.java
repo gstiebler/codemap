@@ -107,7 +107,7 @@ public class Function extends AstLoaderCDT {
 		return _returnType;
 	}
 
-	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit, Graph graph, ClassVar thisVar) {
+	void loadConstructorChain(Graph graph) {
 	}
 
 	protected String calcName() {
@@ -143,7 +143,6 @@ public class Function extends AstLoaderCDT {
 
 	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
 		_gvplGraph = new Graph(_externalName);
-		
 		_parametersMap = new LinkedHashMap<>();
 		int size = 0;
 		if(parameterValues != null)
@@ -151,7 +150,8 @@ public class Function extends AstLoaderCDT {
 		for(int i = 0; i < size; ++i) {
 			_parametersMap.put(_originalParameters.get(i), parameterValues.get(i));
 		}
-		
+
+		loadConstructorChain(_gvplGraph);
 		loadDefinition(_gvplGraph);
 		extGraph.addSubGraph(_gvplGraph);
 		_gvplGraph = null;

@@ -61,8 +61,8 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	void loadConstructorChain(ICPPASTConstructorChainInitializer[] constructorInit, Graph graph, ClassVar thisVar) {
-		for (ICPPASTConstructorChainInitializer initializer : constructorInit) {
+	void loadConstructorChain(Graph graph) {
+		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
 			IASTExpression expr = initializer.getInitializerValue();
 			int startingLine = expr.getFileLocation().getStartingLineNumber();
 			DebugOptions.setStartingLine(startingLine);
@@ -85,7 +85,7 @@ public class MemberFunc extends Function {
 					IASTExpression initValue = initializer.getInitializerValue();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
 							memberFunc, initValue);
-					memberFunc.addFuncRef(parameters, graph, thisVar);
+					memberFunc.addFuncRef(parameters, graph, _thisVar);
 					break;
 				}
 			} else
@@ -112,12 +112,6 @@ public class MemberFunc extends Function {
 		GraphNode result = super.addFuncRef(parameterValues, gvplGraph);
 		_thisVar = null;
 		return result;
-	}
-	
-	@Override
-	public void loadDefinition(Graph gvplGraph) {
-		loadConstructorChain(_ccInitializer, gvplGraph, _thisVar);
-		super.loadDefinition(gvplGraph);
 	}
 	
 	@Override
