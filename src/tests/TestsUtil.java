@@ -30,11 +30,14 @@ import org.eclipse.cdt.core.parser.ScannerInfo;
 import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 import org.eclipse.core.runtime.CoreException;
 
+import debug.DebugOptions;
+
 public class TestsUtil {
 	
 	static Logger logger = LogManager.getLogger(TestsUtil.class.getName());
 	
 	public static void baseTest(String testName) {
+		DebugOptions.resetLines();
 		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
 		GraphNode.resetCounter();

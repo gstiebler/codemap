@@ -5,22 +5,22 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 8;
-	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startingline=10 ]
+startinglines = "2_8_8";
+	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
 	node_000002 [ label = "a", startingline=10 ]
-	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=11 ]
+	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
 	node_000004 [ label = "b", startingline=11 ]
 	node_000009 [ label = "e", startingline=14 ]
 	node_000010 [ label = "f", startingline=15 ]
-	node_000011 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=17 ]
+	node_000011 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=17 ]
 	node_000012 [ label = "k", startingline=17 ]
 subgraph cluster_2 {
 label = "soma_sub";
 parent = "cluster_1";
-startingline = 13;
-	node_000005 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=4 ]
+startinglines = "11_12_13";
+	node_000005 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=4 ]
 	node_000006 [ label = "c", startingline=4 ]
-	node_000007 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=5 ]
+	node_000007 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=5 ]
 	node_000008 [ label = "d", startingline=5 ]
 }
 }

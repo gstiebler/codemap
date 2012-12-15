@@ -5,61 +5,61 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 48;
-	node_000006 [ label = "45.98", style=filled, fillcolor="#E9FFE9", startingline=51 ]
+startinglines = "38_48_48";
+	node_000006 [ label = "45.98", style=filled, fillcolor="#E9FFE9", startinglines=51 ]
 	node_000007 [ label = "str2.a", startingline=51 ]
-	node_000008 [ label = "9099.0", style=filled, fillcolor="#E9FFE9", startingline=52 ]
+	node_000008 [ label = "9099.0", style=filled, fillcolor="#E9FFE9", startinglines=52 ]
 	node_000009 [ label = "str2.h", startingline=52 ]
-	node_000010 [ label = "15", style=filled, fillcolor="#E9FFE9", startingline=54 ]
+	node_000010 [ label = "15", style=filled, fillcolor="#E9FFE9", startinglines=54 ]
 	node_000012 [ label = "b", startingline=55 ]
-	node_000013 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startingline=56 ]
+	node_000013 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startinglines=56 ]
 	node_000014 [ label = "str2.seg.si.soEsse", startingline=56 ]
-	node_000037 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=60 ]
+	node_000037 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=60 ]
 	node_000038 [ label = "p", startingline=60 ]
 subgraph cluster_2 {
 label = "sSeg::setM1";
 parent = "cluster_1";
-startingline = 54;
+startinglines = "51_52_54";
 	node_000011 [ label = "str2.seg.m1", startingline=17 ]
 }
 subgraph cluster_3 {
 label = "sPri::inc_a5";
 parent = "cluster_1";
-startingline = 58;
-	node_000016 [ label = "5.0", style=filled, fillcolor="#E9FFE9", startingline=40 ]
-	node_000017 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=40 ]
+startinglines = "55_56_58";
+	node_000016 [ label = "5.0", style=filled, fillcolor="#E9FFE9", startinglines=40 ]
+	node_000017 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=40 ]
 	node_000018 [ label = "str2.a", startingline=40 ]
-	node_000019 [ label = "3.0", style=filled, fillcolor="#E9FFE9", startingline=41 ]
-	node_000022 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=29 ]
+	node_000019 [ label = "3.0", style=filled, fillcolor="#E9FFE9", startinglines=41 ]
+	node_000022 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=29 ]
 	node_000023 [ label = "str2.h", startingline=29 ]
-	node_000024 [ label = "9.3", style=filled, fillcolor="#E9FFE9", startingline=42 ]
-	node_000030 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=35 ]
+	node_000024 [ label = "9.3", style=filled, fillcolor="#E9FFE9", startinglines=42 ]
+	node_000030 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=35 ]
 	node_000031 [ label = "str2.h", startingline=35 ]
-	node_000032 [ label = "16", style=filled, fillcolor="#E9FFE9", startingline=43 ]
-	node_000034 [ label = "18.20", style=filled, fillcolor="#E9FFE9", startingline=44 ]
-	node_000035 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=44 ]
+	node_000032 [ label = "16", style=filled, fillcolor="#E9FFE9", startinglines=43 ]
+	node_000034 [ label = "18.20", style=filled, fillcolor="#E9FFE9", startinglines=44 ]
+	node_000035 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=44 ]
 	node_000036 [ label = "str2.seg.si.soEsse", startingline=44 ]
 subgraph cluster_4 {
 label = "sPri::soma";
 parent = "cluster_3";
-startingline = 41;
-	node_000020 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=29 ]
-	node_000021 [ label = "sPri::soma", style=filled, fillcolor="#FFFFD0", startingline=29 ]
+startinglines = "58_40_41";
+	node_000020 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=29 ]
+	node_000021 [ label = "sPri::soma", style=filled, fillcolor="#FFFFD0", startinglines=29 ]
 }
 subgraph cluster_5 {
 label = "sPri::subtracao";
 parent = "cluster_3";
-startingline = 42;
-	node_000025 [ label = "8.0", style=filled, fillcolor="#E9FFE9", startingline=34 ]
-	node_000026 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=34 ]
+startinglines = "41_29_42";
+	node_000025 [ label = "8.0", style=filled, fillcolor="#E9FFE9", startinglines=34 ]
+	node_000026 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=34 ]
 	node_000027 [ label = "str2.h", startingline=34 ]
-	node_000028 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=35 ]
-	node_000029 [ label = "sPri::subtracao", style=filled, fillcolor="#FFFFD0", startingline=35 ]
+	node_000028 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=35 ]
+	node_000029 [ label = "sPri::subtracao", style=filled, fillcolor="#FFFFD0", startinglines=35 ]
 }
 subgraph cluster_6 {
 label = "sSeg::setM1";
 parent = "cluster_3";
-startingline = 43;
+startinglines = "34_35_43";
 	node_000033 [ label = "str2.seg.m1", startingline=17 ]
 }
 }

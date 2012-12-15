@@ -5,11 +5,11 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 2;
-	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=5 ]
+startinglines = "2_2";
+	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=5 ]
 	node_000002 [ label = "array", startingline=5 ]
 	node_000003 [ label = "a", startingline=6 ]
-	node_000005 [ label = "8", style=filled, fillcolor="#E9FFE9", startingline=9 ]
+	node_000005 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
 	node_000006 [ label = "*array_p", startingline=9 ]
 	node_000007 [ label = "array_p_pointed", startingline=9 ]
 	node_000008 [ label = "*array_p", startingline=10 ]

@@ -5,12 +5,12 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 7;
-	node_000001 [ label = "a (GARBAGE)", style=filled, fillcolor="#FF8080", startingline=10 ]
+startinglines = "2_7_7";
+	node_000001 [ label = "a (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=10 ]
 	node_000002 [ label = "b", startingline=10 ]
-	node_000003 [ label = "INVALID_READ (GARBAGE)", style=filled, fillcolor="#FF8080", startingline=12 ]
+	node_000003 [ label = "INVALID_READ (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=12 ]
 	node_000004 [ label = "d", startingline=12 ]
-	node_000005 [ label = "INVALID_READ (GARBAGE)", style=filled, fillcolor="#FF8080", startingline=14 ]
+	node_000005 [ label = "INVALID_READ (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=14 ]
 	node_000006 [ label = "e", startingline=14 ]
 }
 	node_000001 -> node_000002

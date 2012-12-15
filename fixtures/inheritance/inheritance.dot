@@ -5,12 +5,12 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 20;
-	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startingline=23 ]
+startinglines = "14_20_20";
+	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
 	node_000003 [ label = "derived._baseMemberA", startingline=23 ]
-	node_000004 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=24 ]
+	node_000004 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=24 ]
 	node_000005 [ label = "derived._baseMemberB", startingline=24 ]
-	node_000006 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=25 ]
+	node_000006 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=25 ]
 	node_000007 [ label = "a", startingline=25 ]
 }
 	node_000002 -> node_000003

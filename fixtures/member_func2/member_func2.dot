@@ -5,16 +5,16 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 19;
+startinglines = "12_19_19";
 	node_000007 [ label = "x", startingline=23 ]
 	node_000008 [ label = "y", startingline=24 ]
 subgraph cluster_2 {
 label = "sPri::func1";
 parent = "cluster_1";
-startingline = 21;
-	node_000003 [ label = "20.0", style=filled, fillcolor="#E9FFE9", startingline=14 ]
+startinglines = "19_20_21";
+	node_000003 [ label = "20.0", style=filled, fillcolor="#E9FFE9", startinglines=14 ]
 	node_000004 [ label = "str1.sIntA.soEsse", startingline=14 ]
-	node_000005 [ label = "30.0", style=filled, fillcolor="#E9FFE9", startingline=15 ]
+	node_000005 [ label = "30.0", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
 	node_000006 [ label = "str1.sIntB.soEsse", startingline=15 ]
 }
 }

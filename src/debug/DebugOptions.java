@@ -6,7 +6,7 @@ import java.util.List;
 public class DebugOptions {
 
 	static int _startingLine = -797;
-	static List<Integer> _startingLineHistory = new ArrayList<Integer>();
+	static List<Integer> _startingLineHistory = null;
 
 	public static boolean printDotSrcVarId() {
 		return false;
@@ -28,7 +28,7 @@ public class DebugOptions {
 	public static List<Integer> lastVisitedLines() {
 		int size = _startingLineHistory.size();
 		if(size < 3)
-			return _startingLineHistory;
+			return new ArrayList<Integer>(_startingLineHistory);
 		else {
 			List<Integer> result = new ArrayList<Integer>();
 			for(int i = size - 3; i < size; ++i)
@@ -36,6 +36,10 @@ public class DebugOptions {
 			
 			return result;
 		}
+	}
+	
+	public static void resetLines() {
+		_startingLineHistory = new ArrayList<Integer>();
 	}
 
 }

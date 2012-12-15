@@ -5,50 +5,50 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startingline = 18;
-	node_000001 [ label = "1", style=filled, fillcolor="#E9FFE9", startingline=20 ]
-	node_000004 [ label = "2", style=filled, fillcolor="#E9FFE9", startingline=21 ]
-	node_000007 [ label = "10", style=filled, fillcolor="#E9FFE9", startingline=23 ]
-	node_000010 [ label = "20", style=filled, fillcolor="#E9FFE9", startingline=24 ]
+startinglines = "13_18_18";
+	node_000001 [ label = "1", style=filled, fillcolor="#E9FFE9", startinglines=20 ]
+	node_000004 [ label = "2", style=filled, fillcolor="#E9FFE9", startinglines=21 ]
+	node_000007 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
+	node_000010 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=24 ]
 	node_000015 [ label = "natural11", startingline=15 ]
 	node_000018 [ label = "refRef3", startingline=15 ]
 subgraph cluster_2 {
 label = "UnicaClass::UnicaClass";
 parent = "cluster_1";
-startingline = 20;
+startinglines = "18_18_20";
 	node_000003 [ label = "ucRef1._memberInt", startingline=9 ]
 }
 subgraph cluster_3 {
 label = "UnicaClass::UnicaClass";
 parent = "cluster_1";
-startingline = 21;
+startinglines = "20_9_21";
 	node_000006 [ label = "ucRef2._memberInt", startingline=9 ]
 }
 subgraph cluster_4 {
 label = "UnicaClass::UnicaClass";
 parent = "cluster_1";
-startingline = 23;
+startinglines = "9_22_23";
 	node_000009 [ label = "ucP1_pointed._memberInt", startingline=9 ]
 }
 subgraph cluster_5 {
 label = "UnicaClass::UnicaClass";
 parent = "cluster_1";
-startingline = 24;
+startinglines = "23_9_24";
 	node_000012 [ label = "ucP2_pointed._memberInt", startingline=9 ]
 }
 subgraph cluster_6 {
 label = "funcao";
 parent = "cluster_1";
-startingline = 26;
-	node_000013 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=15 ]
-	node_000014 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startingline=15 ]
+startinglines = "24_9_26";
+	node_000013 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
+	node_000014 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
 }
 subgraph cluster_7 {
 label = "funcao";
 parent = "cluster_1";
-startingline = 27;
-	node_000016 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startingline=15 ]
-	node_000017 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startingline=15 ]
+startinglines = "26_15_27";
+	node_000016 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
+	node_000017 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
 }
 }
 	node_000001 -> node_000003
