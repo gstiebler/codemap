@@ -10,7 +10,6 @@ import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -20,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
@@ -46,7 +46,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	CppFile _currCppFile = new CppFile();
-	private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
+	//private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	Function _mainFunction = null;
@@ -99,7 +99,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	public void loadDefinitions() {
 		//_currCppFile = _cppFiles.get(root);
-		
+		logger.debug(" *** Loading definitions of main ***");
 		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph);
 	}
 
@@ -110,7 +110,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return A instance of Function
 	 */
 	private Function loadFunction(IASTFunctionDefinition funcDefinition) {
-		IASTDeclarator declarator = funcDefinition.getDeclarator();
+		CPPASTFunctionDeclarator declarator = (CPPASTFunctionDeclarator) funcDefinition.getDeclarator();
 		IASTName name = declarator.getName();
 
 		// method function
@@ -163,7 +163,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		Function function = loadFunctionDeclaration(funcDeclarator);
 
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
-		function.loadDefinition(funcDeclarator.getConstructorChain(), funcDefinition.getBody());
+		function.loadDefinition(funcDeclarator.getConstructorChain(), funcDefinition);
 		return function;
 	}
 	

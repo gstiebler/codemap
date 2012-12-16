@@ -24,6 +24,7 @@ import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
@@ -36,6 +37,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
+import debug.DebugOptions;
+
 public class Function extends AstLoaderCDT {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -44,8 +47,8 @@ public class Function extends AstLoaderCDT {
 	private TypeId _returnType = null;
 
 	private String _externalName = "";
-	private Map<IBinding, FuncParameter> _originalParametersMap = new LinkedHashMap<IBinding, FuncParameter>();
-	private List<IBinding> _originalParameters = new ArrayList<IBinding>();
+	private Map<IBinding, FuncParameter> _originalParametersMap;
+	private List<IBinding> _originalParameters;
 	
 	private Map<IBinding, FuncParameter> _parametersMap = null;
 	protected String _funcName;
@@ -65,8 +68,8 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
-		IASTParameterDeclaration[] parameters = decl.getParameters();
 		IASTName astName = decl.getName();
+		loadFuncParameters(decl.getParameters());
 		// Gets the name of the function
 		if (astName instanceof CPPASTQualifiedName)
 			_funcName = ((CPPASTQualifiedName) astName).getNames()[1].toString();
@@ -76,13 +79,18 @@ public class Function extends AstLoaderCDT {
 		logger.debug("Loading declaration of func {}", _funcName);
 		
 		setName(calcName());
+		logger.debug("Storing func parameter. Func: {}, File: {}", _externalName, DebugOptions.getCurrCpp());
 		
 		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 	}
 	
-	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTStatement body) {
+	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTFunctionDefinition funcDefinition) {
+		_body = funcDefinition.getBody();
 		_ccInitializer = ccInitializer;
-		_body = body;
+		CPPASTFunctionDeclarator declarator = (CPPASTFunctionDeclarator) funcDefinition.getDeclarator();
+		loadFuncParameters(declarator.getParameters());
+
+		logger.debug("Storing body. Func: {}, File: {}", _externalName, DebugOptions.getCurrCpp());
 	}
 	
 	public void loadDefinition(Graph gvplGraph) {
@@ -122,6 +130,8 @@ public class Function extends AstLoaderCDT {
 	 *            The class which loads the function definition
 	 */
 	public void loadFuncParameters(IASTParameterDeclaration[] parameters) {
+		_originalParameters = new ArrayList<IBinding>();
+		_originalParametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
 			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();

@@ -8,7 +8,7 @@ int main()
 	int x;
 	int a = 3;
 	int b = 5;
-	int c = soma(a, b);
+	int c = soma2(a, b);
 	
 	int d = soma(a, b, 0.3);
 	

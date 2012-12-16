@@ -114,6 +114,7 @@ public class TestsUtil {
 		}
 		
 		for(int i = 0; i < translationUnits.size(); ++i) {
+			DebugOptions.setCurrCpp(fileNames.get(i));
 			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
 			astInterpreter.loadDeclarations(translationUnits.get(i));
 		}
