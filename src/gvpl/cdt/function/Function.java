@@ -12,6 +12,7 @@ import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
+import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -147,20 +148,34 @@ public class Function extends AstLoaderCDT {
 			addParameter(binding, funcParameter);
 		}
 	}
+	
+	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
+		_returnNode = _gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE);
+		
+		for(FuncParameter funcParameter : parameterValues) {
+			funcParameter.getNode().addDependentNode(_returnNode);
+		}
+	}
 
 	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
 		_gvplGraph = new Graph(_externalName);
-		_parametersMap = new LinkedHashMap<>();
-		int size = 0;
-		if(parameterValues != null)
-			size = parameterValues.size();
-		for(int i = 0; i < size; ++i) {
-			_parametersMap.put(_originalParameters.get(i), parameterValues.get(i));
-		}
+		
+		if(_body != null) {
+			_parametersMap = new LinkedHashMap<>();
+			int size = 0;
+			if(parameterValues != null)
+				size = parameterValues.size();
+			for(int i = 0; i < size; ++i) {
+				_parametersMap.put(_originalParameters.get(i), parameterValues.get(i));
+			}
 
-		loadConstructorChain(_gvplGraph);
-		loadDefinition(_gvplGraph);
-		extGraph.addSubGraph(_gvplGraph);
+			loadConstructorChain(_gvplGraph);
+			loadDefinition(_gvplGraph);
+			extGraph.addSubGraph(_gvplGraph);
+		}
+		else
+			loadHeaderOnlyFunc(parameterValues, extGraph);
+		
 		_gvplGraph = null;
 		_parametersMap = null;
 		
@@ -252,6 +267,11 @@ public class Function extends AstLoaderCDT {
 	
 	public IBinding getBinding() {
 		return _ownBinding;
+	}
+
+	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {
+		IVar varDecl = addVarDecl(functionName, type, graph);
+		return varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph);
 	}
 	
 	@Override

@@ -292,7 +292,7 @@ public class InstructionLine {
 		TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
-		GraphNode returnNode = _parentAstLoader.addReturnStatement(rvalue, returnType,
+		GraphNode returnNode = ((Function)_parentAstLoader).addReturnStatement(rvalue, returnType,
 				function.getName(), _gvplGraph);
 
 		function.setReturnNode(returnNode);
