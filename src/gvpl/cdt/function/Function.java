@@ -171,11 +171,11 @@ public class Function extends AstLoaderCDT {
 
 			loadConstructorChain(_gvplGraph);
 			loadDefinition(_gvplGraph);
-			extGraph.addSubGraph(_gvplGraph);
 		}
 		else
 			loadHeaderOnlyFunc(parameterValues, extGraph);
-		
+
+		extGraph.addSubGraph(_gvplGraph);
 		_gvplGraph = null;
 		_parametersMap = null;
 		
