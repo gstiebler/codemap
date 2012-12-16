@@ -113,11 +113,12 @@ public class TestsUtil {
 			}
 		}
 		
-		for(IASTTranslationUnit translationUnit : translationUnits)
-			astInterpreter.loadDeclarations(translationUnit);
-
-		for(IASTTranslationUnit translationUnit : translationUnits)
-			astInterpreter.loadDefinitions(translationUnit);
+		for(int i = 0; i < translationUnits.size(); ++i) {
+			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
+			astInterpreter.loadDeclarations(translationUnits.get(i));
+		}
+		
+		astInterpreter.loadDefinitions();
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);

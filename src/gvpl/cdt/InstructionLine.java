@@ -284,9 +284,9 @@ public class InstructionLine {
 	}
 
 	private void loadReturnStatement(IASTReturnStatement statement) {
-		IASTReturnStatement return_node = (IASTReturnStatement) statement;
+		IASTReturnStatement returnStat = (IASTReturnStatement) statement;
 
-		GraphNode rvalue = loadValue(return_node.getReturnValue());
+		GraphNode rvalue = loadValue(returnStat.getReturnValue());
 
 		Function function = _parentAstLoader.getFunction();
 		TypeId returnType = function.getReturnTypeId();

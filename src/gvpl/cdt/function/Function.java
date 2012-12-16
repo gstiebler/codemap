@@ -76,8 +76,6 @@ public class Function extends AstLoaderCDT {
 		logger.debug("Loading declaration of func {}", _funcName);
 		
 		setName(calcName());
-
-		loadFuncParameters(parameters);
 		
 		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 	}

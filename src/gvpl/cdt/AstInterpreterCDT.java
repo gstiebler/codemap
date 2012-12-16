@@ -45,7 +45,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
-	CppFile _currCppFile;
+	CppFile _currCppFile = new CppFile();
 	private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
@@ -58,8 +58,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public void loadDeclarations(IASTTranslationUnit root) {
-		_currCppFile = new CppFile();
-		_cppFiles.put(root, _currCppFile);
+		//_currCppFile = new CppFile();
+		//_cppFiles.put(root, _currCppFile);
 		
 		IASTDeclaration[] declarations = root.getDeclarations();
 
@@ -97,8 +97,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 		}
 	}
 	
-	public void loadDefinitions(IASTTranslationUnit root) {
-		_currCppFile = _cppFiles.get(root);
+	public void loadDefinitions() {
+		//_currCppFile = _cppFiles.get(root);
 		
 		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph);
 	}
@@ -138,6 +138,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 		IBinding binding = decl.getName().resolveBinding();
+		logger.debug("idb:{}", binding.hashCode());
 		Function function = _currCppFile._funcIdMap.get(binding);
 		if(function != null)
 			return function;
@@ -283,6 +284,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 
 	public Function getFuncId(IBinding binding) {
+		logger.debug("idb:{}", binding.hashCode());
 		return _currCppFile._funcIdMap.get(binding);
 	}
 	
