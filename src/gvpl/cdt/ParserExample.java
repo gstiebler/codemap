@@ -7,6 +7,7 @@ import gvpl.graphviz.Visualizer;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -20,9 +21,36 @@ import org.eclipse.cdt.core.parser.IScannerInfo;
 import org.eclipse.cdt.core.parser.ScannerInfo;
 import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 
+import java.io.Reader;
+
+import org.mozilla.javascript.*;
+
 public class ParserExample {
 
 	public static void main(String[] args) throws Exception {
+		{
+			Context cx = Context.enter();
+		    // Initialize the standard objects (Object, Function, etc.)
+		    // This must be done before scripts can be executed. Returns
+		    // a scope object that we use in later calls.
+		    Scriptable scope = cx.initStandardObjects();
+		    Object jsOut = Context.javaToJS(System.out, scope);
+		    ScriptableObject.putProperty(scope, "out", jsOut);
+		    ScriptableObject.putProperty(scope, "name", "JavaScript");
+		
+			String javaScriptExpression = "sayHello(name);";
+			//String javaScriptExpression = "sayHello(name);";
+			Reader javaScriptFile = new StringReader("function sayHello(name) {\n"
+					+ "    out.println('Hello, '+name+'!');\n return sayHello;" + "}");
+		    // Now evaluate the string we've colected.
+			cx.evaluateReader(scope, javaScriptFile, "nada", 1, null);
+		    Object result = cx.evaluateString(scope, javaScriptExpression, "nada", 1, null);
+		    org.mozilla.javascript.Function func = (org.mozilla.javascript.Function)result;
+		    Object[] funcArgs = new Object[1];
+		    funcArgs[0] = "teste string";
+			func.call(cx, scope, null, funcArgs);
+		}
+		
 		IParserLogService log = new DefaultLogService();
 		
 		String code = FileFuncs.readFileToString(FileFuncs.examplesPath() + "main.cpp");

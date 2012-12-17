@@ -1,17 +1,16 @@
 package gvpl.common;
 
+import gvpl.cdt.function.Function;
+import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.graph.Graph;
+import gvpl.graph.GraphNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import gvpl.cdt.function.Function;
-import gvpl.common.FuncParameter.IndirectionType;
-import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
-import gvpl.graph.Graph.NodeType;
 
 public abstract class AstLoader {
 	
