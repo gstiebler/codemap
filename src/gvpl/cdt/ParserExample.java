@@ -39,15 +39,13 @@ public class ParserExample {
 		    ScriptableObject.putProperty(scope, "name", "JavaScript");
 		
 			String javaScriptExpression = "sayHello(name);";
-			//String javaScriptExpression = "sayHello(name);";
 			Reader javaScriptFile = new StringReader("function sayHello(name) {\n"
 					+ "    out.println('Hello, '+name+'!');\n return sayHello;" + "}");
 		    // Now evaluate the string we've colected.
 			cx.evaluateReader(scope, javaScriptFile, "nada", 1, null);
 		    Object result = cx.evaluateString(scope, javaScriptExpression, "nada", 1, null);
 		    org.mozilla.javascript.Function func = (org.mozilla.javascript.Function)result;
-		    Object[] funcArgs = new Object[1];
-		    funcArgs[0] = "teste string";
+		    Object[] funcArgs = {"teste string"};
 			func.call(cx, scope, null, funcArgs);
 		}
 		
