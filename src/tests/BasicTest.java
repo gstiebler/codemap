@@ -163,5 +163,10 @@ public class BasicTest {
 	public void headerOnlyFunc() {
 		TestsUtil.baseTest("header_only_func");
 	}
+
+	@Test
+	public void events() {
+		TestsUtil.baseTest("events");
+	}
 	
 }

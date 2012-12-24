@@ -41,7 +41,7 @@ public class ParserExample {
 			String javaScriptExpression = "sayHello(name);";
 			Reader javaScriptFile = new StringReader("function sayHello(name) {\n"
 					+ "    out.println('Hello, '+name+'!');\n return sayHello;" + "}");
-		    // Now evaluate the string we've colected.
+		    // Now evaluate the string we've collected.
 			cx.evaluateReader(scope, javaScriptFile, "nada", 1, null);
 		    Object result = cx.evaluateString(scope, javaScriptExpression, "nada", 1, null);
 		    org.mozilla.javascript.Function func = (org.mozilla.javascript.Function)result;
