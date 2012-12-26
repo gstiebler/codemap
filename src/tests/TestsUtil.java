@@ -4,12 +4,16 @@ import static org.junit.Assert.assertTrue;
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.common.CodeLocation;
 import gvpl.common.FileFuncs;
+import gvpl.common.ScriptManager;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,6 +74,8 @@ public class TestsUtil {
 		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
 
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
+		ScriptManager sm = new ScriptManager(examplePath, astInterpreter);
+		sm.execMainScript();
 		
 		List<String> fileNames = new ArrayList<String>();
 		String mainTestFileName = examplePath + testName + ".cpp";

@@ -1,15 +1,14 @@
 
-importPackage(Packages.java.gvpl.common);
+var globalScriptManager = 0;
 
-function event1(arg1, arg2) {
-	out.println('event1 called in javascript');
+function signal_connect(objectPointer, eventStr, func, userData) {
+	out.println('event1 added in javascript');
+	if(eventStr == 'clicked')
+		globalScriptManager.addEventFunc(func, {objectPointer, userData});
 }
 
 function main(scriptManager) {
-	out.println('main called in javascript');
-	
-	sm = gvpl.common.ScriptManager;
-	scriptManager.nada();
-	scriptManager.addFunction('event1', event1);
+	globalScriptManager = scriptManager;
+	globalScriptManager.addFunction('gtk_signal_connect', signal_connect);
 	return event1;
 }

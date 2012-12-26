@@ -6,7 +6,6 @@ import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
-import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
@@ -51,7 +50,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	Function _mainFunction = null;
 	Graph _gvplGraph;
-	public ScriptManager _scripts = new ScriptManager();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		_gvplGraph = gvplGraph;
