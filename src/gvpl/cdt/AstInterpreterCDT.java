@@ -228,6 +228,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 			IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
 			IBinding binding = namedType.getName().resolveBinding();
 			ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
+			if(classDecl == null)
+				return null;
 			return classDecl.getTypeId();
 		} else
 			return _primitiveType;

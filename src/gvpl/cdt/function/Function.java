@@ -281,10 +281,12 @@ public class Function extends AstLoaderCDT {
 
 	@Override
 	protected GraphNode getNodeFromExpr(IASTExpression expr) {
+		//if it's a local var, return it's node
 		GraphNode node = super.getNodeFromExpr(expr);
 		if(node != null)
 			return node;
 		
+		//if it's a function parameter, return it's node
 		IBinding parameterBinding = getBindingFromExpr(expr);
 		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
 		if(funcParameter != null)
