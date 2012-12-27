@@ -51,6 +51,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIdExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
@@ -523,7 +524,10 @@ public class InstructionLine {
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE) {
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_FUNCTION_POINTER) {
-				logger.fatal("not implemented");
+				CPPASTIdExpression idExpr = (CPPASTIdExpression) parameter;
+				IBinding binding = idExpr.getName().resolveBinding();
+				Function funcPointer = _astInterpreter.getFuncId(binding);
+				localParameter = new FuncParameter(funcPointer);
 			} else
 				logger.fatal("Work here ");
 

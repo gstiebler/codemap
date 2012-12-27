@@ -140,8 +140,7 @@ public class Function extends AstLoaderCDT {
 			IBinding binding = parameterVarDecl.getName().resolveBinding();
 			FuncParameter funcParameter = null;
 			if(_astInterpreter.isFunctionTypedef(declSpec)) {
-				Function func = _astInterpreter.getFuncId(binding);
-				funcParameter = new FuncParameter(func);
+				funcParameter = new FuncParameter(IndirectionType.E_FUNCTION_POINTER);
 			} else {
 				TypeId type = _astInterpreter.getType(declSpec);
 				FuncParameter.IndirectionType parameterVarType = null;

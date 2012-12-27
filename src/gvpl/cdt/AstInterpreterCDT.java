@@ -231,6 +231,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) {
+		if(!(declSpec instanceof IASTNamedTypeSpecifier))
+			return null;
 		IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
 		return namedType.getName().resolveBinding();
 	}
