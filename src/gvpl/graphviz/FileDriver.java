@@ -61,12 +61,13 @@ public class FileDriver implements IGraphOutput {
 		insertNode(node.getId(), node_name, properties);
 	}
 	
-	public void insertValueNode(int node_id, String node_name, int startingLine) {
+	public void insertValueNode(int nodeId, String nodeName, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("style", "filled"));
 		properties.add(new PropertyPair("fillcolor", "\"#E9FFE9\""));
 		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
-		insertNode(node_id, node_name, properties);
+		nodeName = nodeName.replace("\"", "\\\"");
+		insertNode(nodeId, nodeName, properties);
 	}
 	
 	public void insertGarbageNode(int node_id, String node_name, int startingLine) {
@@ -108,8 +109,8 @@ public class FileDriver implements IGraphOutput {
 		insertNode(node.getId(), node_name, properties);
 	}
 	
-	protected void insertNode(int node_id, String nodeLabel, List<PropertyPair> properties){
-		String internalName = nodeInternalName(node_id);
+	protected void insertNode(int nodeId, String nodeLabel, List<PropertyPair> properties){
+		String internalName = nodeInternalName(nodeId);
 		String propertiesString = "";
 		for(PropertyPair propertyPair : properties) {
 			propertiesString += ", " + propertyPair._key + "=" + propertyPair._value;

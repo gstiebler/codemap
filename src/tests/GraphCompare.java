@@ -59,7 +59,7 @@ public class GraphCompare {
 			Visualizer.printNode(gvplNode, fileDriver);
 			String gvNodeLabel = gvNode.getAttribute("label");
 
-			gvNodeLabel = gvNodeLabel.replace("\"", "");
+			gvNodeLabel = gvNodeLabel.replace("\\\"", "\"").replaceAll("(^\")|(\"$)","");
 			assertEquals("Node label", gvplNode.getName(), gvNodeLabel);
 
 			for (PropertyPair propertyPair : fileDriver._properties) {

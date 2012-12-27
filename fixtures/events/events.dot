@@ -1,0 +1,38 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "17_19_19";
+	node_000002 [ label = "a_pointed", startingline=22 ]
+	node_000003 [ label = "\"clicked\"", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
+	node_000004 [ label = "\"clicked\"", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
+subgraph cluster_2 {
+label = "GtkWidget::GtkWidget";
+parent = "cluster_1";
+startinglines = "19_19_21";
+}
+subgraph cluster_3 {
+label = "gtk_signal_connect";
+parent = "cluster_1";
+startinglines = "21_22_23";
+}
+}
+subgraph cluster_4 {
+label = "ClickHandlerBotao";
+parent = "G";
+startinglines = "21_22_23";
+	node_000006 [ label = "b", startingline=12 ]
+subgraph cluster_5 {
+label = "GtkWidget::adiciona";
+parent = "cluster_4";
+startinglines = "22_23_12";
+	node_000005 [ label = "GtkWidget::adiciona", style=filled, fillcolor="#FFFFD0", startinglines=12 ]
+}
+}
+	node_000002 -> node_000005
+	node_000003 -> node_000004
+	node_000005 -> node_000006
+}

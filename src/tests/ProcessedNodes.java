@@ -68,7 +68,9 @@ public class ProcessedNodes {
 	private static void processNodesFromCurrentGraph(LinkedList<DotTree.Node> nodesByName,
 			SubGraphNodes graphNodes) {
 		for (DotTree.Node gvNode : nodesByName) {
-			String label = gvNode.attributes.get("label").replace("\"", "");
+			String label = gvNode.attributes.get("label");
+			// remove begining and end quotes
+			label = label.replace("\\\"", "\"").replaceAll("(^\")|(\"$)","");
 
 			if (!graphNodes._nodes.containsKey(label))
 				graphNodes._nodes.put(label, new LinkedList<DotTree.Node>());
@@ -91,7 +93,8 @@ public class ProcessedNodes {
 		Map<String, List<DotTree.SubGraph>> result = new LinkedHashMap<String, List<DotTree.SubGraph>>();
 		
 		for (DotTree.SubGraph subGraph : allSubGraphs) {
-			String parentName = subGraph.attributes.get("parent").replace("\"", "");
+			String parent = subGraph.attributes.get("parent");
+			String parentName = parent.replace("\\\"", "\"").replaceAll("(^\")|(\"$)","");
 			
 			if(!result.containsKey(parentName)) {
 				result.put(parentName, new ArrayList<DotTree.SubGraph>());
