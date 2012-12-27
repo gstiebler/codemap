@@ -50,7 +50,10 @@ public abstract class AstLoaderCDT extends AstLoader {
 		if (var != null) 
 			return var; 
 		
-	    if (expr instanceof CPPASTLiteralExpression) {
+		String rs = expr.getRawSignature();
+		// deal with a hardcoded string, but we don't want the "this" pointer. 
+		// the "this" will be treated elsewhere
+	    if (expr instanceof CPPASTLiteralExpression && !rs.equals("this")) {
 	    	// it's a hardcoded string between aspas (?)
 	    	CPPASTLiteralExpression literal = (CPPASTLiteralExpression)expr;
 	    	String str = literal.getRawSignature();
@@ -90,6 +93,9 @@ public abstract class AstLoaderCDT extends AstLoader {
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
 			return ((IASTIdExpression) opExpr).getName().resolveBinding();
+		} else if (expr instanceof CPPASTLiteralExpression) {
+			//probably "this" pointer
+			return null;
 		} else {
 			logger.fatal("Type not found {}", expr.getClass());
 		}
