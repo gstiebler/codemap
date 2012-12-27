@@ -11,8 +11,8 @@ import gvpl.common.IVar;
 import gvpl.common.TypeId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -34,7 +34,6 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
@@ -177,8 +176,12 @@ public class Function extends AstLoaderCDT {
 			loadConstructorChain(_gvplGraph);
 			loadDefinition(_gvplGraph);
 		}
-		else
-			loadHeaderOnlyFunc(parameterValues, extGraph);
+		else {
+			if(_astInterpreter.scriptFunctionExists(this))
+				_astInterpreter.callScriptFunction(this, parameterValues);
+			else
+				loadHeaderOnlyFunc(parameterValues, extGraph);
+		}
 
 		extGraph.addSubGraph(_gvplGraph);
 		_gvplGraph = null;

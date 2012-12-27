@@ -6,12 +6,14 @@ import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
+import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
@@ -55,6 +57,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	Set<IBinding> _functionTypedefs = new HashSet<IBinding>();
 	Function _mainFunction = null;
 	Graph _gvplGraph;
+	ScriptManager _scriptManager = null;
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		_gvplGraph = gvplGraph;
@@ -235,6 +238,18 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return null;
 		IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
 		return namedType.getName().resolveBinding();
+	}
+	
+	public void setScriptManager(ScriptManager scriptManager)  {
+		_scriptManager = scriptManager;
+	}
+	
+	public boolean scriptFunctionExists(Function func) {
+		return _scriptManager.functionExists(func.getName());
+	}
+	
+	public void callScriptFunction(Function func, List<FuncParameter> parameterValues) {
+		_scriptManager.callFunc(func.getName(), parameterValues);
 	}
 
 	/**

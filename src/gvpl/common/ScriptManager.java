@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.mozilla.javascript.Context;
@@ -63,16 +64,22 @@ public class ScriptManager {
 		_scriptFunctions.put(funcName, func);
 	}
 	
-	boolean getFunction(String name) {
+	public boolean functionExists(String name) {
 		return _scriptFunctions.containsKey(name);
 	}
 	
-	void callFunc(String name, Object[] args) {
+	public void callFunc(String name, List<FuncParameter> parameterValues) {
 		Function func = _scriptFunctions.get(name);
-		func.call(_cx, _scope, null, args);
+		Object[] jsParams = new Object [parameterValues.size()];
+		for(int i = 0; i < parameterValues.size(); i++){
+			Object jsOut = Context.javaToJS(parameterValues.get(i), _scope);
+			jsParams[i] = jsOut;
+		}
+			
+		func.call(_cx, _scope, null, jsParams);
 	}
 	
-	void addEventFunc(Object func, Object[] args) {
+	public void addEventFunc(Object func, Object[] args) {
 		System.out.println("todo: add function event");
 		System.out.println(func);
 		System.out.println(args);

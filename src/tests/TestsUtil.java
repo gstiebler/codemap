@@ -72,6 +72,7 @@ public class TestsUtil {
 
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
 		ScriptManager sm = new ScriptManager(examplePath, astInterpreter);
+		astInterpreter.setScriptManager(sm);
 		sm.execMainScript();
 		
 		List<String> fileNames = new ArrayList<String>();
