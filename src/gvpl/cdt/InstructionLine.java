@@ -520,9 +520,11 @@ public class InstructionLine {
 			else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
 				IVar var = _parentAstLoader.getVarFromExpr(parameter);
 				localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
-			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE)
+			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE) {
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
-			else
+			} else if (insideFuncParameter.getType() == IndirectionType.E_FUNCTION_POINTER) {
+				logger.fatal("not implemented");
+			} else
 				logger.fatal("Work here ");
 
 			parameterValues.add(localParameter);

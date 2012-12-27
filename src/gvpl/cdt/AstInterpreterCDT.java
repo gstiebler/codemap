@@ -10,8 +10,10 @@ import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -32,6 +34,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
 
@@ -48,6 +51,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	//private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
+	//TODO check if this set is really necessary
+	Set<IBinding> _functionTypedefs = new HashSet<IBinding>();
 	Function _mainFunction = null;
 	Graph _gvplGraph;
 	
@@ -137,7 +142,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 		IBinding binding = decl.getName().resolveBinding();
-		logger.debug("idb:{}", binding.hashCode());
+		if(binding instanceof CPPTypedef) {
+			_functionTypedefs.add(binding);
+			return null;
+		}
 		Function function = _currCppFile._funcIdMap.get(binding);
 		if(function != null)
 			return function;
@@ -199,6 +207,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 		addClassDeclInMaps(classDecl, binding);
 		return classDecl;
 	}
+	
+	public boolean isFunctionTypedef(IASTDeclSpecifier declSpec) {
+		IBinding binding = bindingFromDeclSpec(declSpec);
+		return _functionTypedefs.contains(binding);
+	}
 
 	/**
 	 * Loads a class or structure from the AST
@@ -216,6 +229,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 			classDecl.updateBindings(strDecl);
 		}
 	}
+	
+	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) {
+		IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
+		return namedType.getName().resolveBinding();
+	}
 
 	/**
 	 * Gets the id of a type from the declaration in AST
@@ -225,8 +243,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 */
 	public TypeId getType(IASTDeclSpecifier declSpec) {
 		if (declSpec instanceof IASTNamedTypeSpecifier) {
-			IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
-			IBinding binding = namedType.getName().resolveBinding();
+			IBinding binding = bindingFromDeclSpec(declSpec);
 			ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
 			if(classDecl == null)
 				return null;

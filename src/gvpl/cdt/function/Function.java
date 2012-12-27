@@ -34,6 +34,7 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
@@ -136,14 +137,19 @@ public class Function extends AstLoaderCDT {
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
 			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();
-			TypeId type = _astInterpreter.getType(declSpec);
 			IBinding binding = parameterVarDecl.getName().resolveBinding();
-
-			FuncParameter.IndirectionType parameterVarType = null;
-			parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
-			FuncParameter funcParameter = new FuncParameter((IVar)null, parameterVarType);
-			if(declSpec instanceof CPPASTSimpleDeclSpecifier)
-				funcParameter.setType(((CPPASTSimpleDeclSpecifier)declSpec).getType());
+			FuncParameter funcParameter = null;
+			if(_astInterpreter.isFunctionTypedef(declSpec)) {
+				Function func = _astInterpreter.getFuncId(binding);
+				funcParameter = new FuncParameter(func);
+			} else {
+				TypeId type = _astInterpreter.getType(declSpec);
+				FuncParameter.IndirectionType parameterVarType = null;
+				parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
+				funcParameter = new FuncParameter(parameterVarType);
+				if(declSpec instanceof CPPASTSimpleDeclSpecifier)
+					funcParameter.setType(((CPPASTSimpleDeclSpecifier)declSpec).getType());
+			}
 
 			addParameter(binding, funcParameter);
 		}

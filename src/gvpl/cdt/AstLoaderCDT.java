@@ -10,8 +10,10 @@ import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
+import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.LinkedHashMap;
@@ -28,6 +30,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 public abstract class AstLoaderCDT extends AstLoader {
 	
@@ -46,6 +49,16 @@ public abstract class AstLoaderCDT extends AstLoader {
 
 		if (var != null) 
 			return var; 
+		
+	    if (expr instanceof CPPASTLiteralExpression) {
+	    	// it's a hardcoded string between aspas (?)
+	    	CPPASTLiteralExpression literal = (CPPASTLiteralExpression)expr;
+	    	String str = literal.getRawSignature();
+	    	Var tempVar = new Var(_gvplGraph, str, null);
+	    	GraphNode node = _gvplGraph.addGraphNode(str, NodeType.E_DIRECT_VALUE);
+	    	tempVar.receiveAssign(NodeType.E_DIRECT_VALUE, node, _gvplGraph);
+	    	return tempVar;
+	    }
 		
 		return getVarFromBinding(getBindingFromExpr(expr));
 	}
