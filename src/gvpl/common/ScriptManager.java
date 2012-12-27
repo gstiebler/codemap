@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +56,7 @@ public class ScriptManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Function fct = (Function)_scope.get("main", _scope);
+		org.mozilla.javascript.Function fct = (Function)_scope.get("main", _scope);
 		Object[] funcArgs = {this};
 		fct.call(_cx, _scope, null, funcArgs);
 	}
@@ -69,7 +70,7 @@ public class ScriptManager {
 	}
 	
 	public void callFunc(String name, List<FuncParameter> parameterValues) {
-		Function func = _scriptFunctions.get(name);
+		org.mozilla.javascript.Function func = _scriptFunctions.get(name);
 		Object[] jsParams = new Object [parameterValues.size()];
 		for(int i = 0; i < parameterValues.size(); i++){
 			Object jsOut = Context.javaToJS(parameterValues.get(i), _scope);
@@ -80,8 +81,11 @@ public class ScriptManager {
 	}
 	
 	public void addEventFunc(Object func, Object[] args) {
-		System.out.println("todo: add function event");
-		System.out.println(func);
-		System.out.println(args);
+		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
+		for(Object arg : args) {
+			parameterValues.add((FuncParameter) arg);
+		}
+		FuncParameter funcParameter = (FuncParameter) func;
+		_interpreter.addEventFunction(funcParameter.getFunction(), parameterValues);
 	}
 }

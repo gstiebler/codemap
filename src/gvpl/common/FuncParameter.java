@@ -54,6 +54,10 @@ public class FuncParameter {
 		_type = type;
 	}
 	
+	public Function getFunction() {
+		return _functionPointer;
+	}
+	
 	//TODO improve
 	public boolean isEquivalent(FuncParameter other) {
 		if(_indirectionType != other._indirectionType)

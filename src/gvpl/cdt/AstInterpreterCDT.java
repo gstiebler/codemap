@@ -47,6 +47,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 		Map<IBinding, ClassDeclCDT> _typeBindingToClass = new LinkedHashMap<IBinding, ClassDeclCDT>();
 	}
 	
+	class EventFunction {
+		Function _function;
+		List<FuncParameter> _parameterValues;
+		
+		EventFunction(Function function, List<FuncParameter> parameterValues) {
+			_function = function;
+			_parameterValues = parameterValues;
+		}
+	}
+	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	CppFile _currCppFile = new CppFile();
@@ -57,6 +67,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	Set<IBinding> _functionTypedefs = new HashSet<IBinding>();
 	Function _mainFunction = null;
 	Graph _gvplGraph;
+	List<EventFunction> _eventFunctions = new ArrayList<EventFunction>();
 	ScriptManager _scriptManager = null;
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
@@ -108,6 +119,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		//_currCppFile = _cppFiles.get(root);
 		logger.debug(" *** Loading definitions of main ***");
 		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph);
+		callEventFunctions();
 	}
 
 	/**
@@ -238,6 +250,22 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return null;
 		IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
 		return namedType.getName().resolveBinding();
+	}
+	
+	void callEventFunctions() {
+		for(EventFunction eventFunction : _eventFunctions) {
+			eventFunction._function.addFuncRef(eventFunction._parameterValues, _gvplGraph);
+		}
+	}
+	
+	/**
+	 * Add a function that is a event and will be called once
+	 *  
+	 * @param function The function that will be called
+	 * @param parameterValues the parameters that will be passed to the function
+	 */
+	public void addEventFunction(Function function, List<FuncParameter> parameterValues) {
+		_eventFunctions.add(new EventFunction(function, parameterValues));
 	}
 	
 	public void setScriptManager(ScriptManager scriptManager)  {
