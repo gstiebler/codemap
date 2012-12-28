@@ -1,10 +1,8 @@
 package gvpl.cdt;
 
-import static org.junit.Assert.assertTrue;
 import gvpl.common.CodeLocation;
 import gvpl.common.FileFuncs;
 import gvpl.common.ScriptManager;
-import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
@@ -18,7 +16,6 @@ import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cesta.parsers.dot.DotTree;
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage;
@@ -30,45 +27,16 @@ import org.eclipse.cdt.core.parser.ScannerInfo;
 import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 import org.eclipse.core.runtime.CoreException;
 
-import tests.GraphCompare;
-import tests.TestsUtil;
 import debug.DebugOptions;
 
 public class Codemap {
 
 	static Logger logger = LogManager.getLogger(Codemap.class.getName());
 	
-	public static void main(String[] args) throws Exception {
-		IParserLogService log = new DefaultLogService();
-		
-		String code = FileFuncs.readFileToString(FileFuncs.examplesPath() + "main.cpp");
-
-		CodeReader reader = new CodeReader(code.toCharArray());
-		@SuppressWarnings("rawtypes")
-		Map definedSymbols = new LinkedHashMap();
-		String[] includePaths = new String[0];
-		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
-		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
-
-		IASTTranslationUnit translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(
-				reader, info, readerFactory, null, log);
-
-		Graph gvplGraph = new Graph();
-		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(gvplGraph);
-		astInterpreter.loadDeclarations(translationUnit);
-
-		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
-		Visualizer visualizer = new Visualizer(fileDriver);
-		
-		FileWriter outFile = null;
-		try {
-			outFile = new FileWriter(FileFuncs.examplesPath() + "first.dot");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		fileDriver.print(gvplGraph, outFile, visualizer);
+	public static void main(String[] args) {
+		String basePath = args[0];
+		String mainFile = basePath + "/" + args[1];
+		execute(basePath, mainFile);
 	}
 	
 	public static AstInterpreterCDT execute(String basePath, String mainFile) {
