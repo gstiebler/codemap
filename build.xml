@@ -3,17 +3,16 @@
               Any modifications will be overwritten.
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="GVPL_JDT">
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="GVPL_JDT">
     <property environment="env"/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
-    <path id="lib/org.eclipse.pde.core.requiredPlugins.libraryclasspath"/>
+    <path id="Persisted container [lib/org.eclipse.pde.core.requiredPlugins for project [GVPL_JDT]].libraryclasspath"/>
     <path id="GVPL_JDT.classpath">
         <pathelement location="bin"/>
-        <path refid="lib/org.eclipse.pde.core.requiredPlugins.libraryclasspath"/>
+        <path refid="Persisted container [lib/org.eclipse.pde.core.requiredPlugins for project [GVPL_JDT]].libraryclasspath"/>
         <pathelement location="lib/antlr-3.4-complete-no-antlrv2.jar"/>
         <pathelement location="lib/junit-4.10.jar"/>
         <pathelement location="lib/log4j-core-2.0-beta2.jar"/>
@@ -21,12 +20,12 @@
         <pathelement location="META-INF"/>
         <pathelement location="lib/org.eclipse.equinox.common_3.6.0.v20110523.jar"/>
         <pathelement location="lib/org.eclipse.cdt.core_4.0.3.200802251018.jar"/>
+        <pathelement location="lib/js.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="src">
-                <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
@@ -58,7 +57,7 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="BasicTest">
+    <target name="BasicTest.postInitFunc">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
@@ -66,39 +65,21 @@
             <classpath refid="GVPL_JDT.classpath"/>
         </junit>
     </target>
-    <target name="BasicTest.polymorphism2">
+    <target name="GVPL_JDT">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="tests.BasicTest" todir="${junit.output.dir}"/>
-            <classpath refid="GVPL_JDT.classpath"/>
-        </junit>
-    </target>
-    <target name="IfConditionTest">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
             <test name="tests.IfConditionTest" todir="${junit.output.dir}"/>
             <classpath refid="GVPL_JDT.classpath"/>
         </junit>
     </target>
-    <target name="IfConditionTest.TestMergeIfMAV_ClassVar">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.IfConditionTest" todir="${junit.output.dir}"/>
+    <target name="ParserExample">
+        <java classname="gvpl.cdt.ParserExample" failonerror="true" fork="yes">
             <classpath refid="GVPL_JDT.classpath"/>
-        </junit>
+        </java>
     </target>
-    <target name="IfConditionTest.TestMergeIfMAV_PrimitiveType">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.IfConditionTest" todir="${junit.output.dir}"/>
-            <classpath refid="GVPL_JDT.classpath"/>
-        </junit>
-    </target>
-    <target name="JUnit">
+    <target name="src">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
