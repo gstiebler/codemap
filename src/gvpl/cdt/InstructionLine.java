@@ -247,24 +247,26 @@ public class InstructionLine {
 	 */
 	public GraphNode loadValue(IASTExpression expr) {
 		logger.debug("Node type {}", expr.getClass());
+		GraphNode result = null;
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			return _parentAstLoader.getNodeFromExpr(expr);
+			result = _parentAstLoader.getNodeFromExpr(expr);
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
-			return loadBinOp((IASTBinaryExpression) expr);
+			result = loadBinOp((IASTBinaryExpression) expr);
 		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
-			return loadDirectValue((IASTLiteralExpression) expr);
+			result = loadDirectValue((IASTLiteralExpression) expr);
 		} else if (expr instanceof IASTFunctionCallExpression) {// Eh umachamada
 																// a funcao
-			return loadFunctionCall((IASTFunctionCallExpression) expr);
+			result = loadFunctionCall((IASTFunctionCallExpression) expr);
 		} else if (expr instanceof IASTFieldReference) {// reference to field of
 														// a struct
 			IVar varDecl = _parentAstLoader.getVarFromFieldRef((IASTFieldReference) expr);
 			if(varDecl == null)
-				return GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ");
-			return varDecl.getCurrentNode();
+				result = GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ");
+			else
+				result = varDecl.getCurrentNode();
 		} else if (expr instanceof IASTUnaryExpression) {
-			return loadUnaryExpr((IASTUnaryExpression) expr);
+			result = loadUnaryExpr((IASTUnaryExpression) expr);
 		} else if (expr instanceof CPPASTArraySubscriptExpression) {			
 			//It's an array
 			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
@@ -272,11 +274,13 @@ public class InstructionLine {
 			IVar varDecl = _parentAstLoader.getVarFromExpr(arrayExpr);
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
-			return varDecl.getCurrentNode();
+			result = varDecl.getCurrentNode();
 		} else
 			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
-		return null;
+		if(result == null)
+			result = _gvplGraph.addGraphNode("INVALID_NODE_PROBLEM", NodeType.E_DIRECT_VALUE);
+		return result;
 	}
 
 	private void loadForStmt(IASTForStatement node) {
@@ -293,7 +297,8 @@ public class InstructionLine {
 		TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
-		GraphNode returnNode = ((Function)_parentAstLoader).addReturnStatement(rvalue, returnType,
+		Function parentFunc = _parentAstLoader.getFunction();
+		GraphNode returnNode = parentFunc.addReturnStatement(rvalue, returnType,
 				function.getName(), _gvplGraph);
 
 		function.setReturnNode(returnNode);

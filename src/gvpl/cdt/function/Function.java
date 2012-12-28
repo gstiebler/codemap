@@ -300,7 +300,7 @@ public class Function extends AstLoaderCDT {
 		if(funcParameter != null)
 			return funcParameter.getNode();
 		
-		logger.fatal("should not be here");
+		logger.fatal("should not be here, wtf is '{}'?", expr.getRawSignature());
 		return null;
 	}
 	

@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.cdt.function.Function;
 import gvpl.common.AstLoader;
 import gvpl.common.ClassVar;
 import gvpl.common.IVar;
@@ -207,6 +208,11 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		}
 		
 		return mergedNodes;
+	}
+	
+	@Override
+	public Function getFunction() {
+		return _parent.getFunction();
 	}
 	
 	//TODO prepare to read member vars of each var. It's only working
