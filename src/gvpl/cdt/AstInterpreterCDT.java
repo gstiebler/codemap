@@ -246,10 +246,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) {
-		if(!(declSpec instanceof IASTNamedTypeSpecifier))
+		if(declSpec instanceof IASTNamedTypeSpecifier)
+			return ((IASTNamedTypeSpecifier) declSpec).getName().resolveBinding();
+		else if(declSpec instanceof CPPASTElaboratedTypeSpecifier)
+			return ((CPPASTElaboratedTypeSpecifier) declSpec).getName().resolveBinding();
+		else
 			return null;
-		IASTNamedTypeSpecifier namedType = (IASTNamedTypeSpecifier) declSpec;
-		return namedType.getName().resolveBinding();
 	}
 	
 	void callEventFunctions() {
@@ -287,14 +289,14 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return The id of the type
 	 */
 	public TypeId getType(IASTDeclSpecifier declSpec) {
-		if (declSpec instanceof IASTNamedTypeSpecifier) {
-			IBinding binding = bindingFromDeclSpec(declSpec);
-			ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
-			if(classDecl == null)
-				return null;
-			return classDecl.getTypeId();
-		} else
+		IBinding binding = bindingFromDeclSpec(declSpec);
+		if (binding == null)
+
 			return _primitiveType;
+		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
+		if (classDecl == null)
+			return null;
+		return classDecl.getTypeId();
 	}
 	
 	public ClassDeclCDT getClassDecl(IBinding binding) {
