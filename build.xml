@@ -57,14 +57,6 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="BasicTest.postInitFunc">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.BasicTest" todir="${junit.output.dir}"/>
-            <classpath refid="GVPL_JDT.classpath"/>
-        </junit>
-    </target>
     <target name="GVPL_JDT">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
@@ -78,15 +70,6 @@
         <java classname="gvpl.cdt.ParserExample" failonerror="true" fork="yes">
             <classpath refid="GVPL_JDT.classpath"/>
         </java>
-    </target>
-    <target name="src">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="tests.BasicTest" todir="${junit.output.dir}"/>
-            <test name="tests.IfConditionTest" todir="${junit.output.dir}"/>
-            <classpath refid="GVPL_JDT.classpath"/>
-        </junit>
     </target>
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">
