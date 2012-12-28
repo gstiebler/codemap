@@ -20,7 +20,7 @@ import org.eclipse.cdt.core.parser.IScannerInfo;
 import org.eclipse.cdt.core.parser.ScannerInfo;
 import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 
-public class ParserExample {
+public class Codemap {
 
 	public static void main(String[] args) throws Exception {
 		IParserLogService log = new DefaultLogService();

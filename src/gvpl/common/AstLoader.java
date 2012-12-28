@@ -24,23 +24,26 @@ public abstract class AstLoader {
 		switch (indirectionType) {
 		case E_VARIABLE:
 			IVar result = null;
-			if (astInterpreter.isPrimitiveType(typeId)){
+			if (astInterpreter.isPrimitiveType(typeId)) {
 				result = new Var(graph, name, typeId);
 			} else {
 				ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
 				result = new ClassVar(graph, name, classDecl, astLoader);
 			}
-			
+
 			return result;
 		case E_POINTER:
 			return new PointerVar(graph, name, typeId);
 		case E_REFERENCE:
 			return new ReferenceVar(graph, name, typeId);
-		case E_INDIFERENT:
-			{
-				logger.fatal("Not expected");
-				return null;
-			}
+		case E_INDIFERENT: {
+			logger.fatal("Not expected");
+			return null;
+		}
+		case E_FUNCTION_POINTER: {
+			logger.fatal("Not expected");
+			return null;
+		}
 		}
 		return null;
 	}
