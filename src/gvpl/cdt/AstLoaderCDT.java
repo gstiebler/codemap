@@ -86,7 +86,11 @@ public abstract class AstLoaderCDT extends AstLoader {
 	abstract protected IVar getVarFromBinding(IBinding binding);
 	
 	protected IVar getLocalVar(IBinding binding) {
-		return _localVariables.get(binding);
+		IVar var = _localVariables.get(binding);
+		if(var != null)
+			return var;
+		
+		return _astInterpreter.getGlobalVar(binding);
 	}
 	
 	protected IBinding getBindingFromExpr(IASTExpression expr) {
@@ -188,18 +192,19 @@ public abstract class AstLoaderCDT extends AstLoader {
 
 	public IVar loadVarDecl(IASTDeclarator decl, TypeId type, Graph graph) {
 		IASTName name = decl.getName();
-		IVar var_decl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph);
-		_localVariables.put(name.resolveBinding(), var_decl);
-
-		return var_decl;
+		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, this, 
+				_astInterpreter);
+		_localVariables.put(name.resolveBinding(), varDecl);
+		if(varDecl instanceof ClassVar)
+			_varsCreatedInThisScope.add((ClassVar) varDecl);
+		return varDecl;
 	}
 
-	public IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps, Graph graph) {
+	public static IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps, 
+				Graph graph, AstLoaderCDT astLoader, AstInterpreterCDT astInterpreter) {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
-		IVar var = instanceVar(parameterVarType, name, type, graph, this, _astInterpreter);
-		if(var instanceof ClassVar)
-			_varsCreatedInThisScope.add((ClassVar) var);
+		IVar var = instanceVar(parameterVarType, name, type, graph, astLoader, astInterpreter);
 		return var;
 	}
 	

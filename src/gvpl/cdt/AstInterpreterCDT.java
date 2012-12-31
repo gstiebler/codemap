@@ -5,12 +5,14 @@ import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
+import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -72,6 +75,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	Graph _gvplGraph;
 	List<EventFunction> _eventFunctions = new ArrayList<EventFunction>();
 	ScriptManager _scriptManager = null;
+	Map<IBinding, IVar> _globalVars = new HashMap<IBinding, IVar>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		_gvplGraph = gvplGraph;
@@ -106,17 +110,21 @@ public class AstInterpreterCDT extends AstInterpreter {
 					loadClassDecl((CPPASTElaboratedTypeSpecifier) declSpec);
 				} else if(declSpec instanceof CPPASTSimpleDeclSpecifier) {
 					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
-					if(declarators.length > 1)
-						logger.fatal("what to do?");
-					
-					IASTDeclarator decl0 = declarators[0];
-					if (decl0 instanceof CPPASTFunctionDeclarator) {
-						CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) decl0;
-						loadFunctionDeclaration(funcDecl);
-					} else if (decl0 instanceof CPPASTDeclarator) {
-						logger.error("Do something here. {}", decl0.getClass());
-					} else
-						logger.fatal("you're doing it wrong. {}", decl0.getClass());
+					for(IASTDeclarator declarator : declarators) {
+						if (declarator instanceof CPPASTFunctionDeclarator) {
+							CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) declarator;
+							loadFunctionDeclaration(funcDecl);
+						} else if (declarator instanceof CPPASTDeclarator) {
+							IASTName name = declarator.getName();
+							TypeId type = getType(declSpec);
+							IBinding binding = name.resolveBinding();
+							//TODO get correct type
+							IVar var = AstLoaderCDT.addVarDecl(name.toString(), type, 
+									declarator.getPointerOperators(), _gvplGraph, null, this);
+							_globalVars.put(binding, var);
+						} else
+							logger.fatal("you're doing it wrong. {}", declarator.getClass());
+					}
 				} else if(declSpec instanceof CPPASTNamedTypeSpecifier) {
 					loadClassDecl((CPPASTNamedTypeSpecifier) declSpec);
 				} else
@@ -133,6 +141,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 		logger.debug(" *** Loading definitions of main ***");
 		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph);
 		callEventFunctions();
+	}
+	
+	public IVar getGlobalVar(IBinding binding) {
+		return _globalVars.get(binding);
 	}
 
 	/**

@@ -173,5 +173,10 @@ public class BasicTest {
 	public void funcReturnPointer() {
 		TestsUtil.baseTest("func_return_pointer");
 	}
+
+	@Test
+	public void globalVar() {
+		TestsUtil.baseTest("global_var");
+	}
 	
 }

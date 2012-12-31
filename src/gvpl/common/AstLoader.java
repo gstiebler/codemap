@@ -19,7 +19,7 @@ public abstract class AstLoader {
 	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	protected Graph _gvplGraph = null;
 	
-	public IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
+	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
 			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
