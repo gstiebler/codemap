@@ -359,7 +359,8 @@ public class InstructionLine {
 		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsVar, IndirectionType.E_REFERENCE));
-		return opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar).getNode();
+		Value result = opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar);
+		return result.getNode();
 	}
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {

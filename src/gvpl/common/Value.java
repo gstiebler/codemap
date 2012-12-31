@@ -14,11 +14,15 @@ public class Value {
 		_node = node;
 	}
 	
-	public GraphNode getNode() {
-		if(_node != null)
-			return _node;
+	public Value() {
 		
-		return _var.getCurrentNode();
+	}
+	
+	public GraphNode getNode() {
+		if(_var != null)
+			return _var.getCurrentNode();
+		
+		return _node;
 	}
 	
 	public IVar getVar() {

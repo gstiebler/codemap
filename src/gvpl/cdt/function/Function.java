@@ -45,7 +45,7 @@ public class Function extends AstLoaderCDT {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
-	private Value _returnNode = null;
+	private Value _returnValue = null;
 	private TypeId _returnType = null;
 
 	private String _externalName = "";
@@ -155,15 +155,16 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
-		_returnNode = new Value(_gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE));
+		_returnValue = new Value(_gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE));
 		
 		for(FuncParameter funcParameter : parameterValues) {
-			funcParameter.getNode().addDependentNode(_returnNode.getNode());
+			funcParameter.getNode().addDependentNode(_returnValue.getNode());
 		}
 	}
 
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
 		_gvplGraph = new Graph(_externalName);
+		_returnValue = new Value();
 		
 		if(_body != null) {
 			_parametersMap = new LinkedHashMap<>();
@@ -188,7 +189,7 @@ public class Function extends AstLoaderCDT {
 		_gvplGraph = null;
 		_parametersMap = null;
 		
-		return _returnNode;
+		return _returnValue;
 	}
 
 	private void setName(String name) {
@@ -201,7 +202,7 @@ public class Function extends AstLoaderCDT {
 	}
 
 	public void setReturnNode(Value returnNode) {
-		_returnNode = returnNode;
+		_returnValue = returnNode;
 	}
 
 	@Override
