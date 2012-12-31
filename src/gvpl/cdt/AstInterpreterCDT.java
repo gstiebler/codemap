@@ -31,11 +31,14 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
@@ -90,8 +93,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				Function func = loadFunction((IASTFunctionDefinition) declaration);
 				if (func != null)
 					_mainFunction = func;
-			} // if it's a class/struct
-			else if (declaration instanceof IASTSimpleDeclaration) {
+			} else if (declaration instanceof IASTSimpleDeclaration) {// if it's a class/struct
 				IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) declaration;
 				DebugOptions.setStartingLine(declaration.getFileLocation().getStartingLineNumber());
 				IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
@@ -107,11 +109,22 @@ public class AstInterpreterCDT extends AstInterpreter {
 					if(declarators.length > 1)
 						logger.fatal("what to do?");
 					
-					loadFunctionDeclaration((CPPASTFunctionDeclarator) declarators[0]);
+					IASTDeclarator decl0 = declarators[0];
+					if (decl0 instanceof CPPASTFunctionDeclarator) {
+						CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) decl0;
+						loadFunctionDeclaration(funcDecl);
+					} else if (decl0 instanceof CPPASTDeclarator) {
+						logger.error("Do something here. {}", decl0.getClass());
+					} else
+						logger.fatal("you're doing it wrong. {}", decl0.getClass());
+				} else if(declSpec instanceof CPPASTNamedTypeSpecifier) {
+					loadClassDecl((CPPASTNamedTypeSpecifier) declSpec);
 				} else
 					logger.fatal("you're doing it wrong. {}", declSpec.getClass());
+			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
+				logger.fatal("Not implemented: {}", declaration.getClass());
 			} else
-				logger.fatal("Deu merda aqui." + declaration.getClass());
+				logger.fatal("Deu merda aqui. {}", declaration.getClass());
 		}
 	}
 	
@@ -201,6 +214,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 			name = ((CPPASTCompositeTypeSpecifier)strDecl).getName();
 		else if(strDecl instanceof CPPASTElaboratedTypeSpecifier)
 			name = ((CPPASTElaboratedTypeSpecifier)strDecl).getName();
+		else if(strDecl instanceof CPPASTNamedTypeSpecifier)
+			name = ((CPPASTNamedTypeSpecifier)strDecl).getName();
 		else
 			logger.fatal("you're doing it wrong. {}", strDecl.getClass());
 		

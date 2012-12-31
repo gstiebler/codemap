@@ -34,8 +34,8 @@ public class Codemap {
 	static Logger logger = LogManager.getLogger(Codemap.class.getName());
 	
 	public static void main(String[] args) {
-		String basePath = args[0];
-		String mainFile = basePath + "/" + args[1];
+		String basePath = args[0] + "/";
+		String mainFile = basePath + args[1];
 		execute(basePath, mainFile);
 	}
 	

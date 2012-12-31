@@ -5,24 +5,32 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "2_9_9";
-	node_000007 [ label = "*a", startingline=12 ]
-	node_000008 [ label = "b", startingline=12 ]
+startinglines = "15_22_22";
+	node_000006 [ label = "*a", startingline=25 ]
+	node_000007 [ label = "b", startingline=25 ]
+	node_000011 [ label = "c", startingline=19 ]
 subgraph cluster_2 {
 label = "func";
 parent = "cluster_1";
-startinglines = "9_9_11";
+startinglines = "22_22_24";
 	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=5 ]
 	node_000003 [ label = "*x", startingline=5 ]
 	node_000004 [ label = "x_pointed", startingline=5 ]
-	node_000005 [ label = "func", style=filled, fillcolor="#FFFFD0", startinglines=6 ]
-	node_000006 [ label = "*x", startingline=6 ]
+	node_000005 [ label = "*x", startingline=25 ]
+}
+subgraph cluster_3 {
+label = "func2";
+parent = "cluster_1";
+startinglines = "6_25_26";
+	node_000009 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
+	node_000010 [ label = "classTemp_pointed._a", startingline=18 ]
 }
 }
-	node_000007 -> node_000008
+	node_000006 -> node_000007
 	node_000002 -> node_000003
 	node_000003 -> node_000004
-	node_000004 -> node_000006
-	node_000005 -> node_000007
-	node_000006 -> node_000005
+	node_000004 -> node_000005
+	node_000005 -> node_000006
+	node_000009 -> node_000010
+	node_000010 -> node_000011
 }
