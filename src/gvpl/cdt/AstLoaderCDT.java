@@ -30,6 +30,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 public abstract class AstLoaderCDT extends AstLoader {
@@ -96,6 +97,8 @@ public abstract class AstLoaderCDT extends AstLoader {
 		} else if (expr instanceof CPPASTLiteralExpression) {
 			//probably "this" pointer
 			return null;
+		} else if (expr instanceof CPPASTFunctionCallExpression) {
+			logger.fatal("not implemented");
 		} else {
 			logger.fatal("Type not found {}", expr.getClass());
 		}

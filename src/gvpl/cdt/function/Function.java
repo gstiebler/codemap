@@ -9,6 +9,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
 import gvpl.common.TypeId;
+import gvpl.common.Value;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -44,7 +45,7 @@ public class Function extends AstLoaderCDT {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
-	private GraphNode _returnNode = null;
+	private Value _returnNode = null;
 	private TypeId _returnType = null;
 
 	private String _externalName = "";
@@ -154,14 +155,14 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
-		_returnNode = _gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE);
+		_returnNode = new Value(_gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE));
 		
 		for(FuncParameter funcParameter : parameterValues) {
-			funcParameter.getNode().addDependentNode(_returnNode);
+			funcParameter.getNode().addDependentNode(_returnNode.getNode());
 		}
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
 		_gvplGraph = new Graph(_externalName);
 		
 		if(_body != null) {
@@ -199,7 +200,7 @@ public class Function extends AstLoaderCDT {
 		return _externalName;
 	}
 
-	public void setReturnNode(GraphNode returnNode) {
+	public void setReturnNode(Value returnNode) {
 		_returnNode = returnNode;
 	}
 
@@ -277,9 +278,9 @@ public class Function extends AstLoaderCDT {
 		return _ownBinding;
 	}
 
-	public GraphNode addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {
+	public Value addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {
 		IVar varDecl = addVarDecl(functionName, type, graph);
-		return varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph);
+		return new Value(varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph));
 	}
 	
 	@Override

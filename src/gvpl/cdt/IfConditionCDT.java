@@ -21,7 +21,7 @@ public class IfConditionCDT {
 
 	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
 		IASTExpression condition = ifStatement.getConditionExpression();
-		GraphNode conditionNode = instructionLine.loadValue(condition);
+		GraphNode conditionNode = instructionLine.loadValue(condition).getNode();
 		loadIfCondition(conditionNode, ifStatement.getThenClause(), ifStatement.getElseClause(),
 				instructionLine);
 	}

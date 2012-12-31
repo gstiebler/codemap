@@ -8,8 +8,8 @@ import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
+import gvpl.common.Value;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 
 import java.util.List;
 
@@ -107,9 +107,9 @@ public class MemberFunc extends Function {
 		return super.getVarFromBinding(binding);
 	}
 
-	public GraphNode addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar) {
 		_thisVar = thisVar;
-		GraphNode result = super.addFuncRef(parameterValues, gvplGraph);
+		Value result = super.addFuncRef(parameterValues, gvplGraph);
 		_thisVar = null;
 		return result;
 	}

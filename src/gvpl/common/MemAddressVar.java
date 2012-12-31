@@ -113,7 +113,7 @@ public class MemAddressVar extends Var {
 		return this;
 	}
 	
-	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
+	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, AstLoaderCDT astLoader) {
 		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,
 				parameterValues, graph, astLoader);

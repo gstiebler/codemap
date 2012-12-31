@@ -137,15 +137,15 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	}
 
-	public static GraphNode loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
+	public static Value loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
 			MemberFunc memberFunc, List<FuncParameter> parameterValues, Graph graph,
 			AstLoader astLoader) {
 
 		if (possiblePointedVar._finalVar == null) {
 			GraphNode trueNode = loadMemberFuncRefRecursive(possiblePointedVar._varTrue,
-					memberFunc, parameterValues, graph, astLoader);
+					memberFunc, parameterValues, graph, astLoader).getNode();
 			GraphNode falseNode = loadMemberFuncRefRecursive(possiblePointedVar._varFalse,
-					memberFunc, parameterValues, graph, astLoader);
+					memberFunc, parameterValues, graph, astLoader).getNode();
 
 			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
 
@@ -153,7 +153,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			falseNode.addDependentNode(ifOpNode);
 			possiblePointedVar._conditionNode.addDependentNode(ifOpNode);
 
-			return ifOpNode;
+			return new Value(ifOpNode);
 		} else {
 			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
 			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);

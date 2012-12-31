@@ -168,5 +168,10 @@ public class BasicTest {
 	public void events() {
 		TestsUtil.baseTest("events");
 	}
+
+	@Test
+	public void funcReturnPointer() {
+		TestsUtil.baseTest("func_return_pointer");
+	}
 	
 }

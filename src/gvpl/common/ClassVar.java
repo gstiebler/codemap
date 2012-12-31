@@ -4,7 +4,6 @@ import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -163,7 +162,7 @@ public class ClassVar extends Var implements IClassVar{
 			internalVar.setGraph(graph);
 	}
 	
-	public GraphNode loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
+	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, AstLoaderCDT astLoader) {
 		return memberFunc.addFuncRef(parameterValues, graph, this);
 	}

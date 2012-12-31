@@ -12,6 +12,7 @@ import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
+import gvpl.common.Value;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -51,6 +52,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIdExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
@@ -131,7 +133,7 @@ public class InstructionLine {
 	private void loadSwitch(CPPASTSwitchStatement switchStatement) {
 		IASTExpression controlExpr = switchStatement.getControllerExpression();
 		CPPASTCompoundStatement body = (CPPASTCompoundStatement) switchStatement.getBody();
-		GraphNode controlNode = loadValue(controlExpr);
+		GraphNode controlNode = loadValue(controlExpr).getNode();
 		int numStatements = body.getStatements().length;
 		
 		IASTStatement defaultStatement = null;
@@ -151,7 +153,7 @@ public class InstructionLine {
 				statement = body.getStatements()[i];
 				if(statement instanceof CPPASTCaseStatement) {
 					IASTExpression caseExpr = ((CPPASTCaseStatement) statement).getExpression();
-					condExpr = loadValue(caseExpr);
+					condExpr = loadValue(caseExpr).getNode();
 				} else if (statement instanceof CPPASTExpressionStatement) {
 					i++;
 					break;
@@ -193,6 +195,7 @@ public class InstructionLine {
 	 *            Code with the declaration
 	 */
 	public void LoadVariableInitialization(IVar lhsVar, IASTDeclarator decl) {
+		logger.debug("Variable initialization: {}", lhsVar);
 		IASTInitializer initializer = decl.getInitializer();	
 		if(initializer == null) //variable is not initialized
 		{
@@ -221,7 +224,7 @@ public class InstructionLine {
 			return;
 		}
 
-		GraphNode rhsValue = loadValue(rhsExpr);
+		GraphNode rhsValue = loadValue(rhsExpr).getNode();
 		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentAstLoader.getGraph());
 	}
 	
@@ -234,7 +237,7 @@ public class InstructionLine {
 			parameterValues = loadFunctionParameters(constructorFunc, initExpr);
 		} else {
 			parameterValues = new ArrayList<FuncParameter>();
-			GraphNode node = loadValue(initExpr);
+			GraphNode node = loadValue(initExpr).getNode();
 			FuncParameter funcParameter = new FuncParameter(node, IndirectionType.E_INDIFERENT);
 			parameterValues.add(funcParameter);
 		}
@@ -245,16 +248,16 @@ public class InstructionLine {
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
-	public GraphNode loadValue(IASTExpression expr) {
-		logger.debug("Node type {}", expr.getClass());
-		GraphNode result = null;
+	public Value loadValue(IASTExpression expr) {
+		logger.debug("Load Value, Node type {}", expr.getClass());
+		Value result = null;
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			result = _parentAstLoader.getNodeFromExpr(expr);
+			result = new Value(_parentAstLoader.getNodeFromExpr(expr));
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
-			result = loadBinOp((IASTBinaryExpression) expr);
+			result = new Value(loadBinOp((IASTBinaryExpression) expr));
 		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
-			result = loadDirectValue((IASTLiteralExpression) expr);
+			result = new Value(loadDirectValue((IASTLiteralExpression) expr));
 		} else if (expr instanceof IASTFunctionCallExpression) {// Eh umachamada
 																// a funcao
 			result = loadFunctionCall((IASTFunctionCallExpression) expr);
@@ -262,11 +265,11 @@ public class InstructionLine {
 														// a struct
 			IVar varDecl = _parentAstLoader.getVarFromFieldRef((IASTFieldReference) expr);
 			if(varDecl == null)
-				result = GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ");
+				result = new Value(GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ"));
 			else
-				result = varDecl.getCurrentNode();
+				result = new Value(varDecl);
 		} else if (expr instanceof IASTUnaryExpression) {
-			result = loadUnaryExpr((IASTUnaryExpression) expr);
+			result = new Value(loadUnaryExpr((IASTUnaryExpression) expr));
 		} else if (expr instanceof CPPASTArraySubscriptExpression) {			
 			//It's an array
 			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
@@ -274,12 +277,12 @@ public class InstructionLine {
 			IVar varDecl = _parentAstLoader.getVarFromExpr(arrayExpr);
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
-			result = varDecl.getCurrentNode();
+			result = new Value(varDecl);
 		} else
 			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
 		if(result == null)
-			result = _gvplGraph.addGraphNode("INVALID_NODE_PROBLEM", NodeType.E_DIRECT_VALUE);
+			result = new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM", NodeType.E_DIRECT_VALUE));
 		return result;
 	}
 
@@ -291,14 +294,14 @@ public class InstructionLine {
 	private void loadReturnStatement(IASTReturnStatement statement) {
 		IASTReturnStatement returnStat = (IASTReturnStatement) statement;
 
-		GraphNode rvalue = loadValue(returnStat.getReturnValue());
+		GraphNode rvalue = loadValue(returnStat.getReturnValue()).getNode();
 
 		Function function = _parentAstLoader.getFunction();
 		TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
 		Function parentFunc = _parentAstLoader.getFunction();
-		GraphNode returnNode = parentFunc.addReturnStatement(rvalue, returnType,
+		Value returnNode = parentFunc.addReturnStatement(rvalue, returnType,
 				function.getName(), _gvplGraph);
 
 		function.setReturnNode(returnNode);
@@ -334,14 +337,14 @@ public class InstructionLine {
 		}
 
 		logger.debug("loading rhs value");
-		GraphNode rhsValue = loadValue(rhsExpr);
+		GraphNode rhsValue = loadValue(rhsExpr).getNode();
 
 		if (binExpr.getOperator() == IASTBinaryExpression.op_assign) {
 			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentAstLoader.getGraph());
 			return null;
 		}
 
-		GraphNode lhsValue = loadValue(binExpr.getOperand1());
+		GraphNode lhsValue = loadValue(binExpr.getOperand1()).getNode();
 		eAssignBinOp op = CppMaps.getAssignBinOpTypes(binExpr.getOperator());
 		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue, rhsValue, _parentAstLoader);
 	}
@@ -356,7 +359,7 @@ public class InstructionLine {
 		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsVar, IndirectionType.E_REFERENCE));
-		return opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar);
+		return opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar).getNode();
 	}
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
@@ -386,15 +389,16 @@ public class InstructionLine {
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentAstLoader, _astInterpreter, classDecl.getTypeId());
-			return;
+		} else if (rhsOp instanceof CPPASTFunctionCallExpression) {
+			GraphNode result = loadFunctionCall((IASTFunctionCallExpression) rhsOp).getNode();
+			logger.fatal("not implemented");
 		} else {
 			IVar rhsPointer = loadPointedVar(rhsOp, _parentAstLoader);
 			lhsPointer.setPointedVar(rhsPointer);
-			return;
 		}
 	}
 
-	private GraphNode loadFunctionCall(IASTFunctionCallExpression funcCall) {
+	private Value loadFunctionCall(IASTFunctionCallExpression funcCall) {
 		IASTExpression paramExpr = funcCall.getParameterExpression();
 		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		
@@ -424,7 +428,7 @@ public class InstructionLine {
 		return null;
 	}
 	
-	GraphNode loadStaticMethod(CPPASTQualifiedName qName, IASTExpression paramExpr) {
+	Value loadStaticMethod(CPPASTQualifiedName qName, IASTExpression paramExpr) {
 		IASTName[] names = qName.getNames();
 		IASTName className = names[0];
 		IASTName funcName = names[1];
@@ -441,7 +445,7 @@ public class InstructionLine {
 	 * @param stLine
 	 * @return
 	 */
-	private GraphNode loadSimpleFunc(IBinding idExprBinding, IASTExpression paramExpr) {
+	private Value loadSimpleFunc(IBinding idExprBinding, IASTExpression paramExpr) {
 		Function func = _astInterpreter.getFuncId(idExprBinding);
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
@@ -456,15 +460,14 @@ public class InstructionLine {
 	 * @param stLine
 	 * @return The graph node of the result of the function
 	 */
-	private GraphNode loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr) {
+	private Value loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr) {
 		MemberFunc parentMF = (MemberFunc) _parentAstLoader;
 		Function func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 		
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		MemberFunc memberFunc = (MemberFunc) func;
 		ClassVar var = parentMF.getThisReference();
-		GraphNode node =  memberFunc.addFuncRef(parameterValues, _gvplGraph, var);
-		return node;
+		return memberFunc.addFuncRef(parameterValues, _gvplGraph, var);
 	}
 	
 	/**
@@ -473,7 +476,7 @@ public class InstructionLine {
 	 * @param paramExpr
 	 * @return The graph node of the result of the function
 	 */
-	private GraphNode loadVarMethod(IASTFunctionCallExpression funcCall, IASTExpression paramExpr) {
+	private Value loadVarMethod(IASTFunctionCallExpression funcCall, IASTExpression paramExpr) {
 		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 		IASTExpression ownerExpr = fieldRef.getFieldOwner();
 		IVar var = _parentAstLoader.getVarFromExpr(ownerExpr);
@@ -527,7 +530,7 @@ public class InstructionLine {
 				IVar var = _parentAstLoader.getVarFromExpr(parameter);
 				localParameter = new FuncParameter(var, IndirectionType.E_REFERENCE);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE) {
-				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
+				localParameter = new FuncParameter(loadValue(parameter).getNode(), IndirectionType.E_VARIABLE);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_FUNCTION_POINTER) {
 				CPPASTIdExpression idExpr = (CPPASTIdExpression) parameter;
 				IBinding binding = idExpr.getName().resolveBinding();
@@ -544,8 +547,8 @@ public class InstructionLine {
 
 	GraphNode loadBinOp(IASTBinaryExpression binOp) {
 		eBinOp op = CppMaps.getBinOpType(binOp.getOperator());
-		GraphNode lvalue = loadValue(binOp.getOperand1());
-		GraphNode rvalue = loadValue(binOp.getOperand2());
+		GraphNode lvalue = loadValue(binOp.getOperand1()).getNode();
+		GraphNode rvalue = loadValue(binOp.getOperand2()).getNode();
 		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentAstLoader);
 	}
 
@@ -600,7 +603,7 @@ public class InstructionLine {
 
 			return pointerVar.getCurrentNode();
 		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_bracketedPrimary) {
-			return loadValue(unExpr.getOperand());
+			return loadValue(unExpr.getOperand()).getNode();
 		} else
 			logger.fatal("not implemented");
 		return null;
