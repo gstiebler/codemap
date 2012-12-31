@@ -3,6 +3,7 @@ package gvpl.common.ifclasses;
 import gvpl.common.IVar;
 import gvpl.common.InToExtVar;
 import gvpl.common.MemAddressVar;
+import gvpl.common.Value;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
@@ -75,7 +76,7 @@ public class IfCondition {
 			GraphNode ifOpNode = createIfNode(graph, conditionNode, trueNode, falseNode);
 
 			extVar.setGraph(graph);
-			extVar.receiveAssign(NodeType.E_VARIABLE, ifOpNode, graph);
+			extVar.receiveAssign(NodeType.E_VARIABLE, new Value(ifOpNode), graph);
 		}
 	}
 

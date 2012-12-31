@@ -73,14 +73,14 @@ public class Var implements IVar {
 		updateNode(_gvplGraph.addGraphNode(this, nodeType));
 	}
 
-	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
+	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter) {
-		if (parameter_values != null) {
-			if (parameter_values.size() > 1)
+		if (parameterValues != null) {
+			if (parameterValues.size() > 1)
 				logger.fatal("Primitive type receiving more than 1 parameter in initialization");
 
-			GraphNode parameterNode = parameter_values.get(0).getNode();
-			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterNode, _gvplGraph);
+			Value parameterValue = parameterValues.get(0).getValue();
+			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterValue, _gvplGraph);
 		} else
 			initializeVar(nodeType, graph, astLoader, astInterpreter);
 	}
@@ -90,9 +90,9 @@ public class Var implements IVar {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, Graph graph) {
+	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
 		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
-		rhsNode.addDependentNode(lhsNode);
+		rhsValue.getNode().addDependentNode(lhsNode);
 		updateNode(lhsNode);
 
 		return lhsNode;

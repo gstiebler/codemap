@@ -70,9 +70,9 @@ public class MemAddressVar extends Var {
 	}
 
 	@Override
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, Graph graph) {
+	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
 		// Create a new node to the "pointer" variable
-		GraphNode newNode = super.receiveAssign(lhsType, rhsNode, graph);
+		GraphNode newNode = super.receiveAssign(lhsType, rhsValue, graph);
 		_onceWritten = true;
 
 		return newNode;

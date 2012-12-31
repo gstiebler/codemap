@@ -74,7 +74,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varTrue);
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varFalse);
 		} else {
-			possiblePointedVar._finalVar.receiveAssign(NodeType.E_VARIABLE, node, graph);
+			possiblePointedVar._finalVar.receiveAssign(NodeType.E_VARIABLE, new Value(node), graph);
 		}
 	}
 
@@ -188,9 +188,9 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	 * 
 	 * @return New node from assignment, the left from assignment
 	 */
-	public GraphNode receiveAssign(NodeType lhsType, GraphNode rhsNode, Graph graph) {
+	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
 		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
-		rhsNode.addDependentNode(lhsNode);
+		rhsValue.getNode().addDependentNode(lhsNode);
 		updateNode(lhsNode);
 
 		return lhsNode;

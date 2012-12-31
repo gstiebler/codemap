@@ -10,6 +10,7 @@ import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
+import gvpl.common.Value;
 import gvpl.common.Var;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
@@ -60,7 +61,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	    	String str = literal.getRawSignature();
 	    	Var tempVar = new Var(_gvplGraph, str, null);
 	    	GraphNode node = _gvplGraph.addGraphNode(str, NodeType.E_DIRECT_VALUE);
-	    	tempVar.receiveAssign(NodeType.E_DIRECT_VALUE, node, _gvplGraph);
+	    	tempVar.receiveAssign(NodeType.E_DIRECT_VALUE, new Value(node), _gvplGraph);
 	    	return tempVar;
 	    }
 		
@@ -72,6 +73,14 @@ public abstract class AstLoaderCDT extends AstLoader {
 		if(var != null)
 			return var.getCurrentNode();
 		return null;
+	}
+	
+	protected Value getValueFromExpr(IASTExpression expr) {
+		IVar var = getVarFromExpr(expr);
+		if(var != null)
+			return new Value(var);
+		
+		return new Value(getNodeFromExpr(expr));
 	}
 	
 	abstract protected IVar getVarFromBinding(IBinding binding);

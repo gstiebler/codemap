@@ -10,23 +10,17 @@ public class FuncParameter {
 		E_VARIABLE, E_POINTER, E_REFERENCE, E_FUNCTION_POINTER, E_INDIFERENT
 	};
 	
-	private IVar _varDecl = null;
-	private GraphNode _node = null;
+	private Value _value = null;
 	private Function _functionPointer = null;
 	private IndirectionType _indirectionType = null;
 	int _type = -1;
 	
-	public FuncParameter(IVar varDecl, IndirectionType type) {
-		_varDecl = varDecl;
+	public FuncParameter(Value value, IndirectionType type) {
+		_value = value;
 		_indirectionType = type;
 	}
 	
 	public FuncParameter(IndirectionType type) {
-		_indirectionType = type;
-	}
-	
-	public FuncParameter(GraphNode node, IndirectionType type) {
-		_node = node;
 		_indirectionType = type;
 	}
 	
@@ -35,15 +29,8 @@ public class FuncParameter {
 		_indirectionType = IndirectionType.E_FUNCTION_POINTER;
 	}
 
-	public GraphNode getNode() {
-		if(_varDecl != null)
-			return _varDecl.getCurrentNode();
-		
-		return _node;
-	}
-	
-	public IVar getVar() {
-		return _varDecl;
+	public Value getValue() {
+		return _value;
 	}
 	
 	public IndirectionType getType() {

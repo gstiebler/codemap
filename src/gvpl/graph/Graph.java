@@ -6,6 +6,7 @@ import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
 import gvpl.common.AstLoader;
 import gvpl.common.IVar;
+import gvpl.common.Value;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
@@ -207,7 +208,7 @@ public class Graph {
 		rhsNode.addDependentNode(binOpNode);
 
 		return lhs_varDecl
-				.receiveAssign(NodeType.E_VARIABLE, binOpNode, this);
+				.receiveAssign(NodeType.E_VARIABLE, new Value(binOpNode), this);
 	}
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode) {

@@ -158,7 +158,7 @@ public class Function extends AstLoaderCDT {
 		_returnValue = new Value(_gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE));
 		
 		for(FuncParameter funcParameter : parameterValues) {
-			funcParameter.getNode().addDependentNode(_returnValue.getNode());
+			funcParameter.getValue().getNode().addDependentNode(_returnValue.getNode());
 		}
 	}
 
@@ -279,9 +279,10 @@ public class Function extends AstLoaderCDT {
 		return _ownBinding;
 	}
 
-	public Value addReturnStatement(GraphNode rvalue, TypeId type, String functionName, Graph graph) {
+	public Value addReturnStatement(Value rvalue, TypeId type, String functionName, Graph graph) {
 		IVar varDecl = addVarDecl(functionName, type, graph);
-		return new Value(varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph));
+		varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph);
+		return new Value(varDecl);
 	}
 	
 	@Override
@@ -300,7 +301,7 @@ public class Function extends AstLoaderCDT {
 		IBinding parameterBinding = getBindingFromExpr(expr);
 		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
 		if(funcParameter != null)
-			return funcParameter.getNode();
+			return funcParameter.getValue().getNode();
 		
 		logger.fatal("should not be here, wtf is '{}'?", expr.getRawSignature());
 		return null;
@@ -309,8 +310,12 @@ public class Function extends AstLoaderCDT {
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
 		FuncParameter funcParameter = _originalParametersMap.get(binding);
-		if(funcParameter != null)
-			return funcParameter.getVar();
+		if(funcParameter != null) {
+			Value value = funcParameter.getValue();
+			if(value == null)
+				return null;
+			return value.getVar();
+		}
 		
 		return getLocalVar(binding);
 	}
@@ -325,7 +330,7 @@ public class Function extends AstLoaderCDT {
 		IBinding parameterBinding = getBindingFromExpr(expr);
 		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
 		if(funcParameter != null)
-			return funcParameter.getVar();
+			return funcParameter.getValue().getVar();
 		
 		return null;
 	}

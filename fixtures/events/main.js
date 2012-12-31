@@ -2,7 +2,7 @@
 var globalScriptManager = 0;
 
 function signal_connect(objectPointer, eventStr, func, userData) {
-	if(eventStr.getNode().getName() == '"clicked"') {
+	if(eventStr.getValue().getNode().getName() == '"clicked"') {
 		var paramsArray = new Array(objectPointer, userData);
 		globalScriptManager.addEventFunc(func, paramsArray);
 	}
