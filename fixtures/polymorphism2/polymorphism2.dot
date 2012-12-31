@@ -9,15 +9,15 @@ startinglines = "37_43_43";
 	node_000012 [ label = "classB._bMember", style=filled, fillcolor="#FFE9E9", startinglines=34 ]
 	node_000013 [ label = "true", style=filled, fillcolor="#E9FFE9", startinglines=49 ]
 	node_000020 [ label = "40", style=filled, fillcolor="#E9FFE9", startinglines=58 ]
-	node_000025 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=39 ]
-	node_000026 [ label = "a", startingline=39 ]
-	node_000027 [ label = "*bcPointer", startingline=59 ]
+	node_000023 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=39 ]
+	node_000024 [ label = "a", startingline=39 ]
+	node_000025 [ label = "*bcPointer", startingline=59 ]
+	node_000026 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=59 ]
+	node_000027 [ label = "classA._baseMember", startingline=59 ]
 	node_000028 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=59 ]
-	node_000029 [ label = "classA._baseMember", startingline=59 ]
-	node_000030 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=59 ]
-	node_000031 [ label = "classB._baseMember", startingline=59 ]
-	node_000032 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=60 ]
-	node_000033 [ label = "b", startingline=60 ]
+	node_000029 [ label = "classB._baseMember", startingline=59 ]
+	node_000030 [ label = "b", startingline=60 ]
+	node_000031 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=60 ]
 subgraph cluster_2 {
 label = "ClassA::ClassA";
 parent = "cluster_1";
@@ -48,40 +48,36 @@ label = "ClassA::process";
 parent = "cluster_1";
 startinglines = "51_55_58";
 	node_000021 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=25 ]
-	node_000022 [ label = "ClassA::process", style=filled, fillcolor="#FFFFD0", startinglines=25 ]
 }
 subgraph cluster_7 {
 label = "ClassB::process";
 parent = "cluster_1";
 startinglines = "55_58_25";
-	node_000023 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=39 ]
-	node_000024 [ label = "ClassB::process", style=filled, fillcolor="#FFFFD0", startinglines=39 ]
+	node_000022 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=39 ]
 }
 }
-	node_000012 -> node_000023
-	node_000013 -> node_000025
+	node_000012 -> node_000022
+	node_000013 -> node_000023
+	node_000013 -> node_000026
 	node_000013 -> node_000028
-	node_000013 -> node_000030
-	node_000013 -> node_000032
+	node_000013 -> node_000031
 	node_000020 -> node_000021
-	node_000025 -> node_000026
-	node_000026 -> node_000027
-	node_000027 -> node_000028
-	node_000027 -> node_000030
-	node_000028 -> node_000029
-	node_000029 -> node_000032
-	node_000030 -> node_000031
-	node_000031 -> node_000032
-	node_000032 -> node_000033
-	node_000003 -> node_000005
-	node_000005 -> node_000021
-	node_000005 -> node_000028
-	node_000008 -> node_000010
-	node_000011 -> node_000012
-	node_000010 -> node_000023
-	node_000010 -> node_000030
-	node_000021 -> node_000022
-	node_000022 -> node_000025
 	node_000023 -> node_000024
 	node_000024 -> node_000025
+	node_000025 -> node_000026
+	node_000025 -> node_000028
+	node_000026 -> node_000027
+	node_000027 -> node_000031
+	node_000028 -> node_000029
+	node_000029 -> node_000031
+	node_000031 -> node_000030
+	node_000003 -> node_000005
+	node_000005 -> node_000021
+	node_000005 -> node_000026
+	node_000008 -> node_000010
+	node_000011 -> node_000012
+	node_000010 -> node_000022
+	node_000010 -> node_000028
+	node_000021 -> node_000023
+	node_000022 -> node_000023
 }

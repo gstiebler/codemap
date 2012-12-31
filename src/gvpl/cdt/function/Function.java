@@ -201,8 +201,8 @@ public class Function extends AstLoaderCDT {
 		return _externalName;
 	}
 
-	public void setReturnNode(Value returnNode) {
-		_returnValue = returnNode;
+	public void setReturnValue(Value returnValue) {
+		_returnValue = returnValue;
 	}
 
 	@Override
@@ -303,7 +303,7 @@ public class Function extends AstLoaderCDT {
 		if(funcParameter != null)
 			return funcParameter.getValue().getNode();
 		
-		logger.fatal("should not be here, wtf is '{}'?", expr.getRawSignature());
+		logger.error("should not be here, wtf is '{}'?", expr.getRawSignature());
 		return null;
 	}
 	
@@ -342,7 +342,8 @@ public class Function extends AstLoaderCDT {
 	
 	@Override
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		return getVarFromBinding(binding).getVarInfo();
+		IVar var = getVarFromBinding(binding);
+		return var.getVarInfo();
 	}
 
 }

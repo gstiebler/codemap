@@ -1,6 +1,7 @@
 package gvpl.common;
 
 import gvpl.graph.GraphNode;
+import gvpl.graph.Graph.NodeType;
 
 public class Value {
 	IVar _var = null;
@@ -22,7 +23,10 @@ public class Value {
 		if(_var != null)
 			return _var.getCurrentNode();
 		
-		return _node;
+		if(_node != null)
+			return _node;
+		
+		return new GraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE);
 	}
 	
 	public IVar getVar() {

@@ -18,10 +18,10 @@ startinglines = "27_40_40";
 	node_000021 [ label = "17.15", style=filled, fillcolor="#E9FFE9", startinglines=50 ]
 	node_000022 [ label = "str2.seg.si.soEsse", startingline=50 ]
 	node_000023 [ label = "6.0", style=filled, fillcolor="#E9FFE9", startinglines=52 ]
-	node_000043 [ label = "r", startingline=36 ]
-	node_000044 [ label = "/", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=54 ]
-	node_000045 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=54 ]
-	node_000046 [ label = "p", startingline=54 ]
+	node_000042 [ label = "r", startingline=36 ]
+	node_000043 [ label = "/", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=54 ]
+	node_000044 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=54 ]
+	node_000045 [ label = "p", startingline=54 ]
 subgraph cluster_2 {
 label = "sSeg::setM1";
 parent = "cluster_1";
@@ -50,7 +50,6 @@ startinglines = "17_50_52";
 	node_000039 [ label = "str2.seg.si.soEsse", startingline=35 ]
 	node_000040 [ label = "7", style=filled, fillcolor="#E9FFE9", startinglines=36 ]
 	node_000041 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=36 ]
-	node_000042 [ label = "sPri::inc_a5", style=filled, fillcolor="#FFFFD0", startinglines=36 ]
 }
 }
 	node_000011 -> node_000012
@@ -63,9 +62,9 @@ startinglines = "17_50_52";
 	node_000021 -> node_000022
 	node_000022 -> node_000038
 	node_000023 -> node_000028
+	node_000042 -> node_000043
 	node_000043 -> node_000044
 	node_000044 -> node_000045
-	node_000045 -> node_000046
 	node_000020 -> node_000035
 	node_000024 -> node_000025
 	node_000025 -> node_000026
@@ -79,11 +78,10 @@ startinglines = "17_50_52";
 	node_000032 -> node_000033
 	node_000034 -> node_000035
 	node_000035 -> node_000036
-	node_000036 -> node_000044
+	node_000036 -> node_000043
 	node_000037 -> node_000038
 	node_000038 -> node_000039
-	node_000039 -> node_000045
+	node_000039 -> node_000044
 	node_000040 -> node_000041
 	node_000041 -> node_000042
-	node_000042 -> node_000043
 }

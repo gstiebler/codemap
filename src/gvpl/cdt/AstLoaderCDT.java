@@ -138,7 +138,13 @@ public abstract class AstLoaderCDT extends AstLoader {
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
 			return getVarFromExprInternal(opExpr);
-		}
+		} else if (expr instanceof CPPASTFunctionCallExpression) {
+			//TODO gambiérre??
+			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
+			Value val = instructionLine.loadFunctionCall((CPPASTFunctionCallExpression) expr);
+			return val.getVar();
+		} else
+			logger.fatal("not implemented: {}", expr.getClass());
 		return null;
 	}
 

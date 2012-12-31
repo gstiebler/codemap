@@ -10,7 +10,7 @@ startinglines = "9_16_16";
 	node_000002 [ label = "a", startingline=17 ]
 	node_000003 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
 	node_000004 [ label = "b", startingline=18 ]
-	node_000016 [ label = "l", startingline=13 ]
+	node_000014 [ label = "l", startingline=13 ]
 subgraph cluster_2 {
 label = "func1";
 parent = "cluster_1";
@@ -20,16 +20,14 @@ startinglines = "17_18_19";
 	node_000007 [ label = "resultado", startingline=11 ]
 	node_000008 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
 	node_000009 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=12 ]
-	node_000013 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=6 ]
-	node_000014 [ label = "resultado", startingline=6 ]
-	node_000015 [ label = "func1", style=filled, fillcolor="#FFFFD0", startinglines=13 ]
+	node_000012 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=6 ]
+	node_000013 [ label = "resultado", startingline=6 ]
 subgraph cluster_3 {
 label = "soma";
 parent = "cluster_2";
 startinglines = "19_11_12";
 	node_000010 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=5 ]
 	node_000011 [ label = "resultado", startingline=5 ]
-	node_000012 [ label = "soma", style=filled, fillcolor="#FFFFD0", startinglines=6 ]
 }
 }
 }
@@ -40,13 +38,11 @@ startinglines = "19_11_12";
 	node_000004 -> node_000009
 	node_000005 -> node_000006
 	node_000006 -> node_000007
-	node_000007 -> node_000013
+	node_000007 -> node_000012
 	node_000008 -> node_000010
 	node_000009 -> node_000010
+	node_000012 -> node_000013
 	node_000013 -> node_000014
-	node_000014 -> node_000015
-	node_000015 -> node_000016
 	node_000010 -> node_000011
 	node_000011 -> node_000012
-	node_000012 -> node_000013
 }

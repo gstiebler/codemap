@@ -300,11 +300,10 @@ public class InstructionLine {
 		TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
-		Function parentFunc = _parentAstLoader.getFunction();
-		Value returnValue = parentFunc.addReturnStatement(rvalue, returnType,
-				function.getName(), _gvplGraph);
+		//Value returnValue = function.addReturnStatement(rvalue, returnType,
+		//		function.getName(), _gvplGraph);
 
-		function.setReturnNode(returnValue);
+		function.setReturnValue(rvalue);
 	}
 
 	/**
@@ -399,7 +398,7 @@ public class InstructionLine {
 		}
 	}
 
-	private Value loadFunctionCall(IASTFunctionCallExpression funcCall) {
+	public Value loadFunctionCall(IASTFunctionCallExpression funcCall) {
 		IASTExpression paramExpr = funcCall.getParameterExpression();
 		IASTExpression nameExpr = funcCall.getFunctionNameExpression();
 		
@@ -566,7 +565,7 @@ public class InstructionLine {
 	 *            Address that contains the variable
 	 * @return The var that is pointed by the address
 	 */
-	public static IVar loadVarInAddress(IASTExpression address, AstLoaderCDT astLoader) {
+	static IVar loadVarInAddress(IASTExpression address, AstLoaderCDT astLoader) {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"

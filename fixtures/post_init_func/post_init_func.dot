@@ -12,18 +12,17 @@ startinglines = "4_15_15";
 	node_000004 [ label = "b", startingline=7 ]
 	node_000005 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
 	node_000006 [ label = "c", startingline=8 ]
-	node_000009 [ label = "c", startingline=17 ]
-	node_000010 [ label = "15", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
-	node_000011 [ label = "a", startingline=10 ]
-	node_000012 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
-	node_000013 [ label = "b", startingline=11 ]
-	node_000014 [ label = "d", startingline=12 ]
+	node_000008 [ label = "c", startingline=17 ]
+	node_000009 [ label = "15", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000010 [ label = "a", startingline=10 ]
+	node_000011 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
+	node_000012 [ label = "b", startingline=11 ]
+	node_000013 [ label = "d", startingline=12 ]
 subgraph cluster_2 {
 label = "soma";
 parent = "cluster_1";
 startinglines = "7_8_9";
 	node_000007 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=17 ]
-	node_000008 [ label = "soma", style=filled, fillcolor="#FFFFD0", startinglines=17 ]
 }
 }
 	node_000001 -> node_000002
@@ -31,9 +30,8 @@ startinglines = "7_8_9";
 	node_000003 -> node_000004
 	node_000004 -> node_000007
 	node_000005 -> node_000006
-	node_000009 -> node_000014
-	node_000010 -> node_000011
-	node_000012 -> node_000013
+	node_000008 -> node_000013
+	node_000009 -> node_000010
+	node_000011 -> node_000012
 	node_000007 -> node_000008
-	node_000008 -> node_000009
 }

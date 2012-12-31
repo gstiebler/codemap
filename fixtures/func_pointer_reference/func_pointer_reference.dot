@@ -10,8 +10,8 @@ startinglines = "13_18_18";
 	node_000004 [ label = "2", style=filled, fillcolor="#E9FFE9", startinglines=21 ]
 	node_000007 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
 	node_000010 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=24 ]
-	node_000015 [ label = "natural11", startingline=15 ]
-	node_000018 [ label = "refRef3", startingline=15 ]
+	node_000014 [ label = "natural11", startingline=15 ]
+	node_000016 [ label = "refRef3", startingline=15 ]
 subgraph cluster_2 {
 label = "UnicaClass::UnicaClass";
 parent = "cluster_1";
@@ -41,14 +41,12 @@ label = "funcao";
 parent = "cluster_1";
 startinglines = "24_9_26";
 	node_000013 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
-	node_000014 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
 }
 subgraph cluster_7 {
 label = "funcao";
 parent = "cluster_1";
 startinglines = "26_15_27";
-	node_000016 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
-	node_000017 [ label = "funcao", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
+	node_000015 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
 }
 }
 	node_000001 -> node_000003
@@ -56,11 +54,9 @@ startinglines = "26_15_27";
 	node_000007 -> node_000009
 	node_000010 -> node_000012
 	node_000003 -> node_000013
-	node_000003 -> node_000016
-	node_000006 -> node_000016
+	node_000003 -> node_000015
+	node_000006 -> node_000015
 	node_000009 -> node_000013
 	node_000013 -> node_000014
-	node_000014 -> node_000015
-	node_000016 -> node_000017
-	node_000017 -> node_000018
+	node_000015 -> node_000016
 }

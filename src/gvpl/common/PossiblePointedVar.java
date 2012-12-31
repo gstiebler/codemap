@@ -136,11 +136,19 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			possiblePointedVar._finalVar = converted;
 
 	}
+	
+	boolean nullPointer() {
+		return _finalVar == null && _varFalse == null && _varTrue == null;
+	}
 
 	public static Value loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
 			MemberFunc memberFunc, List<FuncParameter> parameterValues, Graph graph,
 			AstLoader astLoader) {
-
+		if(possiblePointedVar.nullPointer()) {
+			logger.error("not properly implemented");
+			return new Value();
+		}
+		
 		if (possiblePointedVar._finalVar == null) {
 			GraphNode trueNode = loadMemberFuncRefRecursive(possiblePointedVar._varTrue,
 					memberFunc, parameterValues, graph, astLoader).getNode();
