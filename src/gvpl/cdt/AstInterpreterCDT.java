@@ -122,6 +122,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 							IVar var = AstLoaderCDT.addVarDecl(name.toString(), type, 
 									declarator.getPointerOperators(), _gvplGraph, null, this);
 							_globalVars.put(binding, var);
+							
+							InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+							il.LoadVariableInitialization(var, declarator);
 						} else
 							logger.fatal("you're doing it wrong. {}", declarator.getClass());
 					}

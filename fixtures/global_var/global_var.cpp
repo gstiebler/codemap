@@ -5,4 +5,5 @@ int main()
 {
 	global_var = 3;
 	int a = global_var;
+	int b = global2;
 }

@@ -12,6 +12,7 @@ import gvpl.common.Value;
 import gvpl.graph.Graph;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -101,6 +102,12 @@ public class MemberFunc extends Function {
 			IVar var = _thisVar.getMember(memberId);
 			if(var != null)
 				return var;
+		} else {
+			logger.debug("listing members of class {}, binding {} not found", _parentClass.getName(), binding);
+			for(Map.Entry<IBinding, ClassMember> memberES : _parentClass._memberIdMap.entrySet()) {
+				logger.debug("member binding: {}, member: {}", memberES.getKey(), 
+						memberES.getValue().getName());
+			}
 		}
 		
 		// search the variable in the function parameters

@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
@@ -29,9 +31,12 @@ import debug.DebugOptions;
 
 public class ClassDeclCDT extends ClassDecl{
 
+	static Logger logger = LogManager.getLogger(ClassDecl.class.getName());
+
 	private AstInterpreterCDT _astInterpreter;
 
-	private Map<IBinding, ClassMember> _memberIdMap;
+	//TODO debug, should be private
+	public Map<IBinding, ClassMember> _memberIdMap;
 	private Map<CodeLocation, ClassMember> _membersLocation = new TreeMap<CodeLocation, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap;
 	private Map<CodeLocation, MemberFunc> _membersFuncLocation = new TreeMap<CodeLocation, MemberFunc>();
@@ -51,16 +56,21 @@ public class ClassDeclCDT extends ClassDecl{
 
 		// load every field
 		for (IASTDeclaration member : members) {
+			logger.debug("Member declaration: {}, type: {}", member.getRawSignature(), 
+					member.getClass());
 			if (member instanceof IASTFunctionDefinition)
 				functionDefinitions.add((IASTFunctionDefinition) member);
 			
-			if (!(member instanceof IASTSimpleDeclaration))
+			if (!(member instanceof IASTSimpleDeclaration)) {
 				continue;
+			}
 
 			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) member;
 			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
+				String rs = declarator.getRawSignature();
+				logger.debug("Member declarator: {}, type: {}", rs, declarator.getClass());
 				if (declarator instanceof IASTFunctionDeclarator)
 					functionDeclarators.add((CPPASTFunctionDeclarator) declarator);	
 				else
@@ -107,8 +117,8 @@ public class ClassDeclCDT extends ClassDecl{
 	}
 	
 	public void updateBindings(CPPASTCompositeTypeSpecifier classDecl) {
-		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
-		_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
+		//_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
+		//_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 		
 		List<CPPASTFunctionDeclarator> functionDeclarators = new ArrayList<CPPASTFunctionDeclarator>();
 		List<IASTFunctionDefinition> functionDefinitions = new ArrayList<IASTFunctionDefinition>();
@@ -134,7 +144,8 @@ public class ClassDeclCDT extends ClassDecl{
 			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
 			IASTName memberName = memberDeclarator.getName();
 			ClassMember structMember = _membersLocation.get(memberLocation);
-			_memberIdMap.put(memberName.resolveBinding(), structMember);
+			IBinding binding = memberName.resolveBinding();
+			_memberIdMap.put(binding, structMember);
 		}
 	}
 	

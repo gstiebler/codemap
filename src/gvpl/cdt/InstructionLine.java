@@ -216,8 +216,8 @@ public class InstructionLine {
 			return;
 		}
 		
-		IASTInitializerExpression init_exp = (IASTInitializerExpression) initializer;
-		IASTExpression rhsExpr = init_exp.getExpression();
+		IASTInitializerExpression initExp = (IASTInitializerExpression) initializer;
+		IASTExpression rhsExpr = initExp.getExpression();
 
 		if (lhsVar instanceof PointerVar) {
 			loadRhsPointer((PointerVar) lhsVar, rhsExpr);
@@ -225,7 +225,7 @@ public class InstructionLine {
 		}
 
 		Value rhsValue = loadValue(rhsExpr);
-		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentAstLoader.getGraph());
+		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _gvplGraph);
 	}
 	
 	public void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr) {
@@ -604,8 +604,10 @@ public class InstructionLine {
 			return pointerVar.getCurrentNode();
 		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_bracketedPrimary) {
 			return loadValue(unExpr.getOperand()).getNode();
+		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_not) {
+			logger.error("not implemented 'not' {}", unExpr.getRawSignature());
 		} else
-			logger.fatal("not implemented");
+			logger.error("not implemented {}", unExpr.getRawSignature());
 		return null;
 	}
 
