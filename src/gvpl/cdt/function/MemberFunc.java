@@ -96,10 +96,14 @@ public class MemberFunc extends Function {
 
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
-		ClassMember member = _parentClass.getMember(binding);
+		ClassMember member = _parentClass.getMember(binding);		
 		if(member != null) {
+			IVar var = _astInterpreter.getGlobalVar(binding);
+			if(var != null)
+				return var;
+			
 			MemberId memberId = member.getMemberId();
-			IVar var = _thisVar.getMember(memberId);
+			var = _thisVar.getMember(memberId);
 			if(var != null)
 				return var;
 		} else {

@@ -1,0 +1,33 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+	node_000001 [ label = "0", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000002 [ label = "Class::_globalVar", startingline=9 ]
+	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000004 [ label = "Class::_global2", startingline=10 ]
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "12_18_18";
+	node_000005 [ label = "b", startingline=20 ]
+	node_000006 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=21 ]
+	node_000007 [ label = "Class::_global2", startingline=21 ]
+	node_000011 [ label = "c", startingline=23 ]
+subgraph cluster_2 {
+label = "Class::func";
+parent = "cluster_1";
+startinglines = "20_21_22";
+	node_000008 [ label = "a", startingline=14 ]
+	node_000009 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
+	node_000010 [ label = "Class::_globalVar", startingline=15 ]
+}
+}
+	node_000001 -> node_000002
+	node_000002 -> node_000005
+	node_000003 -> node_000004
+	node_000006 -> node_000007
+	node_000007 -> node_000008
+	node_000009 -> node_000010
+	node_000010 -> node_000011
+}

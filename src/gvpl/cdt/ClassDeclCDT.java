@@ -115,10 +115,6 @@ public class ClassDeclCDT extends ClassDecl{
 			_memberIdMap.put(memberName.resolveBinding(), classMember);
 			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
 			_membersLocation.put(memberLocation, classMember);
-			
-			IVar staticMemberInstance = AstLoader.addVarDecl(memberName.toString(), 
-					classMember.getMemberType(), graph, _astInterpreter);
-			_staticMemberInstances.put(memberId, staticMemberInstance);
 		}
 		
 		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)
@@ -259,9 +255,5 @@ public class ClassDeclCDT extends ClassDecl{
 	@Override
 	protected Iterable<MemberFunc> getMemberFuncList() {
 		return _memberFuncIdMap.values();
-	}
-	
-	IVar getStaticMember(MemberId memberId) {
-		return _staticMemberInstances.get(memberId);
 	}
 }
