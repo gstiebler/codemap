@@ -178,5 +178,10 @@ public class BasicTest {
 	public void globalVar() {
 		TestsUtil.baseTest("global_var");
 	}
+
+	@Test
+	public void staticMember() {
+		TestsUtil.baseTest("static_member");
+	}
 	
 }

@@ -11,6 +11,7 @@ public class ClassMember {
 	private String _name;
 	private TypeId _type;
 	private IndirectionType _indirectionType;
+	public boolean _isStatic;
 
 	public ClassMember(MemberId id, String name, TypeId type) {
 		_id = id;

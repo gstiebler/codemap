@@ -4,8 +4,10 @@ import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
+import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
+import gvpl.graph.Graph;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -15,6 +17,7 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
@@ -79,7 +82,7 @@ public class ClassDeclCDT extends ClassDecl{
 		}
 	}
 	
-	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl) {
+	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl, Graph graph) {
 		_classDecl = classDecl;
 
 		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
@@ -101,12 +104,21 @@ public class ClassDeclCDT extends ClassDecl{
 			TypeId paramType = _astInterpreter.getType(simpleDecl.getDeclSpecifier());
 			
 			//TODO insert the correct IndirectionType
-			ClassMember structMember = new ClassMember(memberId, memberName.toString(),
+			ClassMember classMember = new ClassMember(memberId, memberName.toString(),
 					paramType);
-			_memberVarGraphNodes.put(structMember.getMemberId(), structMember);
-			_memberIdMap.put(memberName.resolveBinding(), structMember);
+			
+			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
+			classMember._isStatic = declSpec.getStorageClass() == IASTDeclSpecifier.sc_static;
+			
+			_memberVarGraphNodes.put(classMember.getMemberId(), classMember);
+			_memberIdMap.put(memberName.resolveBinding(), classMember);
 			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
-			_membersLocation.put(memberLocation, structMember);
+			_membersLocation.put(memberLocation, classMember);
+			
+			
+
+			IVar staticMemberInstance = parentAstLoader.addVarDecl(memberName, classMember.getMemberType(), graph);
+			_memberInstances.put(memberId, );
 		}
 		
 		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)
