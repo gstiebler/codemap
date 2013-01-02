@@ -94,7 +94,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		VarInfo varInfo = getTypeFromVarBinding(binding);
 		String name = binding.getName();
 		
-		IVar var =  instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, this, _astInterpreter);
+		IVar var = instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, _astInterpreter);
 		//TODO only initialize a variable that will be read. Otherwise, the nodes generated
 		// in the line below will never be used
 		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);

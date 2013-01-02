@@ -27,8 +27,7 @@ public class ClassVar extends Var implements IClassVar{
 	
 	ClassDecl _classDecl;
 
-	public ClassVar(Graph graph, String name, ClassDecl classDecl,
-			AstLoader parentAstLoader) {
+	public ClassVar(Graph graph, String name, ClassDecl classDecl, AstInterpreter astInterpreter) {
 		super(graph, name, classDecl.getTypeId());
 		_classDecl = classDecl;
 
@@ -38,14 +37,14 @@ public class ClassVar extends Var implements IClassVar{
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			IVar memberInstance = parentAstLoader.addVarDecl(memberName,
-					struct_member.getMemberType(), _gvplGraph);
+			IVar memberInstance = AstLoader.addVarDecl(memberName,
+					struct_member.getMemberType(), _gvplGraph, astInterpreter);
 			addMember(entry.getKey(), memberInstance);
 		}
 		
 		for(ClassDecl parentClass : _classDecl.getParentClasses()) {
 			logger.debug("Parent instance of {} from {}", parentClass.getName(), name);
-			ClassVar parentInstance = new ClassVar(graph, name, parentClass, parentAstLoader);
+			ClassVar parentInstance = new ClassVar(graph, name, parentClass, astInterpreter);
 			_parentInstances.add(parentInstance);
 		}
 	}

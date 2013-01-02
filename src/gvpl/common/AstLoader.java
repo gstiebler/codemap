@@ -20,7 +20,7 @@ public abstract class AstLoader {
 	protected Graph _gvplGraph = null;
 	
 	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
-			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
+			Graph graph, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
 			IVar result = null;
@@ -28,7 +28,7 @@ public abstract class AstLoader {
 				result = new Var(graph, name, typeId);
 			} else {
 				ClassDecl classDecl = astInterpreter.getClassDecl(typeId);
-				result = new ClassVar(graph, name, classDecl, astLoader);
+				result = new ClassVar(graph, name, classDecl, astInterpreter);
 			}
 
 			return result;
@@ -48,8 +48,8 @@ public abstract class AstLoader {
 		return null;
 	}
 	
-	public IVar addVarDecl(String name, TypeId type, Graph graph) {
-		return instanceVar(IndirectionType.E_VARIABLE, name, type, graph, this, getAstInterpreter());
+	public static IVar addVarDecl(String name, TypeId type, Graph graph, AstInterpreter astInterpreter) {
+		return instanceVar(IndirectionType.E_VARIABLE, name, type, graph, astInterpreter);
 	}
 	
 	/**

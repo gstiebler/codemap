@@ -204,7 +204,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 				Graph graph, AstLoaderCDT astLoader, AstInterpreterCDT astInterpreter) {
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
-		IVar var = instanceVar(parameterVarType, name, type, graph, astLoader, astInterpreter);
+		IVar var = instanceVar(parameterVarType, name, type, graph, astInterpreter);
 		return var;
 	}
 	

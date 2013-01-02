@@ -280,7 +280,7 @@ public class Function extends AstLoaderCDT {
 	}
 
 	public Value addReturnStatement(Value rvalue, TypeId type, String functionName, Graph graph) {
-		IVar varDecl = addVarDecl(functionName, type, graph);
+		IVar varDecl = addVarDecl(functionName, type, graph, _astInterpreter);
 		varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph);
 		return new Value(varDecl);
 	}

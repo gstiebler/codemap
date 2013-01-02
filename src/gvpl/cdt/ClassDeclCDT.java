@@ -1,6 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.cdt.function.MemberFunc;
+import gvpl.common.AstLoader;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
@@ -115,10 +116,9 @@ public class ClassDeclCDT extends ClassDecl{
 			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
 			_membersLocation.put(memberLocation, classMember);
 			
-			
-
-			IVar staticMemberInstance = parentAstLoader.addVarDecl(memberName, classMember.getMemberType(), graph);
-			_memberInstances.put(memberId, );
+			IVar staticMemberInstance = AstLoader.addVarDecl(memberName.toString(), 
+					classMember.getMemberType(), graph, _astInterpreter);
+			_staticMemberInstances.put(memberId, staticMemberInstance);
 		}
 		
 		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)
@@ -259,5 +259,9 @@ public class ClassDeclCDT extends ClassDecl{
 	@Override
 	protected Iterable<MemberFunc> getMemberFuncList() {
 		return _memberFuncIdMap.values();
+	}
+	
+	IVar getStaticMember(MemberId memberId) {
+		return _staticMemberInstances.get(memberId);
 	}
 }

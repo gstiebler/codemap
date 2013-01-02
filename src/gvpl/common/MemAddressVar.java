@@ -81,8 +81,8 @@ public class MemAddressVar extends Var {
 	@Override
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter) {
-		IVar var = astLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
-				graph, astLoader, astInterpreter);
+		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
+				graph, astInterpreter);
 		var.initializeVar(nodeType, graph, astLoader, astInterpreter);
 		initializePointedVar(var);
 	}

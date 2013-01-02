@@ -268,7 +268,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		ClassDeclCDT classDecl = _classByLocation.get(classLocation);
 		if(classDecl == null) {
 			classDecl = loadClassDecl(strDecl);
-			classDecl.loadAstDecl(strDecl);
+			classDecl.loadAstDecl(strDecl, _gvplGraph);
 		} else {
 			addClassDeclInMaps(classDecl, strDecl.getName().resolveBinding());
 			classDecl.updateBindings(strDecl);
