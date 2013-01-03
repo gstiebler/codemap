@@ -1,13 +1,18 @@
 
 class Class
 {
-	static int _globalVar, _global2;
+	static int _globalVar;
+	static char *_strChar;
+	static int _global2;
+	static int *_intP;
 	
 	void static func();
 };
 
 int Class::_globalVar = 0;
 int Class::_global2 = 18;
+
+char* Class::_strChar = "teste string";
 
 void Class::func()
 {
@@ -21,4 +26,10 @@ int main()
 	Class::_global2 = 10;
 	Class::func();
 	int c = Class::_globalVar;
+	
+	char *temp;
+	temp = "temp str";
+	Class::_intP = new int;
+	*(Class::_intP) = 5;
+	Class::_strChar = "teste string";
 }

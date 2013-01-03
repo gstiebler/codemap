@@ -1,11 +1,9 @@
 package gvpl.cdt;
 
 import gvpl.cdt.function.MemberFunc;
-import gvpl.common.AstLoader;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
-import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -111,10 +109,14 @@ public class ClassDeclCDT extends ClassDecl{
 			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
 			classMember._isStatic = declSpec.getStorageClass() == IASTDeclSpecifier.sc_static;
 			
-			_memberVarGraphNodes.put(classMember.getMemberId(), classMember);
-			_memberIdMap.put(memberName.resolveBinding(), classMember);
-			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
-			_membersLocation.put(memberLocation, classMember);
+			if(classMember._isStatic) {
+				_astInterpreter.addGlobalVar(memberDeclarator, declSpec);
+			} else {
+				_memberVarGraphNodes.put(classMember.getMemberId(), classMember);
+				_memberIdMap.put(memberName.resolveBinding(), classMember);
+				CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
+				_membersLocation.put(memberLocation, classMember);
+			}
 		}
 		
 		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)

@@ -392,6 +392,10 @@ public class InstructionLine {
 		} else if (rhsOp instanceof CPPASTFunctionCallExpression) {
 			Value result = loadFunctionCall((IASTFunctionCallExpression) rhsOp);
 			lhsPointer.setPointedVar(result.getVar());
+		} else if (rhsOp instanceof IASTLiteralExpression) {
+			IVar var = AstLoaderCDT.addVarDecl(rhsOp.getRawSignature(), 
+					_astInterpreter.getPrimitiveType(), _gvplGraph, _astInterpreter);
+			lhsPointer.setPointedVar(var);
 		} else {
 			IVar rhsPointer = loadPointedVar(rhsOp, _parentAstLoader);
 			lhsPointer.setPointedVar(rhsPointer);

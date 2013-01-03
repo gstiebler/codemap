@@ -99,7 +99,11 @@ public abstract class AstLoaderCDT extends AstLoader {
 			return ((IASTIdExpression) expr).getName().resolveBinding(); 
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
-			return ((IASTIdExpression) opExpr).getName().resolveBinding();
+			if(opExpr instanceof IASTIdExpression) {
+				IASTIdExpression idExpr = (IASTIdExpression) opExpr;
+				return idExpr.getName().resolveBinding();
+			} else
+				return getBindingFromExpr(opExpr);
 		} else if (expr instanceof CPPASTArraySubscriptExpression) {
 			//It's an array
 			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
@@ -147,6 +151,17 @@ public abstract class AstLoaderCDT extends AstLoader {
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			Value val = instructionLine.loadFunctionCall((CPPASTFunctionCallExpression) expr);
 			return val.getVar();
+		} else if (expr instanceof CPPASTLiteralExpression) {
+			String exprStr = expr.getRawSignature();
+			if (exprStr.equals("this")) {
+				// quite weird, but to deal with "this" in source code, i had to use "this" here
+				MemberFunc thisMemberFunc = (MemberFunc) this;
+				return thisMemberFunc.getThisReference();
+			} else {
+				// only used for char*
+				return addVarDecl(expr.getRawSignature(), _astInterpreter.getPrimitiveType(), 
+						_gvplGraph, _astInterpreter);
+			}
 		} else
 			logger.fatal("not implemented: {}", expr.getClass());
 		return null;

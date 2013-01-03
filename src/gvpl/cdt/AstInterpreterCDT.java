@@ -22,7 +22,6 @@ import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -42,7 +41,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
 
@@ -116,15 +117,15 @@ public class AstInterpreterCDT extends AstInterpreter {
 							loadFunctionDeclaration(funcDecl);
 						} else if (declarator instanceof CPPASTDeclarator) {
 							IASTName name = declarator.getName();
-							TypeId type = getType(declSpec);
 							IBinding binding = name.resolveBinding();
-							//TODO get correct type
-							IVar var = AstLoaderCDT.addVarDecl(name.toString(), type, 
-									declarator.getPointerOperators(), _gvplGraph, null, this);
-							_globalVars.put(binding, var);
-							
-							InstructionLine il = new InstructionLine(_gvplGraph, null, this);
-							il.LoadVariableInitialization(var, declarator);
+							if(binding instanceof CPPVariable) {
+								addGlobalVar(declarator, declSpec);
+							} else if (binding instanceof CPPField) {
+								//TODO get correct type
+								IVar var = _globalVars.get(binding);
+								InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+								il.LoadVariableInitialization(var, declarator);
+							}
 						} else
 							logger.fatal("you're doing it wrong. {}", declarator.getClass());
 					}
@@ -310,6 +311,23 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	public void callScriptFunction(Function func, List<FuncParameter> parameterValues) {
 		_scriptManager.callFunc(func.getName(), parameterValues);
+	}
+	
+	public void addGlobalVar(IASTDeclarator declarator, IASTDeclSpecifier declSpec) {
+		IASTName name = declarator.getName();
+		TypeId type = getType(declSpec);
+		if(type == null) {
+			logger.error("var from {} not found", declSpec.getRawSignature());
+			return;
+		}
+		IBinding binding = name.resolveBinding();
+		//TODO get correct type
+		IVar var = AstLoaderCDT.addVarDecl(name.toString(), type, 
+				declarator.getPointerOperators(), _gvplGraph, null, this);
+		_globalVars.put(binding, var);
+		
+		InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+		il.LoadVariableInitialization(var, declarator);
 	}
 
 	/**
