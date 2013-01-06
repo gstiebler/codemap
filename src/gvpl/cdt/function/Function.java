@@ -157,6 +157,11 @@ public class Function extends AstLoaderCDT {
 	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
 		_returnValue = new Value(_gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE));
 		
+		if(parameterValues == null){
+			logger.info("Header only function {} received no params.", this);
+			return;
+		}
+		
 		for(FuncParameter funcParameter : parameterValues) {
 			funcParameter.getValue().getNode().addDependentNode(_returnValue.getNode());
 		}

@@ -397,6 +397,15 @@ public class InstructionLine {
 					_astInterpreter.getPrimitiveType(), _gvplGraph, _astInterpreter);
 			lhsPointer.setPointedVar(var);
 		} else {
+			//TODO gambierre?
+			if(rhsOp.getRawSignature().equals("NULL"))
+			{			
+				IVar var = AstLoaderCDT.addVarDecl("NULL", _astInterpreter.getPrimitiveType(), 
+						_gvplGraph, _astInterpreter);
+				lhsPointer.setPointedVar(var);
+				return;
+			}
+			
 			IVar rhsPointer = loadPointedVar(rhsOp, _parentAstLoader);
 			lhsPointer.setPointedVar(rhsPointer);
 		}

@@ -121,23 +121,32 @@ public class AstInterpreterCDT extends AstInterpreter {
 							if(binding instanceof CPPVariable) {
 								addGlobalVar(declarator, declSpec);
 							} else if (binding instanceof CPPField) {
-								//TODO get correct type
-								IVar var = _globalVars.get(binding);
-								InstructionLine il = new InstructionLine(_gvplGraph, null, this);
-								il.LoadVariableInitialization(var, declarator);
+								initializeGlobalVar(binding, declarator);
 							}
 						} else
 							logger.fatal("you're doing it wrong. {}", declarator.getClass());
 					}
 				} else if(declSpec instanceof CPPASTNamedTypeSpecifier) {
-					loadClassDecl((CPPASTNamedTypeSpecifier) declSpec);
+					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
+					for(IASTDeclarator declarator : declarators) {
+						IASTName name = declarator.getName();
+						IBinding binding = name.resolveBinding();
+						initializeGlobalVar(binding, declarator);
+					}
 				} else
 					logger.fatal("you're doing it wrong. {}", declSpec.getClass());
 			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
-				logger.fatal("Not implemented: {}", declaration.getClass());
+				logger.error("Not implemented: {}", declaration.getClass());
 			} else
 				logger.fatal("Deu merda aqui. {}", declaration.getClass());
 		}
+	}
+	
+	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
+		//TODO get correct type
+		IVar var = _globalVars.get(binding);
+		InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+		il.LoadVariableInitialization(var, declarator);
 	}
 	
 	public void loadDefinitions() {
@@ -339,11 +348,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 	public TypeId getType(IASTDeclSpecifier declSpec) {
 		IBinding binding = bindingFromDeclSpec(declSpec);
 		if (binding == null)
-
 			return _primitiveType;
+		
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
 		if (classDecl == null)
-			return null;
+			return _primitiveType;
+		
 		return classDecl.getTypeId();
 	}
 	

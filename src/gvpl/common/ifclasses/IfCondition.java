@@ -104,6 +104,7 @@ public class IfCondition {
 	 * @param inToExtVarTrue
 	 *            Maps the internal vars, created inside the True block, and the
 	 *            correspondents variables in the parent block
+	 *            MAV: Mem Address Var
 	 * @param inToExtVarFalse
 	 *            Maps the internal vars, created inside the False block, and the
 	 *            correspondents variables in the parent block

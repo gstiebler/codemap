@@ -20,6 +20,7 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
+import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
@@ -96,9 +97,19 @@ public class MemberFunc extends Function {
 
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
+		if(binding instanceof ProblemBinding) {
+			logger.info("problem binding");
+			return null;
+		}
+		
+		// search the variable in the function parameters
+		IVar var = super.getVarFromBinding(binding);
+		if(var != null)
+			return var;
+		
 		ClassMember member = _parentClass.getMember(binding);		
 		if(member != null) {
-			IVar var = _astInterpreter.getGlobalVar(binding);
+			var = _astInterpreter.getGlobalVar(binding);
 			if(var != null)
 				return var;
 			
@@ -114,8 +125,7 @@ public class MemberFunc extends Function {
 			}
 		}
 		
-		// search the variable in the function parameters
-		return super.getVarFromBinding(binding);
+		return null;
 	}
 
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar) {
