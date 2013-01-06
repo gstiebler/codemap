@@ -10,6 +10,7 @@ class Class
 {
 public:
 	int _a;
+	static Class* classInst;
 };
 
 Class* func2()
@@ -19,9 +20,25 @@ Class* func2()
 	return classTemp;
 }
 
+Class* Class::classInst = NULL;
+
+Class* instancia()
+{
+    if( !Class::classInst )
+    {
+        Class::classInst = new Class();
+    }
+	
+	Class::classInst->_a = 30;
+    return Class::classInst;
+}
+
 int main() 
 {
 	int *a = func();
 	int b = *a;
 	int c = func2()->_a;
+	
+	Class *inst = instancia();
+	int d = inst->_a;
 }
