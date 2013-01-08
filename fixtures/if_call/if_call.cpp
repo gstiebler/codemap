@@ -33,4 +33,8 @@ int main() {
 		int r = 20;
 		e = r;
 	}
+	
+	int q = 8;
+	if(m > 10)
+		q = 20;
 }

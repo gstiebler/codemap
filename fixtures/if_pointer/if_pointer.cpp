@@ -18,4 +18,12 @@ int main() {
 	int d = *a;
 	*a = 7;
 	int e = b;
+	
+	int x = 8;
+	int y = 16;
+	int *f = &x;
+	if(m > 10)
+		f = &y;
+	
+	z = *f;
 }

@@ -121,6 +121,16 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		}
 	}
 	
+	/**
+	 * Gets the vars accessed/created in the block. It's recursive because it deals with
+	 * members of class vars
+	 * @param intVar The var created inside the block
+	 * @param extVar the correspondant var in the parent of the block
+	 * @param read The resulting list of the vars that were read
+	 * @param written The resulting list of the vars that were written
+	 * @param ignored The list of the vars that was not read nor written
+	 * @param inToExtMap The map of the internal variables to the external variables 
+	 */
 	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
 			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap) {
 		
@@ -135,7 +145,8 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		
 		inToExtMap.put(intVar, extVar);
 		
-		if (intVarInMem instanceof ClassVar) {
+		if (intVarInMem instanceof ClassVar && extVarInMem instanceof ClassVar && 
+				intVarInMem instanceof ClassVar) {
 			ClassVar extClassVar = (ClassVar) extVarInMem;
 			ClassVar intClassVar = (ClassVar) intVarInMem;
 			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
@@ -145,6 +156,8 @@ public class BasicBlockCDT extends AstLoaderCDT {
 			}
 
 			return;
+		} else {
+			logger.error("Some variables are ClassVar, some are not");
 		}
 
 		InExtVarPair varPair = new InExtVarPair(intVar, extVar);

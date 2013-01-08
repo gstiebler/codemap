@@ -44,6 +44,14 @@ startinglines = "2_8_8";
 	node_000056 [ label = "str1.h", startingline=34 ]
 	node_000057 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=34 ]
 	node_000058 [ label = "e", startingline=34 ]
+	node_000059 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=37 ]
+	node_000060 [ label = "q", startingline=37 ]
+	node_000061 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=38 ]
+	node_000062 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=38 ]
+	node_000064 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=39 ]
+	node_000066 [ label = "q", startingline=39 ]
+	node_000067 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=39 ]
+	node_000068 [ label = "q", startingline=39 ]
 }
 	node_000003 -> node_000004
 	node_000004 -> node_000055
@@ -53,6 +61,7 @@ startinglines = "2_8_8";
 	node_000008 -> node_000012
 	node_000012 -> node_000014
 	node_000014 -> node_000028
+	node_000014 -> node_000062
 	node_000015 -> node_000016
 	node_000016 -> node_000057
 	node_000017 -> node_000018
@@ -81,4 +90,11 @@ startinglines = "2_8_8";
 	node_000053 -> node_000054
 	node_000055 -> node_000056
 	node_000057 -> node_000058
+	node_000059 -> node_000060
+	node_000060 -> node_000067
+	node_000061 -> node_000062
+	node_000062 -> node_000067
+	node_000064 -> node_000066
+	node_000066 -> node_000067
+	node_000067 -> node_000068
 }
