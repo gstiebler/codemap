@@ -38,6 +38,16 @@ public class Var implements IVar {
 
 		logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
 	}
+	
+	protected Var(Var other) {
+		_currGraphNode = other._currGraphNode;
+		_firstGraphNode = other._firstGraphNode;
+		_gvplGraph = other._gvplGraph;
+		_name = other._name;
+		_owner = other._owner;
+		_type = other._type;
+		_id = _counter++;
+	}
 
 	public TypeId getType() {
 		return _type;

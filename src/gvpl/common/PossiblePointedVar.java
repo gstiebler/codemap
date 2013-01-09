@@ -24,6 +24,14 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		_ownerVar = ownerVar;
 	}
 
+	PossiblePointedVar(PossiblePointedVar other) {
+		_varTrue = other._varTrue;
+		_varFalse = other._varFalse;
+		_conditionNode = other._conditionNode;
+		_finalVar = other._finalVar;
+		_ownerVar = other._ownerVar;
+	}
+
 	public void delete() {
 		_varTrue = null;
 		_varFalse = null;

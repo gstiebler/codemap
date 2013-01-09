@@ -29,10 +29,10 @@ public abstract class BoolValuePack {
 		// inside the block, and the equivalent var from the calling block (external vars)
 		basicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), ifWrittenVars,
 				new ArrayList<InExtVarPair>(), _inToExtVar);
-		for (InExtVarPair falseWrittenVarPair : ifWrittenVars) {
-			IVar extVar = falseWrittenVarPair._ext;
-			GraphNode currExtNode = falseWrittenVarPair._ext.getCurrentNode();
-			GraphNode currIntNode = falseWrittenVarPair._in.getCurrentNode();
+		for (InExtVarPair writtenVarPair : ifWrittenVars) {
+			IVar extVar = writtenVarPair._ext;
+			GraphNode currExtNode = writtenVarPair._ext.getCurrentNode();
+			GraphNode currIntNode = writtenVarPair._in.getCurrentNode();
 
 			PrevTrueFalseNode prevTrueFalse = mapPrevTrueFalse.get(extVar);
 			if (prevTrueFalse == null)

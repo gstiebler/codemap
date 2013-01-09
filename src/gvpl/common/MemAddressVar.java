@@ -21,6 +21,15 @@ public class MemAddressVar extends Var {
 		super(gvplGraph, name, type);
 		// TODO Auto-generated constructor stub
 	}
+	
+	public MemAddressVar(MemAddressVar other) {
+		super(other);
+		_possiblePointedVar = new PossiblePointedVar(other._possiblePointedVar);
+		_hasReceivedVar = other._hasReceivedVar;
+		_lastPointedVarNode = other._lastPointedVarNode;
+		_onceRead = other._onceRead;
+		_onceWritten = other._onceWritten;
+	}
 
 	public void setPointedVar(IVar pointedVar) {
 		_possiblePointedVar.setVar(pointedVar);

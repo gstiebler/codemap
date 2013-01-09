@@ -116,13 +116,16 @@ public class IfCondition {
 			PrevTrueFalseMemVar prevTrueFalse = entry.getValue();
 
 			MemAddressVar trueMAV = prevTrueFalse._true.updateInternalVars(inToExtVarTrue);
-			MemAddressVar falseMAV = prevTrueFalse._false.updateInternalVars(inToExtVarFalse);
+			
+			MemAddressVar falseMAV = null;
+			if(prevTrueFalse._false != null)
+				falseMAV = prevTrueFalse._false.updateInternalVars(inToExtVarFalse);
 
 			if (trueMAV == null)
 				trueMAV = prevTrueFalse._prev;
 
 			if (falseMAV == null)
-				falseMAV = prevTrueFalse._prev;
+				falseMAV = new MemAddressVar(prevTrueFalse._prev);
 
 			extVar.setIf(conditionNode, trueMAV, falseMAV);
 		}

@@ -25,5 +25,5 @@ int main() {
 	if(m > 10)
 		f = &y;
 	
-	z = *f;
+	int z = *f;
 }
