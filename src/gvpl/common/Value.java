@@ -33,6 +33,11 @@ public class Value {
 		return _var;
 	}
 	
+	public void setVar(IVar var) {
+		_node = null;
+		_var = var;
+	}
+	
 	public boolean hasVar() {
 		return _var != null;
 	}

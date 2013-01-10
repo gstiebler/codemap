@@ -111,8 +111,12 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		}
 
 		PossiblePointedVar result = new PossiblePointedVar(ppv._finalVar);
-		IClassVar finalClassVar = (IClassVar) ppv._finalVar;
-		result._finalVar = finalClassVar.getMember(memberId);
+		if(ppv._finalVar.getName() == "NULL") {
+			result._finalVar = ppv._finalVar;
+		} else {
+			IClassVar finalClassVar = (IClassVar) ppv._finalVar;
+			result._finalVar = finalClassVar.getMember(memberId);
+		}
 		return result;
 	}
 
@@ -170,11 +174,14 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			possiblePointedVar._conditionNode.addDependentNode(ifOpNode);
 
 			return new Value(ifOpNode);
-		} else {
+		} else if (possiblePointedVar._finalVar instanceof ClassVar){
 			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
 			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);
 			return eqFunc.addFuncRef(parameterValues, graph, classVar);
+		} else {
+			logger.error("possiblePointedVar._finalVar is {}", possiblePointedVar._finalVar.getClass());
 		}
+		return null;
 	}
 
 	public GraphNode getCurrentNode() {

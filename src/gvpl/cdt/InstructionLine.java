@@ -303,6 +303,13 @@ public class InstructionLine {
 		//Value returnValue = function.addReturnStatement(rvalue, returnType,
 		//		function.getName(), _gvplGraph);
 
+		//If the function is returning a pointer, it should return the pointed var
+		IVar var = rvalue.getVar();
+		if(var instanceof PointerVar) {
+			PointerVar pv = (PointerVar) var;
+			rvalue.setVar(pv.getVarInMem());
+		}	
+		
 		function.setReturnValue(rvalue);
 	}
 
