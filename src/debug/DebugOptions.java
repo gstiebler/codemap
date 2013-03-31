@@ -1,5 +1,7 @@
 package debug;
 
+import gvpl.common.CodeLocation;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,6 +10,7 @@ public class DebugOptions {
 	static int _startingLine = -797;
 	static List<Integer> _startingLineHistory = null;
 	static String _currCpp;
+	static CodeLocation _currCodeLocation;
 
 	public static boolean printDotSrcVarId() {
 		return false;
@@ -49,6 +52,14 @@ public class DebugOptions {
 
 	public static String getCurrCpp() {
 		return _currCpp;
+	}
+	
+	public static void setCurrCodeLocation(CodeLocation codeLoc) {
+		_currCodeLocation = codeLoc;
+	}
+	
+	public static CodeLocation getCurrCodeLocation() {
+		return _currCodeLocation;
 	}
 	
 }

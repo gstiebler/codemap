@@ -10,6 +10,6 @@ int main() {
 	{
 		s = q;
 		q += s - e;
-		d = q;
+		d = q + i;
 	}
 }

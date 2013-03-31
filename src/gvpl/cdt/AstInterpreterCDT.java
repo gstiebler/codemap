@@ -124,7 +124,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 								initializeGlobalVar(binding, declarator);
 							}
 						} else
-							logger.fatal("you're doing it wrong. {}", declarator.getClass());
+							logger.error("you're doing it wrong. {}", declarator.getClass());
 					}
 				} else if(declSpec instanceof CPPASTNamedTypeSpecifier) {
 					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
@@ -134,7 +134,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 						initializeGlobalVar(binding, declarator);
 					}
 				} else
-					logger.fatal("you're doing it wrong. {}", declSpec.getClass());
+					logger.fatal("you're doing it wrong. {}. CodeLoc: {}", 
+							declSpec.getClass(), DebugOptions.getCurrCodeLocation() );
 			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
 				logger.error("Not implemented: {}", declaration.getClass());
 			} else

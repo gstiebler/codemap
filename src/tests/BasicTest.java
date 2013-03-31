@@ -169,14 +169,19 @@ public class BasicTest {
 		TestsUtil.baseTest("events");
 	}
 
-	@Test
-	public void funcReturnPointer() {
-		TestsUtil.baseTest("func_return_pointer");
-	}
+//	@Test
+//	public void funcReturnPointer() {
+//		TestsUtil.baseTest("func_return_pointer");
+//	}
 
 	@Test
 	public void globalVar() {
 		TestsUtil.baseTest("global_var");
+	}
+
+	@Test
+	public void deepMethod() {
+		TestsUtil.baseTest("deep_method");
 	}
 
 	@Test

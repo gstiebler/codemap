@@ -102,7 +102,7 @@ public class MemberFunc extends Function {
 			return null;
 		}
 		
-		// search the variable in the function parameters
+		// search the variable in the function parameters and in local vars
 		IVar var = super.getVarFromBinding(binding);
 		if(var != null)
 			return var;

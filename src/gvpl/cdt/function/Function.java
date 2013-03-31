@@ -168,6 +168,7 @@ public class Function extends AstLoaderCDT {
 	}
 
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
+		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnValue = new Value();
 		

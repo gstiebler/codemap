@@ -28,6 +28,8 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTOperatorName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPScope.CPPScopeProblem;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
 
@@ -47,6 +49,7 @@ public class ClassDeclCDT extends ClassDecl{
 
 	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location) {
 		super(location);
+		logger.debug("Loading class in file {}", location.getFileName());
 		_astInterpreter = astInterpreter;
 	}
 	
@@ -81,6 +84,11 @@ public class ClassDeclCDT extends ClassDecl{
 		}
 	}
 	
+	/**
+	 * Loads the declaration of a composite type
+	 * @param classDecl Declaration of the type
+	 * @param graph The Graph
+	 */
 	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl, Graph graph) {
 		_classDecl = classDecl;
 
@@ -165,8 +173,19 @@ public class ClassDeclCDT extends ClassDecl{
 	
 	void loadBaseClasses(ICPPASTBaseSpecifier[] baseSpecs, AstInterpreterCDT astInterpreter) {
 		for(ICPPASTBaseSpecifier baseSpec : baseSpecs) {
-			IBinding binding = baseSpec.getName().resolveBinding();
+			IASTName baseSpecName = baseSpec.getName();
+			IBinding binding = baseSpecName.resolveBinding();
+			if(binding instanceof CPPScopeProblem)
+			{
+				logger.error("Problema in base class. Class {}, Base Class {}",
+						_name, baseSpecName.toString());
+				continue;
+			}
 			ClassDeclCDT parentClass = astInterpreter.getClassDecl(binding);
+			if(parentClass == null){
+				logger.error("Parent class from {} is null", _name);
+				continue;
+			}
 			_parentClasses.add(parentClass);
 		}
 	}
@@ -174,6 +193,11 @@ public class ClassDeclCDT extends ClassDecl{
 	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator.getFileLocation());
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
+		if(memberFuncBinding instanceof CPPTypedef)
+		{
+			logger.error("Not implemented: {}", memberFuncBinding.getClass());
+			return null;
+		}
 		
 		MemberFunc memberFunc = _memberFuncIdMap.get(memberFuncBinding);
 		if(memberFunc != null)
@@ -220,6 +244,12 @@ public class ClassDeclCDT extends ClassDecl{
 	}
 //
 	public MemberFunc getMemberFunc(IBinding binding) {
+		if(_memberFuncIdMap == null)
+		{
+			logger.debug("Class {} not implemented", _name);
+			return null;
+		}
+		
 		MemberFunc memberFunc = _memberFuncIdMap.get(binding);
 		if(memberFunc != null)
 			return memberFunc;
