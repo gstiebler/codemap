@@ -3,10 +3,7 @@ package gvpl.cdt;
 import gvpl.common.IVar;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
-import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphNode;
 
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -24,12 +21,14 @@ public class ForLoop extends BasicBlockCDT {
 	public void load(IASTForStatement node, Graph gvplGraph, AstLoaderCDT astLoader) {
 		IASTStatement body = node.getBody();
 
-		// loadHeader(node);
+		loadHeader(node);
 
 		load(body);
-		addToExtGraph();
-		bindSettedPointers();
-		//addSubGraph(gvplGraph);
+		
+		//addToExtGraph();
+		//bindSettedPointers();
+		
+		gvplGraph.addSubGraph(_gvplGraph);
 	}
 	
 	@Override
@@ -47,15 +46,17 @@ public class ForLoop extends BasicBlockCDT {
 
 	private void loadHeader(IASTForStatement node) {
 		IASTStatement initializer = node.getInitializerStatement();
-		IASTExpression condition = node.getConditionExpression();
+		// TODO read the condition
+		// IASTExpression condition = node.getConditionExpression();
+		
 
-		ForLoopHeader header = new ForLoopHeader(_gvplGraph, this, _astInterpreter);
-		header.load(initializer, condition);
-
-		GraphNode headerNode = _gvplGraph.addGraphNode("ForHeader", NodeType.E_LOOP_HEADER);
-		for (IVar readVar : header.getReadVars()) {
-			readVar.getCurrentNode().addDependentNode(headerNode);
-		}
+		Graph headerGraph = new Graph();
+		headerGraph.setLabel("ForLoopHeader");
+		
+		InstructionLine instructionLine = new InstructionLine(headerGraph, this, _astInterpreter);
+		instructionLine.load(initializer);
+		
+		_gvplGraph.addSubGraph(headerGraph);
 	}
 
 }
