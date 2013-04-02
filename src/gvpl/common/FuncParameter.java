@@ -1,8 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.function.*;
-
-import gvpl.graph.GraphNode;
+import gvpl.cdt.function.Function;
 
 public class FuncParameter {
 	

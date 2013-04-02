@@ -297,7 +297,8 @@ public class InstructionLine {
 		Value rvalue = loadValue(returnStat.getReturnValue());
 
 		Function function = _parentAstLoader.getFunction();
-		TypeId returnType = function.getReturnTypeId();
+		// TODO use the return type
+		//TypeId returnType = function.getReturnTypeId();
 
 		// TODO set the correct type of the return value
 		//Value returnValue = function.addReturnStatement(rvalue, returnType,
