@@ -1,7 +1,6 @@
 package gvpl.cdt;
 
 import gvpl.common.IVar;
-import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
