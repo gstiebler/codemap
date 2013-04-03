@@ -4,6 +4,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
+import gvpl.common.AstLoader;
 import gvpl.common.ClassVar;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -475,6 +476,19 @@ public class InstructionLine {
 	}
 	
 	/**
+	 * Recursive function that returns the parent member function. Go deep in the parents
+	 * @return Parent parent member func
+	 */
+	private MemberFunc getParentFunc() {
+		AstLoader parent = (AstLoader) _parentAstLoader;
+		while(!(parent instanceof MemberFunc)){
+			BasicBlockCDT bb = (BasicBlockCDT) parent;
+			parent = bb.getParent();
+		}
+		return (MemberFunc) parent;
+	}
+	
+	/**
 	 * Used when a method call a method of it's own instance
 	 * @param idExprBinding
 	 * @param paramExpr
@@ -482,7 +496,7 @@ public class InstructionLine {
 	 * @return The graph node of the result of the function
 	 */
 	private Value loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr) {
-		MemberFunc parentMF = (MemberFunc) _parentAstLoader;
+		MemberFunc parentMF = getParentFunc();
 		Function func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 		
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
