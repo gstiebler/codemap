@@ -4,6 +4,7 @@ import gvpl.common.IVar;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -25,17 +26,8 @@ public class ForLoop extends BasicBlockCDT {
 
 		load(body);
 		
-		//addToExtGraph();
-		//bindSettedPointers();
-		
 		gvplGraph.addSubGraph(_gvplGraph);
 	}
-	
-	@Override
-	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		return _typeSource.getTypeFromVarBinding(binding);
-	}
-	
 
 	@Override
 	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
@@ -47,7 +39,7 @@ public class ForLoop extends BasicBlockCDT {
 	private void loadHeader(IASTForStatement node) {
 		IASTStatement initializer = node.getInitializerStatement();
 		// TODO read the condition
-		// IASTExpression condition = node.getConditionExpression();
+		IASTExpression condition = node.getConditionExpression();
 		
 
 		Graph headerGraph = new Graph();
@@ -55,6 +47,7 @@ public class ForLoop extends BasicBlockCDT {
 		
 		InstructionLine instructionLine = new InstructionLine(headerGraph, this, _astInterpreter);
 		instructionLine.load(initializer);
+		//instructionLine.loadValue(condition);
 		
 		_gvplGraph.addSubGraph(headerGraph);
 	}
