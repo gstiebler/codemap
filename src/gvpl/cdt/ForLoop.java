@@ -38,16 +38,14 @@ public class ForLoop extends BasicBlockCDT {
 
 	private void loadHeader(IASTForStatement node) {
 		IASTStatement initializer = node.getInitializerStatement();
-		// TODO read the condition
 		IASTExpression condition = node.getConditionExpression();
 		
-
 		Graph headerGraph = new Graph();
 		headerGraph.setLabel("ForLoopHeader");
 		
 		InstructionLine instructionLine = new InstructionLine(headerGraph, this, _astInterpreter);
 		instructionLine.load(initializer);
-		//instructionLine.loadValue(condition);
+		instructionLine.loadValue(condition);
 		
 		_gvplGraph.addSubGraph(headerGraph);
 	}
