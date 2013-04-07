@@ -28,6 +28,7 @@ import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
 import org.eclipse.core.runtime.CoreException;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class Codemap {
 
@@ -135,6 +136,9 @@ public class Codemap {
 		}
 
 		fileDriver.print(astInterpreter.getGraph(), outFile, visualizer);
+		
+		ExecTreeLogger.finish();
+		
 		return astInterpreter;
 	}
 }
