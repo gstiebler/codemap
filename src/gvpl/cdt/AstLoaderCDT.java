@@ -17,7 +17,9 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -35,6 +37,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 import debug.ExecTreeLogger;
+import debug.KeyValuePair;
 
 public abstract class AstLoaderCDT extends AstLoader {
 	
@@ -208,8 +211,9 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 
 	public IVar loadVarDecl(IASTDeclarator decl, TypeId type, Graph graph) {
-		ExecTreeLogger.log();
 		IASTName name = decl.getName();
+		ExecTreeLogger.log("Var name: " + name);
+		
 		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, this, 
 				_astInterpreter);
 		_localVariables.put(name.resolveBinding(), varDecl);

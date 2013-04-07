@@ -86,7 +86,7 @@ public class InstructionLine {
 		logger.debug(" --- Code location: {}", codeLocation);
 		DebugOptions.setStartingLine(codeLocation.getStartingLine());
 		logger.debug("statement is: {}", statement.getClass());
-		ExecTreeLogger.log();
+		ExecTreeLogger.log("Linha: " + codeLocation.getStartingLine());
 		
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
@@ -254,7 +254,7 @@ public class InstructionLine {
 	 */
 	public Value loadValue(IASTExpression expr) {
 		logger.debug("Load Value, Node type {}", expr.getClass());
-		ExecTreeLogger.log();
+		ExecTreeLogger.log(expr.toString());
 		Value result = null;
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {

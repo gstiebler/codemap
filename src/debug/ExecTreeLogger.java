@@ -72,7 +72,7 @@ public class ExecTreeLogger {
 		}
 	}
 	
-	void instanceLog() {
+	void instanceLog(String args) {
 
 		List<StackTraceElement> currStack = stackStrings();
 		int numSpaces = 0;
@@ -94,6 +94,7 @@ public class ExecTreeLogger {
 			childEl.setAttribute("file_name", ste.getFileName());
 			childEl.setAttribute("class_name", ste.getClassName());
 			childEl.setAttribute("line_number", Integer.toString(ste.getLineNumber()));
+			childEl.setAttribute("args", args);
 			baseElement.appendChild(childEl);
 			// salary.appendChild(doc.createTextNode("100000"));
 			
@@ -104,8 +105,8 @@ public class ExecTreeLogger {
 		_lastStack = currStack;
 	}
 	
-	public static void log() {
-		_instance.instanceLog();
+	public static void log(String args) {
+		_instance.instanceLog(args);
 	}
 	
 	static List<StackTraceElement> stackStrings() {
