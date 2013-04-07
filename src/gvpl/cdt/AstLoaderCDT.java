@@ -34,6 +34,8 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpressi
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
+import debug.ExecTreeLogger;
+
 public abstract class AstLoaderCDT extends AstLoader {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -206,6 +208,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 
 	public IVar loadVarDecl(IASTDeclarator decl, TypeId type, Graph graph) {
+		ExecTreeLogger.log();
 		IASTName name = decl.getName();
 		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, this, 
 				_astInterpreter);

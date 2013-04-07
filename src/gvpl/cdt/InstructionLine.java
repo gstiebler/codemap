@@ -65,6 +65,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class InstructionLine {
 	
@@ -85,6 +86,8 @@ public class InstructionLine {
 		logger.debug(" --- Code location: {}", codeLocation);
 		DebugOptions.setStartingLine(codeLocation.getStartingLine());
 		logger.debug("statement is: {}", statement.getClass());
+		ExecTreeLogger.log();
+		
 		if (statement instanceof IASTDeclarationStatement) {// variable
 															// declaration
 			IASTDeclarationStatement declStatement = (IASTDeclarationStatement) statement;
@@ -251,6 +254,7 @@ public class InstructionLine {
 	 */
 	public Value loadValue(IASTExpression expr) {
 		logger.debug("Load Value, Node type {}", expr.getClass());
+		ExecTreeLogger.log();
 		Value result = null;
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
