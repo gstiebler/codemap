@@ -11,6 +11,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import debug.ExecTreeLogger;
+
 /**
  * This class is used to represent variables of primitive types
  */
@@ -54,6 +56,7 @@ public class Var implements IVar {
 	}
 
 	public void updateNode(GraphNode node) {
+		ExecTreeLogger.log("Var: " + getName());
 		if (_currGraphNode == null)
 			_firstGraphNode = node;
 
@@ -61,6 +64,7 @@ public class Var implements IVar {
 	}
 	
 	public void updateNodes(GraphNode oldNode, GraphNode newNode) {
+		ExecTreeLogger.log("Var: " + getName());
 		if(_firstGraphNode == oldNode)
 			_firstGraphNode = newNode;
 		if(_currGraphNode == oldNode)
@@ -80,11 +84,13 @@ public class Var implements IVar {
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter) {
+		ExecTreeLogger.log("Var: " + getName());
 		updateNode(_gvplGraph.addGraphNode(this, nodeType));
 	}
 
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter) {
+		ExecTreeLogger.log("Var: " + getName());
 		if (parameterValues != null) {
 			if (parameterValues.size() > 1)
 				logger.fatal("Primitive type receiving more than 1 parameter in initialization");
@@ -101,6 +107,7 @@ public class Var implements IVar {
 	 * @return New node from assignment, the left from assignment
 	 */
 	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
+		ExecTreeLogger.log("Var: " + getName());
 		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
 		rhsValue.getNode().addDependentNode(lhsNode);
 		updateNode(lhsNode);
@@ -113,14 +120,17 @@ public class Var implements IVar {
 	}
 
 	public IVar getVarInMem() {
+		ExecTreeLogger.log("Var: " + getName());
 		return this;
 	}
 	
 	public void setOwner(IVar owner) {
+		ExecTreeLogger.log("Var: " + getName());
 		_owner = owner;
 	}
 	
 	public List<IVar> getInternalVars() {
+		ExecTreeLogger.log("Var: " + getName());
 		List<IVar> internalVars = new ArrayList<>();
 		internalVars.add(this);
 		return internalVars;

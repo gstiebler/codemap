@@ -10,6 +10,8 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import debug.ExecTreeLogger;
+
 public class PossiblePointedVar implements IVar, IClassVar {
 
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
@@ -40,12 +42,14 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	}
 
 	void setVar(IVar finalVar) {
+		ExecTreeLogger.log("Var: " + finalVar.getName());
 		_finalVar = finalVar;
 		_conditionNode = null;
 	}
 
 	void setPossibleVars(GraphNode conditionNode, PossiblePointedVar varTrue,
 			PossiblePointedVar varFalse) {
+		ExecTreeLogger.log("Var: " + getName());
 		_conditionNode = conditionNode;
 		_varTrue = varTrue;
 		_varFalse = varFalse;
@@ -73,6 +77,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	}
 
 	public void updateNode(GraphNode node) {
+		ExecTreeLogger.log("Var: " + getName());
 		updateNodeRecursive(this, _ownerVar.getGraph(), node);
 	}
 
@@ -88,6 +93,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	private static void updateNodeInternal(PossiblePointedVar possiblePointedVar, Graph graph,
 			GraphNode node, PossiblePointedVar trueOrFalse) {
+		ExecTreeLogger.log("Var: " + possiblePointedVar.getName());
 		GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
 
 		node.addDependentNode(ifOpNode);
@@ -132,6 +138,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			InToExtVar inToExtVar) {
 		if (possiblePointedVar == null)
 			return;
+		ExecTreeLogger.log("Var: " + possiblePointedVar.getName());
 
 		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
 		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
@@ -212,6 +219,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	 * @return New node from assignment, the left from assignment
 	 */
 	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
+		ExecTreeLogger.log("Var: " + getName());
 		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
 		rhsValue.getNode().addDependentNode(lhsNode);
 		updateNode(lhsNode);

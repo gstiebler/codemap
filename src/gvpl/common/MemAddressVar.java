@@ -9,6 +9,8 @@ import gvpl.graph.GraphNode;
 
 import java.util.List;
 
+import debug.ExecTreeLogger;
+
 public class MemAddressVar extends Var {
 
 	private PossiblePointedVar _possiblePointedVar = new PossiblePointedVar(this);
@@ -32,11 +34,13 @@ public class MemAddressVar extends Var {
 	}
 
 	public void setPointedVar(IVar pointedVar) {
+		ExecTreeLogger.log("Var: " + pointedVar.getName());
 		_possiblePointedVar.setVar(pointedVar);
 		_hasReceivedVar = true;
 	}
 	
 	public IVar getPointedVar() {
+		ExecTreeLogger.log("Var: " + getName());
 		if(_possiblePointedVar._finalVar == null) {
 			if(_possiblePointedVar._conditionNode == null)
 				return null;
@@ -56,6 +60,7 @@ public class MemAddressVar extends Var {
 
 	@Override
 	public void updateNode(GraphNode node) {
+		ExecTreeLogger.log("Var: " + getName());
 		PossiblePointedVar.updateNodeRecursive(_possiblePointedVar, _gvplGraph, node);
 	}
 
@@ -66,6 +71,7 @@ public class MemAddressVar extends Var {
 	
 	@Override
 	public GraphNode getCurrentNode() {
+		ExecTreeLogger.log("Var: " + getName());
 		if(_possiblePointedVar._finalVar == null) {
 			return _possiblePointedVar.getIfNode(_gvplGraph);
 		}
@@ -80,6 +86,7 @@ public class MemAddressVar extends Var {
 
 	@Override
 	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
+		ExecTreeLogger.log("Var: " + getName());
 		// Create a new node to the "pointer" variable
 		GraphNode newNode = super.receiveAssign(lhsType, rhsValue, graph);
 		_onceWritten = true;
@@ -90,6 +97,7 @@ public class MemAddressVar extends Var {
 	@Override
 	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
 			AstInterpreter astInterpreter) {
+		ExecTreeLogger.log("Var: " + getName());
 		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astInterpreter);
 		var.initializeVar(nodeType, graph, astLoader, astInterpreter);
@@ -102,6 +110,7 @@ public class MemAddressVar extends Var {
 	}
 
 	public void setIf(GraphNode conditionNode, MemAddressVar varTrue, MemAddressVar varFalse) {
+		ExecTreeLogger.log("Var: " + getName());
 		_possiblePointedVar.setPossibleVars(conditionNode, varTrue._possiblePointedVar,
 				varFalse._possiblePointedVar);
 	}
@@ -117,6 +126,7 @@ public class MemAddressVar extends Var {
 	}
 	
 	public MemAddressVar updateInternalVars(InToExtVar inToExtVar) {
+		ExecTreeLogger.log("Var: " + getName());
 		PossiblePointedVar.updateInternalVarsRecursive(_possiblePointedVar, inToExtVar);
 		
 		return this;

@@ -101,6 +101,7 @@ public class ExecTreeLogger {
 			StackTraceElement ste = currStack.get(i);
 			
 			String label = ste.getClassName() + "." + ste.getMethodName();
+			label = label.replace('<', '.').replace('>', '.');
 			Element childEl = _doc.createElement( label );
 			//childEl.setAttribute("file_name", ste.getFileName());
 			//childEl.setAttribute("class_name", ste.getClassName());

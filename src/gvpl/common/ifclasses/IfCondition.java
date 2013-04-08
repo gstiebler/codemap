@@ -10,6 +10,8 @@ import gvpl.graph.Graph.NodeType;
 
 import java.util.Map;
 
+import debug.ExecTreeLogger;
+
 public class IfCondition {
 
 	/**
@@ -39,6 +41,7 @@ public class IfCondition {
 			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode, Graph graph) {
 		for (Map.Entry<IVar, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
 			IVar extVar = entry.getKey();
+			ExecTreeLogger.log("extVar " + extVar.getName());
 			PrevTrueFalseNode prevTrueFalse = entry.getValue();
 
 			GraphNode trueNode = prevTrueFalse._true;
@@ -82,6 +85,7 @@ public class IfCondition {
 
 	public static GraphNode createIfNode(Graph graph, GraphNode conditionNode, GraphNode trueNode,
 			GraphNode falseNode) {
+		ExecTreeLogger.log("");
 		GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
 
 		trueNode.addDependentNode(ifOpNode);

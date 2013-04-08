@@ -17,6 +17,8 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 
+import debug.ExecTreeLogger;
+
 public class IfConditionCDT {
 
 	static void loadIfCondition(IASTIfStatement ifStatement, InstructionLine instructionLine) {
@@ -68,6 +70,8 @@ public class IfConditionCDT {
 	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine) {
 		if (clause == null)
 			return null;
+
+		ExecTreeLogger.log(clause.getRawSignature());
 
 		AstLoaderCDT parentBasicBlock = instructionLine.getParentBasicBlock();
 		BasicBlockCDT basicBlock = new BasicBlockCDT(parentBasicBlock,
