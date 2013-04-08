@@ -17,9 +17,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -37,7 +35,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 import debug.ExecTreeLogger;
-import debug.KeyValuePair;
 
 public abstract class AstLoaderCDT extends AstLoader {
 	

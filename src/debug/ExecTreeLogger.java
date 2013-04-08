@@ -72,12 +72,19 @@ public class ExecTreeLogger {
 		}
 	}
 	
+	boolean stackLineIsEqual( StackTraceElement ste1, StackTraceElement ste2 ) {
+		if( !ste1.getMethodName().equals(ste2.getMethodName()) )
+			return false;
+		
+		return ste1.getClassName().equals(ste2.getClassName());
+	}
+	
 	void instanceLog(String args) {
 
 		List<StackTraceElement> currStack = stackStrings();
 		int numSpaces = 0;
 		for(int i = 0; i < currStack.size(); ++i) {
-			if (_lastStack.size() > i && currStack.get(i).equals(_lastStack.get(i))) {
+			if (_lastStack.size() > i && stackLineIsEqual(currStack.get(i), _lastStack.get(i))) {
 				numSpaces++;
 				continue; 
 			}
@@ -85,18 +92,22 @@ public class ExecTreeLogger {
 				break;
 		}
 		
+		if(currStack.size() == numSpaces)
+			numSpaces--;
+		
 		Element baseElement = _elementsStack.get(numSpaces);
 		_elementsStack = _elementsStack.subList(0, numSpaces + 1);
 		for(int i = numSpaces; i < currStack.size(); ++i) {
 			StackTraceElement ste = currStack.get(i);
 			
-			Element childEl = _doc.createElement( ste.getMethodName() );
-			childEl.setAttribute("file_name", ste.getFileName());
-			childEl.setAttribute("class_name", ste.getClassName());
-			childEl.setAttribute("line_number", Integer.toString(ste.getLineNumber()));
-			childEl.setAttribute("args", args);
+			String label = ste.getClassName() + "." + ste.getMethodName();
+			Element childEl = _doc.createElement( label );
+			//childEl.setAttribute("file_name", ste.getFileName());
+			//childEl.setAttribute("class_name", ste.getClassName());
+			//childEl.setAttribute("line_number", Integer.toString(ste.getLineNumber()));
+			//childEl.setAttribute("args", args);
+			childEl.appendChild(_doc.createTextNode(args));
 			baseElement.appendChild(childEl);
-			// salary.appendChild(doc.createTextNode("100000"));
 			
 			_elementsStack.add(childEl);
 			baseElement = childEl;

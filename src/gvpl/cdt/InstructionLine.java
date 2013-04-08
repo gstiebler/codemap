@@ -254,7 +254,7 @@ public class InstructionLine {
 	 */
 	public Value loadValue(IASTExpression expr) {
 		logger.debug("Load Value, Node type {}", expr.getClass());
-		ExecTreeLogger.log(expr.toString());
+		ExecTreeLogger.log(expr.getRawSignature());
 		Value result = null;
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
