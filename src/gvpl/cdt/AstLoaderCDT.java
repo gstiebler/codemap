@@ -49,6 +49,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 
 	protected IVar getVarFromExpr(IASTExpression expr) {
+		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = getVarFromExprInternal(expr);
 
 		if (var != null) 
@@ -71,6 +72,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	protected GraphNode getNodeFromExpr(IASTExpression expr) {
+		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = getVarFromExpr(expr);
 		if(var != null)
 			return var.getCurrentNode();
@@ -78,6 +80,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	protected Value getValueFromExpr(IASTExpression expr) {
+		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = getVarFromExpr(expr);
 		if(var != null)
 			return new Value(var);
@@ -88,6 +91,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	abstract protected IVar getVarFromBinding(IBinding binding);
 	
 	protected IVar getLocalVar(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var;
@@ -96,6 +100,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	protected IBinding getBindingFromExpr(IASTExpression expr) {
+		ExecTreeLogger.log(expr.getRawSignature());
 		logger.debug("expr is {}", expr.getClass());
 		if (expr instanceof IASTIdExpression) {
 			return ((IASTIdExpression) expr).getName().resolveBinding(); 
@@ -124,7 +129,8 @@ public abstract class AstLoaderCDT extends AstLoader {
 		return null;
 	}
 	
-	protected IVar getPreLoadedVarFromBinding(IBinding binding) {		
+	protected IVar getPreLoadedVarFromBinding(IBinding binding) {	
+		ExecTreeLogger.log(binding.getName());	
 		IVar var = _extToInVars.get(binding);
 		if(var != null)
 			return var;
@@ -133,6 +139,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());	
 		IVar var = _localVariables.get(binding);
 		if(var == null)
 			return null;
@@ -141,6 +148,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	protected IVar getVarFromExprInternal(IASTExpression expr) {
+		ExecTreeLogger.log(expr.getRawSignature());
 		if (expr instanceof IASTIdExpression)
 			return getLocalVarFromIdExpr((IASTIdExpression) expr);
 		else if (expr instanceof IASTFieldReference) {
@@ -169,17 +177,20 @@ public abstract class AstLoaderCDT extends AstLoader {
 		return null;
 	}
 
-	protected IVar getLocalVarFromIdExpr(IASTIdExpression id_expr) {
-		IBinding binding = id_expr.getName().resolveBinding();
+	protected IVar getLocalVarFromIdExpr(IASTIdExpression idExpr) {
+		ExecTreeLogger.log(idExpr.getRawSignature());
+		IBinding binding = idExpr.getName().resolveBinding();
 		return _localVariables.get(binding);
 	}
 
 	protected TypeId getVarTypeFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		IVar owner_var_decl = _localVariables.get(binding);
 		return owner_var_decl.getType();
 	}
 
 	protected IVar getVarFromFieldRef(IASTFieldReference fieldRef) {
+		ExecTreeLogger.log(fieldRef.getRawSignature());
 		IASTExpression owner = fieldRef.getFieldOwner();
 		IBinding fieldBinding = fieldRef.getFieldName().resolveBinding();
 
@@ -208,6 +219,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 
 	public IVar loadVarDecl(IASTDeclarator decl, TypeId type, Graph graph) {
+		ExecTreeLogger.log(decl.getRawSignature());
 		IASTName name = decl.getName();
 		ExecTreeLogger.log("Var name: " + name);
 		
@@ -221,6 +233,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 
 	public static IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps, 
 				Graph graph, AstLoaderCDT astLoader, AstInterpreterCDT astInterpreter) {
+		ExecTreeLogger.log(name);
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		IVar var = instanceVar(parameterVarType, name, type, graph, astInterpreter);
