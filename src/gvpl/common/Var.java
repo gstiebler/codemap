@@ -56,7 +56,7 @@ public class Var implements IVar {
 	}
 
 	public void updateNode(GraphNode node) {
-		ExecTreeLogger.log("Var: " + getName());
+		ExecTreeLogger.log("Var: " + getName() + " node: " + node.getName());
 		if (_currGraphNode == null)
 			_firstGraphNode = node;
 

@@ -8,6 +8,8 @@ import gvpl.graph.GraphNode;
 
 import java.util.Map;
 
+import debug.ExecTreeLogger;
+
 public class falseClass extends BoolValuePack {
 
 	public falseClass(InstructionLine instructionLine, BasicBlockCDT basicBlock,
@@ -17,10 +19,12 @@ public class falseClass extends BoolValuePack {
 	}
 
 	void insertBoolNode(PrevTrueFalseNode prevTrueFalse, GraphNode node) {
+		ExecTreeLogger.log(node.getName());
 		prevTrueFalse._false = node;
 	}
 
 	void insertBoolVar(PrevTrueFalseMemVar prevTrueFalse, MemAddressVar var) {
+		ExecTreeLogger.log(var.getName());
 		prevTrueFalse._false = var;
 	}
 }

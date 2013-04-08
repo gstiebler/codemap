@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import debug.ExecTreeLogger;
+
 public abstract class BoolValuePack {
 	public Map<GraphNode, GraphNode> _ifMergedNodes = null;
 	/** includes all member vars */
@@ -21,6 +23,7 @@ public abstract class BoolValuePack {
 	BoolValuePack(InstructionLine instructionLine, BasicBlockCDT basicBlock, 
 			Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
 			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
+		ExecTreeLogger.log("");
 		
 		_inToExtVar = new InToExtVar(instructionLine.getGraph());
 

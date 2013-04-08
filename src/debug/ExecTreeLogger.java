@@ -79,6 +79,11 @@ public class ExecTreeLogger {
 		return ste1.getClassName().equals(ste2.getClassName());
 	}
 	
+	String stripClassName(String fullClassName) {
+		String[] strings = fullClassName.split("\\.");
+		return strings[strings.length - 1];
+	}
+	
 	void instanceLog(String args) {
 
 		List<StackTraceElement> currStack = stackStrings();
@@ -100,7 +105,8 @@ public class ExecTreeLogger {
 		for(int i = numSpaces; i < currStack.size(); ++i) {
 			StackTraceElement ste = currStack.get(i);
 			
-			String label = ste.getClassName() + "." + ste.getMethodName();
+			
+			String label = stripClassName(ste.getClassName()) + "." + ste.getMethodName();
 			label = label.replace('<', '.').replace('>', '.');
 			Element childEl = _doc.createElement( label );
 			//childEl.setAttribute("file_name", ste.getFileName());

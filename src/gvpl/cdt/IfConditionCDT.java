@@ -30,6 +30,7 @@ public class IfConditionCDT {
 	
 	static void loadIfCondition(GraphNode conditionNode, IASTStatement thenClause,
 			IASTStatement elseClause, InstructionLine instructionLine) {
+		ExecTreeLogger.log(conditionNode.getName());
 		Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse = new LinkedHashMap<IVar, PrevTrueFalseNode>();
 		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
 

@@ -23,6 +23,8 @@ import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
+import debug.ExecTreeLogger;
+
 public class BasicBlockCDT extends AstLoaderCDT {
 
 	protected AstLoaderCDT _parent;
@@ -35,6 +37,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	}
 
 	public void load(IASTStatement baseStatement) {
+		ExecTreeLogger.log("");
 		IASTStatement[] statements = null;
 		if (baseStatement instanceof IASTCompoundStatement)
 			statements = ((IASTCompoundStatement) baseStatement).getStatements();
@@ -58,6 +61,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	 *         of the map no longer exists.
 	 */
 	public Map<GraphNode, GraphNode> addToExtGraph() {
+		ExecTreeLogger.log("");
 		return addToExtGraph(_parent.getGraph(), this);
 	}
 	
@@ -73,6 +77,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		IVar var = getPreLoadedVarFromBinding(binding);
 		if (var != null) 
 			return var; 
@@ -82,6 +87,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	
 	@Override
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		VarInfo vi = _parent.getTypeFromVarBinding(binding);
 		
 		if(vi != null)
@@ -91,6 +97,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	}
 	
 	protected IVar createVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		VarInfo varInfo = getTypeFromVarBinding(binding);
 		String name = binding.getName();
 		
@@ -112,6 +119,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
 			List<InExtVarPair> ignored, InToExtVar inToExtMap) {
+		ExecTreeLogger.log("");
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
 			IVar extVar = _parent.getVarFromBinding(entry.getKey());
 			if (extVar == null)
@@ -184,6 +192,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	 *         of the map no longer exists.
 	 */
 	public Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, AstLoader astLoader) {
+		ExecTreeLogger.log("Graph: " + extGraph.getName());
 		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
 		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
@@ -231,6 +240,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	//TODO prepare to read member vars of each var. It's only working
 	// for primitive types
 	public List<InExtMAVarPair> getAccessedMemAddressVar() {
+		ExecTreeLogger.log("");
 		List<InExtMAVarPair> vars = new ArrayList<InExtMAVarPair>();
 		
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {

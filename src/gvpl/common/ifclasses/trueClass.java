@@ -17,7 +17,7 @@ public class trueClass extends BoolValuePack {
 			Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV) {
 		super(instructionLine, basicBlock, mapPrevTrueFalse, mapPrevTrueFalseMV);
 
-		ExecTreeLogger.log("");
+		ExecTreeLogger.log("construtor trueClass");
 	}
 
 	void insertBoolNode(PrevTrueFalseNode prevTrueFalse, GraphNode node) {
