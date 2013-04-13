@@ -12,6 +12,11 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+/**
+ * The parent of the BasicBlock
+ * @author gstiebler
+ *
+ */
 public abstract class AstLoader {
 	
 	static Logger logger = LogManager.getLogger(AstLoader.class.getName());

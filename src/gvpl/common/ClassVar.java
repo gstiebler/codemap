@@ -13,6 +13,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import debug.ExecTreeLogger;
+
 /**
  * Variable (instance) of a class
  *
@@ -55,6 +57,7 @@ public class ClassVar extends Var implements IClassVar{
 	}
 
 	public IVar getMember(MemberId memberId) {
+		ExecTreeLogger.log("");
 		IVar member = _memberInstances.get(memberId);
 		if(member != null)
 			return member;

@@ -40,6 +40,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class Function extends AstLoaderCDT {
 	
@@ -344,6 +345,7 @@ public class Function extends AstLoaderCDT {
 	
 	@Override
 	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());	
 		return getVarFromBinding(binding);
 	}
 	

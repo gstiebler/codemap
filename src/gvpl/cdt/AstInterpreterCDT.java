@@ -46,6 +46,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class AstInterpreterCDT extends AstInterpreter {
 	
@@ -158,6 +159,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public IVar getGlobalVar(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		return _globalVars.get(binding);
 	}
 

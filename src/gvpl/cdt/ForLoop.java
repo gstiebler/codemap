@@ -8,6 +8,8 @@ import org.eclipse.cdt.core.dom.ast.IASTForStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
+import debug.ExecTreeLogger;
+
 public class ForLoop extends BasicBlockCDT {
 
 	AstLoaderCDT _typeSource;
@@ -30,8 +32,7 @@ public class ForLoop extends BasicBlockCDT {
 
 	@Override
 	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
-		if(_parent == null)
-			return createVarFromBinding(binding);
+		ExecTreeLogger.log(binding.getName());	
 		return _parent.getPreLoadedVarFromBinding(binding);
 	}
 
