@@ -219,7 +219,6 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 
 	public IVar loadVarDecl(IASTDeclarator decl, TypeId type, Graph graph) {
-		ExecTreeLogger.log(decl.getRawSignature());
 		IASTName name = decl.getName();
 		ExecTreeLogger.log("Var name: " + name);
 		

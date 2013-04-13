@@ -85,7 +85,6 @@ public class ExecTreeLogger {
 	}
 	
 	void instanceLog(String args) {
-
 		List<StackTraceElement> currStack = stackStrings();
 		int numSpaces = 0;
 		for(int i = 0; i < currStack.size(); ++i) {
