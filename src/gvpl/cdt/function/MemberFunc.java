@@ -41,7 +41,7 @@ public class MemberFunc extends Function {
 	private InitializedMembers _initializedMembers = null;
 	
 	public MemberFunc(ClassDeclCDT parent, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
-		super(new Graph(), astInterpreter, ownBinding);
+		super(astInterpreter, ownBinding);
 		_parentClass = parent;
 	}
 

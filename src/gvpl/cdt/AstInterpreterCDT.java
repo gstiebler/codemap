@@ -213,7 +213,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return function;
 		}
 		
-		function = new Function(_gvplGraph, this, binding);
+		function = new Function(this, binding);
 		_currCppFile._funcIdMap.put(binding, function);
 		_funcByLocation.put(funcLocation, function);
 		function.loadDeclaration(decl);

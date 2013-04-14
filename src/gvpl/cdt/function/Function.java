@@ -62,7 +62,7 @@ public class Function extends AstLoaderCDT {
 	ICPPASTConstructorChainInitializer[] _ccInitializer;
 	IASTStatement _body;
 
-	public Function(Graph gvplGraph, AstInterpreterCDT astInterpreter, IBinding ownBinding) {
+	public Function(AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(astInterpreter);
 		
 		_ownBinding = ownBinding;
