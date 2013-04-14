@@ -31,9 +31,9 @@ public class ForLoop extends BasicBlockCDT {
 	}
 
 	@Override
-	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
+	protected IVar getVarInsideSandboxFromBinding(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());	
-		return _parent.getPreLoadedVarFromBinding(binding);
+		return _parent.getVarInsideSandboxFromBinding(binding);
 	}
 
 	private void loadHeader(IASTForStatement node) {

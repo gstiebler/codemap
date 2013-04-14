@@ -129,7 +129,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 		return null;
 	}
 	
-	protected IVar getPreLoadedVarFromBinding(IBinding binding) {	
+	protected IVar getVarInsideSandboxFromBinding(IBinding binding) {	
 		ExecTreeLogger.log(binding.getName());	
 		IVar var = _extToInVars.get(binding);
 		if(var != null)
