@@ -344,12 +344,6 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	@Override
-	protected IVar getPreLoadedVarFromBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());	
-		return getVarFromBinding(binding);
-	}
-	
-	@Override
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		IVar var = getVarFromBinding(binding);
 		return var.getVarInfo();

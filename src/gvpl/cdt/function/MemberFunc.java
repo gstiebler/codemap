@@ -74,7 +74,7 @@ public class MemberFunc extends Function {
 			InstructionLine instructionLine = new InstructionLine(graph, this, _astInterpreter);
 
 			if (memberBinding instanceof CPPField) {
-				IVar var = getPreLoadedVarFromBinding(memberBinding);
+				IVar var = getVarFromBinding(memberBinding);
 				instructionLine.loadConstructorInitializer(var, expr);
 				MemberId memberId = _parentClass.getMember(memberBinding).getMemberId();
 				_initializedMembers._members.add(memberId);
