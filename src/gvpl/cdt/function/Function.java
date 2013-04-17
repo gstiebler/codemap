@@ -40,7 +40,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 import debug.DebugOptions;
-import debug.ExecTreeLogger;
 
 public class Function extends AstLoaderCDT {
 	

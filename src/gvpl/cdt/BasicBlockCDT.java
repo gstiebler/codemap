@@ -77,12 +77,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	
 	@Override
 	protected IVar getVarFromBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		IVar var = getVarInsideSandboxFromBinding(binding);
-		if (var != null) 
-			return var; 
-		
-		return createVarFromBinding(binding);	
+		return getVarInsideSandboxFromBinding(binding);
 	}
 	
 	@Override
@@ -94,19 +89,6 @@ public class BasicBlockCDT extends AstLoaderCDT {
 			return vi;
 		else
 			return super.getTypeFromVarBinding(binding);
-	}
-	
-	protected IVar createVarFromBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		VarInfo varInfo = getTypeFromVarBinding(binding);
-		String name = binding.getName();
-		
-		IVar var = instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, _astInterpreter);
-		//TODO only initialize a variable that will be read. Otherwise, the nodes generated
-		// in the line below will never be used
-		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, this, _astInterpreter);
-		_extToInVars.put(binding, var);
-		return var;
 	}
 	
 	public Graph getGraph() {
