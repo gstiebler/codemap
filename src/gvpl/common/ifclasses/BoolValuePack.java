@@ -1,5 +1,6 @@
 package gvpl.common.ifclasses;
 
+import gvpl.cdt.AstLoaderCDT;
 import gvpl.cdt.BasicBlockCDT;
 import gvpl.cdt.InExtMAVarPair;
 import gvpl.cdt.InstructionLine;
@@ -31,7 +32,7 @@ public abstract class BoolValuePack {
 		// Get the accessed vars inside the block. This functions returns the variables created
 		// inside the block, and the equivalent var from the calling block (external vars)
 		basicBlock.getAccessedVars(new ArrayList<InExtVarPair>(), ifWrittenVars,
-				new ArrayList<InExtVarPair>(), _inToExtVar);
+				new ArrayList<InExtVarPair>(), _inToExtVar, (AstLoaderCDT)basicBlock.getParent());
 		for (InExtVarPair writtenVarPair : ifWrittenVars) {
 			IVar extVar = writtenVarPair._ext;
 			GraphNode currExtNode = writtenVarPair._ext.getCurrentNode();

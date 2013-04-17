@@ -2,12 +2,10 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.common.AstLoader;
-import gvpl.common.ClassVar;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
 import gvpl.common.InToExtVar;
 import gvpl.common.MemAddressVar;
-import gvpl.common.MemberId;
 import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -95,77 +93,9 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		return _gvplGraph;
 	}
 	
-	protected AstLoader getParent() {
+	public AstLoader getParent() {
 		return _parent;
 	}
-	
-	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap) {
-		ExecTreeLogger.log("");
-		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
-			IVar extVar = _parent.getVarFromBinding(entry.getKey());
-			if (extVar == null)
-				logger.fatal("extVar cannot be null");
-
-			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap);
-		}
-	}
-	
-	/**
-	 * Gets the vars accessed/created in the block. It's recursive because it deals with
-	 * members of class vars
-	 * @param intVar The var created inside the block
-	 * @param extVar the correspondant var in the parent of the block
-	 * @param read The resulting list of the vars that were read
-	 * @param written The resulting list of the vars that were written
-	 * @param ignored The list of the vars that was not read nor written
-	 * @param inToExtMap The map of the internal variables to the external variables 
-	 */
-	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
-			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap) {
-		
-		if(extVar == null)
-			return;
-		
-		IVar extVarInMem = extVar.getVarInMem();
-		IVar intVarInMem = intVar.getVarInMem();
-		
-		if(extVarInMem == null)
-			return;
-		
-		inToExtMap.put(intVar, extVar);
-		
-		if (intVarInMem instanceof ClassVar && extVarInMem instanceof ClassVar && 
-				intVarInMem instanceof ClassVar) {
-			ClassVar extClassVar = (ClassVar) extVarInMem;
-			ClassVar intClassVar = (ClassVar) intVarInMem;
-			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
-				IVar memberExtVar = extClassVar.getMember(memberId);
-				IVar memberIntVar = intClassVar.getMember(memberId);
-				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap);
-			}
-
-			return;
-		} else {
-			logger.error("Some variables are ClassVar, some are not");
-		}
-
-		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
-		boolean accessed = false;
-		if (intVar.onceRead()) {
-			read.add(varPair);
-			accessed = true;
-		}
-
-		if (intVar.onceWritten()) {
-			written.add(varPair);
-			accessed = true;
-		}
-
-		if (!accessed)
-			ignored.add(varPair);
-	}
-	
 
 	/**
 	 * Add the nodes of the internal graph to the external graph
@@ -180,7 +110,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph));
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), _parent);
 		extGraph.merge(astLoader.getGraph());
 
 		// bind the vars from calling block to the internal read vars

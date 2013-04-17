@@ -8,6 +8,8 @@ import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
+import gvpl.common.InExtVarPair;
+import gvpl.common.InToExtVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
@@ -18,6 +20,7 @@ import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -259,5 +262,72 @@ public abstract class AstLoaderCDT extends AstLoader {
 	@Override
 	public AstInterpreter getAstInterpreter() {
 		return _astInterpreter;
+	}
+	
+	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
+			List<InExtVarPair> ignored, InToExtVar inToExtMap, AstLoaderCDT parent) {
+		ExecTreeLogger.log("");
+		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
+			IVar extVar = parent.getVarFromBinding(entry.getKey());
+			if (extVar == null)
+				logger.fatal("extVar cannot be null");
+
+			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap);
+		}
+	}
+	
+	/**
+	 * Gets the vars accessed/created in the block. It's recursive because it deals with
+	 * members of class vars
+	 * @param intVar The var created inside the block
+	 * @param extVar the correspondant var in the parent of the block
+	 * @param read The resulting list of the vars that were read
+	 * @param written The resulting list of the vars that were written
+	 * @param ignored The list of the vars that was not read nor written
+	 * @param inToExtMap The map of the internal variables to the external variables 
+	 */
+	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
+			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap) {
+		
+		if(extVar == null)
+			return;
+		
+		IVar extVarInMem = extVar.getVarInMem();
+		IVar intVarInMem = intVar.getVarInMem();
+		
+		if(extVarInMem == null)
+			return;
+		
+		inToExtMap.put(intVar, extVar);
+		
+		if (intVarInMem instanceof ClassVar && extVarInMem instanceof ClassVar && 
+				intVarInMem instanceof ClassVar) {
+			ClassVar extClassVar = (ClassVar) extVarInMem;
+			ClassVar intClassVar = (ClassVar) intVarInMem;
+			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
+				IVar memberExtVar = extClassVar.getMember(memberId);
+				IVar memberIntVar = intClassVar.getMember(memberId);
+				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap);
+			}
+
+			return;
+		} else {
+			logger.error("Some variables are ClassVar, some are not");
+		}
+
+		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
+		boolean accessed = false;
+		if (intVar.onceRead()) {
+			read.add(varPair);
+			accessed = true;
+		}
+
+		if (intVar.onceWritten()) {
+			written.add(varPair);
+			accessed = true;
+		}
+
+		if (!accessed)
+			ignored.add(varPair);
 	}
 }
