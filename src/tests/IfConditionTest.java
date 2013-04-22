@@ -50,8 +50,7 @@ public class IfConditionTest {
 			Graph trueGraph = trueBasicBlock.getGraph();
 			// the pointed var of true
 			truePointedVar = new Var(extGraph, "truePointedVar", type);
-			truePointedVar.initializeVar(NodeType.E_VARIABLE, trueGraph, trueBasicBlock,
-					astInterpreter);
+			truePointedVar.initializeVar(NodeType.E_VARIABLE, trueGraph, astInterpreter);
 			currTruePointedVar = truePointedVar.getCurrentNode();
 			// the address var in the true block
 			ptfm._true = new MemAddressVar(trueGraph, "true", type);
@@ -71,8 +70,7 @@ public class IfConditionTest {
 			Graph falseGraph = falseBasicBlock.getGraph();
 			// the pointed var of false
 			falsePointedVar = new Var(extGraph, "falsePointedVar", type);
-			falsePointedVar.initializeVar(NodeType.E_VARIABLE, falseGraph, falseBasicBlock,
-					astInterpreter);
+			falsePointedVar.initializeVar(NodeType.E_VARIABLE, falseGraph, astInterpreter);
 			currFalsePointedVar = falsePointedVar.getCurrentNode();
 			// the address var in the false block
 			ptfm._false = new MemAddressVar(falseGraph, "true", type);

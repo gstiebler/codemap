@@ -89,13 +89,12 @@ public class ClassVar extends Var implements IClassVar{
 	 * It is used mainly to be used in function parameters
 	 */
 	@Override
-	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader, 
-			AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
 		for(ClassVar parent : _parentInstances) 
-			parent.initializeVar(nodeType, graph, astLoader, astInterpreter);
+			parent.initializeVar(nodeType, graph, astInterpreter);
 		
 		for (IVar var : _memberInstances.values()) {
-			var.initializeVar(NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
+			var.initializeVar(NodeType.E_VARIABLE, graph, astInterpreter);
 			var.setOwner(this);
 		}
 	}

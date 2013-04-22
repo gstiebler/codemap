@@ -82,8 +82,7 @@ public class Var implements IVar {
 		return _currGraphNode;
 	}
 
-	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
-			AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
 		updateNode(_gvplGraph.addGraphNode(this, nodeType));
 	}
@@ -98,7 +97,7 @@ public class Var implements IVar {
 			Value parameterValue = parameterValues.get(0).getValue();
 			receiveAssign(NodeType.E_DECLARED_PARAMETER, parameterValue, _gvplGraph);
 		} else
-			initializeVar(nodeType, graph, astLoader, astInterpreter);
+			initializeVar(nodeType, graph, astInterpreter);
 	}
 
 	/**

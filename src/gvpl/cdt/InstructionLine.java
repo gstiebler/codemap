@@ -389,11 +389,9 @@ public class InstructionLine {
 			}
 			
 			if (classDecl == null) {
-				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _parentAstLoader,
-						_astInterpreter);
+				lhsPointer.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _astInterpreter);
 				return;
 			}
-
 
 			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();

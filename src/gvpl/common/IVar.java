@@ -19,8 +19,7 @@ public interface IVar {
 
 	public GraphNode getCurrentNode();
 
-	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
-			AstInterpreter astInterpreter);
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter);
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
 			AstLoader astLoader, AstInterpreter astInterpreter);

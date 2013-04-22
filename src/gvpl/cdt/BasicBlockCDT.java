@@ -136,7 +136,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 			// if someone has written in the internal var
 
 			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph,
-					astLoader, astLoader.getAstInterpreter());
+					astLoader.getAstInterpreter());
 			GraphNode extVarCurrNode = writtenPair._ext
 					.getCurrentNode();
 			// connect the var from the calling block to the correspodent var in this block

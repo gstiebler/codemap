@@ -203,8 +203,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		return currGraphNode;
 	}
 
-	public void initializeVar(NodeType nodeType, Graph graph, AstLoader astLoader,
-			AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
 		logger.fatal("You're doing it wrong.");
 	}
 
