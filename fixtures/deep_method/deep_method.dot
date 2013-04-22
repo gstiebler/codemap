@@ -1,0 +1,36 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "13_27_27";
+	node_000003 [ label = "7", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
+	node_000004 [ label = "instance.a", startingline=29 ]
+	node_000015 [ label = "x", startingline=31 ]
+subgraph cluster_2 {
+label = "cClass::func1";
+parent = "cluster_1";
+startinglines = "28_29_30";
+	node_000005 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
+	node_000006 [ label = "c", startingline=15 ]
+	node_000007 [ label = "4", style=filled, fillcolor="#E9FFE9", startinglines=17 ]
+	node_000008 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=17 ]
+	node_000010 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
+	node_000012 [ label = "instance.a", startingline=18 ]
+	node_000013 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=18 ]
+	node_000014 [ label = "instance.a", startingline=18 ]
+}
+}
+	node_000003 -> node_000004
+	node_000004 -> node_000013
+	node_000005 -> node_000006
+	node_000006 -> node_000008
+	node_000007 -> node_000008
+	node_000008 -> node_000013
+	node_000010 -> node_000012
+	node_000012 -> node_000013
+	node_000013 -> node_000014
+	node_000014 -> node_000015
+}
