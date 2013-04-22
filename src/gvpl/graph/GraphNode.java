@@ -79,17 +79,22 @@ public class GraphNode {
 		dependentNode._sourceNodes.add(this);
 	}
 	
+	/**
+	 * Merges with node. The primary node will be the current, not the received node
+	 * @param node The node to be merged. It will be discarded.
+	 */
 	public void merge(GraphNode node) {
 		for(GraphNode dependentNode : node._dependentNodes) {
 			addDependentNode(dependentNode);
 			dependentNode._sourceNodes.remove(node);
-			dependentNode._sourceNodes.add(this);
 		}
+		node._dependentNodes.clear();
 		
 		for(GraphNode sourceNode : node._sourceNodes) {
 			sourceNode._dependentNodes.remove(node);
 			sourceNode.addDependentNode(this);
 		}
+		node._sourceNodes.clear();
 		
 		node._parentVar.updateNodes(node, this);
 	}

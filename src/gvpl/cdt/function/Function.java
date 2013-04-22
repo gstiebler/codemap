@@ -198,15 +198,19 @@ public class Function extends AstLoaderCDT {
 
 		extGraph.addSubGraph(_gvplGraph);
 		
-		
-		
-		
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
 		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), caller);
 		
-		
+		// bind the vars from calling block to the internal read vars
+		for(InExtVarPair readPair : readVars) {
+			GraphNode intVarFirstNode = readPair._in.getFirstNode();
+			// if someone read from internal var
+			GraphNode extVarCurrNode = readPair._ext.getCurrentNode();
+			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode);
+		}
+		// TODO the same as above, but with written vars
 		
 		
 		_gvplGraph = null;
@@ -360,7 +364,7 @@ public class Function extends AstLoaderCDT {
 			return value.getVar();
 		}
 		
-		return getLocalVar(binding);
+		return super.getVarFromBindingUnbounded(binding);
 	}
 
 	@Override

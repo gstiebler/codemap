@@ -326,4 +326,12 @@ public abstract class AstLoaderCDT extends AstLoader{
 		if (!accessed)
 			ignored.add(varPair);
 	}
+	
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		IVar var = _localVariables.get(binding);;
+		if(var != null)
+			return var;
+		
+		return _astInterpreter.getGlobalVar(binding);
+	}
 }
