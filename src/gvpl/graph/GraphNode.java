@@ -25,6 +25,7 @@ public class GraphNode {
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
 	private int _startingLine = DebugOptions.getStartingLine();
+	private Graph _graph = null;
 
 	public GraphNode(String name, NodeType type) {
 		_id = getNewId();
@@ -148,6 +149,14 @@ public class GraphNode {
 	@Override
 	public String toString() {
 		return _name + " (" + _id + ")";
+	}
+
+	public Graph getGraph() {
+		return _graph;
+	}
+
+	public void setGraph(Graph graph) {
+		_graph = graph;
 	}
 
 }

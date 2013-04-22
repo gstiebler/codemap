@@ -63,7 +63,12 @@ public class Graph {
 	}
 
 	private void addGraphNode(GraphNode graphNode) {
+		Graph parent = graphNode.getGraph();
+		if(parent != null)
+			parent.removeNode(graphNode);
+		
 		_graphNodes.add(graphNode);
+		graphNode.setGraph(this);
 	}
 	
 	public GraphNode addGraphNode(String name, NodeType type) {
@@ -159,7 +164,8 @@ public class Graph {
 	}
 	
 	public void merge(Graph graph) {
-		for(GraphNode graphNode : graph._graphNodes)
+		List<GraphNode> childNodes = new ArrayList<GraphNode>(graph._graphNodes);
+		for(GraphNode graphNode : childNodes)
 			addGraphNode(graphNode);
 		_subgraphs.addAll(graph._subgraphs);
 		logger.info("Merging graph ({}) to ({})", graph._id, _id);
