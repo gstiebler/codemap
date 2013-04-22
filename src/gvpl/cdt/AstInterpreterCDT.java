@@ -366,21 +366,6 @@ public class AstInterpreterCDT extends AstInterpreter implements IContext {
 	}
 
 	/**
-	 * Gets the id of the member of a class
-	 * 
-	 * @param typeBinding
-	 *            The type id of the class
-	 * @param memberBinding
-	 *            The binding of the member
-	 * @return The id of the member
-	 */
-	public MemberId getMemberId(TypeId typeId, IBinding memberBinding) {
-		ClassDeclCDT loadStruct = _typeIdToClass.get(typeId);
-		ClassMember classMember = loadStruct.getMember(memberBinding);
-		return classMember.getMemberId();
-	}
-
-	/**
 	 * Returns the id of a type from it's binding
 	 * 
 	 * @param binding

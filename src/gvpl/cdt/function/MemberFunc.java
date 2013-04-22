@@ -27,6 +27,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class MemberFunc extends Function {
 	
@@ -65,6 +66,7 @@ public class MemberFunc extends Function {
 
 	@Override
 	void loadConstructorChain(Graph graph, IContext caller) {
+		ExecTreeLogger.log("");
 		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
 			IASTExpression expr = initializer.getInitializerValue();
 			int startingLine = expr.getFileLocation().getStartingLineNumber();
@@ -100,10 +102,6 @@ public class MemberFunc extends Function {
 		ClassMember member = _parentClass.getMember(binding);
 		IVar var;
 		if(member != null) {
-			var = _astInterpreter.getGlobalVar(binding);
-			if(var != null)
-				return var;
-			
 			MemberId memberId = member.getMemberId();
 			var = _thisVar.getMember(memberId);
 			if(var != null)
@@ -121,6 +119,7 @@ public class MemberFunc extends Function {
 	
 	@Override
 	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		if(binding instanceof ProblemBinding) {
 			logger.info("problem binding");
 			return null;
@@ -136,6 +135,7 @@ public class MemberFunc extends Function {
 
 	@Override
 	public IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		if(binding instanceof ProblemBinding) {
 			logger.info("problem binding");
 			return null;
@@ -158,14 +158,10 @@ public class MemberFunc extends Function {
 	
 	@Override
 	protected IVar getVarFromExpr(IASTExpression expr) {
+		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = super.getVarFromExpr(expr);
 		if (var != null) 
 			return var; 
-		
-		IBinding binding = getBindingFromExpr(expr);
-		ClassMember member = _parentClass.getMember(binding);
-		if(member != null) 
-			return _thisVar.getMember(member.getMemberId());
 		
 		String exprStr = expr.getRawSignature();
 		if (exprStr.equals("this")) {

@@ -345,7 +345,7 @@ public class Function extends AstLoaderCDT {
 	@Override
 	public IVar getVarFromBinding(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());
-		FuncParameter funcParameter = _originalParametersMap.get(binding);
+		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null) {
 			Value value = funcParameter.getValue();
 			if(value == null)
@@ -373,21 +373,6 @@ public class Function extends AstLoaderCDT {
 		}
 		
 		return super.getVarFromBindingUnbounded(binding);
-	}
-
-	@Override
-	protected IVar getVarFromExpr(IASTExpression expr) {
-		IVar var = super.getVarFromExpr(expr);
-
-		if (var != null) 
-			return var; 
-		
-		IBinding parameterBinding = getBindingFromExpr(expr);
-		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
-		if(funcParameter != null)
-			return funcParameter.getValue().getVar();
-		
-		return null;
 	}
 
 }
