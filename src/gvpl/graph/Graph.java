@@ -20,6 +20,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class Graph {
 	
@@ -61,17 +62,23 @@ public class Graph {
 		return _id;
 	}
 
-	public GraphNode addGraphNode(String name, NodeType type) {
-		GraphNode graphNode = new GraphNode(name, type);
+	private void addGraphNode(GraphNode graphNode) {
 		_graphNodes.add(graphNode);
+	}
+	
+	public GraphNode addGraphNode(String name, NodeType type) {
+		ExecTreeLogger.log("Graph: " + _label + ", node: " + name);
+		GraphNode graphNode = new GraphNode(name, type);
+		addGraphNode(graphNode);
 		
 		logger.info("Add node {} ({}) graph {} ({})", graphNode.getName(), graphNode.getId(), _label, _id);
 		return graphNode;
 	}
 
 	public GraphNode addGraphNode(IVar parentVar, NodeType type) {
+		ExecTreeLogger.log("Graph: " + _label + ", Parent var: " + parentVar);
 		GraphNode graphNode = new GraphNode(parentVar, type);
-		_graphNodes.add(graphNode);
+		addGraphNode(graphNode);
 
 		logger.info("Add node {} ({}) graph {} ({})", graphNode.getName(), graphNode.getId(), _label, _id);
 		return graphNode;
@@ -114,7 +121,7 @@ public class Graph {
 		for (GraphNode node : _graphNodes) {
 			GraphNode newNode = new GraphNode(node);
 			map.put(node, newNode);
-			graph._graphNodes.add(newNode);
+			graph.addGraphNode(newNode);
 			nodesList.add(new NodeChange(node, newNode));
 		}
 
@@ -152,7 +159,8 @@ public class Graph {
 	}
 	
 	public void merge(Graph graph) {
-		_graphNodes.addAll(graph._graphNodes);
+		for(GraphNode graphNode : graph._graphNodes)
+			addGraphNode(graphNode);
 		_subgraphs.addAll(graph._subgraphs);
 		logger.info("Merging graph ({}) to ({})", graph._id, _id);
 	}
@@ -207,8 +215,7 @@ public class Graph {
 		lhsNode.addDependentNode(binOpNode);
 		rhsNode.addDependentNode(binOpNode);
 
-		return lhs_varDecl
-				.receiveAssign(NodeType.E_VARIABLE, new Value(binOpNode), this);
+		return lhs_varDecl.receiveAssign(NodeType.E_VARIABLE, new Value(binOpNode), this);
 	}
 	
 	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode) {
@@ -216,7 +223,7 @@ public class Graph {
 		logger.info("Merging node ({}) to ({})", secondaryNode.getId(), primaryNode.getId());
 		_graphNodes.remove(secondaryNode);
 		if(!_graphNodes.contains(primaryNode))
-			_graphNodes.add(primaryNode);
+			addGraphNode(primaryNode);
 	}
 	
 	public void removeNode(GraphNode node) {

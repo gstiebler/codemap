@@ -101,9 +101,9 @@ public class IfConditionTest {
 		
 		// test this node
 		GraphNode nodeFromIfVar = prev.getCurrentNode();
-		assertEquals(currTruePointedVar, nodeFromIfVar.getSourceNodes().get(0));
-		assertEquals(currFalsePointedVar, nodeFromIfVar.getSourceNodes().get(1));
-		assertEquals(conditionNode, nodeFromIfVar.getSourceNodes().get(2));
+		assertEquals(currTruePointedVar, nodeFromIfVar.getSourceNode(0));
+		assertEquals(currFalsePointedVar, nodeFromIfVar.getSourceNode(1));
+		assertEquals(conditionNode, nodeFromIfVar.getSourceNode(2));
 		
 		assertTrue(currTruePointedVar.isDependentNode(nodeFromIfVar));
 		assertTrue(currFalsePointedVar.isDependentNode(nodeFromIfVar));

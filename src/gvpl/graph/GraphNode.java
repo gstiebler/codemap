@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class GraphNode {
 	
@@ -66,14 +67,13 @@ public class GraphNode {
 	}
 
 	public void addDependentNode(GraphNode dependentNode) {
+		ExecTreeLogger.log("\"" + _name + "\" arrow_right \"" + dependentNode._name + "\"");
 		if (_dependentNodes.contains(dependentNode))
 		{
+			ExecTreeLogger.log("Already dependent!!");
 			logger.warn("Already dependent!!");
 			return;
 		}
-
-		if (dependentNode == null)
-			logger.fatal("Inserting null depending node");
 
 		_dependentNodes.add(dependentNode);
 		dependentNode._sourceNodes.add(this);
@@ -107,8 +107,12 @@ public class GraphNode {
 		return _dependentNodes.contains(node);
 	}
 
-	public List<GraphNode> getSourceNodes() {
+	public Iterable<GraphNode> getSourceNodes() {
 		return _sourceNodes;
+	}
+
+	public GraphNode getSourceNode(int index) {
+		return _sourceNodes.get(index);
 	}
 
 	public int getNumDependentNodes() {
