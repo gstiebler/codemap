@@ -5,6 +5,7 @@ import gvpl.common.AstInterpreter;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
+import gvpl.common.IContext;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.ScriptManager;
@@ -48,7 +49,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
-public class AstInterpreterCDT extends AstInterpreter {
+public class AstInterpreterCDT extends AstInterpreter implements IContext {
 	
 	class CppFile {
 		Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
@@ -154,7 +155,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	public void loadDefinitions() {
 		//_currCppFile = _cppFiles.get(root);
 		logger.debug(" *** Loading definitions of main ***");
-		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph);
+		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph, this);
 		callEventFunctions();
 	}
 	
@@ -299,7 +300,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	void callEventFunctions() {
 		for(EventFunction eventFunction : _eventFunctions) {
-			eventFunction._function.addFuncRef(eventFunction._parameterValues, _gvplGraph);
+			eventFunction._function.addFuncRef(eventFunction._parameterValues, _gvplGraph, this);
 		}
 	}
 	
@@ -417,4 +418,17 @@ public class AstInterpreterCDT extends AstInterpreter {
 	public Graph getGraph() {
 		return _gvplGraph;
 	}
+	
+	@Override
+	public IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		return getVarFromBindingUnbounded(binding);
+	}
+	
+	@Override
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		return _globalVars.get(binding);
+	}
+	
 }

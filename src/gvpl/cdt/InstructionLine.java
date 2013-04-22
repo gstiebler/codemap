@@ -371,7 +371,7 @@ public class InstructionLine {
 		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsValue, IndirectionType.E_REFERENCE));
-		Value result = opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar);
+		Value result = opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar, _parentAstLoader);
 		return result.getNode();
 	}
 
@@ -461,7 +461,7 @@ public class InstructionLine {
 		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(className.resolveBinding());
 		Function func = classDecl.getMemberFunc(funcName.resolveBinding());
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-		return func.addFuncRef(parameterValues, _gvplGraph);
+		return func.addFuncRef(parameterValues, _gvplGraph, _parentAstLoader);
 	}
 	
 	/**
@@ -476,7 +476,7 @@ public class InstructionLine {
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		Function loadFunction = _astInterpreter.getFuncId(idExprBinding);
-		return loadFunction.addFuncRef(parameterValues, _gvplGraph);
+		return loadFunction.addFuncRef(parameterValues, _gvplGraph, _parentAstLoader);
 	}
 	
 	/**
@@ -506,7 +506,7 @@ public class InstructionLine {
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		MemberFunc memberFunc = (MemberFunc) func;
 		ClassVar var = parentMF.getThisReference();
-		return memberFunc.addFuncRef(parameterValues, _gvplGraph, var);
+		return memberFunc.addFuncRef(parameterValues, _gvplGraph, var, _parentAstLoader);
 	}
 	
 	/**

@@ -6,6 +6,7 @@ import gvpl.cdt.InstructionLine;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
+import gvpl.common.IContext;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.Value;
@@ -63,7 +64,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	void loadConstructorChain(Graph graph) {
+	void loadConstructorChain(Graph graph, IContext caller) {
 		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
 			IASTExpression expr = initializer.getInitializerValue();
 			int startingLine = expr.getFileLocation().getStartingLineNumber();
@@ -87,27 +88,17 @@ public class MemberFunc extends Function {
 					IASTExpression initValue = initializer.getInitializerValue();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
 							memberFunc, initValue);
-					memberFunc.addFuncRef(parameters, graph, _thisVar);
+					memberFunc.addFuncRef(parameters, graph, _thisVar, caller);
 					break;
 				}
 			} else
 				logger.fatal("not expected");
 		}
 	}
-
-	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
-		if(binding instanceof ProblemBinding) {
-			logger.info("problem binding");
-			return null;
-		}
-		
-		// search the variable in the function parameters and in local vars
-		IVar var = super.getVarFromBinding(binding);
-		if(var != null)
-			return var;
-		
-		ClassMember member = _parentClass.getMember(binding);		
+	
+	private IVar getMemberFromBinding(IBinding binding) {
+		ClassMember member = _parentClass.getMember(binding);
+		IVar var;
 		if(member != null) {
 			var = _astInterpreter.getGlobalVar(binding);
 			if(var != null)
@@ -127,10 +118,40 @@ public class MemberFunc extends Function {
 		
 		return null;
 	}
+	
+	@Override
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		if(binding instanceof ProblemBinding) {
+			logger.info("problem binding");
+			return null;
+		}
+		
+		// search the variable in the function parameters and in local vars
+		IVar var = super.getVarFromBindingUnbounded(binding);
+		if(var != null)
+			return var;
+		
+		return getMemberFromBinding(binding);
+	}
 
-	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar) {
+	@Override
+	public IVar getVarFromBinding(IBinding binding) {
+		if(binding instanceof ProblemBinding) {
+			logger.info("problem binding");
+			return null;
+		}
+		
+		// search the variable in the function parameters and in local vars
+		IVar var = getMemberFromBinding(binding);
+		if(var != null)
+			return var;
+		
+		return super.getVarFromBinding(binding);
+	}
+
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, IContext caller) {
 		_thisVar = thisVar;
-		Value result = super.addFuncRef(parameterValues, gvplGraph);
+		Value result = super.addFuncRef(parameterValues, gvplGraph, caller);
 		_thisVar = null;
 		return result;
 	}

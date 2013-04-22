@@ -74,8 +74,15 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	}
 	
 	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		return getVarInsideSandboxFromBinding(binding);
+	}
+	
+	@Override
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		return null;
 	}
 	
 	@Override

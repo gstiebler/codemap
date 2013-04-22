@@ -17,7 +17,7 @@ import org.apache.logging.log4j.Logger;
  * @author gstiebler
  *
  */
-public abstract class AstLoader {
+public abstract class AstLoader implements IContext {
 	
 	static Logger logger = LogManager.getLogger(AstLoader.class.getName());
 

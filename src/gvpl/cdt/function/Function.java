@@ -7,10 +7,12 @@ import gvpl.cdt.InstructionLine;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.IContext;
 import gvpl.common.IVar;
+import gvpl.common.InExtVarPair;
+import gvpl.common.InToExtVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
-import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -40,6 +42,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 
 import debug.DebugOptions;
+import debug.ExecTreeLogger;
 
 public class Function extends AstLoaderCDT {
 	
@@ -114,7 +117,7 @@ public class Function extends AstLoaderCDT {
 		return _returnType;
 	}
 
-	void loadConstructorChain(Graph graph) {
+	void loadConstructorChain(Graph graph, IContext caller) {
 	}
 
 	protected String calcName() {
@@ -168,7 +171,7 @@ public class Function extends AstLoaderCDT {
 		}
 	}
 
-	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, IContext caller) {
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnValue = new Value();
@@ -179,10 +182,11 @@ public class Function extends AstLoaderCDT {
 			if(parameterValues != null)
 				size = parameterValues.size();
 			for(int i = 0; i < size; ++i) {
-				_parametersMap.put(_originalParameters.get(i), parameterValues.get(i));
+				FuncParameter callerParam = parameterValues.get(i);
+				_parametersMap.put(_originalParameters.get(i), callerParam);
 			}
 
-			loadConstructorChain(_gvplGraph);
+			loadConstructorChain(_gvplGraph, caller);
 			loadDefinition(_gvplGraph);
 		}
 		else {
@@ -193,6 +197,18 @@ public class Function extends AstLoaderCDT {
 		}
 
 		extGraph.addSubGraph(_gvplGraph);
+		
+		
+		
+		
+		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), caller);
+		
+		
+		
+		
 		_gvplGraph = null;
 		_parametersMap = null;
 		
@@ -315,8 +331,28 @@ public class Function extends AstLoaderCDT {
 	}
 	
 	@Override
-	protected IVar getVarFromBinding(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
 		FuncParameter funcParameter = _originalParametersMap.get(binding);
+		if(funcParameter != null) {
+			Value value = funcParameter.getValue();
+			if(value == null)
+				return null;
+			return value.getVar();
+		}
+		
+		IVar var = getLocalVar(binding);
+		if(var != null)
+			return var;
+		
+		// It's probably a global var
+		return getVarInsideSandboxFromBinding(binding);
+	}
+	
+	@Override
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null) {
 			Value value = funcParameter.getValue();
 			if(value == null)
@@ -340,12 +376,6 @@ public class Function extends AstLoaderCDT {
 			return funcParameter.getValue().getVar();
 		
 		return null;
-	}
-	
-	@Override
-	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		IVar var = getVarFromBinding(binding);
-		return var.getVarInfo();
 	}
 
 }

@@ -7,6 +7,7 @@ import gvpl.common.AstLoader;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
+import gvpl.common.IContext;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
 import gvpl.common.InToExtVar;
@@ -39,7 +40,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 import debug.ExecTreeLogger;
 
-public abstract class AstLoaderCDT extends AstLoader {
+public abstract class AstLoaderCDT extends AstLoader{
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
@@ -91,15 +92,9 @@ public abstract class AstLoaderCDT extends AstLoader {
 		return new Value(getNodeFromExpr(expr));
 	}
 	
-	abstract protected IVar getVarFromBinding(IBinding binding);
-	
 	protected IVar getLocalVar(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());
-		IVar var = _localVariables.get(binding);
-		if(var != null)
-			return var;
-		
-		return _astInterpreter.getGlobalVar(binding);
+		return _localVariables.get(binding);
 	}
 	
 	protected IBinding getBindingFromExpr(IASTExpression expr) {
@@ -132,6 +127,11 @@ public abstract class AstLoaderCDT extends AstLoader {
 		return null;
 	}
 	
+	/**
+	 * Gets the var inside the current context. If the var doesn't exist, creates a "virtual" var
+	 * @param binding
+	 * @return A var that may be a real var, or a virtual newly created var
+	 */
 	protected IVar getVarInsideSandboxFromBinding(IBinding binding) {	
 		ExecTreeLogger.log(binding.getName());	
 		IVar var = _extToInVars.get(binding);
@@ -159,11 +159,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());	
-		IVar var = _localVariables.get(binding);
-		if(var == null)
-			return null;
-		
+		IVar var = getVarFromBindingUnbounded(binding);
 		return var.getVarInfo();
 	}
 	
@@ -265,7 +261,7 @@ public abstract class AstLoaderCDT extends AstLoader {
 	}
 	
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap, AstLoaderCDT parent) {
+			List<InExtVarPair> ignored, InToExtVar inToExtMap, IContext parent) {
 		ExecTreeLogger.log("");
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
 			IVar extVar = parent.getVarFromBinding(entry.getKey());
