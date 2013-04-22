@@ -6,33 +6,33 @@ label = "root";
 	node_000002 [ label = "Class::_globalVar", startingline=12 ]
 	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
 	node_000004 [ label = "Class::_global2", startingline=13 ]
-	node_000015 [ label = "_intP_pointed", startingline=33 ]
+	node_000023 [ label = "Class::_globalVar", startingline=34 ]
+	node_000024 [ label = "Class::_global2", startingline=34 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
 startinglines = "17_23_23";
-	node_000005 [ label = "b", startingline=25 ]
-	node_000006 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
-	node_000007 [ label = "Class::_global2", startingline=26 ]
-	node_000011 [ label = "c", startingline=28 ]
-	node_000013 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=33 ]
-	node_000014 [ label = "*_intP", startingline=33 ]
+	node_000006 [ label = "b", startingline=25 ]
+	node_000008 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
+	node_000016 [ label = "c", startingline=28 ]
+	node_000019 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=33 ]
+	node_000020 [ label = "*_intP", startingline=33 ]
+	node_000021 [ label = "_intP_pointed", startingline=33 ]
 subgraph cluster_2 {
 label = "Class::func";
 parent = "cluster_1";
 startinglines = "25_26_27";
-	node_000008 [ label = "a", startingline=19 ]
-	node_000009 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=20 ]
-	node_000010 [ label = "Class::_globalVar", startingline=20 ]
+	node_000011 [ label = "a", startingline=19 ]
+	node_000013 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=20 ]
 }
 }
 	node_000001 -> node_000002
-	node_000002 -> node_000005
+	node_000002 -> node_000006
 	node_000003 -> node_000004
-	node_000006 -> node_000007
-	node_000007 -> node_000008
-	node_000013 -> node_000014
-	node_000014 -> node_000015
-	node_000009 -> node_000010
-	node_000010 -> node_000011
+	node_000023 -> node_000016
+	node_000024 -> node_000011
+	node_000008 -> node_000024
+	node_000019 -> node_000020
+	node_000020 -> node_000021
+	node_000013 -> node_000023
 }

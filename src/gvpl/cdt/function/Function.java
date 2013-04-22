@@ -211,15 +211,15 @@ public class Function extends AstLoaderCDT {
 			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode);
 		}		
 		// bind the vars from calling block to the internal written vars
-//		for (InExtVarPair writtenPair : writtenVars) {
-//			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode();
-//			// if someone has written in the internal var
-//
-//			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph, _astInterpreter);
-//			GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode();
-//			// connect the var from the calling block to the correspodent var in this block
-//			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
-//		}
+		for (InExtVarPair writtenPair : writtenVars) {
+			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode();
+			// if someone has written in the internal var
+
+			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph, _astInterpreter);
+			GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode();
+			// connect the var from the calling block to the correspodent var in this block
+			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
+		}
 		
 		_gvplGraph = null;
 		_parametersMap = null;

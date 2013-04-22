@@ -6,18 +6,18 @@ label = "root";
 	node_000002 [ label = "global_var", startingline=2 ]
 	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=2 ]
 	node_000004 [ label = "global2", startingline=2 ]
+	node_000011 [ label = "global_var", startingline=8 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
 startinglines = "2_4_4";
 	node_000006 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=6 ]
-	node_000007 [ label = "global_var", startingline=6 ]
 	node_000008 [ label = "a", startingline=7 ]
 	node_000010 [ label = "b", startingline=8 ]
 }
 	node_000001 -> node_000002
 	node_000003 -> node_000004
 	node_000004 -> node_000010
-	node_000006 -> node_000007
-	node_000007 -> node_000008
+	node_000011 -> node_000008
+	node_000006 -> node_000011
 }
