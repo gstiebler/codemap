@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
@@ -97,7 +97,7 @@ public class MemAddressVar extends Var {
 	@Override
 	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
-		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
+		IVar var = BaseScope.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astInterpreter);
 		var.initializeVar(nodeType, graph, astInterpreter);
 		initializePointedVar(var);
@@ -132,7 +132,7 @@ public class MemAddressVar extends Var {
 	}
 	
 	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoaderCDT astLoader) {
+			Graph graph, BaseScopeCDT astLoader) {
 		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,
 				parameterValues, graph, astLoader);
 	}

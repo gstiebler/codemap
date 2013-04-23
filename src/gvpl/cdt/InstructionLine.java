@@ -4,7 +4,7 @@ import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
-import gvpl.common.AstLoader;
+import gvpl.common.BaseScope;
 import gvpl.common.ClassVar;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -73,9 +73,9 @@ public class InstructionLine {
 
 	private Graph _gvplGraph;
 	private AstInterpreterCDT _astInterpreter;
-	private AstLoaderCDT _parentAstLoader;
+	private BaseScopeCDT _parentAstLoader;
 
-	public InstructionLine(Graph gvplGraph, AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
+	public InstructionLine(Graph gvplGraph, BaseScopeCDT parent, AstInterpreterCDT astInterpreter) {
 		_gvplGraph = gvplGraph;
 		_astInterpreter = astInterpreter;
 		_parentAstLoader = parent;
@@ -404,14 +404,14 @@ public class InstructionLine {
 			Value result = loadFunctionCall((IASTFunctionCallExpression) rhsOp);
 			lhsPointer.setPointedVar(result.getVar());
 		} else if (rhsOp instanceof IASTLiteralExpression) {
-			IVar var = AstLoaderCDT.addVarDecl(rhsOp.getRawSignature(), 
+			IVar var = BaseScopeCDT.addVarDecl(rhsOp.getRawSignature(), 
 					_astInterpreter.getPrimitiveType(), _gvplGraph, _astInterpreter);
 			lhsPointer.setPointedVar(var);
 		} else {
 			//TODO gambierre?
 			if(rhsOp.getRawSignature().equals("NULL"))
 			{			
-				IVar var = AstLoaderCDT.addVarDecl("NULL", _astInterpreter.getPrimitiveType(), 
+				IVar var = BaseScopeCDT.addVarDecl("NULL", _astInterpreter.getPrimitiveType(), 
 						_gvplGraph, _astInterpreter);
 				lhsPointer.setPointedVar(var);
 				return;
@@ -482,7 +482,7 @@ public class InstructionLine {
 	 * @return Parent parent member func
 	 */
 	private MemberFunc getParentFunc() {
-		AstLoader parent = (AstLoader) _parentAstLoader;
+		BaseScope parent = (BaseScope) _parentAstLoader;
 		while(!(parent instanceof MemberFunc)){
 			BasicBlockCDT bb = (BasicBlockCDT) parent;
 			parent = bb.getParent();
@@ -602,7 +602,7 @@ public class InstructionLine {
 	 *            Address that contains the variable
 	 * @return The var that is pointed by the address
 	 */
-	static IVar loadVarInAddress(IASTExpression address, AstLoaderCDT astLoader) {
+	static IVar loadVarInAddress(IASTExpression address, BaseScopeCDT astLoader) {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
@@ -658,7 +658,7 @@ public class InstructionLine {
 	 * @param astLoader
 	 * @return The variable that is currently pointed by the received pointer
 	 */
-	public static IVar loadPointedVar(IASTExpression pointerExpr, AstLoaderCDT astLoader) {
+	public static IVar loadPointedVar(IASTExpression pointerExpr, BaseScopeCDT astLoader) {
 		IVar pointerVar = astLoader.getVarFromExpr(pointerExpr);
 		if (pointerVar instanceof PointerVar)
 			return ((PointerVar) pointerVar).getVarInMem();
@@ -666,7 +666,7 @@ public class InstructionLine {
 			return loadVarInAddress(pointerExpr, astLoader);
 	}
 
-	public AstLoaderCDT getParentBasicBlock() {
+	public BaseScopeCDT getParentBasicBlock() {
 		return _parentAstLoader;
 	}
 	

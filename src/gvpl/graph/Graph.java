@@ -4,7 +4,7 @@ import gvpl.cdt.CppMaps;
 import gvpl.cdt.CppMaps.eAssignBinOp;
 import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.CppMaps.eUnOp;
-import gvpl.common.AstLoader;
+import gvpl.common.BaseScope;
 import gvpl.common.IVar;
 import gvpl.common.Value;
 import gvpl.graphviz.FileDriver;
@@ -187,7 +187,7 @@ public class Graph {
 		return addGraphNode(value, NodeType.E_DIRECT_VALUE);
 	}
 
-	GraphNode addUnOp(eUnOp op, GraphNode valNode, AstLoader astLoader) {
+	GraphNode addUnOp(eUnOp op, GraphNode valNode, BaseScope astLoader) {
 		GraphNode unOpNode = addGraphNode(CppMaps._un_op_strings.get(op), NodeType.E_OPERATION);
 
 		valNode.addDependentNode(unOpNode);
@@ -195,7 +195,7 @@ public class Graph {
 		return unOpNode;
 	}
 
-	public GraphNode addNotOp(GraphNode val_node, AstLoader astLoader) {
+	public GraphNode addNotOp(GraphNode val_node, BaseScope astLoader) {
 		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION);
 		val_node.addDependentNode(notOpNode);
 
@@ -203,7 +203,7 @@ public class Graph {
 	}
 
 	public GraphNode addBinOp(eBinOp op, GraphNode val1Node, GraphNode val2Node,
-			AstLoader astLoader) {
+			BaseScope astLoader) {
 		GraphNode binOpNode = addGraphNode(CppMaps._binOpStrings.get(op),
 				NodeType.E_OPERATION);
 
@@ -214,7 +214,7 @@ public class Graph {
 	}
 
 	public GraphNode addAssignBinOp(eAssignBinOp op, IVar lhs_varDecl, GraphNode lhsNode,
-			GraphNode rhsNode, AstLoader astLoader) {
+			GraphNode rhsNode, BaseScope astLoader) {
 		GraphNode binOpNode = addGraphNode(CppMaps._assignBinOpStrings.get(op),
 				NodeType.E_OPERATION);
 

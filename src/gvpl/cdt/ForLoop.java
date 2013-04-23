@@ -12,15 +12,15 @@ import debug.ExecTreeLogger;
 
 public class ForLoop extends BasicBlockCDT {
 
-	AstLoaderCDT _typeSource;
+	BaseScopeCDT _typeSource;
 	
-	public ForLoop(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
+	public ForLoop(BaseScopeCDT parent, AstInterpreterCDT astInterpreter) {
 		super(parent, astInterpreter);
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}
 
-	public void load(IASTForStatement node, Graph gvplGraph, AstLoaderCDT astLoader) {
+	public void load(IASTForStatement node, Graph gvplGraph, BaseScopeCDT astLoader) {
 		IASTStatement body = node.getBody();
 
 		loadHeader(node);

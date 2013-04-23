@@ -17,9 +17,9 @@ import org.apache.logging.log4j.Logger;
  * @author gstiebler
  *
  */
-public abstract class AstLoader implements IContext {
+public abstract class BaseScope implements IScope {
 	
-	static Logger logger = LogManager.getLogger(AstLoader.class.getName());
+	static Logger logger = LogManager.getLogger(BaseScope.class.getName());
 
 	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	protected Graph _gvplGraph = null;

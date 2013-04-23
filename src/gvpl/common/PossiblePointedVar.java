@@ -162,7 +162,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	public static Value loadMemberFuncRefRecursive(PossiblePointedVar possiblePointedVar,
 			MemberFunc memberFunc, List<FuncParameter> parameterValues, Graph graph,
-			AstLoader astLoader) {
+			BaseScope astLoader) {
 		if(possiblePointedVar.nullPointer()) {
 			logger.error("not properly implemented");
 			return new Value();
@@ -208,7 +208,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	}
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
-			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
+			Graph graph, BaseScope astLoader, AstInterpreter astInterpreter) {
 		logger.fatal("You're doing it wrong.");
 	}
 

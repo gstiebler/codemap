@@ -22,7 +22,7 @@ public interface IVar {
 	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter);
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter);
+			BaseScope astLoader, AstInterpreter astInterpreter);
 
 	/**
 	 * Creates an assignment to this variable

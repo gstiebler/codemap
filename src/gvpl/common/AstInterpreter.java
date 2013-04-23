@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.ClassDeclCDT;
 
 import java.util.LinkedHashMap;
@@ -18,7 +18,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class AstInterpreter {
 	
-	static Logger logger = LogManager.getLogger(AstLoaderCDT.class.getName());
+	static Logger logger = LogManager.getLogger(BaseScopeCDT.class.getName());
 
 	protected Map<TypeId, ClassDeclCDT> _typeIdToClass;
 	/** the same for all primitive types */

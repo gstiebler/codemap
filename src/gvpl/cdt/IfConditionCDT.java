@@ -74,7 +74,7 @@ public class IfConditionCDT {
 
 		ExecTreeLogger.log(clause.getRawSignature());
 
-		AstLoaderCDT parentBasicBlock = instructionLine.getParentBasicBlock();
+		BaseScopeCDT parentBasicBlock = instructionLine.getParentBasicBlock();
 		BasicBlockCDT basicBlock = new BasicBlockCDT(parentBasicBlock,
 				instructionLine.getAstInterpreter());
 		basicBlock.load(clause);

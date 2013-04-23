@@ -6,7 +6,7 @@ import gvpl.cdt.InstructionLine;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
-import gvpl.common.IContext;
+import gvpl.common.IScope;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.Value;
@@ -65,7 +65,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	void loadConstructorChain(Graph graph, IContext caller) {
+	void loadConstructorChain(Graph graph, IScope caller) {
 		ExecTreeLogger.log("");
 		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
 			IASTExpression expr = initializer.getInitializerValue();
@@ -149,7 +149,7 @@ public class MemberFunc extends Function {
 		return super.getVarFromBinding(binding);
 	}
 
-	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, IContext caller) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, IScope caller) {
 		_thisVar = thisVar;
 		Value result = super.addFuncRef(parameterValues, gvplGraph, caller);
 		_thisVar = null;

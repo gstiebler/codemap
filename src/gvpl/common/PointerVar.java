@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.BaseScopeCDT;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -20,19 +20,19 @@ public class PointerVar extends MemAddressVar {
 
 	@Override
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
-			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter) {
+			Graph graph, BaseScope astLoader, AstInterpreter astInterpreter) {
 		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, _type);
 	}
 
 	public void constructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			AstLoaderCDT astLoader, AstInterpreter astInterpreter, TypeId type) {
+			BaseScopeCDT astLoader, AstInterpreter astInterpreter, TypeId type) {
 		internalConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter, type);
 	}
 
 	private void internalConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
-			Graph graph, AstLoader astLoader, AstInterpreter astInterpreter, TypeId type) {
+			Graph graph, BaseScope astLoader, AstInterpreter astInterpreter, TypeId type) {
 		// creates the variable allocated with the new op
-		IVar var = AstLoader.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", type,
+		IVar var = BaseScope.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", type,
 				graph, astInterpreter);
 		// assigns the variable created with the new op
 		initializePointedVar(var);

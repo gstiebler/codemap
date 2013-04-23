@@ -2,12 +2,10 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.common.AstInterpreter;
-import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
-import gvpl.common.IContext;
+import gvpl.common.IScope;
 import gvpl.common.IVar;
-import gvpl.common.MemberId;
 import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -49,7 +47,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
-public class AstInterpreterCDT extends AstInterpreter implements IContext {
+public class AstInterpreterCDT extends AstInterpreter implements IScope {
 	
 	class CppFile {
 		Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
@@ -335,7 +333,7 @@ public class AstInterpreterCDT extends AstInterpreter implements IContext {
 		}
 		IBinding binding = name.resolveBinding();
 		//TODO get correct type
-		IVar var = AstLoaderCDT.addVarDecl(name.toString(), type, 
+		IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, 
 				declarator.getPointerOperators(), _gvplGraph, null, this);
 		_globalVars.put(binding, var);
 		

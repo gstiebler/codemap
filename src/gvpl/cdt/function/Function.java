@@ -1,13 +1,13 @@
 package gvpl.cdt.function;
 
 import gvpl.cdt.AstInterpreterCDT;
-import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
-import gvpl.common.IContext;
+import gvpl.common.IScope;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
 import gvpl.common.InToExtVar;
@@ -44,7 +44,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
-public class Function extends AstLoaderCDT {
+public class Function extends BaseScopeCDT {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
@@ -117,7 +117,7 @@ public class Function extends AstLoaderCDT {
 		return _returnType;
 	}
 
-	void loadConstructorChain(Graph graph, IContext caller) {
+	void loadConstructorChain(Graph graph, IScope caller) {
 	}
 
 	protected String calcName() {
@@ -171,7 +171,7 @@ public class Function extends AstLoaderCDT {
 		}
 	}
 
-	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, IContext caller) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, IScope caller) {
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnValue = new Value();

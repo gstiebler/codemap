@@ -88,7 +88,7 @@ public class Var implements IVar {
 	}
 
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter) {
+			BaseScope astLoader, AstInterpreter astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
 		if (parameterValues != null) {
 			if (parameterValues.size() > 1)

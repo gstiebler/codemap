@@ -1,6 +1,6 @@
 package gvpl.common;
 
-import gvpl.cdt.AstLoaderCDT;
+import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -39,7 +39,7 @@ public class ClassVar extends Var implements IClassVar{
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			IVar memberInstance = AstLoader.addVarDecl(memberName,
+			IVar memberInstance = BaseScope.addVarDecl(memberName,
 					struct_member.getMemberType(), _gvplGraph, astInterpreter);
 			addMember(entry.getKey(), memberInstance);
 		}
@@ -101,7 +101,7 @@ public class ClassVar extends Var implements IClassVar{
 	
 	@Override
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
-			AstLoader astLoader, AstInterpreter astInterpreter) {
+			BaseScope astLoader, AstInterpreter astInterpreter) {
 		
 		int numParameter = 0;
 		if(parameterValues != null)
@@ -127,7 +127,7 @@ public class ClassVar extends Var implements IClassVar{
 		constructorFunc.addFuncRef(parameterValues, graph, this, astLoader);
 	}
 
-	public void callDestructor(AstLoader astLoader, Graph graph) {
+	public void callDestructor(BaseScope astLoader, Graph graph) {
 		// TODO call the parent classes destructor
 
 		logger.debug("Destructor of {}", _name);
@@ -164,7 +164,7 @@ public class ClassVar extends Var implements IClassVar{
 	}
 	
 	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
-			Graph graph, AstLoaderCDT astLoader) {
+			Graph graph, BaseScopeCDT astLoader) {
 		return memberFunc.addFuncRef(parameterValues, graph, this, astLoader);
 	}
 }

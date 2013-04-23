@@ -1,7 +1,7 @@
 package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
-import gvpl.common.AstLoader;
+import gvpl.common.BaseScope;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
 import gvpl.common.InToExtVar;
@@ -23,11 +23,11 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 import debug.ExecTreeLogger;
 
-public class BasicBlockCDT extends AstLoaderCDT {
+public class BasicBlockCDT extends BaseScopeCDT {
 
-	protected AstLoaderCDT _parent;
+	protected BaseScopeCDT _parent;
 	
-	public BasicBlockCDT(AstLoaderCDT parent, AstInterpreterCDT astInterpreter) {
+	public BasicBlockCDT(BaseScopeCDT parent, AstInterpreterCDT astInterpreter) {
 		super(astInterpreter);
 		_gvplGraph = new Graph();
 		_parent = parent;
@@ -100,7 +100,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 		return _gvplGraph;
 	}
 	
-	public AstLoader getParent() {
+	public BaseScope getParent() {
 		return _parent;
 	}
 
@@ -110,7 +110,7 @@ public class BasicBlockCDT extends AstLoaderCDT {
 	 * @return Maps the nodes that were merged with others. The nodes in the key
 	 *         of the map no longer exists.
 	 */
-	public Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, AstLoader astLoader) {
+	public Map<GraphNode, GraphNode> addToExtGraph(Graph extGraph, BaseScope astLoader) {
 		ExecTreeLogger.log("Graph: " + extGraph.getName());
 		Map<GraphNode, GraphNode> mergedNodes = new LinkedHashMap<GraphNode, GraphNode>();
 		

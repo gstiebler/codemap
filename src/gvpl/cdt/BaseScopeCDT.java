@@ -3,11 +3,11 @@ package gvpl.cdt;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.AstInterpreter;
-import gvpl.common.AstLoader;
+import gvpl.common.BaseScope;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
-import gvpl.common.IContext;
+import gvpl.common.IScope;
 import gvpl.common.IVar;
 import gvpl.common.InExtVarPair;
 import gvpl.common.InToExtVar;
@@ -40,7 +40,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 import debug.ExecTreeLogger;
 
-public abstract class AstLoaderCDT extends AstLoader{
+public abstract class BaseScopeCDT extends BaseScope{
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
@@ -48,7 +48,7 @@ public abstract class AstLoaderCDT extends AstLoader{
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 	protected Map<IBinding, IVar> _extToInVars = new LinkedHashMap<IBinding, IVar>();
 
-	public AstLoaderCDT(AstInterpreterCDT astInterpreter) {
+	public BaseScopeCDT(AstInterpreterCDT astInterpreter) {
 		_astInterpreter = astInterpreter;
 	}
 
@@ -247,7 +247,7 @@ public abstract class AstLoaderCDT extends AstLoader{
 	}
 
 	public static IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps, 
-				Graph graph, AstLoaderCDT astLoader, AstInterpreterCDT astInterpreter) {
+				Graph graph, BaseScopeCDT astLoader, AstInterpreterCDT astInterpreter) {
 		ExecTreeLogger.log(name);
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
@@ -261,7 +261,7 @@ public abstract class AstLoaderCDT extends AstLoader{
 	}
 	
 	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap, IContext parent) {
+			List<InExtVarPair> ignored, InToExtVar inToExtMap, IScope parent) {
 		ExecTreeLogger.log("");
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
 			IVar extVar = parent.getVarFromBinding(entry.getKey());
