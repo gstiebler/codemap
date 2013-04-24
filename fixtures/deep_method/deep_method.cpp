@@ -15,7 +15,7 @@ public:
         int c = 3;
         
         if( c > 4 )
-            a = 8;
+            calledFunc();
         //for( int i(0); i < c; ++i)
         //{
         //    if( i > 2 )

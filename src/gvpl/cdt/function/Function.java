@@ -63,6 +63,7 @@ public class Function extends BaseScopeCDT {
 	
 	ICPPASTConstructorChainInitializer[] _ccInitializer;
 	IASTStatement _body;
+	protected IScope _caller = null;
 
 	public Function(AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(astInterpreter);
@@ -175,6 +176,7 @@ public class Function extends BaseScopeCDT {
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnValue = new Value();
+		_caller = caller;
 		
 		if(_body != null) {
 			_parametersMap = new LinkedHashMap<>();
@@ -221,6 +223,7 @@ public class Function extends BaseScopeCDT {
 			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
 		}
 		
+		_caller = null;
 		_gvplGraph = null;
 		_parametersMap = null;
 		
@@ -380,7 +383,10 @@ public class Function extends BaseScopeCDT {
 		if(super.hasVarInScope(binding))
 			return true;
 		
-		return _parametersMap.containsKey(binding);
+		if(_parametersMap.containsKey(binding))
+			return true;
+		
+		return _caller.hasVarInScope(binding);
 	}
 
 }

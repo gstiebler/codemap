@@ -185,12 +185,13 @@ public class MemberFunc extends Function {
 			return null;
 		}
 		
-		// search the variable in the function parameters and in local vars
-		IVar var = getMemberFromBinding(binding);
-		if(var != null)
-			return var;
-		
-		return super.getVarFromBinding(binding);
+		//TODO refactoring: this decision should be on BaseScope. This decision should be removed
+		// from getAccessedVars
+		if(_caller.hasVarInScope(binding)) {
+			return getVarInsideSandboxFromBinding(binding);
+		} else {
+			return getVarFromBindingUnbounded(binding);
+		}
 	}
 	
 	@Override
