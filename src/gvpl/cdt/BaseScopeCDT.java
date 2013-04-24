@@ -264,7 +264,12 @@ public abstract class BaseScopeCDT extends BaseScope{
 			List<InExtVarPair> ignored, InToExtVar inToExtMap, IScope parent) {
 		ExecTreeLogger.log("");
 		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
-			IVar extVar = parent.getVarFromBinding(entry.getKey());
+			IVar extVar;
+			if(parent.hasVarInScope(entry.getKey()))
+				extVar = parent.getVarFromBinding(entry.getKey());
+			else
+				extVar = parent.getVarFromBindingUnbounded(entry.getKey());
+			
 			if (extVar == null)
 				logger.fatal("extVar cannot be null");
 
@@ -328,10 +333,19 @@ public abstract class BaseScopeCDT extends BaseScope{
 	}
 	
 	public IVar getVarFromBindingUnbounded(IBinding binding) {
-		IVar var = _localVariables.get(binding);;
+		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var;
 		
 		return _astInterpreter.getGlobalVar(binding);
 	}
+
+	@Override
+	public boolean hasVarInScope(IBinding binding) {
+		if(_astInterpreter.hasVarInScope(binding))
+			return true;
+		
+		return _localVariables.containsKey(binding);
+	}
+	
 }

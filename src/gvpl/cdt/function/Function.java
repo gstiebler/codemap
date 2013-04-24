@@ -375,4 +375,12 @@ public class Function extends BaseScopeCDT {
 		return super.getVarFromBindingUnbounded(binding);
 	}
 
+	@Override
+	public boolean hasVarInScope(IBinding binding) {
+		if(super.hasVarInScope(binding))
+			return true;
+		
+		return _parametersMap.containsKey(binding);
+	}
+
 }

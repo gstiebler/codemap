@@ -192,4 +192,12 @@ public class MemberFunc extends Function {
 	public boolean memberIsInitialized(MemberId memberId) {
 		return _initializedMembers.contains(memberId);
 	}
+	
+	@Override
+	public boolean hasVarInScope(IBinding binding) {
+		if(super.hasVarInScope(binding))
+			return true;
+		
+		return getMemberFromBinding(binding) != null;
+	}
 }

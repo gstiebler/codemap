@@ -174,4 +174,12 @@ public class BasicBlockCDT extends BaseScopeCDT {
 		return vars;
 	}
 	
+	@Override
+	public boolean hasVarInScope(IBinding binding) {
+		if(super.hasVarInScope(binding))
+			return true;
+		
+		return _parent.hasVarInScope(binding);
+	}
+	
 }

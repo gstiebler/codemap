@@ -414,4 +414,9 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 		return _globalVars.get(binding);
 	}
 	
+	@Override
+	public boolean hasVarInScope(IBinding binding) {
+		return getVarFromBindingUnbounded(binding) != null;
+	}
+	
 }
