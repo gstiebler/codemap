@@ -116,38 +116,6 @@ public class MemberFunc extends Function {
 		
 		return null;
 	}
-	
-	@Override
-	public IVar getVarFromBindingUnbounded(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		if(binding instanceof ProblemBinding) {
-			logger.info("problem binding");
-			return null;
-		}
-		
-		// search the variable in the function parameters and in local vars
-		IVar var = super.getVarFromBindingUnbounded(binding);
-		if(var != null)
-			return var;
-		
-		return getMemberFromBinding(binding);
-	}
-
-	@Override
-	public IVar getVarFromBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		if(binding instanceof ProblemBinding) {
-			logger.info("problem binding");
-			return null;
-		}
-		
-		// search the variable in the function parameters and in local vars
-		IVar var = getMemberFromBinding(binding);
-		if(var != null)
-			return var;
-		
-		return super.getVarFromBinding(binding);
-	}
 
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, IScope caller) {
 		_thisVar = thisVar;
@@ -191,6 +159,38 @@ public class MemberFunc extends Function {
 	
 	public boolean memberIsInitialized(MemberId memberId) {
 		return _initializedMembers.contains(memberId);
+	}
+
+	@Override
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		if(binding instanceof ProblemBinding) {
+			logger.info("problem binding");
+			return null;
+		}
+		
+		// search the variable in the function parameters and in local vars
+		IVar var = super.getVarFromBindingUnbounded(binding);
+		if(var != null)
+			return var;
+		
+		return getMemberFromBinding(binding);
+	}
+
+	@Override
+	public IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		if(binding instanceof ProblemBinding) {
+			logger.info("problem binding");
+			return null;
+		}
+		
+		// search the variable in the function parameters and in local vars
+		IVar var = getMemberFromBinding(binding);
+		if(var != null)
+			return var;
+		
+		return super.getVarFromBinding(binding);
 	}
 	
 	@Override

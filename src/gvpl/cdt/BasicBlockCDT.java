@@ -74,18 +74,6 @@ public class BasicBlockCDT extends BaseScopeCDT {
 	}
 	
 	@Override
-	public IVar getVarFromBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		return getVarInsideSandboxFromBinding(binding);
-	}
-	
-	@Override
-	public IVar getVarFromBindingUnbounded(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		return null;
-	}
-	
-	@Override
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());
 		VarInfo vi = _parent.getTypeFromVarBinding(binding);
@@ -172,6 +160,18 @@ public class BasicBlockCDT extends BaseScopeCDT {
 		}
 		
 		return vars;
+	}
+	
+	@Override
+	public IVar getVarFromBinding(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		return getVarInsideSandboxFromBinding(binding);
+	}
+	
+	@Override
+	public IVar getVarFromBindingUnbounded(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		return null;
 	}
 	
 	@Override
