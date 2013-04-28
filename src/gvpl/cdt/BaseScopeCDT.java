@@ -20,6 +20,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -346,6 +347,31 @@ public abstract class BaseScopeCDT extends BaseScope{
 			return true;
 		
 		return _localVariables.containsKey(binding);
+	}
+	
+	protected void mergeScopes(Graph extGraph, IScope parent) {
+		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
+		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
+		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), parent);
+		
+		// bind the vars from calling block to the internal read vars
+		for(InExtVarPair readPair : readVars) {
+			GraphNode intVarFirstNode = readPair._in.getFirstNode();
+			// if someone read from internal var
+			GraphNode extVarCurrNode = readPair._ext.getCurrentNode();
+			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode);
+		}		
+		// bind the vars from calling block to the internal written vars
+		for (InExtVarPair writtenPair : writtenVars) {
+			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode();
+			// if someone has written in the internal var
+
+			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph, _astInterpreter);
+			GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode();
+			// connect the var from the calling block to the correspodent var in this block
+			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
+		}
 	}
 	
 }

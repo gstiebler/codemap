@@ -200,28 +200,7 @@ public class Function extends BaseScopeCDT {
 
 		extGraph.addSubGraph(_gvplGraph);
 		
-		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), caller);
-		
-		// bind the vars from calling block to the internal read vars
-		for(InExtVarPair readPair : readVars) {
-			GraphNode intVarFirstNode = readPair._in.getFirstNode();
-			// if someone read from internal var
-			GraphNode extVarCurrNode = readPair._ext.getCurrentNode();
-			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode);
-		}		
-		// bind the vars from calling block to the internal written vars
-		for (InExtVarPair writtenPair : writtenVars) {
-			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode();
-			// if someone has written in the internal var
-
-			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph, _astInterpreter);
-			GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode();
-			// connect the var from the calling block to the correspodent var in this block
-			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
-		}
+		mergeScopes(extGraph, caller);
 		
 		_caller = null;
 		_gvplGraph = null;
