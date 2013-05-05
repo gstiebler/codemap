@@ -9,8 +9,6 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IScope;
 import gvpl.common.IVar;
-import gvpl.common.InExtVarPair;
-import gvpl.common.InToExtVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.graph.Graph;

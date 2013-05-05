@@ -1,13 +1,6 @@
 package gvpl.cdt;
 
-import gvpl.common.InExtVarPair;
-import gvpl.common.InToExtVar;
 import gvpl.graph.Graph;
-import gvpl.graph.Graph.NodeType;
-import gvpl.graph.GraphNode;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTForStatement;

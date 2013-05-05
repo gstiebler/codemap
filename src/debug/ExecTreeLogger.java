@@ -3,6 +3,7 @@ package debug;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -128,10 +129,18 @@ public class ExecTreeLogger {
 	
 	static List<StackTraceElement> stackStrings() {
 		List<StackTraceElement> result = new ArrayList<StackTraceElement>();
-		int numDeepStackLines = 24;
-		int numExecTreeLoggerLines = 4;
+		Map<String, String> env = System.getenv();
+
+		int numDeepStackLines = 0;
+		int numExecTreeLoggerLines = 0;
+		String ut = env.get("UNIT_TESTS");
+		if( ut != null )
+		{
+			numDeepStackLines = 25;
+			numExecTreeLoggerLines = 4;
+		}
 		StackTraceElement ste[] = Thread.currentThread().getStackTrace();
-		for (int i = ste.length - numDeepStackLines; i >= numExecTreeLoggerLines; --i )
+		for (int i = ste.length - numDeepStackLines - 1; i >= numExecTreeLoggerLines; --i )
 			result.add(ste[i]);
 		return result;
 	}

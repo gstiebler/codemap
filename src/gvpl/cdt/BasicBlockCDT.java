@@ -80,8 +80,12 @@ public class BasicBlockCDT extends BaseScopeCDT {
 		
 		if(vi != null)
 			return vi;
-		else
-			return super.getTypeFromVarBinding(binding);
+
+		IVar var = getLocalVar(binding);
+		if( var != null )
+			return var.getVarInfo();
+		
+		return super.getTypeFromVarBinding(binding);
 	}
 	
 	public Graph getGraph() {

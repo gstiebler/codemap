@@ -161,6 +161,9 @@ public abstract class BaseScopeCDT extends BaseScope{
 	
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		IVar var = getVarFromBindingUnbounded(binding);
+		if( var == null )
+			return null;
+		
 		return var.getVarInfo();
 	}
 	

@@ -5,11 +5,14 @@ int main() {
 	int q = 3;
 	int s = 53;
 	int e = 9;
-	int d;
+	int d = 11;
 	for (int i = 0; i < l; i++)
 	{
 		s = q;
 		q += s - e;
-		d = q + i;
+        if( q > 9 )
+        {
+            d = q + i;
+        }
 	}
 }
