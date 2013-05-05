@@ -76,16 +76,15 @@ public class BasicBlockCDT extends BaseScopeCDT {
 	@Override
 	public VarInfo getTypeFromVarBinding(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());
-		VarInfo vi = _parent.getTypeFromVarBinding(binding);
-		
-		if(vi != null)
-			return vi;
-
 		IVar var = getLocalVar(binding);
 		if( var != null )
 			return var.getVarInfo();
 		
-		return super.getTypeFromVarBinding(binding);
+		VarInfo vi = super.getTypeFromVarBinding(binding);
+		if( vi != null )
+			return vi;
+
+		return _parent.getTypeFromVarBinding(binding);
 	}
 	
 	public Graph getGraph() {
