@@ -283,6 +283,8 @@ public class InstructionLine {
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
 			result = new Value(varDecl);
+		} else if (expr instanceof CPPASTNewExpression ) {
+			logger.error("work here");
 		} else
 			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
@@ -332,7 +334,12 @@ public class InstructionLine {
 		IVar lhsVar = _parentBaseScope.getVarFromExpr(lhsOp);
 		
 		if(lhsVar instanceof ClassVar) {
-			return loadOperatorOverload(binExpr);
+			IASTExpression op2 = binExpr.getOperand2();
+			if( op2 instanceof IASTLiteralExpression) {
+				//TODO op2 is probably NULL or zero
+				logger.error("work here");
+			} else
+				return loadOperatorOverload(binExpr);
 		}
 		
 		IASTExpression rhsExpr = binExpr.getOperand2();

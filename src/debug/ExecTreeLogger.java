@@ -23,6 +23,7 @@ public class ExecTreeLogger {
 
 	static ExecTreeLogger _instance = new ExecTreeLogger();
 	static List<StackTraceElement> _lastStack = new ArrayList<StackTraceElement>();
+	static boolean _insideTests = true;
 	
 	Document _doc = null;
 	List<Element> _elementsStack = new ArrayList<Element>();
@@ -45,6 +46,10 @@ public class ExecTreeLogger {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		Map<String, String> env = System.getenv();
+		String ut = env.get("UNIT_TESTS");
+		_insideTests = ut != null;
 	}
 	
 	public static void init() {
@@ -124,17 +129,16 @@ public class ExecTreeLogger {
 	}
 	
 	public static void log(String args) {
-		_instance.instanceLog(args);
+		if(!_insideTests)
+			_instance.instanceLog(args);
 	}
 	
 	static List<StackTraceElement> stackStrings() {
 		List<StackTraceElement> result = new ArrayList<StackTraceElement>();
-		Map<String, String> env = System.getenv();
 
 		int numDeepStackLines = 0;
 		int numExecTreeLoggerLines = 0;
-		String ut = env.get("UNIT_TESTS");
-		if( ut != null )
+		if( _insideTests )
 		{
 			numDeepStackLines = 25;
 			numExecTreeLoggerLines = 4;
