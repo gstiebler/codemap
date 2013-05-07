@@ -188,5 +188,10 @@ public class BasicTest {
 	public void staticMember() {
 		TestsUtil.baseTest("static_member");
 	}
+
+	@Test
+	public void parentClassMethod() {
+		TestsUtil.baseTest("parent_class_method");
+	}
 	
 }

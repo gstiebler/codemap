@@ -433,13 +433,25 @@ public class InstructionLine {
 			IBinding idExprBinding = name.resolveBinding();
 			
 			if (idExprBinding instanceof CPPMethod) {
-				if (name instanceof CPPASTQualifiedName) { // static function
-					return loadStaticMethod((CPPASTQualifiedName) name, paramExpr);
-				} else if (name instanceof CPPASTName) // method from own class
-					return loadOwnMethod(idExprBinding, paramExpr);
+				Function func = null;
+				if (name instanceof CPPASTQualifiedName) { // static function		
+					IASTName[] names = ((CPPASTQualifiedName)name).getNames();
+					IASTName className = names[0];
+					IASTName funcName = names[1];
+					ClassDeclCDT classDecl = _astInterpreter.getClassDecl(className.resolveBinding());
+					func = classDecl.getMemberFunc(funcName.resolveBinding());
+				} else if (name instanceof CPPASTName){ // method from own class
+					MemberFunc parentMF = getParentFunc();
+					func = parentMF.getParentClass().getMemberFunc(idExprBinding);
+				}
 				else
 					logger.fatal("you're doing it wrong");
-				return null;
+				
+				if (func.getIsStatic()) { // static function
+					return loadStaticMethod(paramExpr, func);
+				} else
+					return loadOwnMethod(paramExpr, func);
+				
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
 			} else
@@ -452,12 +464,7 @@ public class InstructionLine {
 		return null;
 	}
 	
-	Value loadStaticMethod(CPPASTQualifiedName qName, IASTExpression paramExpr) {
-		IASTName[] names = qName.getNames();
-		IASTName className = names[0];
-		IASTName funcName = names[1];
-		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(className.resolveBinding());
-		Function func = classDecl.getMemberFunc(funcName.resolveBinding());
+	Value loadStaticMethod(IASTExpression paramExpr, Function func) {
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		return func.addFuncRef(parameterValues, _gvplGraph, _parentBaseScope);
 	}
@@ -497,9 +504,8 @@ public class InstructionLine {
 	 * @param stLine
 	 * @return The graph node of the result of the function
 	 */
-	private Value loadOwnMethod(IBinding idExprBinding, IASTExpression paramExpr) {
+	private Value loadOwnMethod(IASTExpression paramExpr, Function func) {
 		MemberFunc parentMF = getParentFunc();
-		Function func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 		
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		MemberFunc memberFunc = (MemberFunc) func;

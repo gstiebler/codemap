@@ -28,6 +28,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
@@ -35,9 +36,11 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -48,6 +51,7 @@ public class Function extends BaseScopeCDT {
 	
 	private Value _returnValue = null;
 	private TypeId _returnType = null;
+	private boolean _isStatic = false;
 
 	private String _externalName = "";
 	private Map<IBinding, FuncParameter> _originalParametersMap;
@@ -72,6 +76,16 @@ public class Function extends BaseScopeCDT {
 	}
 	
 	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
+		IASTNode parentNode = decl.getParent();
+		if( parentNode instanceof CPPASTSimpleDeclaration ) {
+			CPPASTSimpleDeclaration simpleDecl = (CPPASTSimpleDeclaration) parentNode;
+			_isStatic = simpleDecl.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_static;
+		} else if ( parentNode instanceof CPPASTFunctionDefinition ) {
+			CPPASTFunctionDefinition funcDef = (CPPASTFunctionDefinition) parentNode;
+			_isStatic = funcDef.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_static;
+		} else {
+			logger.error("not good");
+		}
 		IASTName astName = decl.getName();
 		loadFuncParameters(decl.getParameters());
 		// Gets the name of the function
@@ -364,6 +378,10 @@ public class Function extends BaseScopeCDT {
 			return true;
 		
 		return _caller.hasVarInScope(binding);
+	}
+	
+	public boolean getIsStatic() {
+		return _isStatic;
 	}
 
 }

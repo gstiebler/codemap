@@ -100,7 +100,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 	
 	protected IBinding getBindingFromExpr(IASTExpression expr) {
 		ExecTreeLogger.log(expr.getRawSignature());
-		logger.debug("expr is {}", expr.getClass());
+		logger.debug("expr {} is {}", expr.getRawSignature(), expr.getClass());
 		if (expr instanceof IASTIdExpression) {
 			return ((IASTIdExpression) expr).getName().resolveBinding(); 
 		} else if (expr instanceof IASTUnaryExpression) {
