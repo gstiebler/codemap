@@ -129,7 +129,7 @@ public class ExecTreeLogger {
 	}
 	
 	public static void log(String args) {
-		if(!_insideTests)
+		if(_insideTests)
 			_instance.instanceLog(args);
 	}
 	

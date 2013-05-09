@@ -6,19 +6,34 @@ subgraph cluster_1 {
 label = "main";
 parent = "G";
 startinglines = "2_2";
-	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=5 ]
-	node_000002 [ label = "array", startingline=5 ]
-	node_000003 [ label = "a", startingline=6 ]
-	node_000005 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000006 [ label = "*array_p", startingline=9 ]
-	node_000007 [ label = "array_p_pointed", startingline=9 ]
-	node_000008 [ label = "*array_p", startingline=10 ]
-	node_000009 [ label = "b", startingline=10 ]
+	node_000001 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=4 ]
+	node_000002 [ label = "indexA", startingline=4 ]
+	node_000003 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=6 ]
+	node_000004 [ label = "[]", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=6 ]
+	node_000005 [ label = "array", startingline=6 ]
+	node_000006 [ label = "[]", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=7 ]
+	node_000007 [ label = "receivedA", startingline=7 ]
+	node_000009 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000010 [ label = "[]", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=10 ]
+	node_000011 [ label = "*array_p", startingline=10 ]
+	node_000012 [ label = "array_p_pointed", startingline=10 ]
+	node_000013 [ label = "[]", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=11 ]
+	node_000014 [ label = "*array_p", startingline=11 ]
+	node_000015 [ label = "b", startingline=11 ]
 }
 	node_000001 -> node_000002
-	node_000002 -> node_000003
+	node_000002 -> node_000004
+	node_000002 -> node_000006
+	node_000002 -> node_000010
+	node_000002 -> node_000013
+	node_000003 -> node_000004
+	node_000004 -> node_000005
 	node_000005 -> node_000006
 	node_000006 -> node_000007
-	node_000007 -> node_000008
-	node_000008 -> node_000009
+	node_000009 -> node_000010
+	node_000010 -> node_000011
+	node_000011 -> node_000012
+	node_000012 -> node_000014
+	node_000013 -> node_000015
+	node_000014 -> node_000013
 }

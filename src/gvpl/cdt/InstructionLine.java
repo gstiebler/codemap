@@ -280,9 +280,10 @@ public class InstructionLine {
 			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
 			IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
 			IVar varDecl = _parentBaseScope.getVarFromExpr(arrayExpr);
-			//TODO use the index!!
-			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
-			result = new Value(varDecl);
+			IASTExpression index = arraySubscrExpr.getSubscriptExpression();
+			Value indexValue = loadValue(index);
+			GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
+			result = new Value(arrayResult);
 		} else if (expr instanceof CPPASTNewExpression ) {
 			logger.error("work here");
 		} else
@@ -349,7 +350,11 @@ public class InstructionLine {
 		if (lhsOp instanceof IASTUnaryExpression) {
 			logger.warn("not implemented");
 		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
-			logger.warn("not imlemented");
+			Value rhsValue = loadValue(rhsExpr);
+			CPPASTArraySubscriptExpression indexExpr = (CPPASTArraySubscriptExpression) lhsOp;
+			IASTExpression subscriptExpr = indexExpr.getSubscriptExpression();
+			Value indexValue = loadValue(subscriptExpr);
+			return ArrayCDT.writeToArray( lhsVar, rhsValue, indexValue, _gvplGraph );
 		} else if (lhsVar instanceof PointerVar) {
 			loadRhsPointer((PointerVar) lhsVar, rhsExpr);
 			return null;
