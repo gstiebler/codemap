@@ -8,7 +8,10 @@ import gvpl.common.IScope;
 import gvpl.common.IVar;
 import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
+import gvpl.common.Value;
 import gvpl.graph.Graph;
+import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,6 +28,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
@@ -138,6 +142,7 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 				} else if(declSpec instanceof CPPASTEnumerationSpecifier) {
 					CPPASTEnumerationSpecifier enumSpec = (CPPASTEnumerationSpecifier) declSpec;
 					IASTEnumerator[] enumerators = enumSpec.getEnumerators();
+					int counter = 0;
 					for(IASTEnumerator enumerator : enumerators) {
 						TypeId type = getType(declSpec);
 						IASTName name = enumerator.getName();
@@ -145,6 +150,22 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 								null, _gvplGraph, null, this);
 						IBinding binding = name.resolveBinding();
 						_globalVars.put(binding, var);
+
+						IASTExpression enumValExpr = enumerator.getValue();
+						Value val;
+						if( enumValExpr != null ) {
+							InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+							val = il.loadValue(enumValExpr);
+							String nodeName = val.getNode().getName();
+							counter = Integer.parseInt(nodeName);
+							counter++;
+						} else {
+							String strCounter = String.valueOf(counter++);
+							GraphNode node = _gvplGraph.addGraphNode(strCounter, NodeType.E_DIRECT_VALUE);
+							val = new Value(node);
+						}
+						
+						var.receiveAssign(NodeType.E_DIRECT_VALUE, val, _gvplGraph);
 					}
 				} 
 				else
