@@ -24,6 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
@@ -34,6 +35,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTEnumerationSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
@@ -133,7 +135,19 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 						IBinding binding = name.resolveBinding();
 						initializeGlobalVar(binding, declarator);
 					}
-				} else
+				} else if(declSpec instanceof CPPASTEnumerationSpecifier) {
+					CPPASTEnumerationSpecifier enumSpec = (CPPASTEnumerationSpecifier) declSpec;
+					IASTEnumerator[] enumerators = enumSpec.getEnumerators();
+					for(IASTEnumerator enumerator : enumerators) {
+						TypeId type = getType(declSpec);
+						IASTName name = enumerator.getName();
+						IVar var = BaseScopeCDT.addVarDecl(name.toString(), type,
+								null, _gvplGraph, null, this);
+						IBinding binding = name.resolveBinding();
+						_globalVars.put(binding, var);
+					}
+				} 
+				else
 					logger.fatal("you're doing it wrong. {}. CodeLoc: {}", 
 							declSpec.getClass(), DebugOptions.getCurrCodeLocation() );
 			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
