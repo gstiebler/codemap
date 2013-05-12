@@ -258,7 +258,12 @@ public class InstructionLine {
 		Value result = null;
 		// Eh uma variavel
 		if (expr instanceof IASTIdExpression) {
-			result = _parentBaseScope.getValueFromExpr(expr);
+			if(_parentBaseScope != null) 
+				result = _parentBaseScope.getValueFromExpr(expr);
+			else {
+				IBinding binding = ((IASTIdExpression) expr).getName().resolveBinding();
+				result = new Value(_astInterpreter.getGlobalVar(binding));
+			}
 		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
 			result = new Value(loadBinOp((IASTBinaryExpression) expr));
 		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto

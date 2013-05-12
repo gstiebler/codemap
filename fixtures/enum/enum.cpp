@@ -3,7 +3,7 @@ enum eMyEnum
 {
     E_FIRST = 0,
     E_SECOND,
-    E_THIRD
+    E_THIRD = E_SECOND << 1
 };
 
 class Class1

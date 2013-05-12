@@ -7,6 +7,8 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier.IASTEnumerator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -14,6 +16,8 @@ import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class EnumCDT {
+	
+	static Logger logger = LogManager.getLogger(InstructionLine.class.getName());
 
 	public static void loadEnum( IASTEnumerationSpecifier enumSpec, AstInterpreterCDT astInterpreter ) {
 		IASTEnumerator[] enumerators = enumSpec.getEnumerators();
@@ -33,7 +37,11 @@ public class EnumCDT {
 				InstructionLine il = new InstructionLine(graph, null, astInterpreter);
 				val = il.loadValue(enumValExpr);
 				String nodeName = val.getNode().getName();
-				counter = Integer.parseInt(nodeName);
+				try {
+					counter = Integer.decode(nodeName);
+				} catch (Exception e) {
+					logger.error( e );
+				}
 				counter++;
 			} else {
 				String strCounter = String.valueOf(counter++);
