@@ -8,25 +8,30 @@ label = "root";
 	node_000004 [ label = "E_SECOND", style=filled, fillcolor="#E9FFE9", startinglines=2 ]
 	node_000005 [ label = "2", style=filled, fillcolor="#E9FFE9", startinglines=2 ]
 	node_000006 [ label = "E_THIRD", style=filled, fillcolor="#E9FFE9", startinglines=2 ]
+	node_000007 [ label = "0", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000008 [ label = "E_IC_1", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000009 [ label = "1", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000010 [ label = "E_IC_2", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "2_9_9";
-	node_000007 [ label = "E_FIRST", startingline=11 ]
-	node_000008 [ label = "a", startingline=11 ]
-	node_000009 [ label = "E_SECOND", startingline=12 ]
-	node_000010 [ label = "b", startingline=12 ]
-	node_000011 [ label = "E_THIRD", startingline=13 ]
-	node_000012 [ label = "a", startingline=13 ]
-	node_000013 [ label = "c", startingline=15 ]
-	node_000014 [ label = "d", startingline=16 ]
+startinglines = "9_20_20";
+	node_000012 [ label = "a", startingline=22 ]
+	node_000014 [ label = "b", startingline=23 ]
+	node_000016 [ label = "a", startingline=24 ]
+	node_000017 [ label = "c", startingline=26 ]
+	node_000018 [ label = "d", startingline=27 ]
+	node_000020 [ label = "e", startingline=29 ]
 }
 	node_000001 -> node_000002
-	node_000002 -> node_000008
+	node_000002 -> node_000012
 	node_000003 -> node_000004
-	node_000004 -> node_000010
 	node_000004 -> node_000014
+	node_000004 -> node_000018
 	node_000005 -> node_000006
-	node_000006 -> node_000012
-	node_000012 -> node_000013
+	node_000006 -> node_000016
+	node_000007 -> node_000008
+	node_000009 -> node_000010
+	node_000010 -> node_000020
+	node_000016 -> node_000017
 }

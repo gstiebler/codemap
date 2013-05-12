@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -71,6 +72,14 @@ public class ClassDeclCDT extends ClassDecl{
 			}
 
 			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) member;
+			
+			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
+			if(declSpec instanceof IASTEnumerationSpecifier) {
+				EnumCDT.loadEnum( (IASTEnumerationSpecifier) declSpec, _astInterpreter );
+				continue;
+			}
+			
+			
 			IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 			// for each variable declared in a line
 			for (IASTDeclarator declarator : declarators) {
