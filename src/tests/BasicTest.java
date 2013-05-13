@@ -198,5 +198,10 @@ public class BasicTest {
 	public void enumTest() {
 		TestsUtil.baseTest("enum");
 	}
+
+	@Test
+	public void parentConstructorChain() {
+		TestsUtil.baseTest("parent_constructor_chain");
+	}
 	
 }
