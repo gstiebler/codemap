@@ -192,6 +192,10 @@ public abstract class BaseScopeCDT extends BaseScope{
 				return addVarDecl(expr.getRawSignature(), _astInterpreter.getPrimitiveType(), 
 						_gvplGraph, _astInterpreter);
 			}
+		} else if (expr instanceof CPPASTArraySubscriptExpression) {
+			CPPASTArraySubscriptExpression subsExpr = (CPPASTArraySubscriptExpression) expr;
+			IASTExpression arrayExpr = subsExpr.getArrayExpression();
+			return getLocalVarFromIdExpr((IASTIdExpression) arrayExpr);
 		} else
 			logger.fatal("not implemented: {}", expr.getClass());
 		return null;

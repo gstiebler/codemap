@@ -307,7 +307,11 @@ public class InstructionLine {
 	private void loadReturnStatement(IASTReturnStatement statement) {
 		IASTReturnStatement returnStat = (IASTReturnStatement) statement;
 
-		Value rvalue = loadValue(returnStat.getReturnValue());
+		IASTExpression returnExpr = returnStat.getReturnValue();
+		if( returnExpr == null )
+			return;
+			
+		Value rvalue = loadValue(returnExpr);
 
 		Function function = _parentBaseScope.getFunction();
 		// TODO use the return type

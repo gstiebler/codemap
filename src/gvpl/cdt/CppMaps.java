@@ -13,7 +13,7 @@ public abstract class CppMaps {
 	};
 
 	public enum eBinOp {
-		E_INVALID_BIN_OP, E_ADD_OP, E_SUB_OP, E_MULT_OP, E_DIV_OP, E_LESS_THAN_OP, E_GREATER_THAN_OP, E_LESS_EQUAL_OP, E_GREATER_EQUAL_OP
+		E_INVALID_BIN_OP, E_ADD_OP, E_SUB_OP, E_MULT_OP, E_DIV_OP, E_LESS_THAN_OP, E_GREATER_THAN_OP, E_LESS_EQUAL_OP, E_GREATER_EQUAL_OP, E_SHIFT_RIGHT, E_SHIFT_LEFT
 	}
 
 	public enum eAssignBinOp {
@@ -45,6 +45,8 @@ public abstract class CppMaps {
 		_binOpTypes.put(IASTBinaryExpression.op_greaterThan, eBinOp.E_GREATER_THAN_OP);
 		_binOpTypes.put(IASTBinaryExpression.op_lessEqual, eBinOp.E_LESS_EQUAL_OP);
 		_binOpTypes.put(IASTBinaryExpression.op_greaterEqual, eBinOp.E_GREATER_EQUAL_OP);
+		_binOpTypes.put(IASTBinaryExpression.op_shiftLeft, eBinOp.E_SHIFT_LEFT);
+		_binOpTypes.put(IASTBinaryExpression.op_shiftRight, eBinOp.E_SHIFT_RIGHT);
 
 		_assignBinOpTypes.put(IASTBinaryExpression.op_assign, eAssignBinOp.E_ASSIGN_OP);
 		_assignBinOpTypes.put(IASTBinaryExpression.op_plusAssign, eAssignBinOp.E_PLUS_ASSIGN_OP);
@@ -62,6 +64,8 @@ public abstract class CppMaps {
 		_binOpStrings.put(eBinOp.E_GREATER_THAN_OP, ">");
 		_binOpStrings.put(eBinOp.E_LESS_EQUAL_OP, "<=");
 		_binOpStrings.put(eBinOp.E_GREATER_EQUAL_OP, ">=");
+		_binOpStrings.put(eBinOp.E_SHIFT_LEFT, "<<");
+		_binOpStrings.put(eBinOp.E_SHIFT_RIGHT, ">>");
 
 		_un_op_strings.put(eUnOp.E_PLUS_PLUS_OP, "++");
 

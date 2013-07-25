@@ -38,6 +38,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifie
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
@@ -92,6 +93,12 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 
 		// Iterate through function, class e structs declarations
 		for (IASTDeclaration declaration : declarations) {
+			if(declaration instanceof CPPASTProblemDeclaration) {
+				CPPASTProblemDeclaration problem = (CPPASTProblemDeclaration) declaration;
+				logger.debug("problem declaration {}", problem.getContainingFilename() );
+				continue;
+			}
+			
 			logger.debug("Location of declaration: {}", CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
 			
 			// If the declaration is a function
