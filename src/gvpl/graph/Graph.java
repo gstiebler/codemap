@@ -195,7 +195,7 @@ public class Graph {
 		return unOpNode;
 	}
 
-	public GraphNode addNotOp(GraphNode val_node, BaseScope astLoader) {
+	public GraphNode addNotOp(GraphNode val_node) {
 		GraphNode notOpNode = addGraphNode("!", NodeType.E_OPERATION);
 		val_node.addDependentNode(notOpNode);
 

@@ -80,7 +80,8 @@ public class MemAddressVar extends Var {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE);
 			currentPointedVarNode.addDependentNode(_currGraphNode);
 		}
-		_onceRead = true;
+		if(!_onceWritten && !_hasReceivedVar)
+			_onceRead = true;
 		return _currGraphNode;
 	}
 

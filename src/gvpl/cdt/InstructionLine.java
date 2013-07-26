@@ -669,7 +669,9 @@ public class InstructionLine {
 		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_bracketedPrimary) {
 			return loadValue(unExpr.getOperand()).getNode();
 		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_not) {
-			logger.error("not implemented 'not' {}", unExpr.getRawSignature());
+			IASTExpression opExpr = unExpr.getOperand();
+			Value value = loadValue(opExpr);
+			return _gvplGraph.addNotOp(value.getNode());
 		} else
 			logger.error("not implemented {}", unExpr.getRawSignature());
 		return null;

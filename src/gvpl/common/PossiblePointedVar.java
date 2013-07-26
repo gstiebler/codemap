@@ -19,6 +19,8 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	public PossiblePointedVar _varTrue = null;
 	public PossiblePointedVar _varFalse = null;
 	public GraphNode _conditionNode = null;
+	/** If it's a final variable, i.e. there isn't a if condition associated with this PossiblePointedVar, 
+	 * then _finalVar holds the actual variable pointed by this PossiblePointedVar */
 	public IVar _finalVar = null;
 	IVar _ownerVar = null;
 

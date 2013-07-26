@@ -356,6 +356,11 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return _localVariables.containsKey(binding);
 	}
 	
+	/**
+	 * Connects the vars from the external scope to the vars inside the current scope
+	 * @param extGraph Graph from the external scope
+	 * @param parent External scope
+	 */
 	protected void mergeScopes(Graph extGraph, IScope parent) {
 		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
 		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
