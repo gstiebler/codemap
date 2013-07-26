@@ -70,6 +70,11 @@ public class BasicTest {
 	}
 	
 	@Test
+	public void newInsideIf() {
+		TestsUtil.baseTest("new_inside_if");
+	}
+	
+	@Test
 	public void classStructure() {
 		TestsUtil.baseTest("class_structure");
 	}
