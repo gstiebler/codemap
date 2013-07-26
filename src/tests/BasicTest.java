@@ -70,8 +70,8 @@ public class BasicTest {
 	}
 	
 	@Test
-	public void newInsideIf() {
-		TestsUtil.baseTest("new_inside_if");
+	public void writePointedInsideBlock() {
+		TestsUtil.baseTest("write_pointed_inside_block");
 	}
 	
 	@Test

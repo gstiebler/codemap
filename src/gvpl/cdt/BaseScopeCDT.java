@@ -320,9 +320,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 			}
 
 			return;
-		} else {
-			logger.error("Some variables are ClassVar, some are not");
-		}
+		} 
 
 		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
 		boolean accessed = false;
