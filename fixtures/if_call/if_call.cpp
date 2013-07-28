@@ -30,7 +30,7 @@ int main() {
 	else
 	{
 		z = j;
-		//int r = 20;
+		int r = 20;
 		e = r;
 	}
 	

@@ -54,6 +54,8 @@ public class IfCondition {
 		for( Var var : writtenVariables ) {
 			GraphNode trueNode = trueScope.getLastNode(var);
 			GraphNode falseNode = falseScope.getLastNode(var);
+			if( trueNode == null || falseNode == null )
+				continue;
 			
 			GraphNode ifOpNode = IfCondition.createIfNode(graph, conditionNode, trueNode, falseNode);
 			var.receiveAssign(NodeType.E_VARIABLE, new Value(ifOpNode), graph);

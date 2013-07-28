@@ -17,7 +17,7 @@ public class BasicBlockCDT extends BaseScopeCDT {
 		super(astInterpreter, parent);
 		_gvplGraph = gvplGraph;
 		_parent = parent;
-		_gvplGraph.setLabel("BasicBlockGraph");
+		//_gvplGraph.setLabel("BasicBlockGraph");
 	}
 
 	public void load(IASTStatement baseStatement) {
