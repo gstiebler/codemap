@@ -12,11 +12,9 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReturnStatement;
 import debug.ExecTreeLogger;
 
 public class BasicBlockCDT extends BaseScopeCDT {
-
-	protected BaseScopeCDT _parent;
 	
 	public BasicBlockCDT(BaseScopeCDT parent, AstInterpreterCDT astInterpreter, Graph gvplGraph) {
-		super(astInterpreter);
+		super(astInterpreter, parent);
 		_gvplGraph = gvplGraph;
 		_parent = parent;
 		_gvplGraph.setLabel("BasicBlockGraph");

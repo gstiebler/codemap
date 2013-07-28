@@ -39,12 +39,15 @@ import debug.ExecTreeLogger;
 public abstract class BaseScopeCDT extends BaseScope{
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
+
+	protected BaseScopeCDT _parent;
 	
 	protected AstInterpreterCDT _astInterpreter;
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 
-	public BaseScopeCDT(AstInterpreterCDT astInterpreter) {
+	public BaseScopeCDT(AstInterpreterCDT astInterpreter, BaseScopeCDT parent) {
 		_astInterpreter = astInterpreter;
+		_parent = parent;
 		ScopeManager.addScope(this);
 	}
 
@@ -68,7 +71,12 @@ public abstract class BaseScopeCDT extends BaseScope{
 	    	return tempVar;
 	    }
 		
-		return getVarFromBinding(getBindingFromExpr(expr));
+	    IBinding binding = getBindingFromExpr(expr);
+	    var = getVarFromBinding(binding);
+		if (var != null) 
+			return var; 
+
+		return _parent.getVarFromBinding(binding);
 	}
 	
 	protected GraphNode getNodeFromExpr(IASTExpression expr) {

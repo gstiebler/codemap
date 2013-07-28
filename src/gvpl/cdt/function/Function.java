@@ -68,7 +68,7 @@ public class Function extends BaseScopeCDT {
 	protected IScope _caller = null;
 
 	public Function(AstInterpreterCDT astInterpreter, IBinding ownBinding) {
-		super(astInterpreter);
+		super(astInterpreter, null);
 		
 		_ownBinding = ownBinding;
 		//TODO FIX!!

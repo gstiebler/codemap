@@ -18,9 +18,19 @@ public class IfCondition {
 
 	public static void createIfNodes(BaseScope trueScope, BaseScope falseScope, 
 			GraphNode conditionNode, Graph graph) {
-		Set<Var> trueWrittenVars = trueScope.getWrittenVars();
-		Set<Var> falseWrittenVars = falseScope.getWrittenVars();
+		Set<Var> trueWrittenVars;
+		Set<Var> falseWrittenVars;
 		
+		if( trueScope != null )
+			trueWrittenVars = trueScope.getWrittenVars();
+		else
+			trueWrittenVars = new HashSet<Var>();
+		
+		if( falseScope != null )
+			falseWrittenVars = falseScope.getWrittenVars();
+		else 
+			falseWrittenVars = new HashSet<Var>();
+			
 		// set containing the vars written in both true and false block
 		Set<Var> writtenVarsBoth = new HashSet<Var>(trueWrittenVars);
 		writtenVarsBoth.retainAll(falseWrittenVars);
