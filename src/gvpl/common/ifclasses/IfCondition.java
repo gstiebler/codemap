@@ -1,89 +1,56 @@
 package gvpl.common.ifclasses;
 
-import gvpl.common.IVar;
-import gvpl.common.InToExtVar;
-import gvpl.common.MemAddressVar;
+import gvpl.common.BaseScope;
+import gvpl.common.ScopeManager;
 import gvpl.common.Value;
+import gvpl.common.Var;
 import gvpl.graph.Graph;
-import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
+import gvpl.graph.GraphNode;
 
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 
 import debug.ExecTreeLogger;
 
 public class IfCondition {
 
-	/**
-	 * Creates the If nodes to the written variables
-	 * 
-	 * @param ifStatement
-	 *            The If statement from CDT
-	 * @param mapPrevTrueFalse
-	 *            Maps the external variable (the variable in the parent block)
-	 *            to a structure that holds the node if the condition is true,
-	 *            if the condition is false, and the previous GraphNode of this
-	 *            variable
-	 * @param ifTrueMergedNodes
-	 *            Maps the nodes from the parent block to the True block
-	 * @param ifFalseMergedNodes
-	 *            Maps the nodes from the parent block to the True block
-	 * @param conditionNode
-	 *            The condition of the If statement
-	 * @param Graph
-	 *            The Graph
-	 * @param startingLine
-	 *            The number of the line in the source code
-	 * 
-	 */
-	public static void createIfNodes(Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse,
-			Map<GraphNode, GraphNode> ifTrueMergedNodes,
-			Map<GraphNode, GraphNode> ifFalseMergedNodes, GraphNode conditionNode, Graph graph) {
-		for (Map.Entry<IVar, PrevTrueFalseNode> entry : mapPrevTrueFalse.entrySet()) {
-			IVar extVar = entry.getKey();
-			ExecTreeLogger.log("extVar " + extVar.getName());
-			PrevTrueFalseNode prevTrueFalse = entry.getValue();
 
-			GraphNode trueNode = prevTrueFalse._true;
-			GraphNode falseNode = prevTrueFalse._false;
+	public static void createIfNodes(BaseScope trueScope, BaseScope falseScope, 
+			GraphNode conditionNode, Graph graph) {
+		Set<Var> trueWrittenVars = trueScope.getWrittenVars();
+		Set<Var> falseWrittenVars = falseScope.getWrittenVars();
+		
+		// set containing the vars written in both true and false block
+		Set<Var> writtenVarsBoth = new HashSet<Var>(trueWrittenVars);
+		writtenVarsBoth.retainAll(falseWrittenVars);
 
-			// if the variable was not written in the true block, then if the
-			// condition is true,
-			// the variable will hold it's previous value
-			if (trueNode == null)
-				trueNode = prevTrueFalse._prev;
+		// set containing the vars written only in true block
+		Set<Var> writtenOnlyInTrue = new HashSet<Var>(trueWrittenVars);
+		writtenOnlyInTrue.removeAll(falseWrittenVars);
 
-			// if the variable was not written in the false block (else), then
-			// if the condition is false,
-			// the variable will hold it's previous value
-			if (falseNode == null)
-				falseNode = prevTrueFalse._prev;
-
-			// get the nodes in the current graph, if necessary
-			if(ifTrueMergedNodes != null)
-			{
-				GraphNode newNode = ifTrueMergedNodes.get(trueNode);
-				if (newNode != null)
-					trueNode = newNode;
-			}
-			if(ifFalseMergedNodes != null)
-			{
-				GraphNode newNode = ifFalseMergedNodes.get(falseNode);
-				if (newNode != null)
-					falseNode = newNode;
-			}
-
-			assert (trueNode != null);
-			assert (falseNode != null);
-
-			GraphNode ifOpNode = createIfNode(graph, conditionNode, trueNode, falseNode);
-
-			extVar.setGraph(graph);
-			extVar.receiveAssign(NodeType.E_VARIABLE, new Value(ifOpNode), graph);
+		// set containing the vars written only in false block
+		Set<Var> writtenOnlyInFalse = new HashSet<Var>(falseWrittenVars);
+		writtenOnlyInFalse.removeAll(trueWrittenVars);
+		
+		BaseScope currentScope = ScopeManager.getCurrentScope();
+		iterateWrittenVariables(writtenVarsBoth, trueScope, falseScope, conditionNode, graph);
+		iterateWrittenVariables(writtenOnlyInTrue, trueScope, currentScope, conditionNode, graph);
+		iterateWrittenVariables(writtenOnlyInFalse, currentScope, falseScope, conditionNode, graph);
+	}
+	
+	private static void iterateWrittenVariables(Set<Var> writtenVariables, BaseScope trueScope, 
+			BaseScope falseScope, GraphNode conditionNode, Graph graph) {
+		for( Var var : writtenVariables ) {
+			GraphNode trueNode = trueScope.getLastNode(var);
+			GraphNode falseNode = falseScope.getLastNode(var);
+			
+			GraphNode ifOpNode = IfCondition.createIfNode(graph, conditionNode, trueNode, falseNode);
+			var.receiveAssign(NodeType.E_VARIABLE, new Value(ifOpNode), graph);
 		}
 	}
 
-	public static GraphNode createIfNode(Graph graph, GraphNode conditionNode, GraphNode trueNode,
+	private static GraphNode createIfNode(Graph graph, GraphNode conditionNode, GraphNode trueNode,
 			GraphNode falseNode) {
 		ExecTreeLogger.log(graph.getName());
 		GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
@@ -93,46 +60,6 @@ public class IfCondition {
 		conditionNode.addDependentNode(ifOpNode);
 
 		return ifOpNode;
-	}
-
-	/**
-	 * Creates if nodes for memory address variables (pointers and references)
-	 * that have been referenced in the true and false blocks
-	 * 
-	 * @param mapPrevTrueFalseMV
-	 *            Maps the variable to it's possible assigments. Maps to what
-	 *            the variable would have been if the condition is true and if
-	 *            the condition is false
-	 * @param conditionNode
-	 *            The condition of the If statement
-	 * @param inToExtVarTrue
-	 *            Maps the internal vars, created inside the True block, and the
-	 *            correspondents variables in the parent block
-	 *            MAV: Mem Address Var
-	 * @param inToExtVarFalse
-	 *            Maps the internal vars, created inside the False block, and the
-	 *            correspondents variables in the parent block
-	 */
-	static public void mergeIfMAV(Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV,
-			GraphNode conditionNode, InToExtVar inToExtVarTrue, InToExtVar inToExtVarFalse) {
-		for (Map.Entry<IVar, PrevTrueFalseMemVar> entry : mapPrevTrueFalseMV.entrySet()) {
-			MemAddressVar extVar = (MemAddressVar) entry.getKey();
-			PrevTrueFalseMemVar prevTrueFalse = entry.getValue();
-
-			MemAddressVar trueMAV = prevTrueFalse._true.updateInternalVars(inToExtVarTrue);
-			
-			MemAddressVar falseMAV = null;
-			if(prevTrueFalse._false != null)
-				falseMAV = prevTrueFalse._false.updateInternalVars(inToExtVarFalse);
-
-			if (trueMAV == null)
-				trueMAV = prevTrueFalse._prev;
-
-			if (falseMAV == null)
-				falseMAV = new MemAddressVar(prevTrueFalse._prev);
-
-			extVar.setIf(conditionNode, trueMAV, falseMAV);
-		}
 	}
 	
 }

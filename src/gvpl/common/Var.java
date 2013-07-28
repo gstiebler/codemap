@@ -61,6 +61,9 @@ public class Var implements IVar {
 			_firstGraphNode = node;
 
 		_currGraphNode = node;
+		
+		BaseScope currScope = ScopeManager.getCurrentScope();
+		currScope.varWritten(this);
 	}
 	
 	public void updateNodes(GraphNode oldNode, GraphNode newNode) {

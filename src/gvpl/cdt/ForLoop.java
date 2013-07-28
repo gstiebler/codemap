@@ -11,7 +11,7 @@ public class ForLoop extends BasicBlockCDT {
 	BaseScopeCDT _typeSource;
 	
 	public ForLoop(BaseScopeCDT parent, AstInterpreterCDT astInterpreter) {
-		super(parent, astInterpreter);
+		super(parent, astInterpreter, new Graph());
 		_typeSource = parent;
 		_gvplGraph.setLabel("ForLoop");
 	}

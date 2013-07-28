@@ -6,8 +6,11 @@ import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,6 +26,7 @@ public abstract class BaseScope implements IScope {
 
 	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	protected Graph _gvplGraph = null;
+	private Map<Var, GraphNode> _lastWrittenNode = new HashMap<Var, GraphNode>();
 	
 	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
 			Graph graph, AstInterpreter astInterpreter) {
@@ -84,5 +88,17 @@ public abstract class BaseScope implements IScope {
 	}
 	
 	public abstract AstInterpreter getAstInterpreter();
+	
+	public void varWritten(Var var) {
+		_lastWrittenNode.put(var, var.getCurrentNode());
+	}
+	
+	public Set<Var> getWrittenVars() {
+		return new HashSet<Var>(_lastWrittenNode.keySet());
+	}
+	
+	public GraphNode getLastNode(Var var) {
+		return _lastWrittenNode.get(var);
+	}
 
 }

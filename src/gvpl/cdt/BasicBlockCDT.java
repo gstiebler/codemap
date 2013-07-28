@@ -28,9 +28,9 @@ public class BasicBlockCDT extends BaseScopeCDT {
 
 	protected BaseScopeCDT _parent;
 	
-	public BasicBlockCDT(BaseScopeCDT parent, AstInterpreterCDT astInterpreter) {
+	public BasicBlockCDT(BaseScopeCDT parent, AstInterpreterCDT astInterpreter, Graph gvplGraph) {
 		super(astInterpreter);
-		_gvplGraph = new Graph();
+		_gvplGraph = gvplGraph;
 		_parent = parent;
 		_gvplGraph.setLabel("BasicBlockGraph");
 	}

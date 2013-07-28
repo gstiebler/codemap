@@ -1,17 +1,8 @@
 package gvpl.cdt;
 
-import gvpl.common.IVar;
-import gvpl.common.InToExtVar;
-import gvpl.common.ifclasses.BoolValuePack;
 import gvpl.common.ifclasses.IfCondition;
-import gvpl.common.ifclasses.PrevTrueFalseMemVar;
-import gvpl.common.ifclasses.PrevTrueFalseNode;
-import gvpl.common.ifclasses.falseClass;
-import gvpl.common.ifclasses.trueClass;
+import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
@@ -31,41 +22,13 @@ public class IfConditionCDT {
 	static void loadIfCondition(GraphNode conditionNode, IASTStatement thenClause,
 			IASTStatement elseClause, InstructionLine instructionLine) {
 		ExecTreeLogger.log(conditionNode.getName());
-		Map<IVar, PrevTrueFalseNode> mapPrevTrueFalse = new LinkedHashMap<IVar, PrevTrueFalseNode>();
-		Map<IVar, PrevTrueFalseMemVar> mapPrevTrueFalseMV = new LinkedHashMap<IVar, PrevTrueFalseMemVar>();
-
-		BoolValuePack trueBvp = null;
-		BoolValuePack falseBvp = null;
-		{
-			BasicBlockCDT basicBlock = loadBasicBlock(thenClause, instructionLine);
-
-			trueBvp = new trueClass(instructionLine, basicBlock, mapPrevTrueFalse,
-					mapPrevTrueFalseMV);
-		}
-		{
-			BasicBlockCDT basicBlock = loadBasicBlock(elseClause, instructionLine);
-			if (basicBlock != null)
-				falseBvp = new falseClass(instructionLine, basicBlock, mapPrevTrueFalse,
-						mapPrevTrueFalseMV);
-		}
-
-		Map<GraphNode, GraphNode> trueIfMergedNodes = null;
-		Map<GraphNode, GraphNode> falseIfMergedNodes = null;
-		InToExtVar trueInToExtVar = null;
-		InToExtVar falseInToExtVar = null;
-		if(trueBvp != null) {
-			trueIfMergedNodes = trueBvp._ifMergedNodes;
-			trueInToExtVar = trueBvp._inToExtVar;
-		}
-		if(falseBvp != null) {
-			falseIfMergedNodes = falseBvp._ifMergedNodes;
-			falseInToExtVar = falseBvp._inToExtVar;
-		}
 		
-		IfCondition.createIfNodes(mapPrevTrueFalse, trueIfMergedNodes, falseIfMergedNodes,
-				conditionNode, instructionLine.getGraph());
+		BasicBlockCDT trueBasicBlock = loadBasicBlock(thenClause, instructionLine);
+		BasicBlockCDT falseBasicBlock = loadBasicBlock(elseClause, instructionLine);
 
-		IfCondition.mergeIfMAV(mapPrevTrueFalseMV, conditionNode, trueInToExtVar, falseInToExtVar);
+		Graph graph = instructionLine.getGraph();
+		IfCondition.createIfNodes(trueBasicBlock, falseBasicBlock, conditionNode, graph);
+	
 	}
 
 	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine) {
@@ -76,7 +39,7 @@ public class IfConditionCDT {
 
 		BaseScopeCDT parentBasicBlock = instructionLine.getParentBasicBlock();
 		BasicBlockCDT basicBlock = new BasicBlockCDT(parentBasicBlock,
-				instructionLine.getAstInterpreter());
+				instructionLine.getAstInterpreter(), instructionLine.getGraph());
 		basicBlock.load(clause);
 		return basicBlock;
 	}
