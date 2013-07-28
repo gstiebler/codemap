@@ -9,6 +9,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
+import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.common.Var;
@@ -44,6 +45,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 
 	public BaseScopeCDT(AstInterpreterCDT astInterpreter) {
 		_astInterpreter = astInterpreter;
+		ScopeManager.addScope(this);
 	}
 
 	protected IVar getVarFromExpr(IASTExpression expr) {

@@ -81,6 +81,8 @@ public abstract class BaseScope implements IScope {
 		for(ClassVar classVar : _varsCreatedInThisScope) {
 			classVar.callDestructor(this, _gvplGraph);
 		}
+		
+		ScopeManager.removeScope();
 	}
 	
 	public Graph getGraph() {
