@@ -177,12 +177,4 @@ public class MemberFunc extends Function {
 //			return getVarFromBindingUnbounded(binding);
 //		}
 	}
-	
-	@Override
-	public boolean hasVarInScope(IBinding binding) {
-		if(super.hasVarInScope(binding))
-			return true;
-		
-		return getMemberFromBinding(binding) != null;
-	}
 }

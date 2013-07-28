@@ -229,13 +229,5 @@ public abstract class BaseScopeCDT extends BaseScope{
 		
 		return _astInterpreter.getGlobalVar(binding);
 	}
-
-	@Override
-	public boolean hasVarInScope(IBinding binding) {
-		if(_astInterpreter.hasVarInScope(binding))
-			return true;
-		
-		return _localVariables.containsKey(binding);
-	}
 	
 }

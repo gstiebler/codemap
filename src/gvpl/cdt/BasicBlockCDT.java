@@ -7,7 +7,6 @@ import gvpl.graph.Graph;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReturnStatement;
 
 import debug.ExecTreeLogger;
@@ -57,14 +56,6 @@ public class BasicBlockCDT extends BaseScopeCDT {
 	@Override
 	public Function getFunction() {
 		return _parent.getFunction();
-	}
-	
-	@Override
-	public boolean hasVarInScope(IBinding binding) {
-		if(super.hasVarInScope(binding))
-			return true;
-		
-		return _parent.hasVarInScope(binding);
 	}
 	
 }

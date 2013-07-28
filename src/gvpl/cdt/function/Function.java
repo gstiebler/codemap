@@ -347,17 +347,6 @@ public class Function extends BaseScopeCDT {
 		
 		return getLocalVar(binding);
 	}
-
-	@Override
-	public boolean hasVarInScope(IBinding binding) {
-		if(super.hasVarInScope(binding))
-			return true;
-		
-		if(_parametersMap.containsKey(binding))
-			return true;
-		
-		return _caller.hasVarInScope(binding);
-	}
 	
 	public boolean getIsStatic() {
 		return _isStatic;
