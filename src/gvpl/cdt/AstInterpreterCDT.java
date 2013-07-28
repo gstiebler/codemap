@@ -4,8 +4,8 @@ import gvpl.cdt.function.Function;
 import gvpl.common.AstInterpreter;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
-import gvpl.common.IScope;
 import gvpl.common.IVar;
+import gvpl.common.ScopeManager;
 import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -49,7 +49,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
-public class AstInterpreterCDT extends AstInterpreter implements IScope {
+public class AstInterpreterCDT extends AstInterpreter {
 	
 	class CppFile {
 		Map<IBinding, Function> _funcIdMap = new LinkedHashMap<IBinding, Function>();
@@ -75,7 +75,6 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 	//TODO check if this set is really necessary
 	Set<IBinding> _functionTypedefs = new HashSet<IBinding>();
 	Function _mainFunction = null;
-	Graph _gvplGraph;
 	List<EventFunction> _eventFunctions = new ArrayList<EventFunction>();
 	ScriptManager _scriptManager = null;
 	Map<IBinding, IVar> _globalVars = new HashMap<IBinding, IVar>();
@@ -83,6 +82,7 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 	public AstInterpreterCDT(Graph gvplGraph) {
 		_gvplGraph = gvplGraph;
 		CppMaps.initialize();
+		ScopeManager.addScope(this);
 	}
 	
 	public void loadDeclarations(IASTTranslationUnit root) {

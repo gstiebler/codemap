@@ -76,7 +76,10 @@ public abstract class BaseScopeCDT extends BaseScope{
 		if (var != null) 
 			return var; 
 
-		return _parent.getVarFromBinding(binding);
+		if( _parent != null )
+			return _parent.getVarFromBinding(binding);
+		else
+			return _astInterpreter.getVarFromBinding(binding);
 	}
 	
 	protected GraphNode getNodeFromExpr(IASTExpression expr) {
@@ -236,6 +239,12 @@ public abstract class BaseScopeCDT extends BaseScope{
 		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var;
+		
+		if( _parent != null) {
+			var = _parent.getVarFromBinding(binding);
+			if(var != null)
+				return var;
+		}
 		
 		return _astInterpreter.getGlobalVar(binding);
 	}

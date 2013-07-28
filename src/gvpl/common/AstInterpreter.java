@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  * @author stiebler
  * 
  */
-public class AstInterpreter {
+public abstract class AstInterpreter extends BaseScope {
 	
 	static Logger logger = LogManager.getLogger(BaseScopeCDT.class.getName());
 
@@ -46,6 +46,11 @@ public class AstInterpreter {
 
 	public TypeId getPrimitiveType() {
 		return _primitiveType;
+	}
+
+	@Override
+	public AstInterpreter getAstInterpreter() {
+		return this;
 	}
 
 }

@@ -9,6 +9,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IScope;
 import gvpl.common.IVar;
+import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.graph.Graph;
@@ -73,6 +74,8 @@ public class Function extends BaseScopeCDT {
 		_ownBinding = ownBinding;
 		//TODO FIX!!
 		_returnType = _astInterpreter.getPrimitiveType();
+		
+		ScopeManager.addScope(this);
 	}
 	
 	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
