@@ -162,36 +162,20 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	public IVar getVarFromBindingUnbounded(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		if(binding instanceof ProblemBinding) {
-			logger.info("problem binding");
-			return null;
-		}
-		
-		// search the variable in the function parameters and in local vars
-		IVar var = super.getVarFromBindingUnbounded(binding);
-		if(var != null)
-			return var;
-		
-		return getMemberFromBinding(binding);
-	}
-
-	@Override
 	public IVar getVarFromBinding(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());
 		if(binding instanceof ProblemBinding) {
 			logger.info("problem binding");
 			return null;
 		}
-		
-		//TODO refactoring: this decision should be on BaseScope. This decision should be removed
-		// from getAccessedVars
-		if(_caller.hasVarInScope(binding)) {
-			return getVarInsideSandboxFromBinding(binding);
-		} else {
-			return getVarFromBindingUnbounded(binding);
-		}
+		return getMemberFromBinding(binding);
+//		//TODO refactoring: this decision should be on BaseScope. This decision should be removed
+//		// from getAccessedVars
+//		if(_caller.hasVarInScope(binding)) {
+//			return getVarInsideSandboxFromBinding(binding);
+//		} else {
+//			return getVarFromBindingUnbounded(binding);
+//		}
 	}
 	
 	@Override

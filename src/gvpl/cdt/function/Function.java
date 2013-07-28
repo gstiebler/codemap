@@ -212,8 +212,6 @@ public class Function extends BaseScopeCDT {
 
 		extGraph.addSubGraph(_gvplGraph);
 		
-		mergeScopes(extGraph, caller);
-		
 		_caller = null;
 		_gvplGraph = null;
 		_parametersMap = null;
@@ -347,26 +345,7 @@ public class Function extends BaseScopeCDT {
 			return value.getVar();
 		}
 		
-		IVar var = getLocalVar(binding);
-		if(var != null)
-			return var;
-		
-		// It's probably a global var
-		return getVarInsideSandboxFromBinding(binding);
-	}
-	
-	@Override
-	public IVar getVarFromBindingUnbounded(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		FuncParameter funcParameter = _parametersMap.get(binding);
-		if(funcParameter != null) {
-			Value value = funcParameter.getValue();
-			if(value == null)
-				return null;
-			return value.getVar();
-		}
-		
-		return super.getVarFromBindingUnbounded(binding);
+		return getLocalVar(binding);
 	}
 
 	@Override

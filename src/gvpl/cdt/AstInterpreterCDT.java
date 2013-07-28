@@ -419,18 +419,12 @@ public class AstInterpreterCDT extends AstInterpreter implements IScope {
 	@Override
 	public IVar getVarFromBinding(IBinding binding) {
 		ExecTreeLogger.log(binding.getName());
-		return getVarFromBindingUnbounded(binding);
-	}
-	
-	@Override
-	public IVar getVarFromBindingUnbounded(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
 		return _globalVars.get(binding);
 	}
 	
 	@Override
 	public boolean hasVarInScope(IBinding binding) {
-		return getVarFromBindingUnbounded(binding) != null;
+		return getVarFromBinding(binding) != null;
 	}
 	
 }

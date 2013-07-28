@@ -7,22 +7,16 @@ import gvpl.common.BaseScope;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
-import gvpl.common.IScope;
 import gvpl.common.IVar;
-import gvpl.common.InExtVarPair;
-import gvpl.common.InToExtVar;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.common.Var;
-import gvpl.common.VarInfo;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -47,7 +41,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 	
 	protected AstInterpreterCDT _astInterpreter;
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
-	protected Map<IBinding, IVar> _extToInVars = new LinkedHashMap<IBinding, IVar>();
 
 	public BaseScopeCDT(AstInterpreterCDT astInterpreter) {
 		_astInterpreter = astInterpreter;
@@ -126,45 +119,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 			logger.fatal("Type not found {}", expr.getClass());
 		}
 		return null;
-	}
-	
-	/**
-	 * Gets the var inside the current context. If the var doesn't exist, creates a "virtual" var
-	 * @param binding
-	 * @return A var that may be a real var, or a virtual newly created var
-	 */
-	protected IVar getVarInsideSandboxFromBinding(IBinding binding) {	
-		ExecTreeLogger.log(binding.getName());	
-		IVar var = _extToInVars.get(binding);
-		if(var != null)
-			return var;
-		
-		var = _localVariables.get(binding);
-		if(var != null)
-			return var; 
-		
-		return createVarFromBinding(binding);	
-	}
-	
-	private IVar createVarFromBinding(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		VarInfo varInfo = getTypeFromVarBinding(binding);
-		String name = binding.getName();
-		
-		IVar var = instanceVar(varInfo._indirectionType, name, varInfo._type, _gvplGraph, _astInterpreter);
-		//TODO only initialize a variable that will be read. Otherwise, the nodes generated
-		// in the line below will never be used
-		var.initializeVar(NodeType.E_VARIABLE, _gvplGraph, _astInterpreter);
-		_extToInVars.put(binding, var);
-		return var;
-	}
-	
-	public VarInfo getTypeFromVarBinding(IBinding binding) {
-		IVar var = getVarFromBindingUnbounded(binding);
-		if( var == null )
-			return null;
-		
-		return var.getVarInfo();
 	}
 	
 	protected IVar getVarFromExprInternal(IASTExpression expr) {
@@ -268,77 +222,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return _astInterpreter;
 	}
 	
-	public void getAccessedVars(List<InExtVarPair> read, List<InExtVarPair> written,
-			List<InExtVarPair> ignored, InToExtVar inToExtMap, IScope parent) {
-		ExecTreeLogger.log("");
-		for (Map.Entry<IBinding, IVar> entry : _extToInVars.entrySet()) {
-			IVar extVar;
-			if(parent.hasVarInScope(entry.getKey()))
-				extVar = parent.getVarFromBinding(entry.getKey());
-			else
-				extVar = parent.getVarFromBindingUnbounded(entry.getKey());
-			
-			if (extVar == null)
-				logger.fatal("extVar cannot be null");
-
-			getAccessedVarsRecursive(entry.getValue(), extVar, read, written, ignored, inToExtMap);
-		}
-	}
-	
-	/**
-	 * Gets the vars accessed/created in the block. It's recursive because it deals with
-	 * members of class vars
-	 * @param intVar The var created inside the block
-	 * @param extVar the correspondant var in the parent of the block
-	 * @param read The resulting list of the vars that were read
-	 * @param written The resulting list of the vars that were written
-	 * @param ignored The list of the vars that was not read nor written
-	 * @param inToExtMap The map of the internal variables to the external variables 
-	 */
-	protected static void getAccessedVarsRecursive(IVar intVar, IVar extVar, List<InExtVarPair> read,
-			List<InExtVarPair> written, List<InExtVarPair> ignored, InToExtVar inToExtMap) {
-		
-		if(extVar == null)
-			return;
-		
-		IVar extVarInMem = extVar.getVarInMem();
-		IVar intVarInMem = intVar.getVarInMem();
-		
-		if(extVarInMem == null)
-			return;
-		
-		inToExtMap.put(intVar, extVar);
-		
-		if (intVarInMem instanceof ClassVar && extVarInMem instanceof ClassVar && 
-				intVarInMem instanceof ClassVar) {
-			ClassVar extClassVar = (ClassVar) extVarInMem;
-			ClassVar intClassVar = (ClassVar) intVarInMem;
-			for (MemberId memberId : intClassVar.getClassDecl().getMemberIds()) {
-				IVar memberExtVar = extClassVar.getMember(memberId);
-				IVar memberIntVar = intClassVar.getMember(memberId);
-				getAccessedVarsRecursive(memberIntVar, memberExtVar, read, written, ignored, inToExtMap);
-			}
-
-			return;
-		} 
-
-		InExtVarPair varPair = new InExtVarPair(intVar, extVar);
-		boolean accessed = false;
-		if (intVar.onceRead()) {
-			read.add(varPair);
-			accessed = true;
-		}
-
-		if (intVar.onceWritten()) {
-			written.add(varPair);
-			accessed = true;
-		}
-
-		if (!accessed)
-			ignored.add(varPair);
-	}
-	
-	public IVar getVarFromBindingUnbounded(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding) {
 		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var;
@@ -352,36 +236,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 			return true;
 		
 		return _localVariables.containsKey(binding);
-	}
-	
-	/**
-	 * Connects the vars from the external scope to the vars inside the current scope
-	 * @param extGraph Graph from the external scope
-	 * @param parent External scope
-	 */
-	protected void mergeScopes(Graph extGraph, IScope parent) {
-		List<InExtVarPair> readVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> writtenVars = new ArrayList<InExtVarPair>();
-		List<InExtVarPair> ignoredVars = new ArrayList<InExtVarPair>();
-		getAccessedVars(readVars, writtenVars, ignoredVars, new InToExtVar(extGraph), parent);
-		
-		// bind the vars from calling block to the internal read vars
-		for(InExtVarPair readPair : readVars) {
-			GraphNode intVarFirstNode = readPair._in.getFirstNode();
-			// if someone read from internal var
-			GraphNode extVarCurrNode = readPair._ext.getCurrentNode();
-			extGraph.mergeNodes(extVarCurrNode, intVarFirstNode);
-		}		
-		// bind the vars from calling block to the internal written vars
-		for (InExtVarPair writtenPair : writtenVars) {
-			GraphNode intVarCurrNode = writtenPair._in.getCurrentNode();
-			// if someone has written in the internal var
-
-			writtenPair._ext.initializeVar(NodeType.E_VARIABLE, extGraph, _astInterpreter);
-			GraphNode extVarCurrNode = writtenPair._ext.getCurrentNode();
-			// connect the var from the calling block to the correspodent var in this block
-			extGraph.mergeNodes(extVarCurrNode, intVarCurrNode);
-		}
 	}
 	
 }

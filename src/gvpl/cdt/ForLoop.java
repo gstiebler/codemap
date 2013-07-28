@@ -22,8 +22,6 @@ public class ForLoop extends BasicBlockCDT {
 		loadHeader(node);
 		load(body);
 		gvplGraph.addSubGraph(_gvplGraph);
-		
-		mergeScopes(gvplGraph, _parent);
 	}
 
 	private void loadHeader(IASTForStatement node) {

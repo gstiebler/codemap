@@ -125,13 +125,6 @@ public class MemAddressVar extends Var {
 		return _onceWritten;
 	}
 	
-	public MemAddressVar updateInternalVars(InToExtVar inToExtVar) {
-		ExecTreeLogger.log("Var: " + getName());
-		PossiblePointedVar.updateInternalVarsRecursive(_possiblePointedVar, inToExtVar);
-		
-		return this;
-	}
-	
 	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, BaseScopeCDT astLoader) {
 		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,

@@ -126,8 +126,6 @@ public class InstructionLine {
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentBaseScope, _astInterpreter, _gvplGraph);
 			basicBlockLoader.load(statement);
-			basicBlockLoader.addToExtGraph();
-			basicBlockLoader.bindSettedPointers();
 		} else if (statement instanceof CPPASTSwitchStatement) {
 			loadSwitch((CPPASTSwitchStatement) statement);
 		} else

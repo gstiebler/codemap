@@ -135,28 +135,6 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	public String getName() {
 		return _ownerVar.getName();
 	}
-
-	public static void updateInternalVarsRecursive(PossiblePointedVar possiblePointedVar,
-			InToExtVar inToExtVar) {
-		if (possiblePointedVar == null)
-			return;
-		ExecTreeLogger.log("Var: " + possiblePointedVar.getName());
-
-		updateInternalVarsRecursive(possiblePointedVar._varTrue, inToExtVar);
-		updateInternalVarsRecursive(possiblePointedVar._varFalse, inToExtVar);
-
-		IVar converted = inToExtVar.get(possiblePointedVar._finalVar);
-		if (converted == null) {
-			// It's used when a variable was allocated with the new operator
-			// inside a block
-			possiblePointedVar._finalVar.setGraph(inToExtVar.getExtGraph());
-			logger.debug("Var {} ({}) is now on graph {} ({})", inToExtVar.getExtGraph().getName(),
-					inToExtVar.getExtGraph().getId(), possiblePointedVar._finalVar.getName(),
-					possiblePointedVar._finalVar.getId());
-		} else
-			possiblePointedVar._finalVar = converted;
-
-	}
 	
 	boolean nullPointer() {
 		return _finalVar == null && _varFalse == null && _varTrue == null;
