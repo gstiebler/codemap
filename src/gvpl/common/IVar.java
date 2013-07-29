@@ -15,8 +15,6 @@ public interface IVar {
 	
 	public void updateNodes(GraphNode oldNode, GraphNode newNode);
 
-	public GraphNode getFirstNode();
-
 	public GraphNode getCurrentNode();
 
 	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter);
@@ -40,10 +38,6 @@ public interface IVar {
 	public List<IVar> getInternalVars();
 	
 	public VarInfo getVarInfo();
-	
-	public boolean onceRead();
-	
-	public boolean onceWritten();
 	
 	public void setGraph(Graph graph);
 	

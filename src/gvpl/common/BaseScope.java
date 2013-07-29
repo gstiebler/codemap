@@ -1,6 +1,5 @@
 package gvpl.common;
 
-import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.function.Function;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;

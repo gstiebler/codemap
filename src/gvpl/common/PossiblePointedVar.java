@@ -128,10 +128,6 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		return result;
 	}
 
-	public GraphNode getFirstNode() {
-		return _finalVar.getFirstNode();
-	}
-
 	public String getName() {
 		return _ownerVar.getName();
 	}

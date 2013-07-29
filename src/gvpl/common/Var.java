@@ -26,7 +26,6 @@ public class Var implements IVar {
 
 	protected TypeId _type;
 	protected GraphNode _currGraphNode = null;
-	protected GraphNode _firstGraphNode = null;
 	protected IVar _owner = null;
 	private int _id = -1;
 
@@ -43,7 +42,6 @@ public class Var implements IVar {
 	
 	protected Var(Var other) {
 		_currGraphNode = other._currGraphNode;
-		_firstGraphNode = other._firstGraphNode;
 		_gvplGraph = other._gvplGraph;
 		_name = other._name;
 		_owner = other._owner;
@@ -57,8 +55,6 @@ public class Var implements IVar {
 
 	public void updateNode(GraphNode node) {
 		ExecTreeLogger.log("Var: " + getName() + " node: " + node.getName());
-		if (_currGraphNode == null)
-			_firstGraphNode = node;
 
 		_currGraphNode = node;
 		
@@ -68,14 +64,8 @@ public class Var implements IVar {
 	
 	public void updateNodes(GraphNode oldNode, GraphNode newNode) {
 		ExecTreeLogger.log("Var: " + getName());
-		if(_firstGraphNode == oldNode)
-			_firstGraphNode = newNode;
 		if(_currGraphNode == oldNode)
 			_currGraphNode = newNode;
-	}
-
-	public GraphNode getFirstNode() {
-		return _firstGraphNode;
 	}
 
 	public GraphNode getCurrentNode() {
@@ -140,14 +130,6 @@ public class Var implements IVar {
 	
 	public VarInfo getVarInfo() {
 		return new VarInfo(_type, IndirectionType.E_VARIABLE);
-	}
-	
-	public boolean onceRead() {
-		return _firstGraphNode.getNumDependentNodes() > 0;
-	}
-	
-	public boolean onceWritten() {
-		return _currGraphNode.getNumSourceNodes() > 0;
 	}
 	
 	public void setGraph(Graph graph) {
