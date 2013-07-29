@@ -39,15 +39,13 @@ import debug.ExecTreeLogger;
 public abstract class BaseScopeCDT extends BaseScope{
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
-
-	protected BaseScopeCDT _parent;
 	
 	protected AstInterpreterCDT _astInterpreter;
 	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 
 	public BaseScopeCDT(AstInterpreterCDT astInterpreter, BaseScopeCDT parent) {
+		super(parent);
 		_astInterpreter = astInterpreter;
-		_parent = parent;
 		ScopeManager.addScope(this);
 	}
 

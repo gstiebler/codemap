@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.function.Function;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
@@ -27,6 +28,11 @@ public abstract class BaseScope implements IScope {
 	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	protected Graph _gvplGraph = null;
 	private Map<Var, GraphNode> _lastWrittenNode = new HashMap<Var, GraphNode>();
+	protected BaseScope _parent;
+	
+	protected BaseScope(BaseScope parent) {
+		_parent = parent;
+	}
 	
 	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
 			Graph graph, AstInterpreter astInterpreter) {
@@ -100,7 +106,11 @@ public abstract class BaseScope implements IScope {
 	}
 	
 	public GraphNode getLastNode(Var var) {
-		return _lastWrittenNode.get(var);
+		GraphNode lastNode = _lastWrittenNode.get(var);
+		if(lastNode != null)
+			return lastNode;
+		
+		return _parent.getLastNode(var);
 	}
 
 }

@@ -33,6 +33,7 @@ public abstract class AstInterpreter extends BaseScope {
 	 *            The root of the program
 	 */
 	public AstInterpreter() {
+		super(null);
 		_typeIdToClass = new LinkedHashMap<TypeId, ClassDeclCDT>();
 	}
 
