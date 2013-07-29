@@ -5,9 +5,8 @@ import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,7 +26,7 @@ public abstract class BaseScope implements IScope {
 	static Logger logger = LogManager.getLogger(BaseScope.class.getName());
 
 	protected Graph _gvplGraph = null;
-	private Map<Var, GraphNode> _lastWrittenNode = new HashMap<Var, GraphNode>();
+	private Map<Var, GraphNode> _lastWrittenNode = new LinkedHashMap<Var, GraphNode>();
 	protected BaseScope _parent;
 	protected Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 	
@@ -90,7 +89,7 @@ public abstract class BaseScope implements IScope {
 				((ClassVar)classVar).callDestructor(this, _gvplGraph);
 		}
 		
-		ScopeManager.removeScope();
+		ScopeManager.removeScope(this);
 	}
 	
 	public Graph getGraph() {
@@ -102,7 +101,7 @@ public abstract class BaseScope implements IScope {
 	}
 	
 	public Set<Var> getWrittenVars() {
-		return new HashSet<Var>(_lastWrittenNode.keySet());
+		return new LinkedHashSet<Var>(_lastWrittenNode.keySet());
 	}
 	
 	public GraphNode getLastNode(Var var) {

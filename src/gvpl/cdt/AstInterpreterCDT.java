@@ -11,13 +11,11 @@ import gvpl.common.TypeId;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -69,26 +67,25 @@ public class AstInterpreterCDT extends AstInterpreter {
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	CppFile _currCppFile = new CppFile();
-	//private Map<IASTTranslationUnit, CppFile> _cppFiles = new HashMap<IASTTranslationUnit, CppFile>();
-	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
-	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
+	private Map<CodeLocation, Function> _funcByLocation = new LinkedHashMap<CodeLocation, Function>();
+	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new LinkedHashMap<CodeLocation, ClassDeclCDT>();
 	//TODO check if this set is really necessary
-	Set<IBinding> _functionTypedefs = new HashSet<IBinding>();
+	Set<IBinding> _functionTypedefs = new LinkedHashSet<IBinding>();
 	Function _mainFunction = null;
 	List<EventFunction> _eventFunctions = new ArrayList<EventFunction>();
 	ScriptManager _scriptManager = null;
-	Map<IBinding, IVar> _globalVars = new HashMap<IBinding, IVar>();
+	Map<IBinding, IVar> _globalVars = new LinkedHashMap<IBinding, IVar>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		_gvplGraph = gvplGraph;
 		CppMaps.initialize();
-		ScopeManager.addScope(this);
 	}
 	
 	public void loadDeclarations(IASTTranslationUnit root) {
 		//_currCppFile = new CppFile();
 		//_cppFiles.put(root, _currCppFile);
-		
+
+		ScopeManager.addScope(this);
 		IASTDeclaration[] declarations = root.getDeclarations();
 
 		// Iterate through function, class e structs declarations
@@ -151,6 +148,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 			} else
 				logger.fatal("Deu merda aqui. {}", declaration.getClass());
 		}
+		
+		ScopeManager.removeScope(this);
 	}
 	
 	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
@@ -161,10 +160,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public void loadDefinitions() {
+		ScopeManager.addScope(this);
 		//_currCppFile = _cppFiles.get(root);
 		logger.debug(" *** Loading definitions of main ***");
 		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph, this);
 		callEventFunctions();
+		ScopeManager.removeScope(this);
 	}
 	
 	public IVar getGlobalVar(IBinding binding) {

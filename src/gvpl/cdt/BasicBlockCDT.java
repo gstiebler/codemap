@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.common.BaseScope;
+import gvpl.common.ScopeManager;
 import gvpl.graph.Graph;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
@@ -21,6 +22,7 @@ public class BasicBlockCDT extends BaseScopeCDT {
 	}
 
 	public void load(IASTStatement baseStatement) {
+		ScopeManager.addScope(this);
 		ExecTreeLogger.log("");
 		IASTStatement[] statements = null;
 		if (baseStatement instanceof IASTCompoundStatement)

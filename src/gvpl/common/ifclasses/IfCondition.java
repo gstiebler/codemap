@@ -8,7 +8,7 @@ import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import debug.ExecTreeLogger;
@@ -24,23 +24,23 @@ public class IfCondition {
 		if( trueScope != null )
 			trueWrittenVars = trueScope.getWrittenVars();
 		else
-			trueWrittenVars = new HashSet<Var>();
+			trueWrittenVars = new LinkedHashSet<Var>();
 		
 		if( falseScope != null )
 			falseWrittenVars = falseScope.getWrittenVars();
 		else 
-			falseWrittenVars = new HashSet<Var>();
+			falseWrittenVars = new LinkedHashSet<Var>();
 			
 		// set containing the vars written in both true and false block
-		Set<Var> writtenVarsBoth = new HashSet<Var>(trueWrittenVars);
+		Set<Var> writtenVarsBoth = new LinkedHashSet<Var>(trueWrittenVars);
 		writtenVarsBoth.retainAll(falseWrittenVars);
 
 		// set containing the vars written only in true block
-		Set<Var> writtenOnlyInTrue = new HashSet<Var>(trueWrittenVars);
+		Set<Var> writtenOnlyInTrue = new LinkedHashSet<Var>(trueWrittenVars);
 		writtenOnlyInTrue.removeAll(falseWrittenVars);
 
 		// set containing the vars written only in false block
-		Set<Var> writtenOnlyInFalse = new HashSet<Var>(falseWrittenVars);
+		Set<Var> writtenOnlyInFalse = new LinkedHashSet<Var>(falseWrittenVars);
 		writtenOnlyInFalse.removeAll(trueWrittenVars);
 		
 		BaseScope currentScope = ScopeManager.getCurrentScope();

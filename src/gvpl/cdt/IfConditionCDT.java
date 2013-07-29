@@ -32,12 +32,12 @@ public class IfConditionCDT {
 		ifScope.setKind(eIfScopeKind.E_THEN);
 		ScopeManager.addScope(ifScope);
 		BasicBlockCDT trueBasicBlock = loadBasicBlock(thenClause, instructionLine, ifScope);
-		ScopeManager.removeScope();
+		ScopeManager.removeScope(ifScope);
 		
 		ifScope.setKind(eIfScopeKind.E_ELSE);
 		ScopeManager.addScope(ifScope);
 		BasicBlockCDT falseBasicBlock = loadBasicBlock(elseClause, instructionLine, ifScope);
-		ScopeManager.removeScope();
+		ScopeManager.removeScope(ifScope);
 
 		Graph graph = instructionLine.getGraph();
 		IfCondition.createIfNodes(trueBasicBlock, falseBasicBlock, conditionNode, graph);

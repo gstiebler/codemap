@@ -74,8 +74,6 @@ public class Function extends BaseScopeCDT {
 		_ownBinding = ownBinding;
 		//TODO FIX!!
 		_returnType = _astInterpreter.getPrimitiveType();
-		
-		ScopeManager.addScope(this);
 	}
 	
 	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
@@ -115,6 +113,7 @@ public class Function extends BaseScopeCDT {
 	}
 	
 	public void loadDefinition(Graph gvplGraph) {
+		ScopeManager.addScope(this);
 		if (_body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
 			for (IASTStatement statement : statements) {

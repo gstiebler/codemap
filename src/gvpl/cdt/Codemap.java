@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.CodeLocation;
 import gvpl.common.FileFuncs;
+import gvpl.common.ScopeManager;
 import gvpl.common.ScriptManager;
 import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
@@ -41,6 +42,7 @@ public class Codemap {
 	}
 	
 	public static AstInterpreterCDT execute(String basePath, String mainFile) {
+		ScopeManager.reset();
 		DebugOptions.resetLines();
 		GraphNode.resetCounter();
 		FileDriver.resetCounter();
@@ -123,6 +125,9 @@ public class Codemap {
 		}
 		
 		astInterpreter.loadDefinitions();
+		
+		if(ScopeManager.getScopeList().size() > 0)
+			logger.error("Scope list is not empty");	
 
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);

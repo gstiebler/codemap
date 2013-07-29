@@ -40,7 +40,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 	public BaseScopeCDT(AstInterpreterCDT astInterpreter, BaseScope parent) {
 		super(parent);
 		_astInterpreter = astInterpreter;
-		ScopeManager.addScope(this);
 	}
 
 	protected IVar getVarFromExpr(IASTExpression expr) {

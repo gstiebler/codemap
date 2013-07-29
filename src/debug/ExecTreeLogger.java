@@ -129,8 +129,8 @@ public class ExecTreeLogger {
 	}
 	
 	public static void log(String args) {
-		//if(_insideTests)
-		//	_instance.instanceLog(args);
+//		if(_insideTests)
+//			_instance.instanceLog(args);
 	}
 	
 	static List<StackTraceElement> stackStrings() {
