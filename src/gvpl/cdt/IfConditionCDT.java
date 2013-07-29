@@ -1,6 +1,10 @@
 package gvpl.cdt;
 
+import gvpl.common.BaseScope;
+import gvpl.common.ScopeManager;
 import gvpl.common.ifclasses.IfCondition;
+import gvpl.common.ifclasses.IfScope;
+import gvpl.common.ifclasses.IfScope.eIfScopeKind;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
@@ -23,22 +27,30 @@ public class IfConditionCDT {
 			IASTStatement elseClause, InstructionLine instructionLine) {
 		ExecTreeLogger.log(conditionNode.getName());
 		
-		BasicBlockCDT trueBasicBlock = loadBasicBlock(thenClause, instructionLine);
-		BasicBlockCDT falseBasicBlock = loadBasicBlock(elseClause, instructionLine);
+		IfScope ifScope = new IfScope(instructionLine.getParentBasicBlock(), conditionNode);
+		
+		ifScope.setKind(eIfScopeKind.E_THEN);
+		ScopeManager.addScope(ifScope);
+		BasicBlockCDT trueBasicBlock = loadBasicBlock(thenClause, instructionLine, ifScope);
+		ScopeManager.removeScope();
+		
+		ifScope.setKind(eIfScopeKind.E_ELSE);
+		ScopeManager.addScope(ifScope);
+		BasicBlockCDT falseBasicBlock = loadBasicBlock(elseClause, instructionLine, ifScope);
+		ScopeManager.removeScope();
 
 		Graph graph = instructionLine.getGraph();
 		IfCondition.createIfNodes(trueBasicBlock, falseBasicBlock, conditionNode, graph);
 	
 	}
 
-	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine) {
+	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine, BaseScope parentScope) {
 		if (clause == null)
 			return null;
 
 		ExecTreeLogger.log(clause.getRawSignature());
 
-		BaseScopeCDT parentBasicBlock = instructionLine.getParentBasicBlock();
-		BasicBlockCDT basicBlock = new BasicBlockCDT(parentBasicBlock,
+		BasicBlockCDT basicBlock = new BasicBlockCDT(parentScope,
 				instructionLine.getAstInterpreter(), instructionLine.getGraph());
 		basicBlock.load(clause);
 		return basicBlock;

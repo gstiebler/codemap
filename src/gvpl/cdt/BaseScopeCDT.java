@@ -2,9 +2,7 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
-import gvpl.common.AstInterpreter;
 import gvpl.common.BaseScope;
-import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
@@ -16,9 +14,6 @@ import gvpl.common.Var;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -41,9 +36,8 @@ public abstract class BaseScopeCDT extends BaseScope{
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
 	protected AstInterpreterCDT _astInterpreter;
-	private Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 
-	public BaseScopeCDT(AstInterpreterCDT astInterpreter, BaseScopeCDT parent) {
+	public BaseScopeCDT(AstInterpreterCDT astInterpreter, BaseScope parent) {
 		super(parent);
 		_astInterpreter = astInterpreter;
 		ScopeManager.addScope(this);
@@ -95,11 +89,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 			return new Value(var);
 		
 		return new Value(getNodeFromExpr(expr));
-	}
-	
-	protected IVar getLocalVar(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		return _localVariables.get(binding);
 	}
 	
 	protected IBinding getBindingFromExpr(IASTExpression expr) {
@@ -214,8 +203,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, this, 
 				_astInterpreter);
 		_localVariables.put(name.resolveBinding(), varDecl);
-		if(varDecl instanceof ClassVar)
-			_varsCreatedInThisScope.add((ClassVar) varDecl);
 		return varDecl;
 	}
 
@@ -226,11 +213,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		IVar var = instanceVar(parameterVarType, name, type, graph, astInterpreter);
 		return var;
-	}
-	
-	@Override
-	public AstInterpreter getAstInterpreter() {
-		return _astInterpreter;
 	}
 	
 	public IVar getVarFromBinding(IBinding binding) {

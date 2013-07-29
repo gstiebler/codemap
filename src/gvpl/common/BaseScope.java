@@ -5,15 +5,17 @@ import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IBinding;
+
+import debug.ExecTreeLogger;
 
 /**
  * The parent of the BasicBlock
@@ -24,10 +26,10 @@ public abstract class BaseScope implements IScope {
 	
 	static Logger logger = LogManager.getLogger(BaseScope.class.getName());
 
-	protected List<ClassVar> _varsCreatedInThisScope = new ArrayList<ClassVar>();
 	protected Graph _gvplGraph = null;
 	private Map<Var, GraphNode> _lastWrittenNode = new HashMap<Var, GraphNode>();
 	protected BaseScope _parent;
+	protected Map<IBinding, IVar> _localVariables = new LinkedHashMap<IBinding, IVar>();
 	
 	protected BaseScope(BaseScope parent) {
 		_parent = parent;
@@ -83,8 +85,9 @@ public abstract class BaseScope implements IScope {
 	
 	protected void lostScope() {
 		logger.debug("Lost scope of graph {}", _gvplGraph.getName());
-		for(ClassVar classVar : _varsCreatedInThisScope) {
-			classVar.callDestructor(this, _gvplGraph);
+		for(IVar classVar : _localVariables.values()) {
+			if(classVar instanceof ClassVar)
+				((ClassVar)classVar).callDestructor(this, _gvplGraph);
 		}
 		
 		ScopeManager.removeScope();
@@ -93,8 +96,6 @@ public abstract class BaseScope implements IScope {
 	public Graph getGraph() {
 		return _gvplGraph;
 	}
-	
-	public abstract AstInterpreter getAstInterpreter();
 	
 	public void varWritten(Var var) {
 		_lastWrittenNode.put(var, var.getCurrentNode());
@@ -110,6 +111,20 @@ public abstract class BaseScope implements IScope {
 			return lastNode;
 		
 		return _parent.getLastNode(var);
+	}
+	
+	protected IVar getLocalVar(IBinding binding) {
+		ExecTreeLogger.log(binding.getName());
+		return _localVariables.get(binding);
+	}
+	
+	public boolean hasVarInScope(IVar var) {
+		return _localVariables.containsValue(var);
+	}
+	
+	@Override
+	public IVar getVarFromBinding(IBinding binding) {
+		return _parent.getVarFromBinding(binding);
 	}
 
 }

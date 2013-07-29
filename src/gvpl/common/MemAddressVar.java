@@ -96,12 +96,6 @@ public class MemAddressVar extends Var {
 	public IVar getVarInMem() {
 		return getPointedVar();
 	}
-
-	public void setIf(GraphNode conditionNode, MemAddressVar varTrue, MemAddressVar varFalse) {
-		ExecTreeLogger.log("Var: " + getName());
-		_possiblePointedVar.setPossibleVars(conditionNode, varTrue._possiblePointedVar,
-				varFalse._possiblePointedVar);
-	}
 	
 	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, BaseScopeCDT astLoader) {

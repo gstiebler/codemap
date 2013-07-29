@@ -1,10 +1,13 @@
 package gvpl.common;
 
 import gvpl.cdt.function.MemberFunc;
+import gvpl.common.ifclasses.IfScope;
+import gvpl.common.ifclasses.IfScope.eIfScopeKind;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -45,8 +48,57 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	void setVar(IVar finalVar) {
 		ExecTreeLogger.log("Var: " + finalVar.getName());
-		_finalVar = finalVar;
-		_conditionNode = null;
+		
+		LinkedList<IfScope> ifList = new LinkedList<IfScope>();
+		List<BaseScope> scopes = ScopeManager.getScopeList();
+		
+		// verify the ifs between the current scope and the scope of the variable
+		for(int i = scopes.size() - 1; i >= 0; --i) {
+			BaseScope scope = scopes.get(i);
+			if(scope.hasVarInScope(_ownerVar))
+				break;
+			
+			if(scope instanceof IfScope)
+				ifList.addFirst((IfScope) scope);
+		}
+		
+		if(ifList.size() == 0) {
+			_finalVar = finalVar;
+			_conditionNode = null;
+			return;
+		}
+		
+		PossiblePointedVar currPPV = this;
+		for(IfScope ifScope : ifList) {
+			if(ifScope.getConditionNode() == currPPV._conditionNode) {
+				if(ifScope.getKind() == eIfScopeKind.E_THEN) {
+					PossiblePointedVar oldPPV = new PossiblePointedVar(currPPV._ownerVar);
+					oldPPV._finalVar = finalVar;
+					currPPV._varTrue = oldPPV;
+					currPPV = currPPV._varTrue;
+				} else {
+					PossiblePointedVar oldPPV = new PossiblePointedVar(currPPV._ownerVar);
+					oldPPV._finalVar = finalVar;
+					currPPV._varFalse = oldPPV;
+					currPPV = currPPV._varFalse;
+				}
+				continue;
+			}
+
+			PossiblePointedVar ppvOld = new PossiblePointedVar(currPPV);
+			currPPV._conditionNode = ifScope.getConditionNode();
+			currPPV._finalVar = null;
+			PossiblePointedVar nextPPV = new PossiblePointedVar(currPPV._ownerVar);
+			nextPPV._finalVar = finalVar;
+			if(ifScope.getKind() == eIfScopeKind.E_THEN) {
+				currPPV._varTrue = nextPPV;
+				currPPV._varFalse = ppvOld;
+			} else {
+				currPPV._varTrue = ppvOld;
+				currPPV._varFalse = nextPPV;
+			}
+			currPPV = nextPPV;
+		}
 	}
 
 	void setPossibleVars(GraphNode conditionNode, PossiblePointedVar varTrue,
@@ -226,16 +278,6 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	public List<IVar> getInternalVars() {
 		logger.fatal("You're doing it wrong.");
 		return null;
-	}
-
-	public boolean onceRead() {
-		logger.fatal("You're doing it wrong.");
-		return false;
-	}
-
-	public boolean onceWritten() {
-		logger.fatal("You're doing it wrong.");
-		return false;
 	}
 
 	public void setGraph(Graph graph) {

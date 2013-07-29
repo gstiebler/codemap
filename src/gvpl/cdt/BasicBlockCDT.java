@@ -13,7 +13,7 @@ import debug.ExecTreeLogger;
 
 public class BasicBlockCDT extends BaseScopeCDT {
 	
-	public BasicBlockCDT(BaseScopeCDT parent, AstInterpreterCDT astInterpreter, Graph gvplGraph) {
+	public BasicBlockCDT(BaseScope parent, AstInterpreterCDT astInterpreter, Graph gvplGraph) {
 		super(astInterpreter, parent);
 		_gvplGraph = gvplGraph;
 		_parent = parent;

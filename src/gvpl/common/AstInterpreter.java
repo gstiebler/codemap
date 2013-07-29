@@ -49,9 +49,4 @@ public abstract class AstInterpreter extends BaseScope {
 		return _primitiveType;
 	}
 
-	@Override
-	public AstInterpreter getAstInterpreter() {
-		return this;
-	}
-
 }
