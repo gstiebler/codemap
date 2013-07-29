@@ -2,6 +2,8 @@ digraph G
 {
 rankdir=LR;
 label = "root";
+	node_000018 [ label = "*classInst", startingline=33 ]
+	node_000020 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=48 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
@@ -9,7 +11,7 @@ startinglines = "25_41_41";
 	node_000005 [ label = "*a", startingline=44 ]
 	node_000006 [ label = "b", startingline=44 ]
 	node_000010 [ label = "c", startingline=20 ]
-	node_000025 [ label = "d", startingline=48 ]
+	node_000019 [ label = "d", startingline=48 ]
 subgraph cluster_2 {
 label = "func";
 parent = "cluster_1";
@@ -33,11 +35,11 @@ startinglines = "19_20_47";
 	node_000014 [ label = "classInst3._a", startingline=29 ]
 	node_000015 [ label = "44", style=filled, fillcolor="#E9FFE9", startinglines=30 ]
 	node_000016 [ label = "classInst4._a", startingline=30 ]
-	node_000018 [ label = "NULL (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=33 ]
-	node_000019 [ label = "*classInst", startingline=33 ]
-	node_000026 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=48 ]
+	node_000017 [ label = "NULL (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=33 ]
 }
 }
+	node_000018 -> node_000020
+	node_000020 -> node_000019
 	node_000005 -> node_000006
 	node_000002 -> node_000003
 	node_000003 -> node_000004
@@ -45,10 +47,8 @@ startinglines = "19_20_47";
 	node_000008 -> node_000009
 	node_000009 -> node_000010
 	node_000013 -> node_000014
-	node_000014 -> node_000026
+	node_000014 -> node_000020
 	node_000015 -> node_000016
-	node_000016 -> node_000026
-	node_000018 -> node_000019
-	node_000019 -> node_000026
-	node_000026 -> node_000025
+	node_000016 -> node_000020
+	node_000017 -> node_000018
 }

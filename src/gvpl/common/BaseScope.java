@@ -110,7 +110,10 @@ public abstract class BaseScope implements IScope {
 		if(lastNode != null)
 			return lastNode;
 		
-		return _parent.getLastNode(var);
+		if(_parent != null)
+			return _parent.getLastNode(var);
+		else
+			return null;
 	}
 	
 	protected IVar getLocalVar(IBinding binding) {
