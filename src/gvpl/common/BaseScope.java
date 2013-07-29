@@ -128,5 +128,9 @@ public abstract class BaseScope implements IScope {
 	public IVar getVarFromBinding(IBinding binding) {
 		return _parent.getVarFromBinding(binding);
 	}
+	
+	public BaseScope getParent() {
+		return _parent;
+	}
 
 }

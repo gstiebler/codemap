@@ -510,7 +510,7 @@ public class InstructionLine {
 	private MemberFunc getParentFunc() {
 		BaseScope parent = (BaseScope) _parentBaseScope;
 		while(!(parent instanceof MemberFunc)){
-			BasicBlockCDT bb = (BasicBlockCDT) parent;
+			BaseScope bb = (BaseScope) parent;
 			parent = bb.getParent();
 		}
 		return (MemberFunc) parent;

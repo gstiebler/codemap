@@ -49,10 +49,6 @@ public class BasicBlockCDT extends BaseScopeCDT {
 		return _gvplGraph;
 	}
 	
-	public BaseScope getParent() {
-		return _parent;
-	}
-	
 	@Override
 	public Function getFunction() {
 		return _parent.getFunction();
