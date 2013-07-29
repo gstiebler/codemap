@@ -1,0 +1,20 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "2_2";
+	node_000001 [ label = "7", style=filled, fillcolor="#E9FFE9", startinglines=4 ]
+	node_000002 [ label = "x", startingline=4 ]
+	node_000003 [ label = "4", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000004 [ label = "*a", startingline=9 ]
+	node_000005 [ label = "x", startingline=9 ]
+	node_000006 [ label = "d", startingline=12 ]
+}
+	node_000001 -> node_000002
+	node_000003 -> node_000004
+	node_000004 -> node_000005
+	node_000005 -> node_000006
+}
