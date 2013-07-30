@@ -131,6 +131,11 @@ public class MemberFunc extends Function {
 		if (var != null) 
 			return var; 
 		
+		IBinding binding = getBindingFromExpr(expr);
+		var = super.getVarFromBinding(binding);
+		if (var != null) 
+			return var;
+		
 		String exprStr = expr.getRawSignature();
 		if (exprStr.equals("this")) {
 			// quite weird, but to deal with "this" in source code, i had to use "this" here
