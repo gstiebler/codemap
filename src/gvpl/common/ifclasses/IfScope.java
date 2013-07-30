@@ -1,6 +1,7 @@
 package gvpl.common.ifclasses;
 
 import gvpl.common.BaseScope;
+import gvpl.common.ScopeManager;
 import gvpl.graph.GraphNode;
 
 import org.apache.logging.log4j.LogManager;
@@ -33,4 +34,10 @@ public class IfScope extends BaseScope {
 		return _conditionNode;
 	}
 
+	@Override
+	protected void lostScope() {
+		logger.debug("Lost scope of graph {}", _gvplGraph.getName());
+		ScopeManager.removeScope(this);
+	}
+	
 }

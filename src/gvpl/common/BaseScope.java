@@ -89,6 +89,8 @@ public abstract class BaseScope implements IScope {
 				((ClassVar)classVar).callDestructor(this, _gvplGraph);
 		}
 		
+		if(_parent != null)
+			_parent._lastWrittenNode.putAll(_lastWrittenNode);
 		ScopeManager.removeScope(this);
 	}
 	

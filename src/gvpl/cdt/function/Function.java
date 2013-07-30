@@ -4,6 +4,7 @@ import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
+import gvpl.common.BaseScope;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -132,7 +133,7 @@ public class Function extends BaseScopeCDT {
 		return _returnType;
 	}
 
-	void loadConstructorChain(Graph graph, IScope caller) {
+	void loadConstructorChain(Graph graph, BaseScope caller) {
 	}
 
 	protected String calcName() {
@@ -186,7 +187,8 @@ public class Function extends BaseScopeCDT {
 		}
 	}
 
-	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, IScope caller) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, BaseScope caller) {
+		_parent = caller;
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnValue = new Value();
@@ -347,7 +349,14 @@ public class Function extends BaseScopeCDT {
 			return value.getVar();
 		}
 		
-		return getLocalVar(binding);
+		IVar var = getLocalVar(binding);
+		if(var != null)
+			return var;
+		
+		if(_parent != null)
+			return _parent.getVarFromBinding(binding);
+		
+		return null;
 	}
 	
 	public boolean getIsStatic() {

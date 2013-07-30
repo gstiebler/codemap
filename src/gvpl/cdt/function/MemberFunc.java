@@ -3,10 +3,10 @@ package gvpl.cdt.function;
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.InstructionLine;
+import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
 import gvpl.common.FuncParameter;
-import gvpl.common.IScope;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.Value;
@@ -65,7 +65,7 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	void loadConstructorChain(Graph graph, IScope caller) {
+	void loadConstructorChain(Graph graph, BaseScope caller) {
 		ExecTreeLogger.log("");
 		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
 			IASTExpression expr = initializer.getInitializerValue();
@@ -117,7 +117,7 @@ public class MemberFunc extends Function {
 		return null;
 	}
 
-	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, IScope caller) {
+	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, BaseScope caller) {
 		_thisVar = thisVar;
 		Value result = super.addFuncRef(parameterValues, gvplGraph, caller);
 		_thisVar = null;
@@ -173,13 +173,11 @@ public class MemberFunc extends Function {
 			logger.info("problem binding");
 			return null;
 		}
+		
+		IVar var = super.getVarFromBinding(binding);
+		if(var != null)
+			return var;
+		
 		return getMemberFromBinding(binding);
-//		//TODO refactoring: this decision should be on BaseScope. This decision should be removed
-//		// from getAccessedVars
-//		if(_caller.hasVarInScope(binding)) {
-//			return getVarInsideSandboxFromBinding(binding);
-//		} else {
-//			return getVarFromBindingUnbounded(binding);
-//		}
 	}
 }

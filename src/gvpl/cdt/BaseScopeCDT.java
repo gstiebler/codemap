@@ -7,7 +7,6 @@ import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
-import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.common.Var;
@@ -87,7 +86,11 @@ public abstract class BaseScopeCDT extends BaseScope{
 		if(var != null)
 			return new Value(var);
 		
-		return new Value(getNodeFromExpr(expr));
+		GraphNode node = getNodeFromExpr(expr);
+		if(node == null)
+			return null;
+		
+		return new Value(node);
 	}
 	
 	protected IBinding getBindingFromExpr(IASTExpression expr) {

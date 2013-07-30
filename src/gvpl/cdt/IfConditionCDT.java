@@ -40,8 +40,7 @@ public class IfConditionCDT {
 		ScopeManager.removeScope(ifScope);
 
 		Graph graph = instructionLine.getGraph();
-		IfCondition.createIfNodes(trueBasicBlock, falseBasicBlock, conditionNode, graph);
-	
+		IfCondition.createIfNodes(trueBasicBlock, falseBasicBlock, conditionNode, graph);	
 	}
 
 	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine, BaseScope parentScope) {
