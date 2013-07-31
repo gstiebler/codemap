@@ -95,7 +95,6 @@ public class ClassVar extends Var implements IClassVar{
 		
 		for (IVar var : _memberInstances.values()) {
 			var.initializeVar(NodeType.E_VARIABLE, graph, astInterpreter);
-			var.setOwner(this);
 		}
 	}
 	
@@ -118,7 +117,6 @@ public class ClassVar extends Var implements IClassVar{
 			IVar member = entry.getValue();
 			
 			member.callConstructor(null, NodeType.E_VARIABLE, graph, astLoader, astInterpreter);
-			member.setOwner(this);
 		}
 		
 		if (constructorFunc == null)

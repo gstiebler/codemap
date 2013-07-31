@@ -33,8 +33,6 @@ public interface IVar {
 
 	public IVar getVarInMem();
 	
-	public void setOwner(IVar owner);
-	
 	public List<IVar> getInternalVars();
 	
 	public VarInfo getVarInfo();

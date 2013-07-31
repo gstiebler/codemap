@@ -26,7 +26,6 @@ public class Var implements IVar {
 
 	protected TypeId _type;
 	protected GraphNode _currGraphNode = null;
-	protected IVar _owner = null;
 	private int _id = -1;
 
 	protected Graph _gvplGraph;
@@ -44,7 +43,6 @@ public class Var implements IVar {
 		_currGraphNode = other._currGraphNode;
 		_gvplGraph = other._gvplGraph;
 		_name = other._name;
-		_owner = other._owner;
 		_type = other._type;
 		_id = _counter++;
 	}
@@ -114,11 +112,6 @@ public class Var implements IVar {
 	public IVar getVarInMem() {
 		ExecTreeLogger.log("Var: " + getName());
 		return this;
-	}
-	
-	public void setOwner(IVar owner) {
-		ExecTreeLogger.log("Var: " + getName());
-		_owner = owner;
 	}
 	
 	public List<IVar> getInternalVars() {

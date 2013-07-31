@@ -271,10 +271,6 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		return null;
 	}
 
-	public void setOwner(IVar owner) {
-		logger.fatal("You're doing it wrong.");
-	}
-
 	public List<IVar> getInternalVars() {
 		logger.fatal("You're doing it wrong.");
 		return null;
