@@ -236,7 +236,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		Function function = loadFunctionDeclaration(funcDeclarator);
 
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
-		function.loadDefinition(funcDeclarator.getConstructorChain(), funcDefinition);
+		function.initializeDefinition(funcDeclarator.getConstructorChain(), funcDefinition);
 		return function;
 	}
 	

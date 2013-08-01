@@ -104,7 +104,7 @@ public class Function extends BaseScopeCDT {
 		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
 	}
 	
-	public void loadDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTFunctionDefinition funcDefinition) {
+	public void initializeDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTFunctionDefinition funcDefinition) {
 		_body = funcDefinition.getBody();
 		_ccInitializer = ccInitializer;
 		CPPASTFunctionDeclarator declarator = (CPPASTFunctionDeclarator) funcDefinition.getDeclarator();

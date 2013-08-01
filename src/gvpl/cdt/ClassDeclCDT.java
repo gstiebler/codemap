@@ -235,7 +235,7 @@ public class ClassDeclCDT extends ClassDecl{
 		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
 		
 		MemberFunc memberFunc = loadMemberFuncDecl(funcDeclarator, astInterpreter);
-		memberFunc.loadDefinition(funcDeclarator.getConstructorChain(), member);
+		memberFunc.initializeDefinition(funcDeclarator.getConstructorChain(), member);
 	}
 
 	public ClassMember getMember(IBinding binding) {
