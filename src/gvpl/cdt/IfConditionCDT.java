@@ -1,6 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.common.BaseScope;
 import gvpl.common.ScopeManager;
 import gvpl.common.ifclasses.IfCondition;
 import gvpl.common.ifclasses.IfScope;
@@ -27,31 +26,29 @@ public class IfConditionCDT {
 			IASTStatement elseClause, InstructionLine instructionLine) {
 		ExecTreeLogger.log(conditionNode.getName());
 		
-		IfScope ifScope = new IfScope(instructionLine.getParentBasicBlock(), conditionNode);
-		
-		ifScope.setKind(eIfScopeKind.E_THEN);
-		ScopeManager.addScope(ifScope);
-		BasicBlockCDT trueBasicBlock = loadBasicBlock(thenClause, instructionLine, ifScope);
-		ScopeManager.removeScope(ifScope);
-		
-		ifScope.setKind(eIfScopeKind.E_ELSE);
-		ScopeManager.addScope(ifScope);
-		BasicBlockCDT falseBasicBlock = loadBasicBlock(elseClause, instructionLine, ifScope);
-		ScopeManager.removeScope(ifScope);
+		IfScope trueIfScope = new IfScope(instructionLine.getParentBasicBlock(), conditionNode);
+		trueIfScope.setKind(eIfScopeKind.E_THEN);
+		BasicBlockCDT trueBasicBlock = loadBasicBlock(thenClause, instructionLine, trueIfScope);
+
+		IfScope falseIfScope = new IfScope(instructionLine.getParentBasicBlock(), conditionNode);
+		falseIfScope.setKind(eIfScopeKind.E_ELSE);
+		BasicBlockCDT falseBasicBlock = loadBasicBlock(elseClause, instructionLine, falseIfScope);
 
 		Graph graph = instructionLine.getGraph();
 		IfCondition.createIfNodes(trueBasicBlock, falseBasicBlock, conditionNode, graph);	
 	}
 
-	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine, BaseScope parentScope) {
+	static BasicBlockCDT loadBasicBlock(IASTStatement clause, InstructionLine instructionLine, IfScope parentScope) {
 		if (clause == null)
 			return null;
 
+		ScopeManager.addScope(parentScope);
 		ExecTreeLogger.log(clause.getRawSignature());
 
 		BasicBlockCDT basicBlock = new BasicBlockCDT(parentScope,
 				instructionLine.getAstInterpreter(), instructionLine.getGraph());
 		basicBlock.load(clause);
+		ScopeManager.removeScope(parentScope);
 		return basicBlock;
 	}
 

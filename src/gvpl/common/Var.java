@@ -1,6 +1,7 @@
 package gvpl.common;
 
 import gvpl.common.FuncParameter.IndirectionType;
+import gvpl.common.ifclasses.IfScope;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -35,6 +36,7 @@ public class Var implements IVar {
 		_gvplGraph = graph;
 		_name = name;
 		_id = _counter++;
+		addToIfScope();
 
 		logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
 	}
@@ -45,10 +47,17 @@ public class Var implements IVar {
 		_name = other._name;
 		_type = other._type;
 		_id = _counter++;
+		addToIfScope();
 	}
 
 	public TypeId getType() {
 		return _type;
+	}
+	
+	private void addToIfScope() {
+		IfScope lastIfScope = ScopeManager.getLastIfScope();
+		if(lastIfScope != null)
+			lastIfScope.varCreated(this);
 	}
 
 	public void updateNode(GraphNode node) {

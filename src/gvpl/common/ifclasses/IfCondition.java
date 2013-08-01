@@ -21,14 +21,16 @@ public class IfCondition {
 		Set<Var> trueWrittenVars;
 		Set<Var> falseWrittenVars;
 		
-		if( trueScope != null )
+		if( trueScope != null ) {
 			trueWrittenVars = trueScope.getWrittenVars();
-		else
+			trueWrittenVars.removeAll(((IfScope)trueScope.getParent()).getCreatedVars());
+		} else
 			trueWrittenVars = new LinkedHashSet<Var>();
 		
-		if( falseScope != null )
+		if( falseScope != null ) {
 			falseWrittenVars = falseScope.getWrittenVars();
-		else 
+			falseWrittenVars.removeAll(((IfScope)falseScope.getParent()).getCreatedVars());
+		} else 
 			falseWrittenVars = new LinkedHashSet<Var>();
 			
 		// set containing the vars written in both true and false block
