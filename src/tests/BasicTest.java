@@ -120,6 +120,11 @@ public class BasicTest {
 	}
 
 	@Test
+	public void polymorphism3() {
+		TestsUtil.baseTest("polymorphism3");
+	}
+
+	@Test
 	public void array() {
 		TestsUtil.baseTest("array");
 	}

@@ -69,8 +69,10 @@ public class MemberFunc extends Function {
 		ExecTreeLogger.log("");
 		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
 			IASTExpression expr = initializer.getInitializerValue();
-			int startingLine = expr.getFileLocation().getStartingLineNumber();
-			DebugOptions.setStartingLine(startingLine);
+			if(expr != null) {
+				int startingLine = expr.getFileLocation().getStartingLineNumber();
+				DebugOptions.setStartingLine(startingLine);
+			}
 			
 			IASTName memberInitId = initializer.getMemberInitializerId();
 			IBinding memberBinding = memberInitId.resolveBinding();
