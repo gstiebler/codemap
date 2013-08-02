@@ -16,6 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,8 +68,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	CppFile _currCppFile = new CppFile();
-	private Map<CodeLocation, Function> _funcByLocation = new LinkedHashMap<CodeLocation, Function>();
-	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new LinkedHashMap<CodeLocation, ClassDeclCDT>();
+	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
+	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	//TODO check if this set is really necessary
 	Set<IBinding> _functionTypedefs = new LinkedHashSet<IBinding>();
 	Function _mainFunction = null;
