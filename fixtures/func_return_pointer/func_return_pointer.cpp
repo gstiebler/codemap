@@ -24,17 +24,10 @@ Class* Class::classInst = NULL;
 
 Class* instancia()
 {
-    Class classInst3;
-    Class classInst4;
-    classInst3->_a = 33;
-    classInst4->_a = 44;
-    
-    Class::classInst = NULL;
-    if( Class::classInst )
-        Class::classInst = &classInst4;
-    else
-        Class::classInst = &classInst3;
-        
+    if( !Class::classInst )
+    {
+        Class::classInst = new Class();
+    }
     return Class::classInst;
 }
 

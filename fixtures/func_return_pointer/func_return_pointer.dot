@@ -2,20 +2,21 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000018 [ label = "*classInst", startingline=33 ]
-	node_000020 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=48 ]
+	node_000011 [ label = "NULL (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=27 ]
+	node_000012 [ label = "*classInst", startingline=27 ]
+	node_000016 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=41 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "25_41_41";
-	node_000005 [ label = "*a", startingline=44 ]
-	node_000006 [ label = "b", startingline=44 ]
+startinglines = "25_34_34";
+	node_000005 [ label = "*a", startingline=37 ]
+	node_000006 [ label = "b", startingline=37 ]
 	node_000010 [ label = "c", startingline=20 ]
-	node_000019 [ label = "d", startingline=48 ]
+	node_000015 [ label = "d", startingline=41 ]
 subgraph cluster_2 {
 label = "func";
 parent = "cluster_1";
-startinglines = "41_41_43";
+startinglines = "34_34_36";
 	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=5 ]
 	node_000003 [ label = "*x", startingline=5 ]
 	node_000004 [ label = "x_pointed", startingline=5 ]
@@ -23,32 +24,28 @@ startinglines = "41_41_43";
 subgraph cluster_3 {
 label = "func2";
 parent = "cluster_1";
-startinglines = "6_44_45";
+startinglines = "6_37_38";
 	node_000008 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=19 ]
 	node_000009 [ label = "classTemp_pointed._a", startingline=19 ]
 }
 subgraph cluster_4 {
 label = "instancia";
 parent = "cluster_1";
-startinglines = "19_20_47";
-	node_000013 [ label = "33", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
-	node_000014 [ label = "classInst3._a", startingline=29 ]
-	node_000015 [ label = "44", style=filled, fillcolor="#E9FFE9", startinglines=30 ]
-	node_000016 [ label = "classInst4._a", startingline=30 ]
-	node_000017 [ label = "NULL (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=33 ]
+startinglines = "19_20_40";
+	node_000013 [ label = "!", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=27 ]
+	node_000014 [ label = "classInst_pointed._a", startingline=29 ]
 }
 }
-	node_000018 -> node_000020
-	node_000020 -> node_000019
+	node_000011 -> node_000012
+	node_000011 -> node_000016
+	node_000012 -> node_000013
+	node_000016 -> node_000015
 	node_000005 -> node_000006
 	node_000002 -> node_000003
 	node_000003 -> node_000004
 	node_000004 -> node_000005
 	node_000008 -> node_000009
 	node_000009 -> node_000010
-	node_000013 -> node_000014
-	node_000014 -> node_000020
-	node_000015 -> node_000016
-	node_000016 -> node_000020
-	node_000017 -> node_000018
+	node_000013 -> node_000016
+	node_000014 -> node_000016
 }
