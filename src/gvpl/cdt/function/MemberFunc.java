@@ -121,7 +121,17 @@ public class MemberFunc extends Function {
 
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph gvplGraph, ClassVar thisVar, BaseScope caller) {
 		_thisVar = thisVar;
-		Value result = super.addFuncRef(parameterValues, gvplGraph, caller);
+		
+		Value result;
+		if(_body != null)
+			result = super.addFuncRef(parameterValues, gvplGraph, caller);
+		else {
+			MemberFunc eqFunc = thisVar.getClassDecl().getEquivalentFunc(this);
+			if(eqFunc != this)
+				result = eqFunc.addFuncRef(parameterValues, gvplGraph, thisVar, caller);
+			else
+				result = super.addFuncRef(parameterValues, gvplGraph, caller);
+		}
 		_thisVar = null;
 		return result;
 	}

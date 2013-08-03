@@ -45,7 +45,7 @@ public:
 
 	int process(int baseParam)
 	{
-		return _baseMember * _bMember;
+		return _baseMember * baseParam;
 	}
     
     int calculoB()
@@ -61,6 +61,7 @@ int main()
 	ClassB classB;
     
     classA.initialize();
+    classB.initialize();
     
     int A = classA.calculoA();
     int B = classB.calculoB();
