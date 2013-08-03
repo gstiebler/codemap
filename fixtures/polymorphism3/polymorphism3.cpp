@@ -67,8 +67,7 @@ int main()
     int B = classB.calculoB();
     
     bcPointer = &classB;
-    ClassB *temp = (ClassB*)bcPointer;
-    int D = temp->calculoB();
+    int D = ((ClassB*)bcPointer)->calculoB();
 	
 	if(true)
 	{

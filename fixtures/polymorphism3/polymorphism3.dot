@@ -66,12 +66,12 @@ startinglines = "15_67_53";
 subgraph cluster_10 {
 label = "ClassB::calculoB";
 parent = "cluster_1";
-startinglines = "69_70_71";
+startinglines = "20_69_70";
 	node_000017 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
 subgraph cluster_11 {
 label = "BaseClass::sub";
 parent = "cluster_10";
-startinglines = "70_71_53";
+startinglines = "69_70_53";
 	node_000018 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
 }
 }

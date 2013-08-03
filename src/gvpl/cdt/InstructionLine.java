@@ -544,7 +544,7 @@ public class InstructionLine {
 		IVar var = _parentBaseScope.getVarFromExpr(ownerExpr);
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		
-		TypeId typeId = var.getType();
+		TypeId typeId = var.getVarInMem().getType();
 		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
