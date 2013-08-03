@@ -65,15 +65,10 @@ int main()
     
     int A = classA.calculoA();
     int B = classB.calculoB();
-    
-    bcPointer = &classB;
-    int D = ((ClassB*)bcPointer)->calculoB();
 	
 	if(true)
 	{
-		//bcPointer = &classB;
-        //ClassB *temp = (ClassB*)bcPointer;
-        //int D = temp->calculoB();
-        //int D = ((ClassB*)bcPointer)->calculoB();
+		bcPointer = &classB;
+        int D = ((ClassB*)bcPointer)->calculoB();
 	}
 }
