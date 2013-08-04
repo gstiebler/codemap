@@ -37,13 +37,14 @@ public class MemAddressVar extends Var {
 	
 	public IVar getPointedVar() {
 		ExecTreeLogger.log("Var: " + getName());
-		if(_possiblePointedVar._finalVar == null) {
-			if(_possiblePointedVar._conditionNode == null)
+		PossiblePointedVar possiblePointedVar = PossiblePointedVar.filterPPVInsideIfScopes(_possiblePointedVar);
+		if(possiblePointedVar._finalVar == null) {
+			if(possiblePointedVar._conditionNode == null)
 				return null;
 			else
-				return _possiblePointedVar;
+				return possiblePointedVar;
 		} else
-			return _possiblePointedVar._finalVar;
+			return possiblePointedVar._finalVar;
 	}
 
 	public boolean getHasReceivedVar() {
