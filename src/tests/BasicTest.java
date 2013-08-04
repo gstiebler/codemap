@@ -105,6 +105,11 @@ public class BasicTest {
 	}
 
 	@Test
+	public void ifPointer2() {
+		TestsUtil.baseTest("if_pointer2");
+	}
+
+	@Test
 	public void inheritance() {
 		TestsUtil.baseTest("inheritance");
 	}
