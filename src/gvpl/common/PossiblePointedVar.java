@@ -52,7 +52,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		LinkedList<IfScope> ifList = new LinkedList<IfScope>();
 		List<BaseScope> scopes = ScopeManager.getScopeList();
 		
-		// verify the ifs between the current scope and the scope of the variable
+		// fill the ifs between the current scope and the scope of the variable
 		for(int i = scopes.size() - 1; i >= 0; --i) {
 			BaseScope scope = scopes.get(i);
 			if(scope.hasVarInScope(_ownerVar))
@@ -134,9 +134,8 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		ExecTreeLogger.log("Var: " + getName());
 		updateNodeRecursive(this, _ownerVar.getGraph(), node);
 	}
-
-	public static void updateNodeRecursive(PossiblePointedVar possiblePointedVar, Graph graph,
-			GraphNode node) {
+	
+	public static PossiblePointedVar filterPPVInsideIfScopes(PossiblePointedVar possiblePointedVar) {
 		while(true) {
 			eIfScopeKind ifKind = IfScope.getScopeKind(possiblePointedVar._conditionNode);
 			if(ifKind == null)
@@ -146,6 +145,13 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			else if (ifKind == eIfScopeKind.E_ELSE)
 				possiblePointedVar = possiblePointedVar._varFalse;
 		}
+		
+		return possiblePointedVar;
+	}
+
+	public static void updateNodeRecursive(PossiblePointedVar possiblePointedVar, Graph graph,
+			GraphNode node) {
+		possiblePointedVar = filterPPVInsideIfScopes(possiblePointedVar);
 		
 		if (possiblePointedVar._conditionNode != null) {
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varTrue);

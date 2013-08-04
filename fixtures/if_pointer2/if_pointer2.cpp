@@ -14,8 +14,10 @@ int main() {
         if(false)
         {
             a = &c;
-            a* = 32;
+            *a = 32;
             int e2 = *a;
         }
     }
+    
+    int f = c;
 }

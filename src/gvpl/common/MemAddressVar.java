@@ -63,10 +63,11 @@ public class MemAddressVar extends Var {
 	@Override
 	public GraphNode getCurrentNode() {
 		ExecTreeLogger.log("Var: " + getName());
-		if(_possiblePointedVar._finalVar == null) {
-			return _possiblePointedVar.getIfNode(_gvplGraph);
+		PossiblePointedVar possiblePointedVar = PossiblePointedVar.filterPPVInsideIfScopes(_possiblePointedVar);
+		if(possiblePointedVar._finalVar == null) {
+			return possiblePointedVar.getIfNode(_gvplGraph);
 		}
-		GraphNode currentPointedVarNode = _possiblePointedVar._finalVar.getCurrentNode();
+		GraphNode currentPointedVarNode = possiblePointedVar._finalVar.getCurrentNode();
 		if (currentPointedVarNode != _lastPointedVarNode) {
 			_currGraphNode = _gvplGraph.addGraphNode(this, NodeType.E_VARIABLE);
 			currentPointedVarNode.addDependentNode(_currGraphNode);
