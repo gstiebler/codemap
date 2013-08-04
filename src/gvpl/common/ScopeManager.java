@@ -1,6 +1,5 @@
 package gvpl.common;
 
-import gvpl.common.ifclasses.IfScope;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
@@ -35,13 +34,5 @@ public class ScopeManager {
 	
 	public static void reset() {
 		_scopeStack = new Stack<BaseScope>();
-	}
-	
-	public static IfScope getLastIfScope() {
-		for(int i = _scopeStack.size() - 1; i >= 0; i--) {
-			if(_scopeStack.get(i) instanceof IfScope)
-				return (IfScope) _scopeStack.get(i);
-		}
-		return null;
 	}
 }

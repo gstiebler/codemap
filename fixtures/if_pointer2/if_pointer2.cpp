@@ -4,16 +4,18 @@ int main() {
 	int b, c;
 	b = 10;
 	c = 20;
+    a = &c;
 
     if(true)
     {
-        int *d = b;
-        *d = 8;
+        a = &b;
+        *a = 5;
+        int d1 = b;
         if(false)
         {
             a = &c;
-            c = 25;
+            a* = 32;
+            int e2 = *a;
         }
-        c += 10;
     }
 }

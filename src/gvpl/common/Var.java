@@ -55,7 +55,7 @@ public class Var implements IVar {
 	}
 	
 	private void addToIfScope() {
-		IfScope lastIfScope = ScopeManager.getLastIfScope();
+		IfScope lastIfScope = IfScope.getLastIfScope();
 		if(lastIfScope != null)
 			lastIfScope.varCreated(this);
 	}

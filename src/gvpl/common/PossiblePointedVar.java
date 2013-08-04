@@ -137,6 +137,16 @@ public class PossiblePointedVar implements IVar, IClassVar {
 
 	public static void updateNodeRecursive(PossiblePointedVar possiblePointedVar, Graph graph,
 			GraphNode node) {
+		while(true) {
+			eIfScopeKind ifKind = IfScope.getScopeKind(possiblePointedVar._conditionNode);
+			if(ifKind == null)
+				break;
+			else if (ifKind == eIfScopeKind.E_THEN)
+				possiblePointedVar = possiblePointedVar._varTrue;
+			else if (ifKind == eIfScopeKind.E_ELSE)
+				possiblePointedVar = possiblePointedVar._varFalse;
+		}
+		
 		if (possiblePointedVar._conditionNode != null) {
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varTrue);
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varFalse);
