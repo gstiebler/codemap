@@ -14,6 +14,7 @@ import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
+import gvpl.exceptions.ClassNotImplementedException;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -253,48 +254,53 @@ public class InstructionLine {
 	public Value loadValue(IASTExpression expr) {
 		logger.debug("Load Value, Node type {}", expr.getClass());
 		ExecTreeLogger.log(expr.getRawSignature());
-		Value result = null;
 		// Eh uma variavel
-		if (expr instanceof IASTIdExpression) {
-			if(_parentBaseScope != null) 
-				result = _parentBaseScope.getValueFromExpr(expr);
-			else {
-				IBinding binding = ((IASTIdExpression) expr).getName().resolveBinding();
-				result = new Value(_astInterpreter.getGlobalVar(binding));
-			}
-		} else if (expr instanceof IASTBinaryExpression) {// Eh uma expressao
-			result = new Value(loadBinOp((IASTBinaryExpression) expr));
-		} else if (expr instanceof IASTLiteralExpression) {// Eh um valor direto
-			result = new Value(loadDirectValue((IASTLiteralExpression) expr));
-		} else if (expr instanceof IASTFunctionCallExpression) {// Eh umachamada
-																// a funcao
-			result = loadFunctionCall((IASTFunctionCallExpression) expr);
-		} else if (expr instanceof IASTFieldReference) {// reference to field of
-														// a struct
-			IVar varDecl = _parentBaseScope.getVarFromFieldRef((IASTFieldReference) expr);
-			if(varDecl == null)
-				result = new Value(GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ"));
-			else
-				result = new Value(varDecl);
-		} else if (expr instanceof IASTUnaryExpression) {
-			result = new Value(loadUnaryExpr((IASTUnaryExpression) expr));
-		} else if (expr instanceof CPPASTArraySubscriptExpression) {			
-			//It's an array
-			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
-			IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
-			IVar varDecl = _parentBaseScope.getVarFromExpr(arrayExpr);
-			IASTExpression index = arraySubscrExpr.getSubscriptExpression();
-			Value indexValue = loadValue(index);
-			GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
-			result = new Value(arrayResult);
-		} else if (expr instanceof CPPASTNewExpression ) {
-			logger.error("work here");
-		} else
-			logger.fatal("Node type not found!! Node: " + expr.getClass());
 
-		if(result == null)
-			result = new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM", NodeType.E_DIRECT_VALUE));
-		return result;
+		try {
+			if (expr instanceof IASTIdExpression) {
+				if (_parentBaseScope != null)
+					return _parentBaseScope.getValueFromExpr(expr);
+				else {
+					IBinding binding = ((IASTIdExpression) expr).getName().resolveBinding();
+					return new Value(_astInterpreter.getGlobalVar(binding));
+				}
+			} else if (expr instanceof IASTBinaryExpression) {// Eh uma
+																// expressao
+				return new Value(loadBinOp((IASTBinaryExpression) expr));
+			} else if (expr instanceof IASTLiteralExpression) {// Eh um valor
+																// direto
+				return new Value(loadDirectValue((IASTLiteralExpression) expr));
+			} else if (expr instanceof IASTFunctionCallExpression) {// Eh
+																	// umachamada
+																	// a funcao
+				return loadFunctionCall((IASTFunctionCallExpression) expr);
+			} else if (expr instanceof IASTFieldReference) {// reference to
+															// field of
+															// a struct
+				IVar varDecl = _parentBaseScope.getVarFromFieldRef((IASTFieldReference) expr);
+				if (varDecl == null)
+					return new Value(GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ"));
+				else
+					return new Value(varDecl);
+			} else if (expr instanceof IASTUnaryExpression) {
+				return new Value(loadUnaryExpr((IASTUnaryExpression) expr));
+			} else if (expr instanceof CPPASTArraySubscriptExpression) {
+				// It's an array
+				CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
+				IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
+				IVar varDecl = _parentBaseScope.getVarFromExpr(arrayExpr);
+				IASTExpression index = arraySubscrExpr.getSubscriptExpression();
+				Value indexValue = loadValue(index);
+				GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
+				return new Value(arrayResult);
+			} else if (expr instanceof CPPASTNewExpression) {
+				throw new ClassNotImplementedException(expr.getClass().toString());
+			} else
+				throw new ClassNotImplementedException(expr.getClass().toString());
+		} catch (ClassNotImplementedException e) {
+			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM",
+					NodeType.E_DIRECT_VALUE));
+		}
 	}
 
 	private void loadForStmt(IASTForStatement node) {
