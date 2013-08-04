@@ -47,6 +47,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
@@ -118,6 +119,8 @@ public class InstructionLine {
 				loadAssignBinOp((IASTBinaryExpression) expr);
 			else if (expr instanceof IASTFunctionCallExpression)
 				loadFunctionCall((IASTFunctionCallExpression) expr);
+			else if (expr instanceof CPPASTUnaryExpression)
+				logger.error("Not implemented: {}", expr.getClass());
 			else
 				loadDeleteOp((CPPASTDeleteExpression) expr);
 		} else if (statement instanceof IASTReturnStatement) {
@@ -227,7 +230,14 @@ public class InstructionLine {
 			return;
 		}
 
-		Value rhsValue = loadValue(rhsExpr);
+		Value rhsValue = loadValue(rhsExpr);		
+		if(rhsValue == null) {
+			logger.error("Shoudn't happen");
+			GraphNode problemNode = new GraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
+			lhsVar.receiveAssign(NodeType.E_INVALID_NODE_TYPE, new Value(problemNode), _gvplGraph);
+			return;
+		}
+
 		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _gvplGraph);
 	}
 	
@@ -318,6 +328,10 @@ public class InstructionLine {
 		Value rvalue = loadValue(returnExpr);
 
 		Function function = _parentBaseScope.getFunction();
+		if(function == null) {
+			logger.error("you're doing it wrong");
+			return;
+		}
 		// TODO use the return type
 		//TypeId returnType = function.getReturnTypeId();
 
@@ -375,6 +389,10 @@ public class InstructionLine {
 
 		logger.debug("loading rhs value");
 		Value rhsValue = loadValue(rhsExpr);
+		if(rhsValue == null) {
+			logger.error("Shoudn't happen");
+			return new GraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
+		}
 
 		if (binExpr.getOperator() == IASTBinaryExpression.op_assign) {
 			lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _parentBaseScope.getGraph());
@@ -549,6 +567,10 @@ public class InstructionLine {
 		IASTExpression ownerExpr = fieldRef.getFieldOwner();
 		IVar var = _parentBaseScope.getVarFromExpr(ownerExpr);
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
+		if(funcMemberBinding instanceof ProblemBinding) {
+			logger.error("Problem binding. Member not found: {}", fieldRef.getFieldName());
+			return new Value();
+		}
 		
 		TypeId typeId = var.getVarInMem().getType();
 		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);

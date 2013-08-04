@@ -35,8 +35,10 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLinkageSpecification;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
@@ -145,7 +147,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 					logger.fatal("you're doing it wrong. {}. CodeLoc: {}", 
 							declSpec.getClass(), DebugOptions.getCurrCodeLocation() );
 			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
-				logger.error("Not implemented: {}", declaration.getClass());
+				logger.info("Not implemented: {}", declaration.getClass());
+			} else if (declaration instanceof CPPASTNamespaceDefinition) {
+				logger.info("Not implemented: {}", declaration.getClass());
+			} else if (declaration instanceof CPPASTLinkageSpecification) {// extern "C"
+				logger.info("Not implemented: {}", declaration.getClass());
 			} else
 				logger.fatal("Deu merda aqui. {}", declaration.getClass());
 		}

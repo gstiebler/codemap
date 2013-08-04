@@ -22,5 +22,7 @@ public class TestsUtil {
 		
 		Graph gvGraph = DotTree.getGraphFromDot(examplePath + testName + ".dot");
 		assertTrue(GraphCompare.isEqual(astInterpreter.getGraph(), gvGraph));
+		
+		System.out.println("Terminou de executar.");
 	}
 }

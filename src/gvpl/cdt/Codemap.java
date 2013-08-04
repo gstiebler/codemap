@@ -38,7 +38,11 @@ public class Codemap {
 	public static void main(String[] args) {
 		String basePath = args[0] + "/";
 		String mainFile = basePath + args[1];
+		long first = System.currentTimeMillis();
 		execute(basePath, mainFile);
+		long last = System.currentTimeMillis();
+		long dif = last - first;
+		System.out.println("Terminou de executar. " + Long.toString(dif));
 	}
 	
 	public static AstInterpreterCDT execute(String basePath, String mainFile) {
