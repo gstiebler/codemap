@@ -101,7 +101,8 @@ public class MemAddressVar extends Var {
 	
 	public Value loadMemberFuncRef(MemberFunc memberFunc, List<FuncParameter> parameterValues,
 			Graph graph, BaseScopeCDT astLoader) {
-		return PossiblePointedVar.loadMemberFuncRefRecursive(_possiblePointedVar, memberFunc,
+		PossiblePointedVar possiblePointedVar = PossiblePointedVar.filterPPVInsideIfScopes(_possiblePointedVar);
+		return PossiblePointedVar.loadMemberFuncRefRecursive(possiblePointedVar, memberFunc,
 				parameterValues, graph, astLoader);
 	}
 	

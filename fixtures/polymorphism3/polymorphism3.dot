@@ -8,7 +8,7 @@ parent = "G";
 startinglines = "51_57_57";
 	node_000013 [ label = "A", startingline=15 ]
 	node_000016 [ label = "B", startingline=20 ]
-	node_000019 [ label = "D", startingline=20 ]
+	node_000020 [ label = "D", startingline=20 ]
 subgraph cluster_2 {
 label = "BaseClass::initialize";
 parent = "cluster_1";
@@ -66,13 +66,13 @@ startinglines = "15_67_53";
 subgraph cluster_10 {
 label = "ClassB::calculoB";
 parent = "cluster_1";
-startinglines = "20_69_70";
-	node_000017 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
+startinglines = "69_71_72";
+	node_000018 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
 subgraph cluster_11 {
 label = "BaseClass::sub";
 parent = "cluster_10";
-startinglines = "69_70_53";
-	node_000018 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
+startinglines = "71_72_53";
+	node_000019 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
 }
 }
 }
@@ -85,12 +85,12 @@ startinglines = "69_70_53";
 	node_000007 -> node_000009
 	node_000008 -> node_000009
 	node_000010 -> node_000015
-	node_000010 -> node_000018
+	node_000010 -> node_000019
 	node_000009 -> node_000010
 	node_000011 -> node_000012
 	node_000012 -> node_000013
 	node_000014 -> node_000015
 	node_000015 -> node_000016
-	node_000017 -> node_000018
 	node_000018 -> node_000019
+	node_000019 -> node_000020
 }
