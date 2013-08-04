@@ -6,6 +6,7 @@ import gvpl.common.Var;
 import gvpl.graph.GraphNode;
 
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
@@ -52,6 +53,32 @@ public class IfScope extends BaseScope {
 	public Set<Var> getCreatedVars() {
 		return new LinkedHashSet<Var>(_createdVars);
 	}
+
+	public static IfScope getLastIfScope() {
+		List<BaseScope> scopeStack = ScopeManager.getScopeList();
+		for(int i = scopeStack.size() - 1; i >= 0; i--) {
+			if(scopeStack.get(i) instanceof IfScope)
+				return (IfScope) scopeStack.get(i);
+		}
+		return null;
+	}
 	
+	/**
+	 * Searches de condition node in the scope stack. If there is some IfScope in the scope stack
+	 * with the received conditionNode, the function returns the ScopeKind of the IfScope
+	 * @param conditionNode
+	 * @return IScopeKind of the IfScope that have the received conditionNode
+	 */
+	public static eIfScopeKind getScopeKind(GraphNode conditionNode) {
+		List<BaseScope> scopeStack = ScopeManager.getScopeList();
+		for(BaseScope scope : scopeStack) {
+			if(scope instanceof IfScope) {
+				IfScope ifScope = (IfScope)scope;
+				if(ifScope._conditionNode == conditionNode)
+					return ifScope._kind;
+			}
+		}
+		return null;
+	}
 	
 }
