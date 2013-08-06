@@ -105,6 +105,11 @@ public abstract class ClassDecl {
 		return _location;
 	}
 	
+	@Override
+	public String toString() {
+		return _name;
+	}
+	
 	public abstract Iterable<ClassDecl> getParentClasses();
 	protected abstract Iterable<MemberFunc> getMemberFuncList();
 }

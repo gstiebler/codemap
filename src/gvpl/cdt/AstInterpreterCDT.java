@@ -43,6 +43,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
@@ -91,43 +92,51 @@ public class AstInterpreterCDT extends AstInterpreter {
 
 		ScopeManager.addScope(this);
 		IASTDeclaration[] declarations = root.getDeclarations();
-
+		loadDeclarations(declarations);
+		ScopeManager.removeScope(this);
+	}
+	
+	private void loadDeclarations(IASTDeclaration[] declarations) {
 		// Iterate through function, class e structs declarations
 		for (IASTDeclaration declaration : declarations) {
-			if(declaration instanceof CPPASTProblemDeclaration) {
+			if (declaration instanceof CPPASTProblemDeclaration) {
 				CPPASTProblemDeclaration problem = (CPPASTProblemDeclaration) declaration;
-				logger.debug("problem declaration {}", problem.getContainingFilename() );
+				logger.debug("problem declaration {}", problem.getContainingFilename());
 				continue;
 			}
-			
-			logger.debug("Location of declaration: {}", CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
-			
+
+			String fileName = declaration.getFileLocation().getFileName();
+			logger.debug("Location of declaration: {}",
+					CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
+
 			// If the declaration is a function
 			if (declaration instanceof IASTFunctionDefinition) {
 				Function func = loadFunction((IASTFunctionDefinition) declaration);
 				if (func != null)
 					_mainFunction = func;
-			} else if (declaration instanceof IASTSimpleDeclaration) {// if it's a class/struct
+			} else if (declaration instanceof IASTSimpleDeclaration) {// if it's
+																		// a
+																		// class/struct
 				IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) declaration;
 				DebugOptions.setStartingLine(declaration.getFileLocation().getStartingLineNumber());
 				IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
 				logger.debug(declSpec.getClass());
 
-				if(declSpec instanceof CPPASTCompositeTypeSpecifier) {
+				if (declSpec instanceof CPPASTCompositeTypeSpecifier) {
 					loadClassImplementation((CPPASTCompositeTypeSpecifier) declSpec);
-				} else if(declSpec instanceof CPPASTElaboratedTypeSpecifier) {
+				} else if (declSpec instanceof CPPASTElaboratedTypeSpecifier) {
 					// forward declaration (always?)
 					loadClassDecl((CPPASTElaboratedTypeSpecifier) declSpec);
-				} else if(declSpec instanceof CPPASTSimpleDeclSpecifier) {
+				} else if (declSpec instanceof CPPASTSimpleDeclSpecifier) {
 					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
-					for(IASTDeclarator declarator : declarators) {
+					for (IASTDeclarator declarator : declarators) {
 						if (declarator instanceof CPPASTFunctionDeclarator) {
 							CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) declarator;
 							loadFunctionDeclaration(funcDecl);
 						} else if (declarator instanceof CPPASTDeclarator) {
 							IASTName name = declarator.getName();
 							IBinding binding = name.resolveBinding();
-							if(binding instanceof CPPVariable) {
+							if (binding instanceof CPPVariable) {
 								addGlobalVar(declarator, declSpec);
 							} else if (binding instanceof CPPField) {
 								initializeGlobalVar(binding, declarator);
@@ -135,29 +144,31 @@ public class AstInterpreterCDT extends AstInterpreter {
 						} else
 							logger.error("you're doing it wrong. {}", declarator.getClass());
 					}
-				} else if(declSpec instanceof CPPASTNamedTypeSpecifier) {
+				} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
 					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
-					for(IASTDeclarator declarator : declarators) {
+					for (IASTDeclarator declarator : declarators) {
 						IASTName name = declarator.getName();
 						IBinding binding = name.resolveBinding();
 						initializeGlobalVar(binding, declarator);
 					}
-				} else if(declSpec instanceof IASTEnumerationSpecifier) {
-					EnumCDT.loadEnum( (IASTEnumerationSpecifier) declSpec, this );
+				} else if (declSpec instanceof IASTEnumerationSpecifier) {
+					EnumCDT.loadEnum((IASTEnumerationSpecifier) declSpec, this);
 				} else
-					logger.fatal("you're doing it wrong. {}. CodeLoc: {}", 
-							declSpec.getClass(), DebugOptions.getCurrCodeLocation() );
+					logger.fatal("you're doing it wrong. {}. CodeLoc: {}", declSpec.getClass(),
+							DebugOptions.getCurrCodeLocation());
 			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
 				logger.info("Not implemented: {}", declaration.getClass());
 			} else if (declaration instanceof CPPASTNamespaceDefinition) {
+				CPPASTNamespaceDefinition nd = (CPPASTNamespaceDefinition) declaration;
+				loadDeclarations(nd.getDeclarations());
+			} else if (declaration instanceof CPPASTLinkageSpecification) {// extern  "C"
 				logger.info("Not implemented: {}", declaration.getClass());
-			} else if (declaration instanceof CPPASTLinkageSpecification) {// extern "C"
-				logger.info("Not implemented: {}", declaration.getClass());
+			} else if (declaration instanceof CPPASTTemplateDeclaration) {// extern  "C"
+				CPPASTTemplateDeclaration td = (CPPASTTemplateDeclaration) declaration;
+				logger.info("Not implemented: CPPASTTemplateDeclaration, {}", td.getRawSignature());
 			} else
-				logger.fatal("Deu merda aqui. {}", declaration.getClass());
+				logger.error("Deu merda aqui. {}", declaration.getClass());
 		}
-		
-		ScopeManager.removeScope(this);
 	}
 	
 	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
