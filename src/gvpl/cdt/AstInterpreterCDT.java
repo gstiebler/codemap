@@ -30,6 +30,7 @@ import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
@@ -208,6 +209,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 		IASTName[] names = qn.getNames();
 		IASTName className = names[0];
 		IBinding classBinding = className.resolveBinding();
+		if(classBinding instanceof ProblemBinding) {
+			logger.error("problem binding: {}", ((ProblemBinding)classBinding).getPhysicalNode());
+			return;
+		}
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(classBinding);
 		classDecl.loadMemberFunc(declaration, this);
 	}

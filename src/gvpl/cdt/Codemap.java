@@ -8,12 +8,15 @@ import gvpl.graph.GraphNode;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -53,10 +56,12 @@ public class Codemap {
 
 		IParserLogService log = new DefaultLogService();
 		List<String> readIncludePaths = null;
-		String includesFilePath = basePath + "/includes.txt";
+		Set<String> allIncludePaths = new LinkedHashSet<String>();
+		String includesFilePath = basePath + "includes.txt";
 		try {
 			readIncludePaths = FileFuncs.readLines(new java.io.File(includesFilePath));
 		} catch (Exception e1) {
+			logger.error("Cannot read {}", includesFilePath);
 			readIncludePaths = null;
 		}
 
@@ -65,11 +70,15 @@ public class Codemap {
 			includePaths = new String[0];
 			includePaths[0] = basePath;
 		} else {
-			for (int i = 0; i < readIncludePaths.size(); i++)
-				readIncludePaths.set(i, basePath + readIncludePaths.get(i));
-			includePaths = new String[readIncludePaths.size() + 1];
-			readIncludePaths.add(basePath);
-			readIncludePaths.toArray(includePaths);
+			for (int i = 0; i < readIncludePaths.size(); i++) {
+				String completePath = basePath + readIncludePaths.get(i);
+				allIncludePaths.add(completePath);
+				List<String> subFolders = addSubFolders(completePath);
+				allIncludePaths.addAll(subFolders);
+			}
+			allIncludePaths.add(basePath);
+			includePaths = new String[allIncludePaths.size()];
+			allIncludePaths.toArray(includePaths);
 		}
 
 		Map<String, String> definedSymbols = new LinkedHashMap<String, String>();
@@ -149,5 +158,26 @@ public class Codemap {
 		ExecTreeLogger.finish();
 		
 		return astInterpreter;
+	}
+	
+	private static List<String> addSubFolders(String folderPath) {
+		List<String> subFolders = new ArrayList<String>();
+		
+		File dir = new File(folderPath);
+		String[] children = dir.list();
+		if (children != null) {
+			for (int i = 0; i < children.length; i++) {
+				if(children[i].compareTo(".svn") == 0)
+					continue;
+				String completePath = folderPath + "/" + children[i];
+				File subDir = new File(completePath);
+				if(!subDir.isDirectory() || subDir.isHidden())
+					continue;
+				subFolders.add(completePath + "/");
+				subFolders.addAll(addSubFolders(completePath));
+			}
+		}
+		
+		return subFolders;
 	}
 }

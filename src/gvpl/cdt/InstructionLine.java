@@ -63,6 +63,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 
@@ -132,6 +133,8 @@ public class InstructionLine {
 			basicBlockLoader.load(statement);
 		} else if (statement instanceof CPPASTSwitchStatement) {
 			loadSwitch((CPPASTSwitchStatement) statement);
+		} else if (statement instanceof CPPASTWhileStatement) {
+			logger.fatal("Node type not found!! Node: " + statement.toString());
 		} else
 			logger.fatal("Node type not found!! Node: " + statement.toString());
 	}
@@ -497,6 +500,8 @@ public class InstructionLine {
 				
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
+			} else if (idExprBinding instanceof ProblemBinding) {
+				logger.fatal("Problem binding: {}", ((ProblemBinding)idExprBinding).getPhysicalNode());
 			} else
 				logger.fatal("problem: instance: {}", idExprBinding.getClass());
 		} else if (nameExpr instanceof IASTFieldReference) {

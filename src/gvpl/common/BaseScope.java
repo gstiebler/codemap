@@ -78,8 +78,7 @@ public abstract class BaseScope implements IScope {
 	}
 
 	public Function getFunction() {
-		logger.fatal("ERROR");
-		return null;
+		return _parent.getFunction();
 	}
 	
 	protected void lostScope() {
