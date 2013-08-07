@@ -44,9 +44,13 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateDeclaration;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
@@ -108,72 +112,82 @@ public class AstInterpreterCDT extends AstInterpreter {
 			String fileName = declaration.getFileLocation().getFileName();
 			logger.debug("Location of declaration: {}",
 					CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
+			loadDeclaration(declaration);
+		}
+	}
+	
+	private void loadDeclaration(IASTDeclaration declaration) {
+		// If the declaration is a function
+		if (declaration instanceof IASTFunctionDefinition) {
+			Function func = loadFunction((IASTFunctionDefinition) declaration);
+			if (func != null)
+				_mainFunction = func;
+		} else if (declaration instanceof IASTSimpleDeclaration) {// if it's
+																	// a
+																	// class/struct
+			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) declaration;
+			DebugOptions.setStartingLine(declaration.getFileLocation().getStartingLineNumber());
+			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
+			logger.debug(declSpec.getClass());
 
-			// If the declaration is a function
-			if (declaration instanceof IASTFunctionDefinition) {
-				Function func = loadFunction((IASTFunctionDefinition) declaration);
-				if (func != null)
-					_mainFunction = func;
-			} else if (declaration instanceof IASTSimpleDeclaration) {// if it's
-																		// a
-																		// class/struct
-				IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) declaration;
-				DebugOptions.setStartingLine(declaration.getFileLocation().getStartingLineNumber());
-				IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
-				logger.debug(declSpec.getClass());
-
-				if (declSpec instanceof CPPASTCompositeTypeSpecifier) {
-					loadClassImplementation((CPPASTCompositeTypeSpecifier) declSpec);
-				} else if (declSpec instanceof CPPASTElaboratedTypeSpecifier) {
-					// forward declaration (always?)
-					loadClassDecl((CPPASTElaboratedTypeSpecifier) declSpec);
-				} else if (declSpec instanceof CPPASTSimpleDeclSpecifier) {
-					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
-					for (IASTDeclarator declarator : declarators) {
-						if (declarator instanceof CPPASTFunctionDeclarator) {
-							CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) declarator;
-							loadFunctionDeclaration(funcDecl);
-						} else if (declarator instanceof CPPASTDeclarator) {
-							IASTName name = declarator.getName();
-							IBinding binding = name.resolveBinding();
-							if (binding instanceof CPPVariable) {
-								addGlobalVar(declarator, declSpec);
-							} else if (binding instanceof CPPField) {
-								initializeGlobalVar(binding, declarator);
-							}
-						} else
-							logger.error("you're doing it wrong. {}", declarator.getClass());
-					}
-				} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
-					IASTDeclarator[] declarators = simpleDecl.getDeclarators();
-					for (IASTDeclarator declarator : declarators) {
+			if (declSpec instanceof CPPASTCompositeTypeSpecifier) {
+				loadClassImplementation((CPPASTCompositeTypeSpecifier) declSpec);
+			} else if (declSpec instanceof CPPASTElaboratedTypeSpecifier) {
+				// forward declaration (always?)
+				loadClassDecl((CPPASTElaboratedTypeSpecifier) declSpec);
+			} else if (declSpec instanceof CPPASTSimpleDeclSpecifier) {
+				IASTDeclarator[] declarators = simpleDecl.getDeclarators();
+				for (IASTDeclarator declarator : declarators) {
+					if (declarator instanceof CPPASTFunctionDeclarator) {
+						CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) declarator;
+						loadFunctionDeclaration(funcDecl);
+					} else if (declarator instanceof CPPASTDeclarator) {
 						IASTName name = declarator.getName();
 						IBinding binding = name.resolveBinding();
-						initializeGlobalVar(binding, declarator);
-					}
-				} else if (declSpec instanceof IASTEnumerationSpecifier) {
-					EnumCDT.loadEnum((IASTEnumerationSpecifier) declSpec, this);
-				} else
-					logger.fatal("you're doing it wrong. {}. CodeLoc: {}", declSpec.getClass(),
-							DebugOptions.getCurrCodeLocation());
-			} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
-				logger.info("Not implemented: {}", declaration.getClass());
-			} else if (declaration instanceof CPPASTNamespaceDefinition) {
-				CPPASTNamespaceDefinition nd = (CPPASTNamespaceDefinition) declaration;
-				loadDeclarations(nd.getDeclarations());
-			} else if (declaration instanceof CPPASTLinkageSpecification) {// extern  "C"
-				logger.info("Not implemented: {}", declaration.getClass());
-			} else if (declaration instanceof CPPASTTemplateDeclaration) {// extern  "C"
-				CPPASTTemplateDeclaration td = (CPPASTTemplateDeclaration) declaration;
-				logger.info("Not implemented: CPPASTTemplateDeclaration, {}", td.getRawSignature());
+						if (binding instanceof CPPVariable) {
+							addGlobalVar(declarator, declSpec);
+						} else if (binding instanceof CPPField) {
+							initializeGlobalVar(binding, declarator);
+						}
+					} else
+						logger.error("you're doing it wrong. {}", declarator.getClass());
+				}
+			} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
+				IASTDeclarator[] declarators = simpleDecl.getDeclarators();
+				for (IASTDeclarator declarator : declarators) {
+					IASTName name = declarator.getName();
+					IBinding binding = name.resolveBinding();
+					initializeGlobalVar(binding, declarator);
+				}
+			} else if (declSpec instanceof IASTEnumerationSpecifier) {
+				EnumCDT.loadEnum((IASTEnumerationSpecifier) declSpec, this);
 			} else
-				logger.error("Deu merda aqui. {}", declaration.getClass());
-		}
+				logger.fatal("you're doing it wrong. {}. CodeLoc: {}", declSpec.getClass(),
+						DebugOptions.getCurrCodeLocation());
+		} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
+			logger.info("Not implemented: {}", declaration.getClass());
+		} else if (declaration instanceof CPPASTNamespaceDefinition) {
+			CPPASTNamespaceDefinition nd = (CPPASTNamespaceDefinition) declaration;
+			loadDeclarations(nd.getDeclarations());
+		} else if (declaration instanceof CPPASTLinkageSpecification) {// extern  "C"
+			logger.info("Not implemented: {}", declaration.getClass());
+		} else if (declaration instanceof CPPASTUsingDeclaration) {
+			CPPASTUsingDeclaration ud = (CPPASTUsingDeclaration) declaration;
+			logger.info("Not implemented CPPASTUsingDeclaration: {}", ud.getName());
+		} else if (declaration instanceof CPPASTTemplateDeclaration) {
+			CPPASTTemplateDeclaration td = (CPPASTTemplateDeclaration) declaration;
+			loadDeclaration(td.getDeclaration());
+		} else
+			logger.error("Deu merda aqui. {}", declaration.getClass());
 	}
 	
 	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
 		//TODO get correct type
 		IVar var = _globalVars.get(binding);
+		if(var == null) {
+			logger.error("Global var not found: {}", binding.getName());
+			return;
+		}
 		InstructionLine il = new InstructionLine(_gvplGraph, null, this);
 		il.LoadVariableInitialization(var, declarator);
 	}
@@ -222,6 +236,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 		IBinding classBinding = className.resolveBinding();
 		if(classBinding instanceof ProblemBinding) {
 			logger.error("problem binding: {}", ((ProblemBinding)classBinding).getPhysicalNode());
+			return;
+		} else if(classBinding instanceof CPPDeferredClassInstance) {
+			logger.error("CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
+			return;
+		} else if(classBinding instanceof CPPNamespace) {
+			logger.error("CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
 			return;
 		}
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(classBinding);

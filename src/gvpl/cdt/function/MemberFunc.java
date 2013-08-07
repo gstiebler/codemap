@@ -58,7 +58,7 @@ public class MemberFunc extends Function {
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
 		
-		if (_funcName.charAt(0) == '~')
+		if (_funcName.length() > 0 && _funcName.charAt(0) == '~')
 			_parentClass.setDestructorFunc(this);
 		
 		_parentMemberFunc = _parentClass.getEquivalentFunc(this);
