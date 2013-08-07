@@ -66,6 +66,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -575,6 +576,8 @@ public class InstructionLine {
 		if(funcMemberBinding instanceof ProblemBinding) {
 			logger.error("Problem binding. Member not found: {}", fieldRef.getFieldName());
 			return new Value();
+		} else if (funcMemberBinding instanceof CPPMethodSpecialization) {
+			funcMemberBinding = ((CPPMethodSpecialization)funcMemberBinding).getSpecializedBinding();
 		}
 		
 		TypeId typeId = var.getVarInMem().getType();
