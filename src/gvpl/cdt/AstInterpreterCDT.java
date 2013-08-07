@@ -50,9 +50,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplatedTypeTemplateP
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
@@ -351,8 +353,23 @@ public class AstInterpreterCDT extends AstInterpreter {
 			if(name instanceof CPPASTTemplateId) {
 				CPPASTTemplateId tid = (CPPASTTemplateId) name;
 				IBinding binding = tid.resolveBinding();
-				CPPClassInstance classInstance = (CPPClassInstance) binding;
-				CPPASTName templateName = (CPPASTName) classInstance.getDefinition();
+				CPPASTName templateName = null;
+				if(binding instanceof CPPClassInstance) {
+					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
+					templateName = (CPPASTName) classSpecialization.getDefinition();
+				} else {
+					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
+					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
+					IASTNode node = classTemplate.getDefinition();
+					if(node instanceof CPPASTName) {
+						templateName = (CPPASTName) node;
+					} else if (node == null)
+						return null;
+					else {
+						logger.error("Problem loading class {}, {}", node.getClass());
+						return null;
+					}
+				}
 				IBinding templateBinding = templateName.resolveBinding();
 				return templateBinding;
 			}
