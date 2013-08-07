@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.cdt.core.dom.ast.IBinding;
+
 
 public abstract class ClassDecl {
 
@@ -19,8 +21,8 @@ public abstract class ClassDecl {
 	protected Map<Integer, MemberFunc> _opOverloadMethods = new LinkedHashMap<Integer, MemberFunc>();
 	CodeLocation _location;
 	
-	public ClassDecl(CodeLocation location) {
-		_typeId = new TypeId();
+	public ClassDecl(CodeLocation location, IBinding binding) {
+		_typeId = new TypeId(binding);
 		_location = location;
 	}
 

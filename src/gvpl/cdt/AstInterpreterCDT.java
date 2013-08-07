@@ -27,6 +27,7 @@ import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -44,8 +45,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateDeclaration;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplatedTypeTemplateParameter;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
@@ -313,7 +317,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return classDecl;
 		}
 		
-		classDecl = new ClassDeclCDT(this, classLocation);
+		classDecl = new ClassDeclCDT(this, classLocation, binding);
 		classDecl.setBinding(name);
 		addClassDeclInMaps(classDecl, binding);
 		return classDecl;
@@ -342,8 +346,19 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) {
-		if(declSpec instanceof IASTNamedTypeSpecifier)
-			return ((IASTNamedTypeSpecifier) declSpec).getName().resolveBinding();
+		if(declSpec instanceof IASTNamedTypeSpecifier) {
+			IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
+			if(name instanceof CPPASTTemplateId) {
+				CPPASTTemplateId tid = (CPPASTTemplateId) name;
+				IBinding binding = tid.resolveBinding();
+				CPPClassInstance classInstance = (CPPClassInstance) binding;
+				CPPASTName templateName = (CPPASTName) classInstance.getDefinition();
+				IBinding templateBinding = templateName.resolveBinding();
+				return templateBinding;
+			}
+			IBinding binding = name.resolveBinding();
+			return binding;
+		}
 		else if(declSpec instanceof CPPASTElaboratedTypeSpecifier)
 			return ((CPPASTElaboratedTypeSpecifier) declSpec).getName().resolveBinding();
 		else

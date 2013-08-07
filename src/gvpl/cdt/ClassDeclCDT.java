@@ -48,8 +48,8 @@ public class ClassDeclCDT extends ClassDecl{
 	private List<ClassDeclCDT> _parentClasses = new ArrayList<ClassDeclCDT>();
 	CPPASTCompositeTypeSpecifier _classDecl;
 
-	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location) {
-		super(location);
+	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location, IBinding binding) {
+		super(location, binding);
 		logger.debug("Loading class in file {}", location.getFileName());
 		_astInterpreter = astInterpreter;
 	}
