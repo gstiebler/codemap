@@ -582,6 +582,10 @@ public class InstructionLine {
 		
 		TypeId typeId = var.getVarInMem().getType();
 		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);
+		if(classDecl == null) {
+			logger.error("Problem on var {}", var.getName());
+			return new Value(new GraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+		}
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(memberFunc, paramExpr);
