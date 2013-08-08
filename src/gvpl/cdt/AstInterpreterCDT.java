@@ -57,6 +57,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownBinding;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
@@ -350,6 +351,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) {
 		if(declSpec instanceof IASTNamedTypeSpecifier) {
 			IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
+			if(name instanceof CPPASTQualifiedName) {
+				IASTName[] names = ((CPPASTQualifiedName)name).getNames();
+				if(names.length > 1)
+					name = names[1];
+			}
 			if(name instanceof CPPASTTemplateId) {
 				CPPASTTemplateId tid = (CPPASTTemplateId) name;
 				IBinding binding = tid.resolveBinding();
@@ -358,6 +364,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
 					templateName = (CPPASTName) classSpecialization.getDefinition();
 				} else {
+					if(binding instanceof CPPUnknownClass) {
+						logger.error("CPPUnknownClass, {}", binding.getName());
+						return null;
+					}
 					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
 					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
 					IASTNode node = classTemplate.getDefinition();
