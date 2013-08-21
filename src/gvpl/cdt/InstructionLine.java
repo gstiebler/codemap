@@ -600,6 +600,9 @@ public class InstructionLine {
 			var = _parentBaseScope.getVarFromExpr(ownerExpr);
 		} catch (NotFoundException e) {
 			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE));
+		} catch (ClassCastException e) {
+			logger.error("Invalid cast with {}", ownerExpr.getRawSignature());
+			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE" + ownerExpr.getRawSignature(), NodeType.E_INVALID_NODE_TYPE));
 		}
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		if(funcMemberBinding instanceof ProblemBinding) {
