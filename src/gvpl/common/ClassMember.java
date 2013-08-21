@@ -35,4 +35,9 @@ public class ClassMember {
 	public VarInfo getVarInfo() {
 		return new VarInfo(_type, _indirectionType);
 	}
+	
+	@Override
+	public String toString() {
+		return _name;
+	}
 }

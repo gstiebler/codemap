@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.BaseScope;
+import gvpl.common.ClassMember;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
@@ -10,6 +11,7 @@ import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.common.Var;
+import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -25,6 +27,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
@@ -41,7 +44,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		_astInterpreter = astInterpreter;
 	}
 
-	protected IVar getVarFromExpr(IASTExpression expr) {
+	protected IVar getVarFromExpr(IASTExpression expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = getVarFromExprInternal(expr);
 
@@ -74,7 +77,12 @@ public abstract class BaseScopeCDT extends BaseScope{
 	
 	protected GraphNode getNodeFromExpr(IASTExpression expr) {
 		ExecTreeLogger.log(expr.getRawSignature());
-		IVar var = getVarFromExpr(expr);
+		IVar var;
+		try {
+			var = getVarFromExpr(expr);
+		} catch (NotFoundException e) {
+			return _gvplGraph.addGraphNode("PROBLEM_NODE " + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
+		}
 		if(var != null)
 			return var.getCurrentNode();
 		return null;
@@ -82,7 +90,12 @@ public abstract class BaseScopeCDT extends BaseScope{
 	
 	protected Value getValueFromExpr(IASTExpression expr) {
 		ExecTreeLogger.log(expr.getRawSignature());
-		IVar var = getVarFromExpr(expr);
+		IVar var;
+		try {
+			var = getVarFromExpr(expr);
+		} catch (NotFoundException e) {
+			return new Value( _gvplGraph.addGraphNode("PROBLEM_NODE " + e.getItemName(), NodeType.E_INVALID_NODE_TYPE));
+		}
 		if(var != null)
 			return new Value(var);
 		
@@ -93,7 +106,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return new Value(node);
 	}
 	
-	protected IBinding getBindingFromExpr(IASTExpression expr) {
+	protected IBinding getBindingFromExpr(IASTExpression expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		logger.debug("expr {} is {}", expr.getRawSignature(), expr.getClass());
 		if (expr instanceof IASTIdExpression) {
@@ -117,13 +130,17 @@ public abstract class BaseScopeCDT extends BaseScope{
 			return null;
 		} else if (expr instanceof CPPASTFunctionCallExpression) {
 			logger.fatal("not implemented");
-		} else {
-			logger.fatal("Type not found {}", expr.getClass());
+			throw new NotFoundException(expr.getRawSignature().toString());
+		} else if (expr instanceof CPPASTFieldReference) {
+			logger.fatal("not implemented CPPASTFieldReference", ((CPPASTFieldReference)expr).getFieldName());
+			throw new NotFoundException(expr.getRawSignature().toString());
+		}  else {
+			logger.fatal("Type not found {}, ", expr.getClass());
+			throw new NotFoundException(expr.getRawSignature().toString());
 		}
-		return null;
 	}
 	
-	protected IVar getVarFromExprInternal(IASTExpression expr) {
+	protected IVar getVarFromExprInternal(IASTExpression expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		if (expr instanceof IASTIdExpression)
 			return getLocalVarFromIdExpr((IASTIdExpression) expr);
@@ -169,7 +186,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return owner_var_decl.getType();
 	}
 
-	protected IVar getVarFromFieldRef(IASTFieldReference fieldRef) {
+	protected IVar getVarFromFieldRef(IASTFieldReference fieldRef) throws NotFoundException {
 		ExecTreeLogger.log(fieldRef.getRawSignature());
 		IASTExpression owner = fieldRef.getFieldOwner();
 		IBinding fieldBinding = fieldRef.getFieldName().resolveBinding();
@@ -192,7 +209,12 @@ public abstract class BaseScopeCDT extends BaseScope{
 
 		TypeId ownerType = varOfRef.getType();
 		ClassDeclCDT classDecl = _astInterpreter.getClassDecl(ownerType);
-		MemberId memberId = classDecl.getMember(fieldBinding).getMemberId();
+		ClassMember classMember = classDecl.getMember(fieldBinding);
+		if(classMember == null) {
+			logger.error("Problem on {}", fieldBinding.getName());
+			return null;
+		}
+		MemberId memberId = classMember.getMemberId();
 		IVar childVar = ownerVar.getMember(memberId);
 		
 		return childVar;

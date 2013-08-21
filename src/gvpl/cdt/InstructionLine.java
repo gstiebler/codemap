@@ -15,6 +15,7 @@ import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
 import gvpl.exceptions.ClassNotImplementedException;
+import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -189,7 +190,13 @@ public class InstructionLine {
 	
 	void loadDeleteOp(CPPASTDeleteExpression deleteExpr) {
 		IASTExpression opExpr = deleteExpr.getOperand();
-		IVar var = _parentBaseScope.getVarFromExpr(opExpr);
+		IVar var;
+		try {
+			var = _parentBaseScope.getVarFromExpr(opExpr);
+		} catch (NotFoundException e) {
+			logger.error("Var not found on delete {}", e.getItemName());
+			return;
+		}
 		MemAddressVar mav = (MemAddressVar) var;
 		var = mav.getVarInMem();
 		((ClassVar) var).callDestructor(_parentBaseScope, _gvplGraph);
@@ -237,7 +244,7 @@ public class InstructionLine {
 		Value rhsValue = loadValue(rhsExpr);		
 		if(rhsValue == null) {
 			logger.error("Shoudn't happen");
-			GraphNode problemNode = new GraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
+			GraphNode problemNode = _gvplGraph.addGraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
 			lhsVar.receiveAssign(NodeType.E_INVALID_NODE_TYPE, new Value(problemNode), _gvplGraph);
 			return;
 		}
@@ -312,8 +319,9 @@ public class InstructionLine {
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString());
 		} catch (ClassNotImplementedException e) {
-			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM",
-					NodeType.E_DIRECT_VALUE));
+			return new Value(_gvplGraph.addGraphNode("INVALID_CLASS_" + e.getClassName(), NodeType.E_DIRECT_VALUE));
+		} catch (NotFoundException e) {
+			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_DIRECT_VALUE));
 		}
 	}
 
@@ -363,7 +371,12 @@ public class InstructionLine {
 	GraphNode loadAssignBinOp(IASTBinaryExpression binExpr) {
 		IASTExpression lhsOp = binExpr.getOperand1();
 		logger.debug("get lhsVar");
-		IVar lhsVar = _parentBaseScope.getVarFromExpr(lhsOp);
+		IVar lhsVar;
+		try {
+			lhsVar = _parentBaseScope.getVarFromExpr(lhsOp);
+		} catch (NotFoundException e) {
+			return _gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_DIRECT_VALUE);
+		}
 		
 		if(lhsVar instanceof ClassVar) {
 			IASTExpression op2 = binExpr.getOperand2();
@@ -395,7 +408,7 @@ public class InstructionLine {
 		Value rhsValue = loadValue(rhsExpr);
 		if(rhsValue == null) {
 			logger.error("Shoudn't happen");
-			return new GraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
+			return _gvplGraph.addGraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
 		}
 
 		if (binExpr.getOperator() == IASTBinaryExpression.op_assign) {
@@ -410,7 +423,12 @@ public class InstructionLine {
 	
 	private GraphNode loadOperatorOverload(IASTBinaryExpression binExpr) {
 		IASTExpression lhsOp = binExpr.getOperand1();
-		ClassVar lhsVar = (ClassVar) _parentBaseScope.getVarFromExpr(lhsOp);
+		ClassVar lhsVar;
+		try {
+			lhsVar = (ClassVar) _parentBaseScope.getVarFromExpr(lhsOp);
+		} catch (NotFoundException e) {
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
+		}
 		
 		IASTExpression rhsOp = binExpr.getOperand2();
 		Value rhsValue = _parentBaseScope.getValueFromExpr(rhsOp);
@@ -464,7 +482,13 @@ public class InstructionLine {
 				return;
 			}
 			
-			IVar rhsPointer = loadPointedVar(rhsOp, _parentBaseScope);
+			IVar rhsPointer;
+			try {
+				rhsPointer = loadPointedVar(rhsOp, _parentBaseScope);
+			} catch (NotFoundException e) {
+				_gvplGraph.addGraphNode("PROBLEM_" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
+				return;
+			}
 			lhsPointer.setPointedVar(rhsPointer);
 		}
 	}
@@ -510,7 +534,7 @@ public class InstructionLine {
 		} else
 			logger.fatal("problem");
 
-		return null;
+		return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
 	}
 	
 	Value loadStaticMethod(IASTExpression paramExpr, Function func) {
@@ -571,7 +595,12 @@ public class InstructionLine {
 	private Value loadVarMethod(IASTFunctionCallExpression funcCall, IASTExpression paramExpr) {
 		IASTFieldReference fieldRef = (IASTFieldReference) funcCall.getFunctionNameExpression();
 		IASTExpression ownerExpr = fieldRef.getFieldOwner();
-		IVar var = _parentBaseScope.getVarFromExpr(ownerExpr);
+		IVar var;
+		try {
+			var = _parentBaseScope.getVarFromExpr(ownerExpr);
+		} catch (NotFoundException e) {
+			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE));
+		}
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		if(funcMemberBinding instanceof ProblemBinding) {
 			logger.error("Problem binding. Member not found: {}", fieldRef.getFieldName());
@@ -584,7 +613,7 @@ public class InstructionLine {
 		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);
 		if(classDecl == null) {
 			logger.error("Problem on var {}", var.getName());
-			return new Value(new GraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
 		}
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
@@ -626,7 +655,12 @@ public class InstructionLine {
 			FuncParameter insideFuncParameter = func.getOriginalParameter(i);
 
 			if (insideFuncParameter.getType() == IndirectionType.E_POINTER) {
-				IVar paramVar =  loadVarInAddress(parameter, _parentBaseScope);
+				IVar paramVar;
+				try {
+					paramVar = loadVarInAddress(parameter, _parentBaseScope);
+				} catch (NotFoundException e) {
+					continue;
+				}
 				localParameter = new FuncParameter(new Value(paramVar), IndirectionType.E_POINTER);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
 				Value value = _parentBaseScope.getValueFromExpr(parameter);
@@ -666,8 +700,9 @@ public class InstructionLine {
 	 * @param address
 	 *            Address that contains the variable
 	 * @return The var that is pointed by the address
+	 * @throws NotFoundException 
 	 */
-	static IVar loadVarInAddress(IASTExpression address, BaseScopeCDT astLoader) {
+	static IVar loadVarInAddress(IASTExpression address, BaseScopeCDT astLoader) throws NotFoundException {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
@@ -699,7 +734,12 @@ public class InstructionLine {
 		// Check if the operator is a star
 		if (unExpr.getOperator() == CPPASTUnaryExpression.op_star){
 			IASTExpression opExpr = unExpr.getOperand();
-			IVar pointerVar = _parentBaseScope.getVarFromExpr(opExpr);
+			IVar pointerVar;
+			try {
+				pointerVar = _parentBaseScope.getVarFromExpr(opExpr);
+			} catch (NotFoundException e) {
+				return _gvplGraph.addGraphNode("PROBLEM_" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
+			}
 			if (!(pointerVar instanceof PointerVar))
 				logger.fatal("not expected here");
 
@@ -724,8 +764,9 @@ public class InstructionLine {
 	 *            Expression of a pointer variable
 	 * @param astLoader
 	 * @return The variable that is currently pointed by the received pointer
+	 * @throws NotFoundException 
 	 */
-	public static IVar loadPointedVar(IASTExpression pointerExpr, BaseScopeCDT astLoader) {
+	public static IVar loadPointedVar(IASTExpression pointerExpr, BaseScopeCDT astLoader) throws NotFoundException {
 		IVar pointerVar = astLoader.getVarFromExpr(pointerExpr);
 		if (pointerVar instanceof PointerVar)
 			return ((PointerVar) pointerVar).getVarInMem();

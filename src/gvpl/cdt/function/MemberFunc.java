@@ -10,6 +10,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
 import gvpl.common.Value;
+import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
 
 import java.util.List;
@@ -72,7 +73,8 @@ public class MemberFunc extends Function {
 			if(expr != null) {
 				int startingLine = expr.getFileLocation().getStartingLineNumber();
 				DebugOptions.setStartingLine(startingLine);
-			}
+			} else
+				continue;
 			
 			IASTName memberInitId = initializer.getMemberInitializerId();
 			IBinding memberBinding = memberInitId.resolveBinding();
@@ -80,6 +82,10 @@ public class MemberFunc extends Function {
 
 			if (memberBinding instanceof CPPField) {
 				IVar var = getVarFromBinding(memberBinding);
+				if(var == null) {
+					logger.error("Problem with member {}", memberBinding.getName());
+					continue;
+				}
 				instructionLine.loadConstructorInitializer(var, expr);
 				MemberId memberId = _parentClass.getMember(memberBinding).getMemberId();
 				_initializedMembers._members.add(memberId);
@@ -109,7 +115,7 @@ public class MemberFunc extends Function {
 			if(var != null)
 				return var;
 		} else {
-			logger.debug("listing members of class {}, binding {} not found", _parentClass.getName(), binding);
+			logger.debug("listing members of class {}, binding {} not found", _parentClass.getName(), binding.getName());
 			for(Map.Entry<IBinding, ClassMember> memberES : _parentClass._memberIdMap.entrySet()) {
 				logger.debug("member binding: {}, member: {}", memberES.getKey(), 
 						memberES.getValue().getName());
@@ -137,7 +143,7 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	protected IVar getVarFromExpr(IASTExpression expr) {
+	protected IVar getVarFromExpr(IASTExpression expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = super.getVarFromExpr(expr);
 		if (var != null) 

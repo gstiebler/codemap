@@ -12,6 +12,7 @@ import gvpl.common.IVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
+import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -325,7 +326,12 @@ public class Function extends BaseScopeCDT {
 			return node;
 		
 		//if it's a function parameter, return it's node
-		IBinding parameterBinding = getBindingFromExpr(expr);
+		IBinding parameterBinding;
+		try {
+			parameterBinding = getBindingFromExpr(expr);
+		} catch (NotFoundException e) {
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
+		}
 		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
 		if(funcParameter != null)
 			return funcParameter.getValue().getNode();

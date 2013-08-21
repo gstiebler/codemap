@@ -28,7 +28,9 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTOperatorName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPScope.CPPScopeProblem;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
@@ -77,6 +79,13 @@ public class ClassDeclCDT extends ClassDecl{
 			if(declSpec instanceof IASTEnumerationSpecifier) {
 				EnumCDT.loadEnum( (IASTEnumerationSpecifier) declSpec, _astInterpreter );
 				continue;
+			} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
+				IASTName name = ((CPPASTNamedTypeSpecifier) declSpec).getName();
+				if(name instanceof CPPASTTemplateId) {
+					//((CPPASTNamedTypeSpecifier) declSpec).
+					logger.error("Not implemented: CPPASTNamedTypeSpecifier, {}", name);
+					continue;
+				}
 			}
 			
 			
