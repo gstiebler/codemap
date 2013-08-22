@@ -68,6 +68,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -319,9 +320,9 @@ public class InstructionLine {
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString());
 		} catch (ClassNotImplementedException e) {
-			return new Value(_gvplGraph.addGraphNode("INVALID_CLASS_" + e.getClassName(), NodeType.E_DIRECT_VALUE));
+			return new Value(_gvplGraph.addGraphNode("INVALID_CLASS_" + e.getClassName(), NodeType.E_INVALID_NODE_TYPE));
 		} catch (NotFoundException e) {
-			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_DIRECT_VALUE));
+			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_INVALID_NODE_TYPE));
 		}
 	}
 
@@ -375,7 +376,7 @@ public class InstructionLine {
 		try {
 			lhsVar = _parentBaseScope.getVarFromExpr(lhsOp);
 		} catch (NotFoundException e) {
-			return _gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_DIRECT_VALUE);
+			return _gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
 		}
 		
 		if(lhsVar instanceof ClassVar) {
@@ -526,7 +527,13 @@ public class InstructionLine {
 			} else if (idExprBinding instanceof CPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
 			} else if (idExprBinding instanceof ProblemBinding) {
-				logger.fatal("Problem binding: {}", ((ProblemBinding)idExprBinding).getPhysicalNode());
+				String problemName = ((ProblemBinding)idExprBinding).getPhysicalNode().toString();
+				logger.error("Problem binding: {}", problemName);
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + problemName, NodeType.E_INVALID_NODE_TYPE));
+			} else if (idExprBinding instanceof CPPTypedef) {
+				String problemName = ((CPPTypedef)idExprBinding).getName();
+				logger.error("Class not working: CPPTypedef, {}", problemName);
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTypedef_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else
 				logger.fatal("problem: instance: {}", idExprBinding.getClass());
 		} else if (nameExpr instanceof IASTFieldReference) {

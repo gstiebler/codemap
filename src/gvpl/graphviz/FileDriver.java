@@ -94,6 +94,14 @@ public class FileDriver implements IGraphOutput {
 		insertNode(node_id, node_name, properties);
 	}
 	
+	public void insertInvalidValue(int node_id, String node_name, int startingLine) {
+		List<PropertyPair> properties = new ArrayList<PropertyPair>();
+		properties.add(new PropertyPair("style", "filled"));
+		properties.add(new PropertyPair("fillcolor", "\"#FFA0A0\""));
+		properties.add(new PropertyPair(startingLinesStr, String.valueOf(startingLine)));
+		insertNode(node_id, node_name, properties);
+	}
+	
 	public void insertVariable(GraphNode node, String node_name, int startingLine) {
 		List<PropertyPair> properties = new ArrayList<PropertyPair>();
 		properties.add(new PropertyPair("startingline", String.valueOf(startingLine)));

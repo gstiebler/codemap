@@ -11,6 +11,7 @@ public interface IGraphOutput {
 	void insertGarbageNode(int node_id, String node_name, int startingLine);
 	void insertDeclaredParameter(int node_id, String node_name, int startingLine);
 	void insertReturnValue(int node_id, String node_name, int startingLine);
+	void insertInvalidValue(int node_id, String node_name, int startingLine);
 	void insertVariable(GraphNode node, String node_name, int startingLine);
 	String insertSubGraphStart(String name, String parent, List<Integer> linesHistory);
 	void insertSubGraphEnd();

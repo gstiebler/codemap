@@ -1,6 +1,7 @@
 package gvpl.graphviz;
 
 import gvpl.graph.Graph;
+import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
 
 public class Visualizer {
@@ -57,16 +58,18 @@ public class Visualizer {
 		if(graphNode.getNumDependentNodes() == 0 && graphNode.getNumSourceNodes() == 0)
 			return;
 		
-		if (graphNode._type == Graph.NodeType.E_OPERATION)
+		if (graphNode._type == NodeType.E_OPERATION)
 			graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
-		else if (graphNode._type == Graph.NodeType.E_DIRECT_VALUE)
+		else if (graphNode._type == NodeType.E_DIRECT_VALUE)
 			graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
-		else if (graphNode._type == Graph.NodeType.E_GARBAGE)
+		else if (graphNode._type == NodeType.E_GARBAGE)
 			graphOutput.insertGarbageNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
-		else if (graphNode._type == Graph.NodeType.E_DECLARED_PARAMETER)
+		else if (graphNode._type == NodeType.E_DECLARED_PARAMETER)
 			graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
-		else if (graphNode._type == Graph.NodeType.E_RETURN_VALUE)
+		else if (graphNode._type == NodeType.E_RETURN_VALUE)
 			graphOutput.insertReturnValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+		else if (graphNode._type == NodeType.E_INVALID_NODE_TYPE)
+			graphOutput.insertInvalidValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else
 			graphOutput.insertVariable(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 	}
