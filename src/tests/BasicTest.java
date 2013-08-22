@@ -223,5 +223,10 @@ public class BasicTest {
 	public void template() {
 		TestsUtil.baseTest("template");
 	}
+
+	@Test
+	public void returnFixture() {
+		TestsUtil.baseTest("return");
+	}
 	
 }
