@@ -192,7 +192,7 @@ public class Function extends BaseScopeCDT {
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnVar = new Var(_gvplGraph, _externalName, _astInterpreter.getPrimitiveType());
-		_returnVar.receiveAssign(NodeType.E_GARBAGE, new Value(new GraphNode("GARBAGE", NodeType.E_GARBAGE)), _gvplGraph);
+		//_returnVar.receiveAssign(NodeType.E_GARBAGE, new Value(new GraphNode("GARBAGE", NodeType.E_GARBAGE)), _gvplGraph);
 		
 		if(_body != null) {
 			_parametersMap = new LinkedHashMap<>();

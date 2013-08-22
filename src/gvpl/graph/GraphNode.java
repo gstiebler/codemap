@@ -67,6 +67,10 @@ public class GraphNode {
 		return _name;
 	}
 
+	/**
+	 * Creates an arrow from "this" to dependentNode
+	 * @param dependentNode
+	 */
 	public void addDependentNode(GraphNode dependentNode) {
 		ExecTreeLogger.log("\"" + _name + "\" arrow_right \"" + dependentNode._name + "\"");
 		if (_dependentNodes.contains(dependentNode))

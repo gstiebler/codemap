@@ -51,13 +51,21 @@ public class IfCondition {
 		iterateWrittenVariables(writtenOnlyInFalse, currentScope, falseScope, conditionNode, graph);
 	}
 	
+	private static GraphNode createGarbageIfNecessary(GraphNode node, BaseScope baseScope) {
+		if(node != null)
+			return node;
+		else
+			return baseScope.getGraph().addGraphNode("GARBAGE_NODE", NodeType.E_GARBAGE);
+	}
+	
 	private static void iterateWrittenVariables(Set<Var> writtenVariables, BaseScope trueScope, 
 			BaseScope falseScope, GraphNode conditionNode, Graph graph) {
 		for( Var var : writtenVariables ) {
 			GraphNode trueNode = trueScope.getLastNode(var);
 			GraphNode falseNode = falseScope.getLastNode(var);
-			if( trueNode == null || falseNode == null )
-				continue;
+			
+			trueNode = createGarbageIfNecessary(trueNode, trueScope);
+			falseNode = createGarbageIfNecessary(falseNode, falseScope);
 			
 			GraphNode ifOpNode = IfCondition.createIfNode(graph, conditionNode, trueNode, falseNode);
 			var.receiveAssign(NodeType.E_VARIABLE, new Value(ifOpNode), graph);
