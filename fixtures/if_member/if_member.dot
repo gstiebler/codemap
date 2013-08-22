@@ -1,0 +1,23 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "2_8_8";
+	node_000005 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
+	node_000006 [ label = "instance1.memberA", startingline=12 ]
+	node_000007 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
+	node_000008 [ label = "instance2.memberA", startingline=13 ]
+	node_000009 [ label = "true", style=filled, fillcolor="#E9FFE9", startinglines=17 ]
+	node_000010 [ label = "a", startingline=22 ]
+	node_000011 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=22 ]
+}
+	node_000005 -> node_000006
+	node_000006 -> node_000011
+	node_000007 -> node_000008
+	node_000008 -> node_000011
+	node_000009 -> node_000011
+	node_000011 -> node_000010
+}
