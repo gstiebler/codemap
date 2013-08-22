@@ -46,7 +46,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplatedTypeTemplateParameter;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
@@ -56,7 +55,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
@@ -116,7 +114,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 				continue;
 			}
 
-			String fileName = declaration.getFileLocation().getFileName();
 			logger.debug("Location of declaration: {}",
 					CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
 			loadDeclaration(declaration);

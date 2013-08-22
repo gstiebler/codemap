@@ -2,6 +2,7 @@ package gvpl.cdt.function;
 
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.BaseScopeCDT;
+import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.BaseScope;
@@ -9,6 +10,7 @@ import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
+import gvpl.common.MemAddressVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
@@ -31,6 +33,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
@@ -44,6 +47,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -52,7 +56,8 @@ public class Function extends BaseScopeCDT {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
-	private Var _returnVar = null;
+	private IVar _returnVar = null;
+	private IASTPointerOperator[] _returnPointerOps;
 	private TypeId _returnType = null;
 	private boolean _isStatic = false;
 
@@ -73,11 +78,20 @@ public class Function extends BaseScopeCDT {
 		super(astInterpreter, null);
 		
 		_ownBinding = ownBinding;
-		//TODO FIX!!
-		_returnType = _astInterpreter.getPrimitiveType();
+		
+		IASTNode node = ((CPPFunction)ownBinding).getDefinition().getParent();
+		IASTDeclSpecifier declSpec = ((IASTFunctionDefinition)node).getDeclSpecifier();
+		if(declSpec instanceof IASTNamedTypeSpecifier) {
+			IBinding binding = ((IASTNamedTypeSpecifier)declSpec).getName().resolveBinding();
+			ClassDeclCDT returnClassDecl = _astInterpreter.getClassDecl(binding);
+			if(returnClassDecl != null)
+				_returnType = returnClassDecl.getTypeId();
+		} else
+			_returnType = _astInterpreter.getPrimitiveType();
 	}
 	
 	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
+		_returnPointerOps = decl.getPointerOperators();
 		IASTNode parentNode = decl.getParent();
 		if( parentNode instanceof CPPASTSimpleDeclaration ) {
 			CPPASTSimpleDeclaration simpleDecl = (CPPASTSimpleDeclaration) parentNode;
@@ -191,7 +205,8 @@ public class Function extends BaseScopeCDT {
 		_parent = caller;
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
-		_returnVar = new Var(_gvplGraph, _externalName, _astInterpreter.getPrimitiveType());
+		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);
+		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
 		//_returnVar.receiveAssign(NodeType.E_GARBAGE, new Value(new GraphNode("GARBAGE", NodeType.E_GARBAGE)), _gvplGraph);
 		
 		if(_body != null) {
@@ -232,7 +247,10 @@ public class Function extends BaseScopeCDT {
 	}
 
 	public void setReturnValue(Value returnValue) {
-		_returnVar.receiveAssign(NodeType.E_RETURN_VALUE, returnValue, _gvplGraph);
+		if(_returnVar instanceof MemAddressVar)
+			((MemAddressVar)_returnVar).setPointedVar(returnValue.getVar());
+		else
+			_returnVar.receiveAssign(NodeType.E_RETURN_VALUE, returnValue, _gvplGraph);
 	}
 
 	@Override

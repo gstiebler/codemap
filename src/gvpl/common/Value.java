@@ -50,4 +50,9 @@ public class Value {
 	public boolean hasVar() {
 		return _var != null;
 	}
+	
+	@Override
+	public String toString() {
+		return getName();
+	}
 }
