@@ -64,7 +64,7 @@ public class IfScope extends BaseScope {
 	}
 	
 	/**
-	 * Searches de condition node in the scope stack. If there is some IfScope in the scope stack
+	 * Searches the condition node in the scope stack. If there is some IfScope in the scope stack
 	 * with the received conditionNode, the function returns the ScopeKind of the IfScope
 	 * @param conditionNode
 	 * @return IScopeKind of the IfScope that have the received conditionNode

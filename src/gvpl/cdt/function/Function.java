@@ -12,6 +12,7 @@ import gvpl.common.IVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
+import gvpl.common.Var;
 import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -51,7 +52,7 @@ public class Function extends BaseScopeCDT {
 	
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
-	private Value _returnValue = null;
+	private Var _returnVar = null;
 	private TypeId _returnType = null;
 	private boolean _isStatic = false;
 
@@ -174,7 +175,7 @@ public class Function extends BaseScopeCDT {
 	}
 	
 	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
-		_returnValue = new Value(_gvplGraph.addGraphNode(_externalName, NodeType.E_RETURN_VALUE));
+		_returnVar = new Var(_gvplGraph, _externalName, _astInterpreter.getPrimitiveType());
 		
 		if(parameterValues == null){
 			logger.info("Header only function {} received no params.", this);
@@ -182,7 +183,7 @@ public class Function extends BaseScopeCDT {
 		}
 		
 		for(FuncParameter funcParameter : parameterValues) {
-			funcParameter.getValue().getNode().addDependentNode(_returnValue.getNode());
+			funcParameter.getValue().getNode().addDependentNode(_returnVar.getCurrentNode());
 		}
 	}
 
@@ -190,7 +191,8 @@ public class Function extends BaseScopeCDT {
 		_parent = caller;
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
-		_returnValue = new Value();
+		_returnVar = new Var(_gvplGraph, _externalName, _astInterpreter.getPrimitiveType());
+		_returnVar.receiveAssign(NodeType.E_GARBAGE, new Value(new GraphNode("GARBAGE", NodeType.E_GARBAGE)), _gvplGraph);
 		
 		if(_body != null) {
 			_parametersMap = new LinkedHashMap<>();
@@ -217,7 +219,7 @@ public class Function extends BaseScopeCDT {
 		_gvplGraph = null;
 		_parametersMap = null;
 		
-		return _returnValue;
+		return new Value(_returnVar);
 	}
 
 	private void setName(String name) {
@@ -230,7 +232,7 @@ public class Function extends BaseScopeCDT {
 	}
 
 	public void setReturnValue(Value returnValue) {
-		_returnValue = returnValue;
+		_returnVar.receiveAssign(NodeType.E_RETURN_VALUE, returnValue, _gvplGraph);
 	}
 
 	@Override
@@ -333,8 +335,9 @@ public class Function extends BaseScopeCDT {
 			return _gvplGraph.addGraphNode("PROBLEM_NODE_" + e.getItemName(), NodeType.E_INVALID_NODE_TYPE);
 		}
 		FuncParameter funcParameter = _parametersMap.get(parameterBinding);
-		if(funcParameter != null)
+		if(funcParameter != null) {
 			return funcParameter.getValue().getNode();
+		}
 		
 		logger.error("should not be here, wtf is '{}'?", expr.getRawSignature());
 		return null;

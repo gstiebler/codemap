@@ -26,6 +26,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
@@ -614,7 +615,7 @@ public class InstructionLine {
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		if(funcMemberBinding instanceof ProblemBinding) {
 			logger.error("Problem binding. Member not found: {}", fieldRef.getFieldName());
-			return new Value();
+			return new Value(fieldRef.getFieldName().toString());
 		} else if (funcMemberBinding instanceof CPPMethodSpecialization) {
 			funcMemberBinding = ((CPPMethodSpecialization)funcMemberBinding).getSpecializedBinding();
 		}
@@ -741,8 +742,13 @@ public class InstructionLine {
 	 * @return
 	 */
 	GraphNode loadUnaryExpr(IASTUnaryExpression unExpr) {
+		if(unExpr instanceof IASTCastExpression) {
+			return loadValue( ((IASTCastExpression)unExpr).getOperand() ).getNode();
+		}
+		
 		// Check if the operator is a star
-		if (unExpr.getOperator() == CPPASTUnaryExpression.op_star){
+		int operator = unExpr.getOperator();
+		if (operator == CPPASTUnaryExpression.op_star){
 			IASTExpression opExpr = unExpr.getOperand();
 			IVar pointerVar;
 			try {
@@ -754,9 +760,9 @@ public class InstructionLine {
 				logger.fatal("not expected here");
 
 			return pointerVar.getCurrentNode();
-		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_bracketedPrimary) {
+		} else if (operator == CPPASTUnaryExpression.op_bracketedPrimary) {
 			return loadValue(unExpr.getOperand()).getNode();
-		} else if (unExpr.getOperator() == CPPASTUnaryExpression.op_not) {
+		} else if (operator == CPPASTUnaryExpression.op_not) {
 			IASTExpression opExpr = unExpr.getOperand();
 			Value value = loadValue(opExpr);
 			return _gvplGraph.addNotOp(value.getNode());

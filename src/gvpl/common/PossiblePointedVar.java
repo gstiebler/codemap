@@ -209,7 +209,7 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			BaseScope astLoader) {
 		if(possiblePointedVar.nullPointer()) {
 			logger.error("not properly implemented");
-			return new Value();
+			return new Value(possiblePointedVar.getName());
 		}
 		
 		if (possiblePointedVar._finalVar == null) {
