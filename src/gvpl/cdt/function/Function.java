@@ -188,6 +188,7 @@ public class Function extends BaseScopeCDT {
 
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, BaseScope caller) {
 		_parent = caller;
+		resetBaseScope();
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		_returnValue = new Value();

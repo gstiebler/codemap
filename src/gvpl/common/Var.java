@@ -35,7 +35,7 @@ public class Var implements IVar {
 		_type = type;
 		_gvplGraph = graph;
 		_name = name;
-		_id = _counter++;
+		_id = getNewId();
 		addToIfScope();
 
 		logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
@@ -46,8 +46,12 @@ public class Var implements IVar {
 		_gvplGraph = other._gvplGraph;
 		_name = other._name;
 		_type = other._type;
-		_id = _counter++;
+		_id = getNewId();
 		addToIfScope();
+	}
+	
+	private int getNewId() {
+		return _counter++;
 	}
 
 	public TypeId getType() {
