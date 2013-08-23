@@ -1,7 +1,5 @@
 package gvpl.cdt;
 
-import gvpl.cdt.CppMaps.eAssignBinOp;
-import gvpl.cdt.CppMaps.eBinOp;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.BaseScope;
@@ -422,8 +420,8 @@ public class InstructionLine {
 		}
 
 		Value lhsValue = loadValue(binExpr.getOperand1());
-		eAssignBinOp op = CppMaps.getAssignBinOpTypes(binExpr.getOperator());
-		return _gvplGraph.addAssignBinOp(op, lhsVar, lhsValue.getNode(), rhsValue.getNode(), _parentBaseScope);
+		String opStr = CppMaps.getAssignBinOpString(binExpr.getOperator());
+		return _gvplGraph.addAssignBinOp(opStr, lhsVar, lhsValue.getNode(), rhsValue.getNode(), _parentBaseScope);
 	}
 	
 	private GraphNode loadOperatorOverload(IASTBinaryExpression binExpr) {
@@ -698,10 +696,10 @@ public class InstructionLine {
 	}
 
 	GraphNode loadBinOp(IASTBinaryExpression binOp) {
-		eBinOp op = CppMaps.getBinOpType(binOp.getOperator());
+		String opStr = CppMaps.getBinOpString(binOp.getOperator());
 		Value lValue = loadValue(binOp.getOperand1());
 		Value rValue = loadValue(binOp.getOperand2());
-		return _gvplGraph.addBinOp(op, lValue.getNode(), rValue.getNode(), _parentBaseScope);
+		return _gvplGraph.addBinOp(opStr, lValue.getNode(), rValue.getNode(), _parentBaseScope);
 	}
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
