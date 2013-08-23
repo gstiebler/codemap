@@ -29,10 +29,10 @@ public abstract class CppMaps {
 		_binOpTypes.put(IASTBinaryExpression.op_shiftRight, ">>");
 
 		_assignBinOpTypes.put(IASTBinaryExpression.op_assign, "=");
-		_assignBinOpTypes.put(IASTBinaryExpression.op_plusAssign, "+=");
-		_assignBinOpTypes.put(IASTBinaryExpression.op_minusAssign, "-=");
-		_assignBinOpTypes.put(IASTBinaryExpression.op_multiplyAssign, "*=");
-		_assignBinOpTypes.put(IASTBinaryExpression.op_divideAssign, "/=");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_plusAssign, "+");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_minusAssign, "-");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_multiplyAssign, "*");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_divideAssign, "/");
 
 		_opAssignStrToId.put("*", IASTBinaryExpression.op_multiplyAssign);
 		_opAssignStrToId.put("/", IASTBinaryExpression.op_divideAssign);
