@@ -21,18 +21,31 @@ public abstract class CppMaps {
 		_binOpTypes.put(IASTBinaryExpression.op_modulo, "%");
 		_binOpTypes.put(IASTBinaryExpression.op_plus, "+");
 		_binOpTypes.put(IASTBinaryExpression.op_minus, "-");
+		_binOpTypes.put(IASTBinaryExpression.op_shiftLeft, "<<");
+		_binOpTypes.put(IASTBinaryExpression.op_shiftRight, ">>");
 		_binOpTypes.put(IASTBinaryExpression.op_lessThan, "<");
 		_binOpTypes.put(IASTBinaryExpression.op_greaterThan, ">");
 		_binOpTypes.put(IASTBinaryExpression.op_lessEqual, "<=");
 		_binOpTypes.put(IASTBinaryExpression.op_greaterEqual, ">=");
-		_binOpTypes.put(IASTBinaryExpression.op_shiftLeft, "<<");
-		_binOpTypes.put(IASTBinaryExpression.op_shiftRight, ">>");
+		_binOpTypes.put(IASTBinaryExpression.op_binaryAnd, "&");
+		_binOpTypes.put(IASTBinaryExpression.op_binaryXor, "^");
+		_binOpTypes.put(IASTBinaryExpression.op_binaryOr, "|");
+		_binOpTypes.put(IASTBinaryExpression.op_logicalAnd, "&&");
+		_binOpTypes.put(IASTBinaryExpression.op_logicalOr, "||");
+		_binOpTypes.put(IASTBinaryExpression.op_equals, "==");
+		_binOpTypes.put(IASTBinaryExpression.op_notequals, "!=");
 
 		_assignBinOpTypes.put(IASTBinaryExpression.op_assign, "=");
-		_assignBinOpTypes.put(IASTBinaryExpression.op_plusAssign, "+");
-		_assignBinOpTypes.put(IASTBinaryExpression.op_minusAssign, "-");
 		_assignBinOpTypes.put(IASTBinaryExpression.op_multiplyAssign, "*");
 		_assignBinOpTypes.put(IASTBinaryExpression.op_divideAssign, "/");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_multiplyAssign, "%");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_plusAssign, "+");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_minusAssign, "-");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_shiftLeftAssign, "<<");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_shiftRightAssign, ">>");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_binaryAndAssign, "&");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_binaryXorAssign, "^");
+		_assignBinOpTypes.put(IASTBinaryExpression.op_binaryOrAssign, "|");
 
 		_opAssignStrToId.put("*", IASTBinaryExpression.op_multiplyAssign);
 		_opAssignStrToId.put("/", IASTBinaryExpression.op_divideAssign);
