@@ -7,7 +7,7 @@ label = "main";
 parent = "G";
 startinglines = "23_34_34";
 	node_000001 [ label = "30", style=filled, fillcolor="#E9FFE9", startinglines=37 ]
-	node_000012 [ label = "m", startingline=28 ]
+	node_000014 [ label = "m", startingline=28 ]
 subgraph cluster_2 {
 label = "cSeg::inc_a5";
 parent = "cluster_1";
@@ -16,13 +16,15 @@ startinglines = "34_35_37";
 	node_000003 [ label = "seg._a", startingline=25 ]
 	node_000006 [ label = "w", startingline=10 ]
 	node_000007 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=27 ]
-	node_000010 [ label = "k", startingline=15 ]
-	node_000011 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
+	node_000011 [ label = "k", startingline=15 ]
+	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
+	node_000013 [ label = "cSeg::inc_a5", style=filled, fillcolor="#FFFFD0", startinglines=28 ]
 subgraph cluster_3 {
 label = "cPri::soma";
 parent = "cluster_2";
 startinglines = "37_25_26";
-	node_000005 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=10 ]
+	node_000004 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=10 ]
+	node_000005 [ label = "cPri::soma", style=filled, fillcolor="#FFFFD0", startinglines=10 ]
 }
 subgraph cluster_4 {
 label = "cPri::subtracao";
@@ -30,17 +32,21 @@ parent = "cluster_2";
 startinglines = "26_10_27";
 	node_000008 [ label = "50", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
 	node_000009 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
+	node_000010 [ label = "cPri::subtracao", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
 }
 }
 }
-	node_000001 -> node_000005
+	node_000001 -> node_000004
 	node_000002 -> node_000003
-	node_000003 -> node_000005
-	node_000006 -> node_000011
+	node_000003 -> node_000004
+	node_000006 -> node_000012
 	node_000007 -> node_000009
-	node_000010 -> node_000011
 	node_000011 -> node_000012
+	node_000012 -> node_000013
+	node_000013 -> node_000014
+	node_000004 -> node_000005
 	node_000005 -> node_000006
 	node_000008 -> node_000009
 	node_000009 -> node_000010
+	node_000010 -> node_000011
 }

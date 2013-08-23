@@ -7,7 +7,7 @@ label = "main";
 parent = "G";
 startinglines = "14_20_20";
 	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
-	node_000004 [ label = "a", startingline=16 ]
+	node_000005 [ label = "a", startingline=16 ]
 subgraph cluster_2 {
 label = "vector::push_back";
 parent = "cluster_1";
@@ -18,8 +18,10 @@ subgraph cluster_3 {
 label = "vector::get_value";
 parent = "cluster_1";
 startinglines = "23_11_25";
+	node_000004 [ label = "vector::get_value", style=filled, fillcolor="#FFFFD0", startinglines=16 ]
 }
 }
 	node_000002 -> node_000003
 	node_000003 -> node_000004
+	node_000004 -> node_000005
 }
