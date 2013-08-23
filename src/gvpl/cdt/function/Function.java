@@ -78,16 +78,18 @@ public class Function extends BaseScopeCDT {
 		
 		_ownBinding = ownBinding;
 		
-		IASTNode node = ((CPPFunction)ownBinding).getDefinition();
-		if(node != null) {
-			node = node.getParent();
-			IASTDeclSpecifier declSpec = ((IASTFunctionDefinition)node).getDeclSpecifier();
-			if(declSpec instanceof IASTNamedTypeSpecifier) {
-				IBinding binding = ((IASTNamedTypeSpecifier)declSpec).getName().resolveBinding();
-				ClassDeclCDT returnClassDecl = _astInterpreter.getClassDecl(binding);
-				if(returnClassDecl != null) {
-					_returnType = returnClassDecl.getTypeId();
-					return;
+		if(ownBinding instanceof CPPFunction) {
+			IASTNode node = ((CPPFunction)ownBinding).getDefinition();
+			if(node != null) {
+				node = node.getParent();
+				IASTDeclSpecifier declSpec = ((IASTFunctionDefinition)node).getDeclSpecifier();
+				if(declSpec instanceof IASTNamedTypeSpecifier) {
+					IBinding binding = ((IASTNamedTypeSpecifier)declSpec).getName().resolveBinding();
+					ClassDeclCDT returnClassDecl = _astInterpreter.getClassDecl(binding);
+					if(returnClassDecl != null) {
+						_returnType = returnClassDecl.getTypeId();
+						return;
+					}
 				}
 			}
 		}

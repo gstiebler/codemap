@@ -9,9 +9,9 @@ public class ClassNotImplementedException extends Exception{
 	static Logger logger = LogManager.getLogger(ClassNotImplementedException.class.getName());
 	private String _className;
 
-	public ClassNotImplementedException(String className) {
+	public ClassNotImplementedException(String className, String itemName) {
 		_className = className;
-		logger.error("Class not implemented: " + className);
+		logger.error("Class not implemented: {}, {}", className, itemName);
 	}
 	
 	public String getClassName() {

@@ -77,15 +77,6 @@ public class MemAddressVar extends Var {
 	}
 
 	@Override
-	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
-		ExecTreeLogger.log("Var: " + getName());
-		// Create a new node to the "pointer" variable
-		GraphNode newNode = super.receiveAssign(lhsType, rhsValue, graph);
-
-		return newNode;
-	}
-
-	@Override
 	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
 		IVar var = BaseScope.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,

@@ -3,9 +3,12 @@ package gvpl.common;
 import gvpl.cdt.BaseScopeCDT;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
+import gvpl.graph.GraphNode;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.List;
+
+import debug.ExecTreeLogger;
 
 public class PointerVar extends MemAddressVar {
 
@@ -37,6 +40,15 @@ public class PointerVar extends MemAddressVar {
 		// assigns the variable created with the new op
 		initializePointedVar(var);
 		var.callConstructor(parameter_values, nodeType, graph, astLoader, astInterpreter);
+	}
+
+	@Override
+	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
+		ExecTreeLogger.log("Var: " + getName());
+		// Create a new node to the "pointer" variable
+		GraphNode newNode = super.receiveAssign(lhsType, rhsValue, graph);
+
+		return newNode;
 	}
 
 	@Override

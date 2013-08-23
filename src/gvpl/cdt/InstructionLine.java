@@ -317,11 +317,14 @@ public class InstructionLine {
 				GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
 				return new Value(arrayResult);
 			} else if (expr instanceof CPPASTNewExpression) {
-				throw new ClassNotImplementedException(expr.getClass().toString());
+				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 			} else
-				throw new ClassNotImplementedException(expr.getClass().toString());
+				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 		} catch (ClassNotImplementedException e) {
-			return new Value(_gvplGraph.addGraphNode("INVALID_CLASS_" + e.getClassName(), NodeType.E_INVALID_NODE_TYPE));
+			String nodeName = "INVALID_CLASS_" + e.getClassName();
+			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
+			Value problemValue = new Value(problemGraphNode);
+			return problemValue;
 		} catch (NotFoundException e) {
 			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_INVALID_NODE_TYPE));
 		}
@@ -615,7 +618,9 @@ public class InstructionLine {
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
 		if(funcMemberBinding instanceof ProblemBinding) {
 			logger.error("Problem binding. Member not found: {}", fieldRef.getFieldName());
-			return new Value(fieldRef.getFieldName().toString());
+			String nodeName = "PROBLEM_BINDING_FIELD_REF" + fieldRef.getFieldName();
+			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
+			return new Value(problemGraphNode);
 		} else if (funcMemberBinding instanceof CPPMethodSpecialization) {
 			funcMemberBinding = ((CPPMethodSpecialization)funcMemberBinding).getSpecializedBinding();
 		}
@@ -694,9 +699,9 @@ public class InstructionLine {
 
 	GraphNode loadBinOp(IASTBinaryExpression binOp) {
 		eBinOp op = CppMaps.getBinOpType(binOp.getOperator());
-		GraphNode lvalue = loadValue(binOp.getOperand1()).getNode();
-		GraphNode rvalue = loadValue(binOp.getOperand2()).getNode();
-		return _gvplGraph.addBinOp(op, lvalue, rvalue, _parentBaseScope);
+		Value lValue = loadValue(binOp.getOperand1());
+		Value rValue = loadValue(binOp.getOperand2());
+		return _gvplGraph.addBinOp(op, lValue.getNode(), rValue.getNode(), _parentBaseScope);
 	}
 
 	GraphNode loadDirectValue(IASTLiteralExpression node) {
@@ -766,9 +771,12 @@ public class InstructionLine {
 			IASTExpression opExpr = unExpr.getOperand();
 			Value value = loadValue(opExpr);
 			return _gvplGraph.addNotOp(value.getNode());
-		} else
+		} else {
 			logger.error("not implemented {}", unExpr.getRawSignature());
-		return null;
+			String nodeName = "INVALID_CLASS_" + unExpr.getRawSignature();
+			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
+			return problemGraphNode;
+		}
 	}
 
 	/**

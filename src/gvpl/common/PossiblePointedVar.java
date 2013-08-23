@@ -216,7 +216,9 @@ public class PossiblePointedVar implements IVar, IClassVar {
 			BaseScope astLoader) {
 		if(possiblePointedVar.nullPointer()) {
 			logger.error("not properly implemented");
-			return new Value(possiblePointedVar.getName());
+			String nodeName = "NULL_POINTER_" + possiblePointedVar.getName();
+			GraphNode problemGraphNode = graph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
+			return new Value(problemGraphNode);
 		}
 		
 		if (possiblePointedVar._finalVar == null) {

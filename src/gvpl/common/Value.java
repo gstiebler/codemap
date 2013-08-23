@@ -5,7 +5,6 @@ import gvpl.graph.GraphNode;
 public class Value {
 	IVar _var = null;
 	GraphNode _node = null;
-	String _name = null;
 	
 	public Value(IVar var) {
 		_var = var;
@@ -15,14 +14,8 @@ public class Value {
 		_node = node;
 	}
 	
-	public Value(String name) {
-		_name = name;
-	}
-	
 	public String getName() {
-		if( _name != null)
-			return _name;
-		else if (_node != null)
+		if (_node != null)
 			return _node.getName();
 		else
 			return _var.getName();
