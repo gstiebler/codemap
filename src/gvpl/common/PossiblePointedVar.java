@@ -46,6 +46,10 @@ public class PossiblePointedVar implements IVar, IClassVar {
 		_finalVar = null;
 	}
 
+	/**
+	 * Makes the tree of ifs for the possible pointed var
+	 * @param finalVar
+	 */
 	void setVar(IVar finalVar) {
 		ExecTreeLogger.log("Var: " + finalVar.getName());
 		
