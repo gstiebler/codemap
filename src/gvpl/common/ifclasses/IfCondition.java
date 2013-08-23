@@ -23,13 +23,15 @@ public class IfCondition {
 		
 		if( trueScope != null ) {
 			trueWrittenVars = trueScope.getWrittenVars();
-			trueWrittenVars.removeAll(((IfScope)trueScope.getParent()).getCreatedVars());
+			Set<Var> createdVars = ((IfScope)trueScope.getParent()).getCreatedVars();
+			trueWrittenVars.removeAll(createdVars);
 		} else
 			trueWrittenVars = new LinkedHashSet<Var>();
 		
 		if( falseScope != null ) {
 			falseWrittenVars = falseScope.getWrittenVars();
-			falseWrittenVars.removeAll(((IfScope)falseScope.getParent()).getCreatedVars());
+			Set<Var> createdVars = ((IfScope)falseScope.getParent()).getCreatedVars();
+			falseWrittenVars.removeAll(createdVars);
 		} else 
 			falseWrittenVars = new LinkedHashSet<Var>();
 			

@@ -1,0 +1,76 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "7_21_21";
+	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
+	node_000003 [ label = "a", startingline=4 ]
+	node_000004 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=24 ]
+	node_000028 [ label = "b", startingline=18 ]
+subgraph cluster_2 {
+label = "func1";
+parent = "cluster_1";
+startinglines = "21_21_23";
+	node_000002 [ label = "func1", style=filled, fillcolor="#FFFFD0", startinglines=4 ]
+}
+subgraph cluster_3 {
+label = "func2";
+parent = "cluster_1";
+startinglines = "23_4_24";
+	node_000005 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000006 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=9 ]
+	node_000007 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000008 [ label = "func2", style=filled, fillcolor="#FFFFD0", startinglines=10 ]
+	node_000009 [ label = "GARBAGE_NODE", style=filled, fillcolor="#FF8080", startinglines=10 ]
+	node_000010 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=10 ]
+	node_000011 [ label = "func2", startingline=10 ]
+	node_000012 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
+	node_000013 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=12 ]
+	node_000014 [ label = "30", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
+	node_000015 [ label = "func2", style=filled, fillcolor="#FFFFD0", startinglines=13 ]
+	node_000016 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=13 ]
+	node_000017 [ label = "func2", startingline=13 ]
+	node_000018 [ label = "100", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
+	node_000019 [ label = "a1", startingline=15 ]
+	node_000020 [ label = "200", style=filled, fillcolor="#E9FFE9", startinglines=16 ]
+	node_000021 [ label = "b1", startingline=16 ]
+	node_000022 [ label = "15", style=filled, fillcolor="#E9FFE9", startinglines=17 ]
+	node_000023 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=17 ]
+	node_000024 [ label = "/", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=18 ]
+	node_000025 [ label = "func2", style=filled, fillcolor="#FFFFD0", startinglines=18 ]
+	node_000026 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=18 ]
+	node_000027 [ label = "func2", startingline=18 ]
+}
+}
+	node_000001 -> node_000002
+	node_000004 -> node_000006
+	node_000004 -> node_000013
+	node_000004 -> node_000023
+	node_000002 -> node_000003
+	node_000005 -> node_000006
+	node_000006 -> node_000010
+	node_000007 -> node_000008
+	node_000008 -> node_000010
+	node_000009 -> node_000010
+	node_000010 -> node_000011
+	node_000011 -> node_000016
+	node_000012 -> node_000013
+	node_000013 -> node_000016
+	node_000014 -> node_000015
+	node_000015 -> node_000016
+	node_000016 -> node_000017
+	node_000017 -> node_000026
+	node_000018 -> node_000019
+	node_000019 -> node_000024
+	node_000020 -> node_000021
+	node_000021 -> node_000024
+	node_000022 -> node_000023
+	node_000023 -> node_000026
+	node_000024 -> node_000025
+	node_000025 -> node_000026
+	node_000026 -> node_000027
+	node_000027 -> node_000028
+}

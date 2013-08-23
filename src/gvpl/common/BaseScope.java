@@ -34,6 +34,10 @@ public abstract class BaseScope implements IScope {
 		_parent = parent;
 	}
 	
+	protected void resetBaseScope() {
+		_lastWrittenNode = new LinkedHashMap<Var, GraphNode>();
+	}
+	
 	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
 			Graph graph, AstInterpreter astInterpreter) {
 		switch (indirectionType) {
