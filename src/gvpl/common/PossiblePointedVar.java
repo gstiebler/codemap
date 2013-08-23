@@ -52,6 +52,9 @@ public class PossiblePointedVar implements IVar, IClassVar {
 	 */
 	void setVar(IVar finalVar) {
 		ExecTreeLogger.log("Var: " + finalVar.getName());
+
+		if(finalVar instanceof PointerVar)
+			finalVar = ((PointerVar) finalVar).getPointedVar();
 		
 		LinkedList<IfScope> ifList = new LinkedList<IfScope>();
 		List<BaseScope> scopes = ScopeManager.getScopeList();
