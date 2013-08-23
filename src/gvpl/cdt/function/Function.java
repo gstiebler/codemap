@@ -14,7 +14,6 @@ import gvpl.common.MemAddressVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
-import gvpl.common.Var;
 import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
@@ -195,7 +194,10 @@ public class Function extends BaseScopeCDT {
 	}
 	
 	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
-		_returnVar = new Var(_gvplGraph, _externalName, _astInterpreter.getPrimitiveType());
+		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);
+		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
+		GraphNode returnNode = new GraphNode(_externalName, NodeType.E_RETURN_VALUE);
+		_returnVar.receiveAssign(NodeType.E_RETURN_VALUE, new Value(returnNode), _gvplGraph);
 		
 		if(parameterValues == null){
 			logger.info("Header only function {} received no params.", this);
@@ -213,7 +215,6 @@ public class Function extends BaseScopeCDT {
 		_gvplGraph = new Graph(_externalName);
 		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);
 		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
-		//_returnVar.receiveAssign(NodeType.E_GARBAGE, new Value(new GraphNode("GARBAGE", NodeType.E_GARBAGE)), _gvplGraph);
 		
 		if(_body != null) {
 			_parametersMap = new LinkedHashMap<>();

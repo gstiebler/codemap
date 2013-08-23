@@ -6,13 +6,12 @@ subgraph cluster_1 {
 label = "main";
 parent = "G";
 startinglines = "17_19_19";
-	node_000002 [ label = "a_pointed", startingline=22 ]
-	node_000003 [ label = "\"clicked\"", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
-	node_000004 [ label = "\"clicked\"", style=filled, fillcolor="#E9FFE9", startinglines=23 ]
+	node_000003 [ label = "a_pointed", startingline=22 ]
 subgraph cluster_2 {
 label = "GtkWidget::GtkWidget";
 parent = "cluster_1";
 startinglines = "19_19_21";
+	node_000002 [ label = "GtkWidget::GtkWidget", style=filled, fillcolor="#FFFFD0", startinglines=21 ]
 }
 subgraph cluster_3 {
 label = "gtk_signal_connect";
@@ -32,7 +31,6 @@ startinglines = "22_23_12";
 	node_000005 [ label = "GtkWidget::adiciona", style=filled, fillcolor="#FFFFD0", startinglines=12 ]
 }
 }
-	node_000002 -> node_000005
-	node_000003 -> node_000004
+	node_000003 -> node_000005
 	node_000005 -> node_000006
 }
