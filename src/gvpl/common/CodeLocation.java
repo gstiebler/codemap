@@ -9,10 +9,7 @@ public class CodeLocation implements Comparable<CodeLocation> {
 	int _offset;
 	
 	public CodeLocation(String fileName, int startingLine, int offset) {
-		if(fileName.equals("<text>"))
-			_fileName = _currentFileName;
-		else
-			_fileName = normalizeFileName(fileName);
+		_fileName = normalizeFileName(fileName);
 		_startingLine = startingLine;
 		_offset = offset;
 	}
