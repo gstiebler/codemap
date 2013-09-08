@@ -130,8 +130,8 @@ public abstract class BaseScope implements IScope {
 	}
 	
 	@Override
-	public IVar getVarFromBinding(IBinding binding) {
-		return _parent.getVarFromBinding(binding);
+	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
+		return _parent.getVarFromBinding(binding, codeLoc);
 	}
 	
 	public BaseScope getParent() {

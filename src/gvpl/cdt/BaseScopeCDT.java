@@ -4,6 +4,7 @@ import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
+import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
@@ -21,8 +22,10 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
+import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -30,6 +33,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpressi
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.ExecTreeLogger;
 
@@ -65,14 +69,24 @@ public abstract class BaseScopeCDT extends BaseScope{
 	    }
 		
 	    IBinding binding = getBindingFromExpr(expr);
-	    var = getVarFromBinding(binding);
+	    CodeLocation codeLocation = null;
+	    IASTFileLocation fileloc = null;
+		if (binding instanceof CPPVariable) {
+			IASTNode[] nodes = ((CPPVariable) binding).getDeclarations();
+			if (nodes != null && nodes.length > 0) {
+				fileloc = nodes[0].getFileLocation();
+				codeLocation = CodeLocationCDT.NewFromFileLocation(fileloc);
+			}
+		}
+		
+	    var = getVarFromBinding(binding, codeLocation);
 		if (var != null) 
 			return var; 
 
 		if( _parent != null )
-			return _parent.getVarFromBinding(binding);
+			return _parent.getVarFromBinding(binding, codeLocation);
 		else
-			return _astInterpreter.getVarFromBinding(binding);
+			return _astInterpreter.getVarFromBinding(binding, codeLocation);
 	}
 	
 	protected GraphNode getNodeFromExpr(IASTExpression expr) {
@@ -239,18 +253,18 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return var;
 	}
 	
-	public IVar getVarFromBinding(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
 		IVar var = _localVariables.get(binding);
 		if(var != null)
 			return var;
 		
 		if( _parent != null) {
-			var = _parent.getVarFromBinding(binding);
+			var = _parent.getVarFromBinding(binding, codeLoc);
 			if(var != null)
 				return var;
 		}
-		
-		return _astInterpreter.getGlobalVar(binding);
+
+		return _astInterpreter.getGlobalVar(binding, codeLoc);
 	}
 	
 }

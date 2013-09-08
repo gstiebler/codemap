@@ -196,6 +196,7 @@ public class Function extends BaseScopeCDT {
 	}
 	
 	private void loadHeaderOnlyFunc(List<FuncParameter> parameterValues, Graph extGraph) {
+		logger.info("Header only function: {}.", this);
 		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);
 		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
 		GraphNode returnNode = new GraphNode(_externalName, NodeType.E_RETURN_VALUE);
@@ -372,7 +373,7 @@ public class Function extends BaseScopeCDT {
 	}
 	
 	@Override
-	public IVar getVarFromBinding(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
 		ExecTreeLogger.log(binding.getName());
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null) {
@@ -387,7 +388,7 @@ public class Function extends BaseScopeCDT {
 			return var;
 		
 		if(_parent != null)
-			return _parent.getVarFromBinding(binding);
+			return _parent.getVarFromBinding(binding, codeLoc);
 		
 		return null;
 	}

@@ -2,10 +2,12 @@ package gvpl.cdt.function;
 
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.ClassDeclCDT;
+import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
 import gvpl.common.ClassVar;
+import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
@@ -81,7 +83,7 @@ public class MemberFunc extends Function {
 			InstructionLine instructionLine = new InstructionLine(graph, this, _astInterpreter);
 
 			if (memberBinding instanceof CPPField) {
-				IVar var = getVarFromBinding(memberBinding);
+				IVar var = getMemberFromBinding(memberBinding);
 				if(var == null) {
 					logger.error("Problem with member {}", memberBinding.getName());
 					continue;
@@ -150,7 +152,8 @@ public class MemberFunc extends Function {
 			return var; 
 		
 		IBinding binding = getBindingFromExpr(expr);
-		var = super.getVarFromBinding(binding);
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(expr.getFileLocation());
+		var = super.getVarFromBinding(binding, codeLocation);
 		if (var != null) 
 			return var;
 		
@@ -185,14 +188,14 @@ public class MemberFunc extends Function {
 	}
 
 	@Override
-	public IVar getVarFromBinding(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
 		ExecTreeLogger.log(binding.getName());
 		if(binding instanceof ProblemBinding) {
 			logger.info("problem binding");
 			return null;
 		}
 		
-		IVar var = super.getVarFromBinding(binding);
+		IVar var = super.getVarFromBinding(binding, codeLoc);
 		if(var != null)
 			return var;
 		

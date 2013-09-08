@@ -282,8 +282,10 @@ public class InstructionLine {
 				if (_parentBaseScope != null)
 					return _parentBaseScope.getValueFromExpr(expr);
 				else {
-					IBinding binding = ((IASTIdExpression) expr).getName().resolveBinding();
-					return new Value(_astInterpreter.getGlobalVar(binding));
+					IASTName name = ((IASTIdExpression) expr).getName();
+					IBinding binding = name.resolveBinding();
+					CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
+					return new Value(_astInterpreter.getGlobalVar(binding, codeLocation));
 				}
 			} else if (expr instanceof IASTBinaryExpression) {// Eh uma
 																// expressao
@@ -560,6 +562,12 @@ public class InstructionLine {
 	 */
 	private Value loadSimpleFunc(IBinding idExprBinding, IASTExpression paramExpr) {
 		Function func = _astInterpreter.getFuncId(idExprBinding);
+		
+		if(func == null) {
+			logger.info("Func {} not found.", idExprBinding.getName());
+			GraphNode problemNode = _gvplGraph.addGraphNode(idExprBinding.getName(), NodeType.E_INVALID_NODE_TYPE);
+			return new Value(problemNode);
+		}
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
 		Function loadFunction = _astInterpreter.getFuncId(idExprBinding);

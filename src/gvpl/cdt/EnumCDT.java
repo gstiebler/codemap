@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.common.CodeLocation;
 import gvpl.common.IVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
@@ -29,7 +30,8 @@ public class EnumCDT {
 			IVar var = BaseScopeCDT.addVarDecl(name.toString(), type,
 					null, graph, null, astInterpreter);
 			IBinding binding = name.resolveBinding();
-			astInterpreter.addGlobalVar(binding, var);
+			CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
+			astInterpreter.addGlobalVar(binding, codeLocation, var);
 
 			IASTExpression enumValExpr = enumerator.getValue();
 			Value val;

@@ -89,6 +89,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	List<EventFunction> _eventFunctions = new ArrayList<EventFunction>();
 	ScriptManager _scriptManager = null;
 	Map<IBinding, IVar> _globalVars = new LinkedHashMap<IBinding, IVar>();
+	Map<CodeLocation, IVar> _globalVarsByCodeLoc = new TreeMap<CodeLocation, IVar>();
 	
 	public AstInterpreterCDT(Graph gvplGraph) {
 		_gvplGraph = gvplGraph;
@@ -96,9 +97,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public void loadDeclarations(IASTTranslationUnit root) {
-		//_currCppFile = new CppFile();
-		//_cppFiles.put(root, _currCppFile);
-
 		ScopeManager.addScope(this);
 		IASTDeclaration[] declarations = root.getDeclarations();
 		loadDeclarations(declarations);
@@ -186,8 +184,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
+		IASTName name = declarator.getName();
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
 		//TODO get correct type
-		IVar var = _globalVars.get(binding);
+		IVar var = getGlobalVar(binding, codeLocation);
 		if(var == null) {
 			logger.error("Global var not found: {}", binding.getName());
 			return;
@@ -203,11 +203,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 		_mainFunction.addFuncRef(new ArrayList<FuncParameter>(), _gvplGraph, this);
 		callEventFunctions();
 		ScopeManager.removeScope(this);
-	}
-	
-	public IVar getGlobalVar(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
-		return _globalVars.get(binding);
 	}
 
 	/**
@@ -424,18 +419,35 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.error("var from {} not found", declSpec.getRawSignature());
 			return;
 		}
+		
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
 		IBinding binding = name.resolveBinding();
 		//TODO get correct type
 		IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, 
 				declarator.getPointerOperators(), _gvplGraph, null, this);
-		_globalVars.put(binding, var);
+		addGlobalVar(binding, codeLocation, var);
 		
 		InstructionLine il = new InstructionLine(_gvplGraph, null, this);
 		il.LoadVariableInitialization(var, declarator);
 	}
 	
-	public void addGlobalVar( IBinding binding, IVar var ) {
+	public void addGlobalVar( IBinding binding, CodeLocation fileLoc, IVar var ) {
+		ExecTreeLogger.log(binding.getName());
+		logger.debug(binding.getName());
 		_globalVars.put(binding, var);
+		_globalVarsByCodeLoc.put(fileLoc, var);
+	}
+	
+	public IVar getGlobalVar(IBinding binding, CodeLocation fileLoc) {
+		ExecTreeLogger.log(binding.getName());
+		logger.debug(binding.getName());
+		IVar var = _globalVars.get(binding);
+		if(var != null)
+			return var;
+		if(fileLoc != null)
+			return _globalVarsByCodeLoc.get(fileLoc);
+		
+		return null;
 	}
 
 	/**
@@ -500,9 +512,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	@Override
-	public IVar getVarFromBinding(IBinding binding) {
+	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
 		ExecTreeLogger.log(binding.getName());
-		return _globalVars.get(binding);
+		return getGlobalVar(binding, codeLoc);
 	}
 	
 }
