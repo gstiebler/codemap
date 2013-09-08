@@ -113,7 +113,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			}
 
 			logger.debug("Location of declaration: {}",
-					CodeLocationCDT.NewFromFileLocation(declaration.getFileLocation()));
+					CodeLocationCDT.NewFromFileLocation(declaration));
 			loadDeclaration(declaration);
 		}
 	}
@@ -185,7 +185,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
 		IASTName name = declarator.getName();
-		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 		//TODO get correct type
 		IVar var = getGlobalVar(binding, codeLocation);
 		if(var == null) {
@@ -248,7 +248,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
-		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
+		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl);
 		IBinding binding = decl.getName().resolveBinding();
 		if(binding instanceof CPPTypedef) {
 			_functionTypedefs.add(binding);
@@ -304,7 +304,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		if(classDecl != null)
 			return classDecl;
 		
-		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl.getFileLocation());
+		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl);
 		classDecl = _classByLocation.get(classLocation);
 		// the class declaration has already been loaded by other .h file
 		if(classDecl != null) {
@@ -329,7 +329,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @param strDecl
 	 */
 	private void loadClassImplementation(CPPASTCompositeTypeSpecifier strDecl) {		
-		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl.getFileLocation());
+		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl);
 		ClassDeclCDT classDecl = _classByLocation.get(classLocation);
 		if(classDecl == null) {
 			classDecl = loadClassDecl(strDecl);
@@ -420,7 +420,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return;
 		}
 		
-		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 		IBinding binding = name.resolveBinding();
 		//TODO get correct type
 		IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, 

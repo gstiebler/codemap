@@ -74,8 +74,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		if (binding instanceof CPPVariable) {
 			IASTNode[] nodes = ((CPPVariable) binding).getDeclarations();
 			if (nodes != null && nodes.length > 0) {
-				fileloc = nodes[0].getFileLocation();
-				codeLocation = CodeLocationCDT.NewFromFileLocation(fileloc);
+				codeLocation = CodeLocationCDT.NewFromFileLocation(nodes[0]);
 			}
 		}
 		

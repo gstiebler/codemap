@@ -152,7 +152,7 @@ public class MemberFunc extends Function {
 			return var; 
 		
 		IBinding binding = getBindingFromExpr(expr);
-		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(expr.getFileLocation());
+		CodeLocation codeLocation = null;
 		var = super.getVarFromBinding(binding, codeLocation);
 		if (var != null) 
 			return var;

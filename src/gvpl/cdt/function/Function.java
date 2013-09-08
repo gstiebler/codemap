@@ -122,7 +122,7 @@ public class Function extends BaseScopeCDT {
 		setName(calcName());
 		logger.debug("Storing func parameter. Func: {}, File: {}", _externalName, DebugOptions.getCurrCpp());
 		
-		_declLocation = CodeLocationCDT.NewFromFileLocation(decl.getFileLocation());
+		_declLocation = CodeLocationCDT.NewFromFileLocation(decl);
 	}
 	
 	public void initializeDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTFunctionDefinition funcDefinition) {
@@ -145,7 +145,7 @@ public class Function extends BaseScopeCDT {
 		} else
 			logger.fatal("Work here.");
 		
-		_implLocation = CodeLocationCDT.NewFromFileLocation(_body.getFileLocation());
+		_implLocation = CodeLocationCDT.NewFromFileLocation(_body);
 		
 		lostScope();
 	}

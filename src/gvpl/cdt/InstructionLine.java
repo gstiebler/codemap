@@ -87,7 +87,7 @@ public class InstructionLine {
 	}
 
 	public void load(IASTStatement statement) {
-		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(statement.getFileLocation());
+		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(statement);
 		logger.debug(" --- Code location: {}", codeLocation);
 		DebugOptions.setStartingLine(codeLocation.getStartingLine());
 		logger.debug("statement is: {}", statement.getClass());
@@ -284,7 +284,7 @@ public class InstructionLine {
 				else {
 					IASTName name = ((IASTIdExpression) expr).getName();
 					IBinding binding = name.resolveBinding();
-					CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
+					CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 					return new Value(_astInterpreter.getGlobalVar(binding, codeLocation));
 				}
 			} else if (expr instanceof IASTBinaryExpression) {// Eh uma

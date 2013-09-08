@@ -30,7 +30,7 @@ public class EnumCDT {
 			IVar var = BaseScopeCDT.addVarDecl(name.toString(), type,
 					null, graph, null, astInterpreter);
 			IBinding binding = name.resolveBinding();
-			CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name.getFileLocation());
+			CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 			astInterpreter.addGlobalVar(binding, codeLocation, var);
 
 			IASTExpression enumValExpr = enumerator.getValue();

@@ -140,7 +140,7 @@ public class ClassDeclCDT extends ClassDecl{
 			} else {
 				_memberVarGraphNodes.put(classMember.getMemberId(), classMember);
 				_memberIdMap.put(memberName.resolveBinding(), classMember);
-				CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
+				CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator);
 				_membersLocation.put(memberLocation, classMember);
 			}
 		}
@@ -162,7 +162,7 @@ public class ClassDeclCDT extends ClassDecl{
 		getCDTMembers(classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
 		
 		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators){
-			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(functionDeclarator.getFileLocation());
+			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(functionDeclarator);
 			IBinding memberFuncBinding = functionDeclarator.getName().resolveBinding();
 			MemberFunc memberFunc = _membersFuncLocation.get(funcLocation);
 			_memberFuncIdMap.put(memberFuncBinding, memberFunc);
@@ -170,14 +170,14 @@ public class ClassDeclCDT extends ClassDecl{
 		
 		for(IASTFunctionDefinition functionDefinition : functionDefinitions) {
 			IASTFunctionDeclarator funcDecl = functionDefinition.getDeclarator();
-			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDecl.getFileLocation());
+			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDecl);
 			IBinding memberFuncBinding = funcDecl.getName().resolveBinding();
 			MemberFunc memberFunc = _membersFuncLocation.get(funcLocation);
 			_memberFuncIdMap.put(memberFuncBinding, memberFunc);
 		}
 		
 		for(IASTDeclarator memberDeclarator : membersDeclaration) {
-			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator.getFileLocation());
+			CodeLocation memberLocation = CodeLocationCDT.NewFromFileLocation(memberDeclarator);
 			IASTName memberName = memberDeclarator.getName();
 			ClassMember structMember = _membersLocation.get(memberLocation);
 			IBinding binding = memberName.resolveBinding();
@@ -209,7 +209,7 @@ public class ClassDeclCDT extends ClassDecl{
 	}
 	
 	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
-		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator.getFileLocation());
+		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator);
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
 		if(memberFuncBinding instanceof CPPTypedef)
 		{
