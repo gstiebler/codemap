@@ -2,6 +2,7 @@ package gvpl.cdt.function;
 
 import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.ClassDeclCDT;
+import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
