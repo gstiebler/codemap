@@ -1,6 +1,5 @@
 package gvpl.graph;
 
-import gvpl.common.IVar;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -25,7 +24,7 @@ public class GraphNode implements java.io.Serializable {
 	private int _id;
 	public String _name;
 	public NodeType _type;
-	private IVar _parentVar = null;
+	private int _parentVarId = -1;
 	private List<GraphNode> _sourceNodes = new ArrayList<GraphNode>();
 	/** Lista de nohs das quais este noh depende */
 	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
@@ -40,13 +39,13 @@ public class GraphNode implements java.io.Serializable {
 		logger.info("new graphnode {} ({})", name, _id);
 	}
 
-	public GraphNode(IVar parentVar, NodeType type) {
+	public GraphNode(String name, NodeType type, int parentVarId) {
 		_id = getNewId();
-		_parentVar = parentVar;
-		_name = parentVar.getName();
+		_parentVarId = parentVarId;
+		_name = name;
 		_type = type;
 
-		logger.info("new graphnode ({}) var {} ({})", _id, parentVar.getName(), parentVar.getId());
+		logger.info("new graphnode ({}) var {} ({})", _id, _name, _parentVarId);
 	}
 
 	public GraphNode(GraphNode other) {
@@ -54,7 +53,7 @@ public class GraphNode implements java.io.Serializable {
 		_name = other._name;
 		_type = other._type;
 		_startingLine = other._startingLine;
-		_parentVar = other._parentVar;
+		_parentVarId = other._parentVarId;
 
 		logger.info("new graphnode copy " + _name + " (" + _id + ")");
 		logger.info("    from " + other._name + " (" + other._id + ")");
@@ -127,8 +126,8 @@ public class GraphNode implements java.io.Serializable {
 		return _startingLine;
 	}
 	
-	public IVar getParentVar() {
-		return _parentVar;
+	public int getParentVarId() {
+		return _parentVarId;
 	}
 	
 	public static GraphNode newGarbageNode(Graph graph, String name) {

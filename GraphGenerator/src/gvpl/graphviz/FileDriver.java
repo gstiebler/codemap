@@ -109,9 +109,9 @@ public class FileDriver implements IGraphOutput {
 			properties.add(new PropertyPair("srcNodes", srcNodes(node)));
 		
 		if(DebugOptions.printDotSrcVarId()) {
-			IVar parentVar = node.getParentVar();
-			if(parentVar != null)
-				properties.add(new PropertyPair("parentVarId", String.valueOf(parentVar.getId())));
+			int parentVarId = node.getParentVarId();
+			if(parentVarId >= 0)
+				properties.add(new PropertyPair("parentVarId", String.valueOf(parentVarId)));
 		}
 		
 		insertNode(node.getId(), node_name, properties);

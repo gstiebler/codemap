@@ -82,7 +82,7 @@ public class Graph implements java.io.Serializable {
 
 	public GraphNode addGraphNode(IVar parentVar, NodeType type) {
 		ExecTreeLogger.log("Graph: " + _label + ", Parent var: " + parentVar);
-		GraphNode graphNode = new GraphNode(parentVar, type);
+		GraphNode graphNode = new GraphNode(parentVar.getName(), type, parentVar.getId());
 		addGraphNode(graphNode);
 
 		logger.info("Add node {} ({}) graph {} ({})", graphNode.getName(), graphNode.getId(), _label, _id);
