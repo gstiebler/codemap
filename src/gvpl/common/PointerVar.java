@@ -12,6 +12,11 @@ import debug.ExecTreeLogger;
 
 public class PointerVar extends MemAddressVar {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9163073112917903535L;
+
 	public PointerVar(Graph gvplGraph, String name, TypeId type) {
 		super(gvplGraph, name, type);
 	}

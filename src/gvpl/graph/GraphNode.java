@@ -12,9 +12,14 @@ import org.apache.logging.log4j.Logger;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
-public class GraphNode {
+public class GraphNode implements java.io.Serializable {
 	
-	Logger logger = LogManager.getLogger(Graph.class.getName());
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 272441964510158948L;
+
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
 	private static int _nodeCounter = 3000; 
 	private int _id;

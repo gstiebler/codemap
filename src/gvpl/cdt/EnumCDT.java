@@ -18,7 +18,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class EnumCDT {
 	
-	static Logger logger = LogManager.getLogger(InstructionLine.class.getName());
+	static Logger logger = LogManager.getLogger(EnumCDT.class.getName());
 
 	public static void loadEnum( IASTEnumerationSpecifier enumSpec, AstInterpreterCDT astInterpreter ) {
 		IASTEnumerator[] enumerators = enumSpec.getEnumerators();

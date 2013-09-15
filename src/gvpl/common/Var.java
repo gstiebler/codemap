@@ -17,8 +17,13 @@ import debug.ExecTreeLogger;
 /**
  * This class is used to represent variables of primitive types
  */
-public class Var implements IVar {
+public class Var implements IVar, java.io.Serializable {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1113882320731404108L;
+
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 	
 	private static int _counter = 2000;

@@ -18,9 +18,13 @@ import org.apache.logging.log4j.Logger;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
-public class Graph {
+public class Graph implements java.io.Serializable {
 	
-	Logger logger = LogManager.getLogger(Graph.class.getName());
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7232749054292603601L;
+	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	public enum NodeType {
 		E_INVALID_NODE_TYPE, 

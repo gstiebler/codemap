@@ -38,7 +38,7 @@ import debug.DebugOptions;
 
 public class ClassDeclCDT extends ClassDecl{
 
-	static Logger logger = LogManager.getLogger(ClassDecl.class.getName());
+	static Logger logger = LogManager.getLogger(ClassDeclCDT.class.getName());
 
 	private AstInterpreterCDT _astInterpreter;
 

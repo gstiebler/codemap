@@ -22,7 +22,7 @@ public abstract class AstInterpreter extends BaseScope {
 
 	protected Map<TypeId, ClassDeclCDT> _typeIdToClass;
 	/** the same for all primitive types */
-	protected TypeId _primitiveType = new TypeId(null);
+	protected TypeId _primitiveType = new TypeId();
 
 	/**
 	 * The base function. It all starts here.

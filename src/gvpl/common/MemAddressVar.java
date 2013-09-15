@@ -13,6 +13,10 @@ import debug.ExecTreeLogger;
 
 public class MemAddressVar extends Var {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6764604841121108464L;
 	private PossiblePointedVar _possiblePointedVar = new PossiblePointedVar(this);
 	private boolean _hasReceivedVar = false;
 	GraphNode _lastPointedVarNode = null;

@@ -39,7 +39,7 @@ import debug.ExecTreeLogger;
 
 public abstract class BaseScopeCDT extends BaseScope{
 	
-	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	static Logger logger = LogManager.getLogger(BaseScopeCDT.class.getName());
 	
 	protected AstInterpreterCDT _astInterpreter;
 

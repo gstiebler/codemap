@@ -22,7 +22,7 @@ public abstract class ClassDecl {
 	CodeLocation _location;
 	
 	public ClassDecl(CodeLocation location, IBinding binding) {
-		_typeId = new TypeId(binding);
+		_typeId = new TypeId();
 		_location = location;
 	}
 

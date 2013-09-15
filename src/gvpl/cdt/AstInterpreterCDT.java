@@ -78,7 +78,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		}
 	}
 	
-	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	static Logger logger = LogManager.getLogger(AstInterpreterCDT.class.getName());
 
 	CppFile _currCppFile = new CppFile();
 	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();

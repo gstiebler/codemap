@@ -21,6 +21,11 @@ import debug.ExecTreeLogger;
  */
 public class ClassVar extends Var implements IClassVar{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7200242002428741153L;
+
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
 	Map<MemberId, IVar> _memberInstances = new LinkedHashMap<MemberId, IVar>();

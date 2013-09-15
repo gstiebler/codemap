@@ -3,11 +3,10 @@ package gvpl.common;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 /** typedef */
-public class TypeId {
+public class TypeId implements java.io.Serializable {
 	
-	private IBinding _binding;
-	
-	public TypeId(IBinding binding) {
-		_binding = binding;
-	}
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3058979588525657326L;
 }
