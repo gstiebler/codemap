@@ -10,10 +10,8 @@ import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -157,18 +155,7 @@ public class Codemap {
 		}
 		
 		Graph mainGraph = astInterpreter.getGraph();
-		
-		try {
-			FileOutputStream fileOut = new FileOutputStream(basePath + "graph_ser.out");
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(mainGraph);
-			out.close();
-			fileOut.close();
-		} catch (IOException i) {
-			i.printStackTrace();
-		}
-		
-		
+		mainGraph.saveToFile(basePath + "graph_ser.out");	
 
 		fileDriver.print(mainGraph, outFile, visualizer);
 		
