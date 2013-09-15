@@ -22,7 +22,6 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
-import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -70,7 +69,6 @@ public abstract class BaseScopeCDT extends BaseScope{
 		
 	    IBinding binding = getBindingFromExpr(expr);
 	    CodeLocation codeLocation = null;
-	    IASTFileLocation fileloc = null;
 		if (binding instanceof CPPVariable) {
 			IASTNode[] nodes = ((CPPVariable) binding).getDeclarations();
 			if (nodes != null && nodes.length > 0) {

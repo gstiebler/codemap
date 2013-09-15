@@ -1,6 +1,5 @@
 package gvpl.graphviz;
 
-import gvpl.common.IVar;
 import gvpl.graph.Graph;
 import gvpl.graph.GraphNode;
 
