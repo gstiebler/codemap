@@ -1,0 +1,59 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "2_8_8";
+	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000002 [ label = "a", startingline=10 ]
+	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
+	node_000004 [ label = "b", startingline=11 ]
+	node_000009 [ label = "e", startingline=14 ]
+	node_000010 [ label = "f", startingline=15 ]
+	node_000011 [ label = "*j", startingline=20 ]
+	node_000016 [ label = "*g", startingline=21 ]
+	node_000017 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=21 ]
+	node_000018 [ label = "k", startingline=21 ]
+subgraph cluster_2 {
+label = "soma_sub";
+parent = "cluster_1";
+startinglines = "11_12_13";
+	node_000005 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=4 ]
+	node_000006 [ label = "c", startingline=4 ]
+	node_000007 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=5 ]
+	node_000008 [ label = "d", startingline=5 ]
+}
+subgraph cluster_3 {
+label = "soma_sub";
+parent = "cluster_1";
+startinglines = "18_19_20";
+	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=4 ]
+	node_000013 [ label = "a", startingline=4 ]
+	node_000014 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=5 ]
+	node_000015 [ label = "c", startingline=5 ]
+}
+}
+	node_000001 -> node_000002
+	node_000002 -> node_000005
+	node_000002 -> node_000007
+	node_000003 -> node_000004
+	node_000004 -> node_000005
+	node_000004 -> node_000007
+	node_000004 -> node_000011
+	node_000011 -> node_000012
+	node_000011 -> node_000014
+	node_000016 -> node_000017
+	node_000017 -> node_000018
+	node_000005 -> node_000006
+	node_000006 -> node_000009
+	node_000006 -> node_000012
+	node_000006 -> node_000014
+	node_000007 -> node_000008
+	node_000008 -> node_000010
+	node_000012 -> node_000013
+	node_000013 -> node_000016
+	node_000014 -> node_000015
+	node_000015 -> node_000017
+}

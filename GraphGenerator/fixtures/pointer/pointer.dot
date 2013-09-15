@@ -1,0 +1,48 @@
+digraph G
+{
+rankdir=LR;
+label = "root";
+subgraph cluster_1 {
+label = "main";
+parent = "G";
+startinglines = "2_2";
+	node_000001 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
+	node_000002 [ label = "a", startingline=8 ]
+	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000004 [ label = "d", startingline=10 ]
+	node_000005 [ label = "*b", startingline=11 ]
+	node_000006 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=11 ]
+	node_000007 [ label = "c", startingline=11 ]
+	node_000008 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
+	node_000009 [ label = "*b", startingline=12 ]
+	node_000010 [ label = "d", startingline=12 ]
+	node_000011 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=13 ]
+	node_000012 [ label = "e", startingline=13 ]
+	node_000013 [ label = "15", style=filled, fillcolor="#E9FFE9", startinglines=17 ]
+	node_000014 [ label = "*g", startingline=17 ]
+	node_000015 [ label = "c", startingline=17 ]
+	node_000016 [ label = "*f", startingline=18 ]
+	node_000017 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=18 ]
+	node_000018 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=18 ]
+	node_000019 [ label = "e", startingline=18 ]
+}
+	node_000001 -> node_000002
+	node_000002 -> node_000006
+	node_000002 -> node_000011
+	node_000002 -> node_000017
+	node_000003 -> node_000004
+	node_000004 -> node_000005
+	node_000005 -> node_000006
+	node_000006 -> node_000007
+	node_000008 -> node_000009
+	node_000009 -> node_000010
+	node_000010 -> node_000011
+	node_000011 -> node_000012
+	node_000012 -> node_000018
+	node_000013 -> node_000014
+	node_000014 -> node_000015
+	node_000015 -> node_000016
+	node_000016 -> node_000017
+	node_000017 -> node_000018
+	node_000018 -> node_000019
+}
