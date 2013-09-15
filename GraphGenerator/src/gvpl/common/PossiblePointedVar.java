@@ -15,7 +15,12 @@ import org.apache.logging.log4j.Logger;
 
 import debug.ExecTreeLogger;
 
-public class PossiblePointedVar implements IVar, IClassVar {
+public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2844409348993680741L;
 
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 

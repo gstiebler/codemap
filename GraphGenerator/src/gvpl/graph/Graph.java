@@ -222,14 +222,6 @@ public class Graph implements java.io.Serializable {
 		return lhs_varDecl.receiveAssign(NodeType.E_VARIABLE, new Value(binOpNode), this);
 	}
 	
-	public void mergeNodes(GraphNode primaryNode, GraphNode secondaryNode) {
-		primaryNode.merge(secondaryNode);
-		logger.info("Merging node ({}) to ({})", secondaryNode.getId(), primaryNode.getId());
-		_graphNodes.remove(secondaryNode);
-		if(!_graphNodes.contains(primaryNode))
-			addGraphNode(primaryNode);
-	}
-	
 	public void removeNode(GraphNode node) {
 		_graphNodes.remove(node);
 	}
