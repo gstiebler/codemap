@@ -1,4 +1,4 @@
-package gvpl;
+package cm_visualization;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,14 +13,17 @@ public class Visualization {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		String inputGraphFileName = args[0];
-		Graph graph = Graph.loadFromFile(inputGraphFileName);
+		generateDOT(args[0], "");
+	}
+	
+	public static void generateDOT(String graphFileName, String openNode) {
+		Graph graph = Graph.loadFromFile(graphFileName);
 		
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		Visualizer visualizer = new Visualizer(fileDriver);
 
-		int indexOfPoint = inputGraphFileName.lastIndexOf('.');
-		String outputDotFileName = inputGraphFileName.substring(0, indexOfPoint) + ".dot";
+		int indexOfPoint = graphFileName.lastIndexOf('.');
+		String outputDotFileName = graphFileName.substring(0, indexOfPoint) + ".dot";
 		FileWriter outFile = null;
 		try {
 			outFile = new FileWriter(outputDotFileName);
