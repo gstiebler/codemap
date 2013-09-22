@@ -24,7 +24,7 @@ public class Visualization {
 		int indexOfPoint = graphFileName.lastIndexOf('.');
 		String baseFileName = graphFileName.substring(0, indexOfPoint);
 		
-		String visibleNodesListFileName = baseFileName + "_nodes.out";
+		String visibleNodesListFileName = baseFileName + "_visible_nodes.xml";
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
 		VisualizerFilter visualizer = new VisualizerFilter(fileDriver, visibleNodesListFileName);
 		
