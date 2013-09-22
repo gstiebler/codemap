@@ -12,6 +12,7 @@ public class Visualization {
 	 * @param args
 	 */
 	public static void main(String[] args) {
+		System.out.println("teste ----- ***** testando");
 		String openNode = "";
 		if(args.length > 1)
 			openNode = args[1];
