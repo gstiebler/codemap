@@ -52,11 +52,12 @@ public class GraphCompare {
 		
 		List<NodeMatch> nodesMatch = matchNodes(processedNodes._nodes, gvplGraph);
 		result.addAll(nodesMatch);
+		Visualizer visualizer = new Visualizer(fileDriver);
 		for (NodeMatch nodeMatch : nodesMatch) {
 			GraphNode gvplNode = nodeMatch._gvplNode;
 			DotTree.Node gvNode = nodeMatch._gvNode;
 
-			Visualizer.printNode(gvplNode, fileDriver);
+			visualizer.printNode(gvplNode);
 			String gvNodeLabel = gvNode.getAttribute("label");
 
 			gvNodeLabel = gvNodeLabel.replace("\\\"", "\"").replaceAll("(^\")|(\"$)","");

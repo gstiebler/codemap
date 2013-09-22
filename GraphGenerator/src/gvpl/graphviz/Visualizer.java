@@ -20,7 +20,7 @@ public class Visualizer {
 	private void printNodes(Graph graph, String parentName) {
 		int size = graph.getNumNodes();
 		for (int i = 0; i < size; ++i) {
-			printNode(graph.getNode(i), _graphOutput);
+			printNode(graph.getNode(i));
 		}
 		
 		for (Graph subgraph : graph._subgraphs) {
@@ -54,23 +54,27 @@ public class Visualizer {
 		return "";
 	}
 	
-	public static void printNode(GraphNode graphNode, IGraphOutput graphOutput) {
-		if(graphNode.getNumDependentNodes() == 0 && graphNode.getNumSourceNodes() == 0)
+	protected boolean shouldPrintNode(GraphNode graphNode) {
+		return graphNode.getNumDependentNodes() != 0 || graphNode.getNumSourceNodes() != 0;
+	}
+	
+	public void printNode(GraphNode graphNode) {
+		if(!shouldPrintNode(graphNode))
 			return;
 		
 		if (graphNode._type == NodeType.E_OPERATION)
-			graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertOperation(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == NodeType.E_DIRECT_VALUE)
-			graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertValueNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == NodeType.E_GARBAGE)
-			graphOutput.insertGarbageNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertGarbageNode(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == NodeType.E_DECLARED_PARAMETER)
-			graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertDeclaredParameter(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == NodeType.E_RETURN_VALUE)
-			graphOutput.insertReturnValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertReturnValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else if (graphNode._type == NodeType.E_INVALID_NODE_TYPE)
-			graphOutput.insertInvalidValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertInvalidValue(graphNode.getId(), graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 		else
-			graphOutput.insertVariable(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
+			_graphOutput.insertVariable(graphNode, graphNode._name + debugStr(graphNode), graphNode.getStartingLine());
 	}
 }
