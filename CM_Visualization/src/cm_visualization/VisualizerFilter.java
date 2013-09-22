@@ -39,7 +39,6 @@ public class VisualizerFilter extends Visualizer {
 		} catch (IOException i) {
 			_visibleNodes.add(1);
 			saveVisibleNodesToFile(filePath);
-			i.printStackTrace();
 		} catch (ClassNotFoundException c) {
 			c.printStackTrace();
 		}
