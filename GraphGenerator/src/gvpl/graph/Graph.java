@@ -102,6 +102,20 @@ public class Graph implements java.io.Serializable {
 		return _graphNodes.get(index);
 	}
 	
+	public GraphNode getNodeById(int graphId) {
+		for( GraphNode node : _graphNodes )
+			if( node.getId() == graphId )
+				return node;
+		
+		for( Graph subGraph : _subgraphs ) {
+			GraphNode node = subGraph.getNodeById(graphId);
+			if( node != null )
+				return node;
+		}
+		
+		return null;
+	}
+	
 	public void addSubGraph(Graph graph) {
 		_subgraphs.add(graph);
 	}

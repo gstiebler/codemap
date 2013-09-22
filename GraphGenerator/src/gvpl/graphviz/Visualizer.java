@@ -39,6 +39,9 @@ public class Visualizer {
 			graph_node = graph.getNode(i);
 			
 			for(GraphNode dependentNode : graph_node.getDependentNodes()) {
+				if(!shouldPrintNode(graph_node) || !shouldPrintNode(dependentNode))
+					continue;
+				
 				_graphOutput.insertDependency(graph_node.getId(), dependentNode.getId());
 			}
 		}
@@ -54,8 +57,12 @@ public class Visualizer {
 		return "";
 	}
 	
-	protected boolean shouldPrintNode(GraphNode graphNode) {
+	protected boolean hasNeighbours(GraphNode graphNode) {
 		return graphNode.getNumDependentNodes() != 0 || graphNode.getNumSourceNodes() != 0;
+	}
+	
+	protected boolean shouldPrintNode(GraphNode graphNode) {
+		return hasNeighbours(graphNode);
 	}
 	
 	public void printNode(GraphNode graphNode) {
