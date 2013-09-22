@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ICodeReaderFactory;
@@ -115,7 +116,7 @@ public class Codemap {
 			CodeLocation.setCurrentFileName(fileName);
 			String code = "";
 			try {
-				code = FileFuncs.readFileToString(fileName);
+				code = FileUtils.readFileToString(new File(fileName));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -155,7 +156,7 @@ public class Codemap {
 		}
 		
 		Graph mainGraph = astInterpreter.getGraph();
-		mainGraph.saveToFile(basePath + "graph_ser.out");	
+		mainGraph.saveToFile(basePath + "graph.ser");	
 
 		fileDriver.print(mainGraph, outFile, visualizer);
 		
