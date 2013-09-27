@@ -1,8 +1,14 @@
 package gvpl.common;
 
-public class CodeLocation implements Comparable<CodeLocation> {
+public class CodeLocation implements Comparable<CodeLocation>, java.io.Serializable {
+	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8037068295401443662L;
 	
 	static String _currentFileName;
+	static CodeLocation _lastCodeLocation;
 
 	String _fileName;
 	int _startingLine;
@@ -15,6 +21,8 @@ public class CodeLocation implements Comparable<CodeLocation> {
 			_fileName = normalizeFileName(fileName);
 		_startingLine = startingLine;
 		_offset = offset;
+		
+		_lastCodeLocation = this;
 	}
 	
 	private static String normalizeFileName(String weirdFileName) {
@@ -73,6 +81,10 @@ public class CodeLocation implements Comparable<CodeLocation> {
 			return 1;
 		
 		return other._fileName.compareTo(_fileName);
+	}
+	
+	public static CodeLocation getLastCodeLocation() {
+		return _lastCodeLocation;
 	}
 
 }

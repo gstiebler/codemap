@@ -12,7 +12,6 @@ public class Visualization {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		System.out.println("teste ----- ***** testando");
 		String openNode = "";
 		if(args.length > 1)
 			openNode = args[1];
@@ -27,7 +26,7 @@ public class Visualization {
 		
 		String visibleNodesListFileName = baseFileName + "_visible_nodes.xml";
 		FileDriver fileDriver = new gvpl.graphviz.FileDriver();
-		VisualizerFilter visualizer = new VisualizerFilter(fileDriver, visibleNodesListFileName);
+		VisualizerFilter visualizer = new VisualizerFilter(fileDriver, visibleNodesListFileName, graph);
 		
 		if(openNode.compareTo("") != 0) {
 			String strId = openNode.split("_")[1];

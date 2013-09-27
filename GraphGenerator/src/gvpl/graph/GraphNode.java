@@ -1,5 +1,6 @@
 package gvpl.graph;
 
+import gvpl.common.CodeLocation;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -30,12 +31,14 @@ public class GraphNode implements java.io.Serializable {
 	private List<GraphNode> _dependentNodes = new ArrayList<GraphNode>();
 	private int _startingLine = DebugOptions.getStartingLine();
 	private Graph _graph = null;
+	CodeLocation _codeLoc;
 
 	public GraphNode(String name, NodeType type) {
 		_id = getNewId();
 		_name = name;
 		_type = type;
 		
+		_codeLoc = CodeLocation.getLastCodeLocation();
 		logger.info("new graphnode {} ({})", name, _id);
 	}
 
@@ -45,6 +48,7 @@ public class GraphNode implements java.io.Serializable {
 		_name = name;
 		_type = type;
 
+		_codeLoc = CodeLocation.getLastCodeLocation();
 		logger.info("new graphnode ({}) var {} ({})", _id, _name, _parentVarId);
 	}
 
@@ -54,6 +58,7 @@ public class GraphNode implements java.io.Serializable {
 		_type = other._type;
 		_startingLine = other._startingLine;
 		_parentVarId = other._parentVarId;
+		_codeLoc = other._codeLoc;
 
 		logger.info("new graphnode copy " + _name + " (" + _id + ")");
 		logger.info("    from " + other._name + " (" + other._id + ")");
@@ -69,6 +74,10 @@ public class GraphNode implements java.io.Serializable {
 
 	public String getName() {
 		return _name;
+	}
+	
+	public CodeLocation getCodeLocation() {
+		return _codeLoc;
 	}
 
 	/**
