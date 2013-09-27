@@ -196,7 +196,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		il.LoadVariableInitialization(var, declarator);
 	}
 	
-	public void loadDefinitions() {
+	public void loadMain() {
 		ScopeManager.addScope(this);
 		//_currCppFile = _cppFiles.get(root);
 		logger.debug(" *** Loading definitions of main ***");

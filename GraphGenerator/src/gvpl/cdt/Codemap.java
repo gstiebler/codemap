@@ -135,11 +135,12 @@ public class Codemap {
 		
 		for(int i = 0; i < translationUnits.size(); ++i) {
 			DebugOptions.setCurrCpp(fileNames.get(i));
+			CodeLocation.setCurrentFileName(fileNames.get(i));
 			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
 			astInterpreter.loadDeclarations(translationUnits.get(i));
 		}
 		
-		astInterpreter.loadDefinitions();
+		astInterpreter.loadMain();
 		
 		if(ScopeManager.getScopeList().size() > 0)
 			logger.error("Scope list is not empty");	

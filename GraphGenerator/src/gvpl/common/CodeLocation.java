@@ -33,6 +33,10 @@ public class CodeLocation implements Comparable<CodeLocation> {
 		_currentFileName = normalizeFileName(currentFileName);
 	}
 	
+	public static String getCurrentFileName() {
+		return _currentFileName;
+	}
+	
 	@Override
 	public String toString() {
 		return _fileName + " - " + _startingLine;

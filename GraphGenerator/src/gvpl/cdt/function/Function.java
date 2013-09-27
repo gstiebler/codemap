@@ -72,6 +72,7 @@ public class Function extends BaseScopeCDT {
 	
 	ICPPASTConstructorChainInitializer[] _ccInitializer;
 	IASTStatement _body;
+	String _bodyFileName;
 
 	public Function(AstInterpreterCDT astInterpreter, IBinding ownBinding) {
 		super(astInterpreter, null);
@@ -127,6 +128,7 @@ public class Function extends BaseScopeCDT {
 	
 	public void initializeDefinition(ICPPASTConstructorChainInitializer[] ccInitializer, IASTFunctionDefinition funcDefinition) {
 		_body = funcDefinition.getBody();
+		_bodyFileName = CodeLocation.getCurrentFileName();
 		_ccInitializer = ccInitializer;
 		CPPASTFunctionDeclarator declarator = (CPPASTFunctionDeclarator) funcDefinition.getDeclarator();
 		loadFuncParameters(declarator.getParameters());
@@ -221,6 +223,8 @@ public class Function extends BaseScopeCDT {
 		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
 		
 		if(_body != null) {
+			String previousFileName = CodeLocation.getCurrentFileName();
+			CodeLocation.setCurrentFileName(_bodyFileName);
 			_parametersMap = new LinkedHashMap<>();
 			int size = 0;
 			if(parameterValues != null)
@@ -232,6 +236,8 @@ public class Function extends BaseScopeCDT {
 
 			loadConstructorChain(_gvplGraph, caller);
 			loadDefinition(_gvplGraph);
+
+			CodeLocation.setCurrentFileName(previousFileName);
 		}
 		else {
 			if(_astInterpreter.scriptFunctionExists(this))
