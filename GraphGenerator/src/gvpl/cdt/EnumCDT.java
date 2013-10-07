@@ -38,8 +38,8 @@ public class EnumCDT {
 			if( enumValExpr != null ) {
 				InstructionLine il = new InstructionLine(graph, null, astInterpreter);
 				val = il.loadValue(enumValExpr);
-				String nodeName = val.getNode().getName();
 				try {
+					String nodeName = val.getNode().getName();
 					counter = Integer.decode(nodeName);
 				} catch (Exception e) {
 					logger.error( e );

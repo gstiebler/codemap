@@ -11,6 +11,9 @@ public class CodeLocationCDT {
 
 	static public CodeLocation NewFromFileLocation(IASTNode node) {
 		IASTFileLocation fileLocation = node.getFileLocation();
+		if( fileLocation == null ) 
+			return new CodeLocation("default", -1, -1);
+
 		String fileName = fileLocation.getFileName();
 		int startingLine = fileLocation.getStartingLineNumber();
 		int offset = fileLocation.getNodeOffset();

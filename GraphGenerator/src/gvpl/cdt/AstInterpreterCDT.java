@@ -114,7 +114,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 
 			logger.debug("Location of declaration: {}",
 					CodeLocationCDT.NewFromFileLocation(declaration));
-			loadDeclaration(declaration);
+			try {
+				loadDeclaration(declaration);
+			} catch(Exception e) {
+				logger.fatal("Critical error. Code location: {}, Stack trace: {}", DebugOptions.getCurrCodeLocation(), e.getStackTrace());
+			}
 		}
 	}
 	

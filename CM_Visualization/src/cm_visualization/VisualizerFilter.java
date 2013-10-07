@@ -12,11 +12,15 @@ import java.io.PrintWriter;
 import java.util.TreeSet;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
 
 public class VisualizerFilter extends Visualizer {
+
+	static Logger logger = LogManager.getLogger(VisualizerFilter.class.getName());
 	
 	private TreeSet<CodeLine> _visibleNodes = new TreeSet<CodeLine>();
 
@@ -28,8 +32,9 @@ public class VisualizerFilter extends Visualizer {
 	@Override
 	protected boolean shouldPrintNode(GraphNode graphNode) {
 		CodeLine cl = new CodeLine(graphNode.getCodeLocation());
+		//logger.debug(cl);
 		boolean nodeIsVisible = _visibleNodes.contains( cl );
-		return hasNeighbours(graphNode) && nodeIsVisible;
+		return nodeIsVisible && hasNeighbours(graphNode);
 	}
 	
 	@SuppressWarnings("unchecked")
