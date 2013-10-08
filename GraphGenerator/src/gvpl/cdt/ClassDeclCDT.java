@@ -1,9 +1,11 @@
 package gvpl.cdt;
 
+import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
+import gvpl.common.FuncParameter;
 import gvpl.common.MemberId;
 import gvpl.common.TypeId;
 import gvpl.graph.Graph;
@@ -23,6 +25,7 @@ import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
@@ -128,9 +131,11 @@ public class ClassDeclCDT extends ClassDecl{
 
 			TypeId paramType = _astInterpreter.getType(simpleDecl.getDeclSpecifier());
 			
+			IASTPointerOperator[] pointerOps = memberDeclarator.getPointerOperators();		
+			FuncParameter.IndirectionType indirectionType = Function.getIndirectionType(pointerOps);
+			
 			//TODO insert the correct IndirectionType
-			ClassMember classMember = new ClassMember(memberId, memberName.toString(),
-					paramType);
+			ClassMember classMember = new ClassMember(memberId, memberName.toString(), paramType, indirectionType);
 			
 			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
 			classMember._isStatic = declSpec.getStorageClass() == IASTDeclSpecifier.sc_static;

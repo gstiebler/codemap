@@ -13,11 +13,11 @@ public class ClassMember {
 	private IndirectionType _indirectionType;
 	public boolean _isStatic;
 
-	public ClassMember(MemberId id, String name, TypeId type) {
+	public ClassMember(MemberId id, String name, TypeId type, IndirectionType indirectionType) {
 		_id = id;
 		_name = name;
 		_type = type;
-		_indirectionType = IndirectionType.E_VARIABLE;
+		_indirectionType = indirectionType;
 	}
 
 	public MemberId getMemberId() {
@@ -39,5 +39,9 @@ public class ClassMember {
 	@Override
 	public String toString() {
 		return _name;
+	}
+	
+	public IndirectionType getIndirectionType() {
+		return _indirectionType;
 	}
 }

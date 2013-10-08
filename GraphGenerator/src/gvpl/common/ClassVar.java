@@ -42,11 +42,11 @@ public class ClassVar extends Var implements IClassVar{
 		// For each member of the struct, create a variable instance of the
 		// member
 		for (Map.Entry<MemberId, ClassMember> entry : classDecl.getMembersMap()) {
-			ClassMember struct_member = entry.getValue();
+			ClassMember structMember = entry.getValue();
 
-			String memberName = name + "." + struct_member.getName();
+			String memberName = name + "." + structMember.getName();
 			IVar memberInstance = BaseScopeCDT.addVarDecl(memberName,
-					struct_member.getMemberType(), null, _gvplGraph, astInterpreter);
+					structMember.getMemberType(), structMember.getIndirectionType(), _gvplGraph, astInterpreter);
 			addMember(entry.getKey(), memberInstance);
 		}
 		

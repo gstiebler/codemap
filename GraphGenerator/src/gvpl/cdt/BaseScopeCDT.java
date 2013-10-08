@@ -6,6 +6,7 @@ import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IClassVar;
 import gvpl.common.IVar;
 import gvpl.common.MemberId;
@@ -174,7 +175,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 			} else {
 				// only used for char*
 				return addVarDecl(expr.getRawSignature(), _astInterpreter.getPrimitiveType(), 
-						null, _gvplGraph, _astInterpreter);
+						IndirectionType.E_VARIABLE, _gvplGraph, _astInterpreter);
 			}
 		} else if (expr instanceof CPPASTArraySubscriptExpression) {
 			CPPASTArraySubscriptExpression subsExpr = (CPPASTArraySubscriptExpression) expr;
@@ -246,6 +247,13 @@ public abstract class BaseScopeCDT extends BaseScope{
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);
 		IVar var = instanceVar(parameterVarType, name, type, graph, astInterpreter);
+		return var;
+	}
+
+	public static IVar addVarDecl(String name, TypeId type, IndirectionType indirectionType, 
+				Graph graph, AstInterpreterCDT astInterpreter) {
+		ExecTreeLogger.log(name);;
+		IVar var = instanceVar(indirectionType, name, type, graph, astInterpreter);
 		return var;
 	}
 	

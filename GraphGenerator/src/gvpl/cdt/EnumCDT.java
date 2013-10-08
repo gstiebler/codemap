@@ -4,6 +4,7 @@ import gvpl.common.CodeLocation;
 import gvpl.common.IVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -27,7 +28,7 @@ public class EnumCDT {
 		for(IASTEnumerator enumerator : enumerators) {
 			TypeId type = astInterpreter.getType(enumSpec);
 			IASTName name = enumerator.getName();
-			IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, null, graph, astInterpreter);
+			IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, IndirectionType.E_VARIABLE, graph, astInterpreter);
 			IBinding binding = name.resolveBinding();
 			CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 			astInterpreter.addGlobalVar(binding, codeLocation, var);
