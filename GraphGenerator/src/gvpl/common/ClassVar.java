@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.graph.Graph;
@@ -34,7 +35,7 @@ public class ClassVar extends Var implements IClassVar{
 	
 	ClassDecl _classDecl;
 
-	public ClassVar(Graph graph, String name, ClassDecl classDecl, AstInterpreter astInterpreter) {
+	public ClassVar(Graph graph, String name, ClassDecl classDecl, AstInterpreterCDT astInterpreter) {
 		super(graph, name, classDecl.getTypeId());
 		_classDecl = classDecl;
 
@@ -45,7 +46,7 @@ public class ClassVar extends Var implements IClassVar{
 
 			String memberName = name + "." + struct_member.getName();
 			IVar memberInstance = BaseScopeCDT.addVarDecl(memberName,
-					struct_member.getMemberType(), _gvplGraph, astInterpreter);
+					struct_member.getMemberType(), null, _gvplGraph, astInterpreter);
 			addMember(entry.getKey(), memberInstance);
 		}
 		
@@ -94,7 +95,7 @@ public class ClassVar extends Var implements IClassVar{
 	 * It is used mainly to be used in function parameters
 	 */
 	@Override
-	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreterCDT astInterpreter) {
 		for(ClassVar parent : _parentInstances) 
 			parent.initializeVar(nodeType, graph, astInterpreter);
 		
@@ -105,7 +106,7 @@ public class ClassVar extends Var implements IClassVar{
 	
 	@Override
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
-			BaseScope astLoader, AstInterpreter astInterpreter) {
+			BaseScope astLoader, AstInterpreterCDT astInterpreter) {
 		
 		int numParameter = 0;
 		if(parameterValues != null)

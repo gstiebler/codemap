@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.function.Function;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
@@ -39,7 +40,7 @@ public abstract class BaseScope implements IScope {
 	}
 	
 	public static IVar instanceVar(IndirectionType indirectionType, String name, TypeId typeId,
-			Graph graph, AstInterpreter astInterpreter) {
+			Graph graph, AstInterpreterCDT astInterpreter) {
 		switch (indirectionType) {
 		case E_VARIABLE:
 			IVar result = null;
@@ -65,10 +66,6 @@ public abstract class BaseScope implements IScope {
 		}
 		}
 		return null;
-	}
-	
-	public static IVar addVarDecl(String name, TypeId type, Graph graph, AstInterpreter astInterpreter) {
-		return instanceVar(IndirectionType.E_VARIABLE, name, type, graph, astInterpreter);
 	}
 	
 	/**

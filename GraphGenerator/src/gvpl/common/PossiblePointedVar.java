@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.ifclasses.IfScope;
 import gvpl.common.ifclasses.IfScope.eIfScopeKind;
@@ -261,12 +262,12 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 		return currGraphNode;
 	}
 
-	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreterCDT astInterpreter) {
 		logger.fatal("You're doing it wrong.");
 	}
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType,
-			Graph graph, BaseScope astLoader, AstInterpreter astInterpreter) {
+			Graph graph, BaseScope astLoader, AstInterpreterCDT astInterpreter) {
 		logger.fatal("You're doing it wrong.");
 	}
 

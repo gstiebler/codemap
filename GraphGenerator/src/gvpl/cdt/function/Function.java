@@ -345,7 +345,7 @@ public class Function extends BaseScopeCDT {
 	}
 
 	public Value addReturnStatement(Value rvalue, TypeId type, String functionName, Graph graph) {
-		IVar varDecl = addVarDecl(functionName, type, graph, _astInterpreter);
+		IVar varDecl = addVarDecl(functionName, type, null, graph, _astInterpreter);
 		varDecl.receiveAssign(NodeType.E_RETURN_VALUE, rvalue, _gvplGraph);
 		return new Value(varDecl);
 	}

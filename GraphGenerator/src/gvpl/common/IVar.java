@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;
@@ -17,10 +18,10 @@ public interface IVar {
 
 	public GraphNode getCurrentNode();
 
-	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter);
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreterCDT astInterpreter);
 
 	public void callConstructor(List<FuncParameter> parameter_values, NodeType nodeType, Graph graph,
-			BaseScope astLoader, AstInterpreter astInterpreter);
+			BaseScope astLoader, AstInterpreterCDT astInterpreter);
 
 	/**
 	 * Creates an assignment to this variable

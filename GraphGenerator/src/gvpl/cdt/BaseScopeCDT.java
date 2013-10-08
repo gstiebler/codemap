@@ -174,7 +174,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 			} else {
 				// only used for char*
 				return addVarDecl(expr.getRawSignature(), _astInterpreter.getPrimitiveType(), 
-						_gvplGraph, _astInterpreter);
+						null, _gvplGraph, _astInterpreter);
 			}
 		} else if (expr instanceof CPPASTArraySubscriptExpression) {
 			CPPASTArraySubscriptExpression subsExpr = (CPPASTArraySubscriptExpression) expr;

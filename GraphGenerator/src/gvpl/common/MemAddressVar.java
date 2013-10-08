@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.FuncParameter.IndirectionType;
@@ -81,7 +82,7 @@ public class MemAddressVar extends Var {
 	}
 
 	@Override
-	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreterCDT astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
 		IVar var = BaseScope.instanceVar(IndirectionType.E_VARIABLE, _name + "_pointed", _type,
 				graph, astInterpreter);

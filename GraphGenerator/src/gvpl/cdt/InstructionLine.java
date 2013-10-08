@@ -475,14 +475,14 @@ public class InstructionLine {
 			lhsPointer.setPointedVar(result.getVar());
 		} else if (rhsOp instanceof IASTLiteralExpression) {
 			IVar var = BaseScopeCDT.addVarDecl(rhsOp.getRawSignature(), 
-					_astInterpreter.getPrimitiveType(), _gvplGraph, _astInterpreter);
+					_astInterpreter.getPrimitiveType(), null, _gvplGraph, _astInterpreter);
 			lhsPointer.setPointedVar(var);
 		} else {
 			//TODO gambierre?
 			if(rhsOp.getRawSignature().equals("NULL"))
 			{			
 				IVar var = BaseScopeCDT.addVarDecl("NULL", _astInterpreter.getPrimitiveType(), 
-						_gvplGraph, _astInterpreter);
+						null, _gvplGraph, _astInterpreter);
 				lhsPointer.setPointedVar(var);
 				return;
 			}

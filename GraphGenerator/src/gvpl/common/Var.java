@@ -1,5 +1,6 @@
 package gvpl.common;
 
+import gvpl.cdt.AstInterpreterCDT;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.ifclasses.IfScope;
 import gvpl.graph.Graph;
@@ -91,13 +92,13 @@ public class Var implements IVar, java.io.Serializable {
 		return _currGraphNode;
 	}
 
-	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreter astInterpreter) {
+	public void initializeVar(NodeType nodeType, Graph graph, AstInterpreterCDT astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
 		updateNode(_gvplGraph.addGraphNode(this, nodeType));
 	}
 
 	public void callConstructor(List<FuncParameter> parameterValues, NodeType nodeType, Graph graph,
-			BaseScope astLoader, AstInterpreter astInterpreter) {
+			BaseScope astLoader, AstInterpreterCDT astInterpreter) {
 		ExecTreeLogger.log("Var: " + getName());
 		if (parameterValues != null) {
 			if (parameterValues.size() > 1)
