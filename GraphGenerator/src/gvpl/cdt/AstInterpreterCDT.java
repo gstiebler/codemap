@@ -428,7 +428,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		IBinding binding = name.resolveBinding();
 		//TODO get correct type
 		IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, 
-				declarator.getPointerOperators(), _gvplGraph, null, this);
+				declarator.getPointerOperators(), _gvplGraph, this);
 		addGlobalVar(binding, codeLocation, var);
 		
 		InstructionLine il = new InstructionLine(_gvplGraph, null, this);

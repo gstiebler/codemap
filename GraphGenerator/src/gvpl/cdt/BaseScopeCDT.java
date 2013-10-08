@@ -235,14 +235,13 @@ public abstract class BaseScopeCDT extends BaseScope{
 		IASTName name = decl.getName();
 		ExecTreeLogger.log("Var name: " + name);
 		
-		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, this, 
-				_astInterpreter);
+		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, _astInterpreter);
 		_localVariables.put(name.resolveBinding(), varDecl);
 		return varDecl;
 	}
 
 	public static IVar addVarDecl(String name, TypeId type, IASTPointerOperator[] pointerOps, 
-				Graph graph, BaseScopeCDT astLoader, AstInterpreterCDT astInterpreter) {
+				Graph graph, AstInterpreterCDT astInterpreter) {
 		ExecTreeLogger.log(name);
 		FuncParameter.IndirectionType parameterVarType;
 		parameterVarType = Function.getIndirectionType(pointerOps);

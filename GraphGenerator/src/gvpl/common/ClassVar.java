@@ -44,7 +44,7 @@ public class ClassVar extends Var implements IClassVar{
 			ClassMember struct_member = entry.getValue();
 
 			String memberName = name + "." + struct_member.getName();
-			IVar memberInstance = BaseScope.addVarDecl(memberName,
+			IVar memberInstance = BaseScopeCDT.addVarDecl(memberName,
 					struct_member.getMemberType(), _gvplGraph, astInterpreter);
 			addMember(entry.getKey(), memberInstance);
 		}

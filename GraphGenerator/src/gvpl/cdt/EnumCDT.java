@@ -27,8 +27,7 @@ public class EnumCDT {
 		for(IASTEnumerator enumerator : enumerators) {
 			TypeId type = astInterpreter.getType(enumSpec);
 			IASTName name = enumerator.getName();
-			IVar var = BaseScopeCDT.addVarDecl(name.toString(), type,
-					null, graph, null, astInterpreter);
+			IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, null, graph, astInterpreter);
 			IBinding binding = name.resolveBinding();
 			CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 			astInterpreter.addGlobalVar(binding, codeLocation, var);
