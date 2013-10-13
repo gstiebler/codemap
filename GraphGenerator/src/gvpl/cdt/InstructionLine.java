@@ -67,6 +67,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTemplateTypeParameter;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
@@ -540,6 +541,10 @@ public class InstructionLine {
 				String problemName = ((CPPTypedef)idExprBinding).getName();
 				logger.error("Class not working: CPPTypedef, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTypedef_" + problemName, NodeType.E_INVALID_NODE_TYPE));
+			} else if (idExprBinding instanceof CPPTemplateTypeParameter) {
+				String problemName = ((CPPTemplateTypeParameter)idExprBinding).getName();
+				logger.error("Class not working: CPPTemplateTypeParameter, {}", problemName);
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else
 				logger.fatal("problem: instance: {}", idExprBinding.getClass());
 		} else if (nameExpr instanceof IASTFieldReference) {
@@ -633,7 +638,13 @@ public class InstructionLine {
 			funcMemberBinding = ((CPPMethodSpecialization)funcMemberBinding).getSpecializedBinding();
 		}
 		
-		TypeId typeId = var.getVarInMem().getType();
+		IVar varInMem = var.getVarInMem();
+		if( varInMem == null ) {
+			logger.error("varInMem is null. Var: {}", var.getName());
+			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+		}
+		
+		TypeId typeId = varInMem.getType();
 		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);
 		if(classDecl == null) {
 			logger.error("Problem on var {}", var.getName());

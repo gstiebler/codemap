@@ -145,7 +145,8 @@ public class Function extends BaseScopeCDT {
 				try {
 					instructionLine.load(statement);
 				} catch(Exception e) {
-					logger.fatal("Critical error. Code location: {}, Stack trace: {}", DebugOptions.getCurrCodeLocation(), e.getStackTrace());
+					logger.fatal("Critical error. Code location: {}, Stack trace: {}, Msg: {}", 
+							DebugOptions.getCurrCodeLocation(), e.getStackTrace(), e.getMessage());
 				}
 			}
 		} else
