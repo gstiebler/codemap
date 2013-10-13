@@ -42,7 +42,7 @@ public class EnumCDT {
 					String nodeName = val.getNode().getName();
 					counter = Integer.decode(nodeName);
 				} catch (Exception e) {
-					logger.error( e );
+					logger.info( "Msg: {}. Counter will shift with this error.", e );
 				}
 				counter++;
 			} else {

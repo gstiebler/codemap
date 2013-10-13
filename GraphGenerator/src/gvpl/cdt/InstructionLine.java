@@ -61,6 +61,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleTypeConstructorExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
@@ -321,6 +322,10 @@ public class InstructionLine {
 				return new Value(arrayResult);
 			} else if (expr instanceof CPPASTNewExpression) {
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
+			} else if (expr instanceof CPPASTSimpleTypeConstructorExpression) {
+				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) expr;
+				logger.warn("Not implemented CPPASTSimpleTypeConstructorExpression, {}", stce.getRawSignature());
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 		} catch (ClassNotImplementedException e) {
@@ -400,7 +405,8 @@ public class InstructionLine {
 		logger.debug("lhsOp class: {}", lhsOp.getClass());
 		// check if we're trying to read a the instance of a pointer
 		if (lhsOp instanceof IASTUnaryExpression) {
-			logger.warn("not implemented");
+			IASTUnaryExpression unOp = (IASTUnaryExpression) lhsOp;
+			logger.debug("Operator: {} in var {}", unOp.getOperator(), lhsVar.getName());
 		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
 			Value rhsValue = loadValue(rhsExpr);
 			CPPASTArraySubscriptExpression indexExpr = (CPPASTArraySubscriptExpression) lhsOp;
@@ -571,7 +577,7 @@ public class InstructionLine {
 		Function func = _astInterpreter.getFuncId(idExprBinding);
 		
 		if(func == null) {
-			logger.info("Func {} not found.", idExprBinding.getName());
+			logger.warn("Func {} not found.", idExprBinding.getName());
 			GraphNode problemNode = _gvplGraph.addGraphNode(idExprBinding.getName(), NodeType.E_INVALID_NODE_TYPE);
 			return new Value(problemNode);
 		}
@@ -791,7 +797,7 @@ public class InstructionLine {
 			Value value = loadValue(opExpr);
 			return _gvplGraph.addNotOp(value.getNode());
 		} else {
-			logger.error("not implemented {}", unExpr.getRawSignature());
+			logger.warn("not implemented {}", unExpr.getRawSignature());
 			String nodeName = "INVALID_CLASS_" + unExpr.getRawSignature();
 			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
 			return problemGraphNode;

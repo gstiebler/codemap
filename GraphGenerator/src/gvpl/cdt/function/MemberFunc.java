@@ -190,7 +190,7 @@ public class MemberFunc extends Function {
 	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
 		ExecTreeLogger.log(binding.getName());
 		if(binding instanceof ProblemBinding) {
-			logger.info("problem binding");
+			logger.warn("problem binding");
 			return null;
 		}
 		

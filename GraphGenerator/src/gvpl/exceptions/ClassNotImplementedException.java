@@ -11,7 +11,8 @@ public class ClassNotImplementedException extends Exception{
 
 	public ClassNotImplementedException(String className, String itemName) {
 		_className = className;
-		logger.error("Class not implemented: {}, {}", className, itemName);
+		logger.error("Class not implemented: {}, {}, Stack: {}", 
+				className, itemName, super.getStackTrace());
 	}
 	
 	public String getClassName() {

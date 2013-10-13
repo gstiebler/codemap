@@ -59,6 +59,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.GPPASTExplicitTemplateInstantiation;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -165,6 +166,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 				for (IASTDeclarator declarator : declarators) {
 					IASTName name = declarator.getName();
 					IBinding binding = name.resolveBinding();
+					if(binding instanceof CPPTypedef) {
+						logger.warn("Not implemented CPPTypedef, {}", binding.getName());
+					}
 					initializeGlobalVar(binding, declarator);
 				}
 			} else if (declSpec instanceof IASTEnumerationSpecifier) {
@@ -173,21 +177,24 @@ public class AstInterpreterCDT extends AstInterpreter {
 				logger.fatal("you're doing it wrong. {}. CodeLoc: {}", declSpec.getClass(),
 						DebugOptions.getCurrCodeLocation());
 		} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
-			logger.info("Not implemented: {}", declaration.getClass());
+			logger.warn("Not implemented: {}", declaration.getClass());
 		} else if (declaration instanceof CPPASTNamespaceDefinition) {
 			CPPASTNamespaceDefinition nd = (CPPASTNamespaceDefinition) declaration;
 			loadDeclarations(nd.getDeclarations());
 		} else if (declaration instanceof CPPASTLinkageSpecification) {// extern  "C"
-			logger.info("Not implemented: {}", declaration.getClass());
+			logger.warn("Not implemented: {}", declaration.getClass());
 		} else if (declaration instanceof CPPASTUsingDeclaration) {
 			CPPASTUsingDeclaration ud = (CPPASTUsingDeclaration) declaration;
-			logger.info("Not implemented CPPASTUsingDeclaration: {}", ud.getName());
+			logger.warn("Not implemented CPPASTUsingDeclaration: {}", ud.getName());
 		} else if (declaration instanceof CPPASTTemplateDeclaration) {
 			CPPASTTemplateDeclaration td = (CPPASTTemplateDeclaration) declaration;
 			loadDeclaration(td.getDeclaration());
 		} else if ( declaration instanceof CPPASTTemplateSpecialization ){
 			CPPASTTemplateSpecialization ts = (CPPASTTemplateSpecialization) declaration;
-			logger.info("Not implemented CPPASTTemplateSpecialization: {}", ts.getRawSignature());
+			logger.warn("Not implemented CPPASTTemplateSpecialization: {}", ts.getRawSignature());
+		} else if ( declaration instanceof GPPASTExplicitTemplateInstantiation ){
+			GPPASTExplicitTemplateInstantiation ti = (GPPASTExplicitTemplateInstantiation) declaration;
+			logger.warn("Not implemented GPPASTExplicitTemplateInstantiation: {}", ti.getRawSignature());
 		} else
 			logger.error("Deu merda aqui. {}", declaration.getClass());
 	}
@@ -246,13 +253,13 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.error("problem binding: {}", ((ProblemBinding)classBinding).getPhysicalNode());
 			return;
 		} else if(classBinding instanceof CPPDeferredClassInstance) {
-			logger.error("Not implemented CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
+			logger.warn("Not implemented CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
 			return;
 		} else if(classBinding instanceof CPPNamespace) {
-			logger.error("Not implemented CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
+			logger.warn("Not implemented CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
 			return;
 		} else if (classBinding instanceof  CPPClassSpecialization ) {
-			logger.error("Not implemented CPPClassSpecialization: {}", ((CPPClassSpecialization)classBinding).getName());
+			logger.warn("Not implemented CPPClassSpecialization: {}", ((CPPClassSpecialization)classBinding).getName());
 			return;
 		}
 		
