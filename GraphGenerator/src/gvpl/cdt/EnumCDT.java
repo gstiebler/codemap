@@ -1,10 +1,10 @@
 package gvpl.cdt;
 
 import gvpl.common.CodeLocation;
+import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
-import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.graph.Graph;
 import gvpl.graph.Graph.NodeType;
 import gvpl.graph.GraphNode;

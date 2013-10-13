@@ -141,8 +141,12 @@ public class Function extends BaseScopeCDT {
 		if (_body instanceof IASTCompoundStatement) {
 			IASTStatement[] statements = ((IASTCompoundStatement)_body).getStatements();
 			for (IASTStatement statement : statements) {
-				InstructionLine instructionLine = new InstructionLine(gvplGraph, this, _astInterpreter);
-				instructionLine.load(statement);
+				InstructionLine instructionLine = new InstructionLine(gvplGraph, this, _astInterpreter);	
+				try {
+					instructionLine.load(statement);
+				} catch(Exception e) {
+					logger.fatal("Critical error. Code location: {}, Stack trace: {}", DebugOptions.getCurrCodeLocation(), e.getStackTrace());
+				}
 			}
 		} else
 			logger.fatal("Work here.");

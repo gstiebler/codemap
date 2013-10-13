@@ -118,7 +118,10 @@ public class Var implements IVar, java.io.Serializable {
 	public GraphNode receiveAssign(NodeType lhsType, Value rhsValue, Graph graph) {
 		ExecTreeLogger.log("Var: " + getName());
 		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
-		rhsValue.getNode().addDependentNode(lhsNode);
+		GraphNode node = rhsValue.getNode();
+		if( node == null )
+			logger.error("node null, var {}", this);
+		node.addDependentNode(lhsNode);
 		updateNode(lhsNode);
 
 		return lhsNode;

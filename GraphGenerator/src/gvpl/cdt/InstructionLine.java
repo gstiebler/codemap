@@ -284,6 +284,8 @@ public class InstructionLine {
 				else {
 					IASTName name = ((IASTIdExpression) expr).getName();
 					IBinding binding = name.resolveBinding();
+					if( binding instanceof ProblemBinding )
+						return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + binding, NodeType.E_INVALID_NODE_TYPE));
 					CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 					return new Value(_astInterpreter.getGlobalVar(binding, codeLocation));
 				}
