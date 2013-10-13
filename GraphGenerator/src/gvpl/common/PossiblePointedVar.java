@@ -170,6 +170,9 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varTrue);
 			updateNodeInternal(possiblePointedVar, graph, node, possiblePointedVar._varFalse);
 		} else {
+			if( possiblePointedVar._finalVar == null ) {
+				logger.error("Final var shouldn't be null. {}", possiblePointedVar.getName());
+			}
 			possiblePointedVar._finalVar.receiveAssign(NodeType.E_VARIABLE, new Value(node), graph);
 		}
 	}

@@ -46,9 +46,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
@@ -117,7 +119,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			try {
 				loadDeclaration(declaration);
 			} catch(Exception e) {
-				logger.fatal("Critical error. Code location: {}, Stack trace: {}", DebugOptions.getCurrCodeLocation(), e.getStackTrace());
+				logger.fatal("Critical error. Code location: {}, Stack trace: {}, message: {}", DebugOptions.getCurrCodeLocation(), e.getStackTrace(), e.getMessage());
 			}
 		}
 	}
@@ -183,6 +185,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 		} else if (declaration instanceof CPPASTTemplateDeclaration) {
 			CPPASTTemplateDeclaration td = (CPPASTTemplateDeclaration) declaration;
 			loadDeclaration(td.getDeclaration());
+		} else if ( declaration instanceof CPPASTTemplateSpecialization ){
+			CPPASTTemplateSpecialization ts = (CPPASTTemplateSpecialization) declaration;
+			logger.info("Not implemented CPPASTTemplateSpecialization: {}", ts.getRawSignature());
 		} else
 			logger.error("Deu merda aqui. {}", declaration.getClass());
 	}
@@ -241,13 +246,20 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.error("problem binding: {}", ((ProblemBinding)classBinding).getPhysicalNode());
 			return;
 		} else if(classBinding instanceof CPPDeferredClassInstance) {
-			logger.error("CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
+			logger.error("Not implemented CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
 			return;
 		} else if(classBinding instanceof CPPNamespace) {
-			logger.error("CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
+			logger.error("Not implemented CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
+			return;
+		} else if (classBinding instanceof  CPPClassSpecialization ) {
+			logger.error("Not implemented CPPClassSpecialization: {}", ((CPPClassSpecialization)classBinding).getName());
 			return;
 		}
+		
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(classBinding);
+		if( classDecl == null ) {
+			logger.error("Class decl not found: {}", classBinding);
+		}
 		classDecl.loadMemberFunc(declaration, this);
 	}
 	
@@ -359,11 +371,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 				if(binding instanceof CPPClassInstance) {
 					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
 					templateName = (CPPASTName) classSpecialization.getDefinition();
-				} else {
-					if(binding instanceof CPPUnknownClass) {
-						logger.error("CPPUnknownClass, {}", binding.getName());
-						return null;
-					}
+				} else if (binding instanceof CPPUnknownClass) {
+					logger.error("CPPUnknownClass, {}", binding.getName());
+					return null;
+				} else if (binding instanceof CPPDeferredClassInstance) {
 					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
 					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
 					IASTNode node = classTemplate.getDefinition();
@@ -375,7 +386,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 						logger.error("Problem loading class {}, {}", node.getClass());
 						return null;
 					}
+				} else  {
+					logger.error("Not implemented: {}", binding.getClass());
+					return null;
 				}
+				
 				IBinding templateBinding = templateName.resolveBinding();
 				return templateBinding;
 			}

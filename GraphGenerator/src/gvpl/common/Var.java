@@ -119,8 +119,10 @@ public class Var implements IVar, java.io.Serializable {
 		ExecTreeLogger.log("Var: " + getName());
 		GraphNode lhsNode = graph.addGraphNode(this, lhsType);
 		GraphNode node = rhsValue.getNode();
-		if( node == null )
-			logger.error("node null, var {}", this);
+		if( node == null ) {
+			logger.info("node null, var {}", this);
+			node = _gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE);
+		}
 		node.addDependentNode(lhsNode);
 		updateNode(lhsNode);
 
