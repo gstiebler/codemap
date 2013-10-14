@@ -51,6 +51,7 @@ import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
@@ -63,6 +64,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleTypeConstructorExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTypeIdExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
@@ -325,6 +327,14 @@ public class InstructionLine {
 			} else if (expr instanceof CPPASTSimpleTypeConstructorExpression) {
 				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) expr;
 				logger.warn("Not implemented CPPASTSimpleTypeConstructorExpression, {}", stce.getRawSignature());
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+			} else if (expr instanceof CPPASTTypeIdExpression) {
+				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) expr;
+				logger.warn("Not implemented CPPASTTypeIdExpression, {}", tie.getRawSignature());
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+			} else if (expr instanceof CPPASTConditionalExpression) {
+				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) expr;
+				logger.warn("Not implemented CPPASTConditionalExpression, {}", ce.getRawSignature());
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());

@@ -183,7 +183,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				logger.fatal("you're doing it wrong. {}. CodeLoc: {}", declSpec.getClass(),
 						DebugOptions.getCurrCodeLocation());
 		} else if (declaration instanceof CPPASTUsingDirective) {// if it's a class/struct
-			logger.warn("Not implemented: {}", declaration.getClass());
+			logger.info("Using directive: {}", declaration.getClass());
 		} else if (declaration instanceof CPPASTNamespaceDefinition) {
 			CPPASTNamespaceDefinition nd = (CPPASTNamespaceDefinition) declaration;
 			loadDeclarations(nd.getDeclarations());
@@ -415,6 +415,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 				return templateBinding;
 			}
 			IBinding binding = name.resolveBinding();
+			if(binding instanceof ProblemBinding) {
+				logger.error("ProblemBinding: {}", name.getRawSignature());
+			}
 			if(binding instanceof CPPTypedef) {
 				IBinding newBinding = _typedefBindings.get(binding);
 				if(newBinding != null)
