@@ -8,6 +8,7 @@ import gvpl.common.IVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
+import gvpl.exceptions.ClassNotImplementedException;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
@@ -36,6 +37,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTEnumerationSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLinkageSpecification;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
@@ -191,7 +193,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			loadDeclaration(td.getDeclaration());
 		} else if ( declaration instanceof CPPASTTemplateSpecialization ){
 			CPPASTTemplateSpecialization ts = (CPPASTTemplateSpecialization) declaration;
-			logger.warn("Not implemented CPPASTTemplateSpecialization: {}", ts.getRawSignature());
+			loadDeclaration(ts.getDeclaration());
 		} else if ( declaration instanceof GPPASTExplicitTemplateInstantiation ){
 			GPPASTExplicitTemplateInstantiation ti = (GPPASTExplicitTemplateInstantiation) declaration;
 			logger.warn("Not implemented GPPASTExplicitTemplateInstantiation: {}", ti.getRawSignature());
@@ -342,7 +344,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public boolean isFunctionTypedef(IASTDeclSpecifier declSpec) {
-		IBinding binding = bindingFromDeclSpec(declSpec);
+		IBinding binding;
+		try {
+			binding = bindingFromDeclSpec(declSpec);
+		} catch (ClassNotImplementedException e) {
+			return false;
+		}
 		return _functionTypedefs.contains(binding);
 	}
 
@@ -363,7 +370,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		}
 	}
 	
-	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) {
+	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) throws ClassNotImplementedException {
 		if(declSpec instanceof IASTNamedTypeSpecifier) {
 			IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
 			if(name instanceof CPPASTQualifiedName) {
@@ -393,6 +400,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 						logger.error("Problem loading class {}, {}", node.getClass());
 						return null;
 					}
+				} else if (binding instanceof CPPClassSpecialization) {
+					return binding;
 				} else  {
 					logger.error("Not implemented: {}", binding.getClass());
 					return null;
@@ -406,8 +415,13 @@ public class AstInterpreterCDT extends AstInterpreter {
 		}
 		else if(declSpec instanceof CPPASTElaboratedTypeSpecifier)
 			return ((CPPASTElaboratedTypeSpecifier) declSpec).getName().resolveBinding();
-		else
+		else if(declSpec instanceof CPPASTSimpleDeclSpecifier) {
 			return null;
+		} else if(declSpec instanceof CPPASTEnumerationSpecifier) {
+			return null;
+		} else {
+			throw new ClassNotImplementedException(declSpec.getClass().toString(), declSpec.getRawSignature().toString());
+		}
 	}
 	
 	void callEventFunctions() {
@@ -483,8 +497,13 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return The id of the type
 	 */
 	public TypeId getType(IASTDeclSpecifier declSpec) {
-		IBinding binding = bindingFromDeclSpec(declSpec);
-		if (binding == null)
+		IBinding binding = null;
+		try {
+			binding = bindingFromDeclSpec(declSpec);
+		} catch (ClassNotImplementedException e) {
+			return _primitiveType;
+		}
+		if(binding == null)
 			return _primitiveType;
 		
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(binding);
