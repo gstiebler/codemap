@@ -86,7 +86,7 @@ public class ClassDeclCDT extends ClassDecl{
 				IASTName name = ((CPPASTNamedTypeSpecifier) declSpec).getName();
 				if(name instanceof CPPASTTemplateId) {
 					//((CPPASTNamedTypeSpecifier) declSpec).
-					logger.warn("Not implemented: CPPASTNamedTypeSpecifier, {}", name);
+					logger.warn("Not implemented: CPPASTTemplateId, {}", name.getRawSignature());
 					continue;
 				}
 			}
@@ -218,7 +218,7 @@ public class ClassDeclCDT extends ClassDecl{
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
 		if(memberFuncBinding instanceof CPPTypedef)
 		{
-			logger.warn("Not implemented: {}", memberFuncBinding.getClass());
+			logger.warn("Not implemented: CPPTypedef {}", memberFuncBinding.getName());
 			return null;
 		}
 		

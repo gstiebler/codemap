@@ -189,7 +189,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 			CPPASTNamespaceDefinition nd = (CPPASTNamespaceDefinition) declaration;
 			loadDeclarations(nd.getDeclarations());
 		} else if (declaration instanceof CPPASTLinkageSpecification) {// extern  "C"
-			logger.warn("Not implemented: {}", declaration.getClass());
+			CPPASTLinkageSpecification ls = (CPPASTLinkageSpecification) declaration;
+			loadDeclarations(ls.getDeclarations());
+			logger.warn("TODO? CPPASTLinkageSpecification: {}", declaration.getClass());
 		} else if (declaration instanceof CPPASTUsingDeclaration) {
 			CPPASTUsingDeclaration ud = (CPPASTUsingDeclaration) declaration;
 			logger.info("Not implemented CPPASTUsingDeclaration: {}", ud.getName());
