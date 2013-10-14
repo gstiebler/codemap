@@ -326,8 +326,7 @@ public class InstructionLine {
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 			} else if (expr instanceof CPPASTSimpleTypeConstructorExpression) {
 				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) expr;
-				logger.warn("Not implemented CPPASTSimpleTypeConstructorExpression, {}", stce.getRawSignature());
-				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+				return loadValue(stce.getInitialValue());
 			} else if (expr instanceof CPPASTTypeIdExpression) {
 				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) expr;
 				logger.warn("Not implemented CPPASTTypeIdExpression, {}", tie.getRawSignature());

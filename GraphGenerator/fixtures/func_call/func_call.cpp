@@ -23,7 +23,7 @@ int main()
 {
 	int x;
 	int a = (int) 3.0;
-	int b = 5;
+	int b = int(5);
 	int c = soma(a, b);
 	
 	int d = soma(a, b, 0.3);
