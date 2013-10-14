@@ -55,6 +55,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType.CPPClassTypeDelegate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
@@ -191,7 +192,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.warn("Not implemented: {}", declaration.getClass());
 		} else if (declaration instanceof CPPASTUsingDeclaration) {
 			CPPASTUsingDeclaration ud = (CPPASTUsingDeclaration) declaration;
-			logger.warn("Not implemented CPPASTUsingDeclaration: {}", ud.getName());
+			logger.info("Not implemented CPPASTUsingDeclaration: {}", ud.getName());
 		} else if (declaration instanceof CPPASTTemplateDeclaration) {
 			CPPASTTemplateDeclaration td = (CPPASTTemplateDeclaration) declaration;
 			loadDeclaration(td.getDeclaration());
@@ -422,6 +423,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 				IBinding newBinding = _typedefBindings.get(binding);
 				if(newBinding != null)
 					return newBinding;
+			} else if (binding instanceof CPPClassTypeDelegate) {
+				CPPClassTypeDelegate ctd = (CPPClassTypeDelegate) binding;
+				binding = ctd.getBinding();
 			}
 			return binding;
 		}
