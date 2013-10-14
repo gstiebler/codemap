@@ -12,6 +12,7 @@ import gvpl.exceptions.ClassNotImplementedException;
 import gvpl.graph.Graph;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -86,8 +87,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 	static Logger logger = LogManager.getLogger(AstInterpreterCDT.class.getName());
 
 	CppFile _currCppFile = new CppFile();
-	private Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
-	private Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
+	Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
+	Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
+	Map<IBinding, IBinding> _typedefBindings = new HashMap<IBinding, IBinding>();
 	//TODO check if this set is really necessary
 	Set<IBinding> _functionTypedefs = new LinkedHashSet<IBinding>();
 	Function _mainFunction = null;
@@ -169,9 +171,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 					IASTName name = declarator.getName();
 					IBinding binding = name.resolveBinding();
 					if(binding instanceof CPPTypedef) {
-						logger.warn("Not implemented CPPTypedef, {}", binding.getName());
-					}
-					initializeGlobalVar(binding, declarator);
+						IASTName dsName = ((CPPASTNamedTypeSpecifier) declSpec).getName();
+						IBinding originalClassBinding = dsName.resolveBinding();
+						_typedefBindings.put(binding, originalClassBinding);
+					} else
+						initializeGlobalVar(binding, declarator);
 				}
 			} else if (declSpec instanceof IASTEnumerationSpecifier) {
 				EnumCDT.loadEnum((IASTEnumerationSpecifier) declSpec, this);
@@ -411,6 +415,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 				return templateBinding;
 			}
 			IBinding binding = name.resolveBinding();
+			if(binding instanceof CPPTypedef) {
+				IBinding newBinding = _typedefBindings.get(binding);
+				if(newBinding != null)
+					return newBinding;
+			}
 			return binding;
 		}
 		else if(declSpec instanceof CPPASTElaboratedTypeSpecifier)

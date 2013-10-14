@@ -238,5 +238,10 @@ public class BasicTest {
 	public void classPointerAssignment() {
 		TestsUtil.baseTest("class_pointer_assignment");
 	}
+
+	@Test
+	public void typedef() {
+		TestsUtil.baseTest("typedef");
+	}
 	
 }
