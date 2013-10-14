@@ -278,6 +278,8 @@ public class ClassDeclCDT extends ClassDecl{
 			return memberFunc;
 		
 		for(MemberFunc memberF : _memberFuncIdMap.values()) {
+			if(memberF == null)
+				continue;
 			MemberFunc parentMemberFunc = memberF.getParentMemberFunc();
 			if(parentMemberFunc == null)
 				continue;

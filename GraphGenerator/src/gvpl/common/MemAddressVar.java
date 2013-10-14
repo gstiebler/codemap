@@ -35,6 +35,11 @@ public class MemAddressVar extends Var {
 	}
 
 	public void setPointedVar(IVar pointedVar) {
+		if(pointedVar == null) {
+			logger.error("pointedVar should not be null");
+			return;
+		}
+		
 		ExecTreeLogger.log("Var: " + pointedVar.getName());
 		_possiblePointedVar.setVar(pointedVar);
 		_hasReceivedVar = true;

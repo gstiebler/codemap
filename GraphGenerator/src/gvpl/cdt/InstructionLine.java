@@ -67,6 +67,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTypeIdExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredFunctionInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
@@ -140,9 +141,9 @@ public class InstructionLine {
 		} else if (statement instanceof CPPASTSwitchStatement) {
 			loadSwitch((CPPASTSwitchStatement) statement);
 		} else if (statement instanceof CPPASTWhileStatement) {
-			logger.fatal("Node type not found!! Node: " + statement.toString());
+			logger.error("Node type not found!! Node: " + statement.toString());
 		} else
-			logger.fatal("Node type not found!! Node: " + statement.toString());
+			logger.error("Node type not found!! Node: " + statement.toString());
 	}
 	
 	private void loadSwitch(CPPASTSwitchStatement switchStatement) {
@@ -203,6 +204,11 @@ public class InstructionLine {
 		}
 		MemAddressVar mav = (MemAddressVar) var;
 		var = mav.getVarInMem();
+		if(!(var instanceof ClassVar)) {
+			logger.error("Var {} must be ClassVar", var);
+			return;
+		}
+		
 		((ClassVar) var).callDestructor(_parentBaseScope, _gvplGraph);
 		mav.delete();
 	}
@@ -460,6 +466,10 @@ public class InstructionLine {
 		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsValue, IndirectionType.E_REFERENCE));
+		if(opFunc == null) {
+			logger.error("opFunc must not be null: {}", lhsOp.getRawSignature());
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_" + lhsOp.getRawSignature(), NodeType.E_INVALID_NODE_TYPE);
+		}
 		Value result = opFunc.addFuncRef(parameterValues, _gvplGraph, lhsVar, _parentBaseScope);
 		return result.getNode();
 	}
@@ -539,8 +549,15 @@ public class InstructionLine {
 					MemberFunc parentMF = getParentFunc();
 					func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 				}
-				else
-					logger.fatal("you're doing it wrong");
+				else {
+					logger.error("you're doing it wrong. {}, {}", name.getClass(), nameExpr);
+					return new Value( _gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+				}
+				
+				if (func == null) {
+					logger.error("func must not be null, {}", nameExpr);
+					return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+				}
 				
 				if (func.getIsStatic()) { // static function
 					return loadStaticMethod(paramExpr, func);
@@ -561,8 +578,12 @@ public class InstructionLine {
 				String problemName = ((CPPTemplateTypeParameter)idExprBinding).getName();
 				logger.error("Class not working: CPPTemplateTypeParameter, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + problemName, NodeType.E_INVALID_NODE_TYPE));
+			} else if (idExprBinding instanceof CPPDeferredFunctionInstance) {
+				CPPDeferredFunctionInstance dfi = (CPPDeferredFunctionInstance) idExprBinding;
+				logger.error("Class not working: CPPTemplateTypeParameter, {}", dfi.getName());
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + dfi.getName(), NodeType.E_INVALID_NODE_TYPE));
 			} else
-				logger.fatal("problem: instance: {}", idExprBinding.getClass());
+				logger.error("problem: instance: {}", idExprBinding.getClass());
 		} else if (nameExpr instanceof IASTFieldReference) {
 			return loadVarMethod(funcCall, paramExpr);
 		} else
@@ -697,8 +718,20 @@ public class InstructionLine {
 			return parameterValues;
 
 		IASTExpression[] parameters = getChildExpressions(paramExpr);
-		if(parameters.length != func.getNumParameters())
-			logger.fatal("Number of parameters are different!");
+		if(parameters == null) {
+			logger.error("No parameters on func {}", func);
+			return new ArrayList<FuncParameter>();
+		}
+		
+		if(func == null) {
+			logger.error("Func must not be null");
+			return new ArrayList<FuncParameter>();
+		}
+		
+		if(parameters.length != func.getNumParameters()) {
+			logger.error("Number of parameters are different! {}", func);
+			return new ArrayList<FuncParameter>();
+		}
 
 		for (int i = 0; i < parameters.length; i++) {
 			IASTExpression parameter = parameters[i];
@@ -733,9 +766,17 @@ public class InstructionLine {
 	}
 
 	GraphNode loadBinOp(IASTBinaryExpression binOp) {
+		if(binOp == null) {
+			logger.error("binOp must not be null");
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_", NodeType.E_INVALID_NODE_TYPE);
+		}
 		String opStr = CppMaps.getBinOpString(binOp.getOperator());
 		Value lValue = loadValue(binOp.getOperand1());
 		Value rValue = loadValue(binOp.getOperand2());
+		if(lValue == null || rValue == null) {
+			logger.error("lValue and rValue must be valid");
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_", NodeType.E_INVALID_NODE_TYPE);
+		}
 		return _gvplGraph.addBinOp(opStr, lValue.getNode(), rValue.getNode(), _parentBaseScope);
 	}
 

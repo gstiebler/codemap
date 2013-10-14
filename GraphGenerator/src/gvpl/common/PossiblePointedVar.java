@@ -232,10 +232,17 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 		}
 		
 		if (possiblePointedVar._finalVar == null) {
-			GraphNode trueNode = loadMemberFuncRefRecursive(possiblePointedVar._varTrue,
-					memberFunc, parameterValues, graph, astLoader).getNode();
-			GraphNode falseNode = loadMemberFuncRefRecursive(possiblePointedVar._varFalse,
-					memberFunc, parameterValues, graph, astLoader).getNode();
+			Value trueValue = loadMemberFuncRefRecursive(possiblePointedVar._varTrue,
+					memberFunc, parameterValues, graph, astLoader);
+			Value falseValue = loadMemberFuncRefRecursive(possiblePointedVar._varFalse,
+					memberFunc, parameterValues, graph, astLoader);
+			if(trueValue == null || falseValue == null) {
+				logger.error("trueValue and falseValue must be valid");
+				GraphNode problemGraphNode = graph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE);
+				return new Value(problemGraphNode);
+			}
+			GraphNode trueNode = trueValue.getNode();
+			GraphNode falseNode = falseValue.getNode();
 
 			GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
 
@@ -247,6 +254,10 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 		} else if (possiblePointedVar._finalVar instanceof ClassVar){
 			ClassVar classVar = (ClassVar) possiblePointedVar._finalVar;
 			MemberFunc eqFunc = classVar.getClassDecl().getEquivalentFunc(memberFunc);
+			if(eqFunc == null) {
+				logger.error("eqFunc must not be null");
+				return new Value( graph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+			}
 			return eqFunc.addFuncRef(parameterValues, graph, classVar, astLoader);
 		} else {
 			logger.error("possiblePointedVar._finalVar is {}", possiblePointedVar._finalVar.getClass());

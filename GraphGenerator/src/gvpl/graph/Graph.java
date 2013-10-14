@@ -225,6 +225,10 @@ public class Graph implements java.io.Serializable {
 			BaseScope astLoader) {
 		GraphNode binOpNode = addGraphNode(opStr, NodeType.E_OPERATION);
 
+		if( val1Node == null || val2Node == null ) {
+			logger.error("Nodes can't be null");
+			return binOpNode;
+		}
 		val1Node.addDependentNode(binOpNode);
 		val2Node.addDependentNode(binOpNode);
 

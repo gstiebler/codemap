@@ -141,13 +141,13 @@ public abstract class BaseScopeCDT extends BaseScope{
 			//probably "this" pointer
 			return null;
 		} else if (expr instanceof CPPASTFunctionCallExpression) {
-			logger.fatal("not implemented");
+			logger.error("not implemented");
 			throw new NotFoundException(expr.getRawSignature().toString());
 		} else if (expr instanceof CPPASTFieldReference) {
-			logger.fatal("not implemented CPPASTFieldReference", ((CPPASTFieldReference)expr).getFieldName());
+			logger.error("not implemented CPPASTFieldReference", ((CPPASTFieldReference)expr).getFieldName());
 			throw new NotFoundException(expr.getRawSignature().toString());
 		}  else {
-			logger.fatal("Type not found {}, ", expr.getClass());
+			logger.error("Type not found {}, ", expr.getClass());
 			throw new NotFoundException(expr.getRawSignature().toString());
 		}
 	}

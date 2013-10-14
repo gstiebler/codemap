@@ -8,11 +8,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 
 public abstract class ClassDecl {
 
+	static Logger logger = LogManager.getLogger(ClassDecl.class.getName());
+	
 	protected String _name;
 	protected TypeId _typeId;
 	protected List<MemberFunc> _constructorFuncs = new ArrayList<MemberFunc>();
@@ -85,6 +89,11 @@ public abstract class ClassDecl {
 	 * @return
 	 */
 	public MemberFunc getEquivalentFunc(MemberFunc memberFunc) {
+		if(memberFunc == null) {
+			logger.error("MemberFunc can't be null");
+			return null;
+		}
+		
 		for(MemberFunc intMemberFunc : getMemberFuncList()) {
 			if(memberFunc.isDeclarationEquivalent(intMemberFunc))
 				return intMemberFunc;

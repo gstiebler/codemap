@@ -35,6 +35,7 @@ public class BasicBlockCDT extends BaseScopeCDT {
 			statements[0] = baseStatement;
 		} else {
 			logger.error("something wrong here: {}", baseStatement.getClass());
+			return;
 		}
 
 		for (IASTStatement statement : statements) {

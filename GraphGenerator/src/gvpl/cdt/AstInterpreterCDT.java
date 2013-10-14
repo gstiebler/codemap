@@ -8,6 +8,7 @@ import gvpl.common.IVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.ScriptManager;
 import gvpl.common.TypeId;
+import gvpl.common.Var;
 import gvpl.exceptions.ClassNotImplementedException;
 import gvpl.graph.Graph;
 
@@ -162,6 +163,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 							addGlobalVar(declarator, declSpec);
 						} else if (binding instanceof CPPField) {
 							initializeGlobalVar(binding, declarator);
+						}else {
+							logger.error("Not implemented: {}", binding.getClass());
 						}
 					} else
 						logger.error("you're doing it wrong. {}", declarator.getClass());
@@ -497,6 +500,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public IVar getGlobalVar(IBinding binding, CodeLocation fileLoc) {
+		if(binding == null) {
+			logger.error("Binding can't be null");
+			return new Var(_gvplGraph, "ERROR", _primitiveType);
+		}
 		ExecTreeLogger.log(binding.getName());
 		logger.debug(binding.getName());
 		IVar var = _globalVars.get(binding);
