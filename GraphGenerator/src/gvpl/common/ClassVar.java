@@ -171,7 +171,7 @@ public class ClassVar extends Var implements IClassVar{
 			Graph graph, BaseScopeCDT astLoader) {
 		if(memberFunc == null) {
 			logger.error("memberFunc must not be null");
-			return new Value( _gvplGraph.addGraphNode("PROBLEM_NODE ", NodeType.E_INVALID_NODE_TYPE));
+			return new Value( _gvplGraph.addGraphNode("PROBLEM_NODE_MFNULL", NodeType.E_INVALID_NODE_TYPE));
 		}
 		return memberFunc.addFuncRef(parameterValues, graph, this, astLoader);
 	}

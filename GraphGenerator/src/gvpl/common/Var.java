@@ -121,7 +121,7 @@ public class Var implements IVar, java.io.Serializable {
 		GraphNode node = rhsValue.getNode();
 		if( node == null ) {
 			logger.warn("node null, var {}", this);
-			node = _gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE);
+			node = _gvplGraph.addGraphNode("PROBLEM_NODE_NNULL", NodeType.E_INVALID_NODE_TYPE);
 		}
 		node.addDependentNode(lhsNode);
 		updateNode(lhsNode);

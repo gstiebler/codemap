@@ -163,7 +163,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 							addGlobalVar(declarator, declSpec);
 						} else if (binding instanceof CPPField) {
 							initializeGlobalVar(binding, declarator);
-						}else {
+						} else if (binding instanceof CPPTypedef) {
+							logger.error("Not implemented CPPTypedef: {}", binding.getName());
+						} else {
 							logger.error("Not implemented: {}", binding.getClass());
 						}
 					} else
@@ -172,6 +174,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 			} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
 				IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 				for (IASTDeclarator declarator : declarators) {
+					if(declarator instanceof CPPASTFunctionDeclarator) {
+						loadFunctionDeclaration((CPPASTFunctionDeclarator) declarator);
+						return;
+					}
+					
 					IASTName name = declarator.getName();
 					IBinding binding = name.resolveBinding();
 					if(binding instanceof CPPTypedef) {

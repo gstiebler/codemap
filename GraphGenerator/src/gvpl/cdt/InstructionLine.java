@@ -337,11 +337,12 @@ public class InstructionLine {
 				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) expr;
 				String signature = tie.getTypeId().getDeclSpecifier().toString();
 				logger.warn("Not implemented CPPASTTypeIdExpression, {}", signature);
-				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTTypeIdExpression",
+						NodeType.E_INVALID_NODE_TYPE));
 			} else if (expr instanceof CPPASTConditionalExpression) {
 				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) expr;
 				logger.warn("Not implemented CPPASTConditionalExpression, {}", ce.getRawSignature());
-				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTConditionalExpression", NodeType.E_INVALID_NODE_TYPE));
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 		} catch (ClassNotImplementedException e) {
@@ -350,7 +351,8 @@ public class InstructionLine {
 			Value problemValue = new Value(problemGraphNode);
 			return problemValue;
 		} catch (NotFoundException e) {
-			return new Value(_gvplGraph.addGraphNode("INVALID_NODE_PROBLEM " + e.getItemName(), NodeType.E_INVALID_NODE_TYPE));
+			String nodeName = "INVALID_NODE_PROBLEM_" + e.getItemName() + "_" + e.getClass();
+			return new Value(_gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE));
 		}
 	}
 
@@ -551,7 +553,7 @@ public class InstructionLine {
 				}
 				else {
 					logger.error("you're doing it wrong. {}, {}", name.getClass(), nameExpr);
-					return new Value( _gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+					return new Value( _gvplGraph.addGraphNode("PROBLEM_NODE_" + name.getClass(), NodeType.E_INVALID_NODE_TYPE));
 				}
 				
 				if (func == null) {
@@ -572,15 +574,15 @@ public class InstructionLine {
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else if (idExprBinding instanceof CPPTypedef) {
 				String problemName = ((CPPTypedef)idExprBinding).getName();
-				logger.error("Class not working: CPPTypedef, {}", problemName);
+				logger.warn("Class not working: CPPTypedef, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTypedef_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else if (idExprBinding instanceof CPPTemplateTypeParameter) {
 				String problemName = ((CPPTemplateTypeParameter)idExprBinding).getName();
-				logger.error("Class not working: CPPTemplateTypeParameter, {}", problemName);
+				logger.warn("Class not working: CPPTemplateTypeParameter, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else if (idExprBinding instanceof CPPDeferredFunctionInstance) {
 				CPPDeferredFunctionInstance dfi = (CPPDeferredFunctionInstance) idExprBinding;
-				logger.error("Class not working: CPPTemplateTypeParameter, {}", dfi.getName());
+				logger.warn("Class not working: CPPTemplateTypeParameter, {}", dfi.getName());
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + dfi.getName(), NodeType.E_INVALID_NODE_TYPE));
 			} else
 				logger.error("problem: instance: {}", idExprBinding.getClass());
@@ -678,14 +680,14 @@ public class InstructionLine {
 		IVar varInMem = var.getVarInMem();
 		if( varInMem == null ) {
 			logger.error("varInMem is null. Var: {}", var.getName());
-			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_VMNULL", NodeType.E_INVALID_NODE_TYPE));
 		}
 		
 		TypeId typeId = varInMem.getType();
 		ClassDeclCDT classDecl =_astInterpreter.getClassDecl(typeId);
 		if(classDecl == null) {
 			logger.error("Problem on var {}", var.getName());
-			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE", NodeType.E_INVALID_NODE_TYPE));
+			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CDNULL", NodeType.E_INVALID_NODE_TYPE));
 		}
 		MemberFunc memberFunc = classDecl.getMemberFunc(funcMemberBinding);
 
@@ -768,14 +770,14 @@ public class InstructionLine {
 	GraphNode loadBinOp(IASTBinaryExpression binOp) {
 		if(binOp == null) {
 			logger.error("binOp must not be null");
-			return _gvplGraph.addGraphNode("PROBLEM_NODE_", NodeType.E_INVALID_NODE_TYPE);
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_binOpNULL", NodeType.E_INVALID_NODE_TYPE);
 		}
 		String opStr = CppMaps.getBinOpString(binOp.getOperator());
 		Value lValue = loadValue(binOp.getOperand1());
 		Value rValue = loadValue(binOp.getOperand2());
 		if(lValue == null || rValue == null) {
 			logger.error("lValue and rValue must be valid");
-			return _gvplGraph.addGraphNode("PROBLEM_NODE_", NodeType.E_INVALID_NODE_TYPE);
+			return _gvplGraph.addGraphNode("PROBLEM_NODE_lrValueNULL", NodeType.E_INVALID_NODE_TYPE);
 		}
 		return _gvplGraph.addBinOp(opStr, lValue.getNode(), rValue.getNode(), _parentBaseScope);
 	}

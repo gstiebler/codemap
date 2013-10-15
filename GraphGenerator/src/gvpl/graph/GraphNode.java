@@ -89,7 +89,7 @@ public class GraphNode implements java.io.Serializable {
 		if (_dependentNodes.contains(dependentNode))
 		{
 			ExecTreeLogger.log("Already dependent!!");
-			logger.warn("Already dependent!!");
+			logger.warn("Already dependent!! {}, {}", this, dependentNode);
 			return;
 		}
 
