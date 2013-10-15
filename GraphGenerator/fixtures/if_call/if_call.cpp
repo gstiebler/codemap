@@ -37,4 +37,6 @@ int main() {
 	int q = 8;
 	if(m > 10)
 		q = 20;
+        
+    int h = m > 10 ? z : 200;
 }

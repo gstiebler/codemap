@@ -12,6 +12,7 @@ import gvpl.common.MemAddressVar;
 import gvpl.common.PointerVar;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
+import gvpl.common.ifclasses.IfCondition;
 import gvpl.exceptions.ClassNotImplementedException;
 import gvpl.exceptions.NotFoundException;
 import gvpl.graph.Graph;
@@ -341,8 +342,18 @@ public class InstructionLine {
 						NodeType.E_INVALID_NODE_TYPE));
 			} else if (expr instanceof CPPASTConditionalExpression) {
 				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) expr;
-				logger.warn("Not implemented CPPASTConditionalExpression, {}", ce.getRawSignature());
-				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTConditionalExpression", NodeType.E_INVALID_NODE_TYPE));
+				IASTExpression positiveExpr = ce.getPositiveResultExpression();
+				IASTExpression negativeExpr = ce.getNegativeResultExpression();
+				IASTExpression conditionExpr = ce.getLogicalConditionExpression();
+				
+				Value positiveValue = loadValue(positiveExpr);
+				Value negativeValue = loadValue(negativeExpr);
+				Value conditionValue = loadValue(conditionExpr);
+				
+				GraphNode ifNode = IfCondition.createIfNode(_gvplGraph, conditionValue.getNode(), 
+						positiveValue.getNode(), negativeValue.getNode());
+
+				return new Value(ifNode);
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 		} catch (ClassNotImplementedException e) {

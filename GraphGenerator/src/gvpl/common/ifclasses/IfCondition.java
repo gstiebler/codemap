@@ -74,7 +74,7 @@ public class IfCondition {
 		}
 	}
 
-	private static GraphNode createIfNode(Graph graph, GraphNode conditionNode, GraphNode trueNode,
+	public static GraphNode createIfNode(Graph graph, GraphNode conditionNode, GraphNode trueNode,
 			GraphNode falseNode) {
 		ExecTreeLogger.log(graph.getName());
 		GraphNode ifOpNode = graph.addGraphNode("If", NodeType.E_OPERATION);
