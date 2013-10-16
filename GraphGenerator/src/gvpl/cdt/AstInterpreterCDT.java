@@ -164,7 +164,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 						} else if (binding instanceof CPPField) {
 							initializeGlobalVar(binding, declarator);
 						} else if (binding instanceof CPPTypedef) {
-							logger.error("Not implemented CPPTypedef: {}", binding.getName());
+							logger.info("Not implemented CPPTypedef: {}", binding.getName());
 						} else {
 							logger.error("Not implemented: {}", binding.getClass());
 						}

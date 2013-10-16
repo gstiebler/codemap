@@ -336,10 +336,14 @@ public class InstructionLine {
 				return loadValue(stce.getInitialValue());
 			} else if (expr instanceof CPPASTTypeIdExpression) {
 				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) expr;
-				String signature = tie.getTypeId().getDeclSpecifier().toString();
-				logger.warn("Not implemented CPPASTTypeIdExpression, {}", signature);
-				return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTTypeIdExpression",
-						NodeType.E_INVALID_NODE_TYPE));
+				String raw = tie.getRawSignature();
+				if(raw.substring(0, 7).compareTo("sizeof(") == 0) {
+					return new Value(_gvplGraph.addGraphNode(raw, NodeType.E_DIRECT_VALUE));
+				} else {
+					logger.warn("Not implemented CPPASTTypeIdExpression, {}", raw);
+					return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTTypeIdExpression",
+							NodeType.E_INVALID_NODE_TYPE));
+				}
 			} else if (expr instanceof CPPASTConditionalExpression) {
 				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) expr;
 				IASTExpression positiveExpr = ce.getPositiveResultExpression();
