@@ -56,6 +56,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUsingDirective;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType.CPPClassTypeDelegate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
@@ -277,10 +278,16 @@ public class AstInterpreterCDT extends AstInterpreter {
 		} else if(classBinding instanceof CPPNamespace) {
 			logger.warn("Not implemented CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
 			return;
-		} else if (classBinding instanceof  CPPClassSpecialization ) {
+		} else if (classBinding instanceof CPPClassSpecialization ) {
 			logger.warn("Not implemented CPPClassSpecialization: {}", ((CPPClassSpecialization)classBinding).getName());
 			return;
-		}
+		} else if (classBinding instanceof CPPClassType ) {
+			logger.info("CPPClassType: {}", ((CPPClassType)classBinding).getName());
+		} else if (classBinding instanceof CPPASTName ) {
+			logger.warn("Not implemented CPPASTName: {}", ((CPPASTName)classBinding));
+			return;
+		} else
+			logger.error("Not implemented {}", classBinding.getClass());
 		
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(classBinding);
 		if( classDecl == null ) {

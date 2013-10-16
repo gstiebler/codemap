@@ -248,5 +248,10 @@ public class BasicTest {
 	public void namespace() {
 		TestsUtil.baseTest("namespace");
 	}
+
+	@Test
+	public void charStr() {
+		TestsUtil.baseTest("char_str");
+	}
 	
 }
