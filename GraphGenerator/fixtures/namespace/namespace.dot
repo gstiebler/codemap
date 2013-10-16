@@ -5,20 +5,32 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "33_37_37";
-	node_000008 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=42 ]
-	node_000009 [ label = "var3._memberB", startingline=42 ]
+startinglines = "41_45_45";
+	node_000008 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=50 ]
+	node_000009 [ label = "var3._memberB", startingline=50 ]
+	node_000010 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=52 ]
+	node_000011 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=52 ]
+	node_000014 [ label = "x", startingline=52 ]
 subgraph cluster_2 {
 label = "func1";
 parent = "cluster_1";
-startinglines = "37_37_39";
-	node_000002 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
-	node_000003 [ label = "var1._memberA", startingline=18 ]
-	node_000005 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=21 ]
-	node_000006 [ label = "var2._memberA", startingline=21 ]
+startinglines = "45_45_47";
+	node_000002 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
+	node_000003 [ label = "var1._memberA", startingline=26 ]
+	node_000005 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
+	node_000006 [ label = "var2._memberA", startingline=29 ]
+}
+subgraph cluster_3 {
+label = "soma";
+parent = "cluster_1";
+startinglines = "49_50_52";
+	node_000013 [ label = "soma", style=filled, fillcolor="#FFFFD0", startinglines=52 ]
 }
 }
 	node_000008 -> node_000009
+	node_000010 -> node_000013
+	node_000011 -> node_000013
 	node_000002 -> node_000003
 	node_000005 -> node_000006
+	node_000013 -> node_000014
 }

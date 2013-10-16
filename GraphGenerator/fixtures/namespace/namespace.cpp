@@ -8,7 +8,15 @@ public:
     int _memberA;
 };
 
+void soma(int a, int b);
+
 };
+
+
+void namespaceA::soma(int a, int b)
+{
+    return a + b;
+}
     
 using namespace namespaceA;
 
@@ -40,4 +48,6 @@ int main()
     
     ClassB var3;
     var3._memberB = 8;
+    
+    int x = namespaceA::soma(10, 20);
 }

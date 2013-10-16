@@ -276,7 +276,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.warn("Not implemented CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
 			return;
 		} else if(classBinding instanceof CPPNamespace) {
-			logger.warn("Not implemented CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
+			logger.info("Not implemented CPPNamespace: {}", ((CPPNamespace)classBinding).getName());
 			return;
 		} else if (classBinding instanceof CPPClassSpecialization ) {
 			logger.warn("Not implemented CPPClassSpecialization: {}", ((CPPClassSpecialization)classBinding).getName());
