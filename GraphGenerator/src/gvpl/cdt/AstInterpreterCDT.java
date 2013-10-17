@@ -292,6 +292,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		ClassDeclCDT classDecl = _currCppFile._typeBindingToClass.get(classBinding);
 		if( classDecl == null ) {
 			logger.error("Class decl not found: {}", classBinding);
+			return;
 		}
 		classDecl.loadMemberFunc(declaration, this);
 	}
@@ -430,6 +431,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 					logger.error("Not implemented: {}", binding.getClass());
 					return null;
 				}
+				
+				if(templateName == null)
+					return null;
 				
 				IBinding templateBinding = templateName.resolveBinding();
 				return templateBinding;

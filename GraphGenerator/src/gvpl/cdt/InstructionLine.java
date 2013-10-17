@@ -337,7 +337,7 @@ public class InstructionLine {
 			} else if (expr instanceof CPPASTTypeIdExpression) {
 				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) expr;
 				String raw = tie.getRawSignature();
-				if(raw.substring(0, 7).compareTo("sizeof(") == 0) {
+				if(raw.length() >= 8 && raw.substring(0, 7).compareTo("sizeof(") == 0) {
 					return new Value(_gvplGraph.addGraphNode(raw, NodeType.E_DIRECT_VALUE));
 				} else {
 					logger.warn("Not implemented CPPASTTypeIdExpression, {}", raw);
@@ -866,8 +866,10 @@ public class InstructionLine {
 			return _gvplGraph.addNotOp(value.getNode());
 		} else if (operator == CPPASTUnaryExpression.op_sizeof) {
 			return _gvplGraph.addGraphNode("sizeof()" + unExpr.getRawSignature(), NodeType.E_DIRECT_VALUE);
+		} else if (operator == CPPASTUnaryExpression.op_minus) {
+			return _gvplGraph.addGraphNode(unExpr.getRawSignature(), NodeType.E_DIRECT_VALUE);
 		} else {
-			logger.error("not implemented {}", unExpr.getRawSignature());
+			logger.fatal("not implemented {}", unExpr.getRawSignature());
 			String nodeName = "INVALID_CLASS_" + unExpr.getRawSignature();
 			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
 			return problemGraphNode;
