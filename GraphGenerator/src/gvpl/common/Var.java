@@ -140,7 +140,7 @@ public class Var implements IVar, java.io.Serializable {
 	
 	public List<IVar> getInternalVars() {
 		ExecTreeLogger.log("Var: " + getName());
-		List<IVar> internalVars = new ArrayList<>();
+		List<IVar> internalVars = new ArrayList<IVar>();
 		internalVars.add(this);
 		return internalVars;
 	}

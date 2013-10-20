@@ -11,6 +11,7 @@ import gvpl.common.FuncParameter;
 import gvpl.common.FuncParameter.IndirectionType;
 import gvpl.common.IVar;
 import gvpl.common.MemAddressVar;
+import gvpl.common.PointerVar;
 import gvpl.common.ScopeManager;
 import gvpl.common.TypeId;
 import gvpl.common.Value;
@@ -173,10 +174,6 @@ public class Function extends BaseScopeCDT {
 	 * 
 	 * @param parameters
 	 *            Parameters of the function
-	 * @param func_decl
-	 *            Declaration of the function
-	 * @param basicBlockLoader
-	 *            The class which loads the function definition
 	 */
 	public void loadFuncParameters(IASTParameterDeclaration[] parameters) {
 		_originalParameters = new ArrayList<IBinding>();
@@ -207,7 +204,10 @@ public class Function extends BaseScopeCDT {
 		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);
 		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
 		GraphNode returnNode = new GraphNode(_externalName, NodeType.E_RETURN_VALUE);
-		_returnVar.receiveAssign(NodeType.E_RETURN_VALUE, new Value(returnNode), _gvplGraph);
+		if(_returnVar instanceof PointerVar) {
+			((PointerVar)_returnVar).setPointedVar(BaseScope.instanceVar(IndirectionType.E_VARIABLE, _externalName, _returnType, _gvplGraph, _astInterpreter));
+		} else
+			_returnVar.receiveAssign(NodeType.E_RETURN_VALUE, new Value(returnNode), _gvplGraph);
 		
 		if(parameterValues == null){
 			logger.info("Header only function {} received no params.", this);
@@ -230,7 +230,7 @@ public class Function extends BaseScopeCDT {
 		if(_body != null) {
 			String previousFileName = CodeLocation.getCurrentFileName();
 			CodeLocation.setCurrentFileName(_bodyFileName);
-			_parametersMap = new LinkedHashMap<>();
+			_parametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 			int size = 0;
 			if(parameterValues != null)
 				size = parameterValues.size();

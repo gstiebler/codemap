@@ -146,7 +146,7 @@ public class ClassVar extends Var implements IClassVar{
 	
 	@Override
 	public List<IVar> getInternalVars() {
-		List<IVar> internalVars = new ArrayList<>();
+		List<IVar> internalVars = new ArrayList<IVar>();
 		
 		for (ClassVar parent : _parentInstances) {
 			internalVars.addAll(parent.getInternalVars());

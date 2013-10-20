@@ -650,9 +650,7 @@ public class InstructionLine {
 	
 	/**
 	 * Used when a method call a method of it's own instance
-	 * @param idExprBinding
 	 * @param paramExpr
-	 * @param stLine
 	 * @return The graph node of the result of the function
 	 */
 	private Value loadOwnMethod(IASTExpression paramExpr, Function func) {
