@@ -1,7 +1,13 @@
 package gvpl.common;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,4 +32,33 @@ public class FileFuncs {
 		return "K:\\Projetos\\GVPL\\exemplos\\";
 	}
 
+	public static void saveToFile(Serializable serializable, String filePath) {
+		try {
+			FileOutputStream fileOut = new FileOutputStream(filePath);
+			ObjectOutputStream out = new ObjectOutputStream(fileOut);
+			out.writeObject(serializable);
+			out.close();
+			fileOut.close();
+		} catch (IOException i) {
+			i.printStackTrace();
+		}
+	}
+	
+	public static Serializable loadFromFile(String filePath) {
+		try {
+			FileInputStream fileIn = new FileInputStream(filePath);
+			ObjectInputStream in = new ObjectInputStream(fileIn);
+			Serializable obj = (Serializable) in.readObject();
+			in.close();
+			fileIn.close();
+			return obj;
+		} catch (IOException i) {
+			i.printStackTrace();
+			return null;
+		} catch (ClassNotFoundException c) {
+			c.printStackTrace();
+			return null;
+		}
+	}
+	
 }

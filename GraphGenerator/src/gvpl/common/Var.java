@@ -44,6 +44,8 @@ public class Var implements IVar, java.io.Serializable {
 		_id = getNewId();
 		addToIfScope();
 
+		OutputManager.getInstance().addVar(this);
+		
 		logger.debug("New var ({}) {} - Graph {} ({})", _id, _name, graph.getName(), graph.getId());
 	}
 	

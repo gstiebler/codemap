@@ -1,16 +1,12 @@
 package gvpl.graph;
 
 import gvpl.common.BaseScope;
+import gvpl.common.FileFuncs;
 import gvpl.common.IVar;
 import gvpl.common.Value;
 import gvpl.graphviz.FileDriver;
 import gvpl.graphviz.Visualizer;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,9 +21,6 @@ import debug.ExecTreeLogger;
 
 public class Graph implements java.io.Serializable {
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 7232749054292603601L;
 	static Logger logger = LogManager.getLogger(Graph.class.getName());
 
@@ -250,32 +243,11 @@ public class Graph implements java.io.Serializable {
 	}
 	
 	public void saveToFile(String filePath) {
-		try {
-			FileOutputStream fileOut = new FileOutputStream(filePath);
-			ObjectOutputStream out = new ObjectOutputStream(fileOut);
-			out.writeObject(this);
-			out.close();
-			fileOut.close();
-		} catch (IOException i) {
-			i.printStackTrace();
-		}
+		FileFuncs.saveToFile(this, filePath);
 	}
 	
 	public static Graph loadFromFile(String filePath) {
-		try {
-			FileInputStream fileIn = new FileInputStream(filePath);
-			ObjectInputStream in = new ObjectInputStream(fileIn);
-			Graph graph = (Graph) in.readObject();
-			in.close();
-			fileIn.close();
-			return graph;
-		} catch (IOException i) {
-			i.printStackTrace();
-			return null;
-		} catch (ClassNotFoundException c) {
-			c.printStackTrace();
-			return null;
-		}
+		return (Graph) FileFuncs.loadFromFile(filePath);
 	}
 	
 	@Override

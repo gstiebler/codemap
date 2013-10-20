@@ -1,6 +1,7 @@
 package gvpl.graph;
 
 import gvpl.common.CodeLocation;
+import gvpl.common.OutputManager;
 import gvpl.graph.Graph.NodeType;
 
 import java.util.ArrayList;
@@ -37,8 +38,9 @@ public class GraphNode implements java.io.Serializable {
 		_id = getNewId();
 		_name = name;
 		_type = type;
-		
 		_codeLoc = CodeLocation.getLastCodeLocation();
+		OutputManager.getInstance().addGraphNode(this);
+		
 		logger.info("new graphnode {} ({})", name, _id);
 	}
 
@@ -47,8 +49,9 @@ public class GraphNode implements java.io.Serializable {
 		_parentVarId = parentVarId;
 		_name = name;
 		_type = type;
-
 		_codeLoc = CodeLocation.getLastCodeLocation();
+		OutputManager.getInstance().addGraphNode(this);
+		
 		logger.info("new graphnode ({}) var {} ({})", _id, _name, _parentVarId);
 	}
 

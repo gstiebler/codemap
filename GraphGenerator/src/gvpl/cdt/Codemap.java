@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.common.CodeLocation;
 import gvpl.common.FileFuncs;
+import gvpl.common.OutputManager;
 import gvpl.common.ScopeManager;
 import gvpl.common.ScriptManager;
 import gvpl.graph.Graph;
@@ -133,6 +134,8 @@ public class Codemap {
 			}
 		}
 		
+		OutputManager.setInstance();
+		
 		for(int i = 0; i < translationUnits.size(); ++i) {
 			DebugOptions.setCurrCpp(fileNames.get(i));
 			CodeLocation.setCurrentFileName(fileNames.get(i));
@@ -158,6 +161,8 @@ public class Codemap {
 		
 		Graph mainGraph = astInterpreter.getGraph();
 		mainGraph.saveToFile(basePath + "graph.ser");	
+		
+		OutputManager.getInstance().saveToFile(basePath + "output.ser");
 
 		fileDriver.print(mainGraph, outFile, visualizer);
 		
