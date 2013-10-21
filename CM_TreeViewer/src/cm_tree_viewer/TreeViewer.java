@@ -1,5 +1,6 @@
 package cm_tree_viewer;
 
+import cm_tree_viewer.swt.MainWindow;
 import gvpl.common.OutputManager;
 import gvpl.common.OutputManager.VarInfo;
 

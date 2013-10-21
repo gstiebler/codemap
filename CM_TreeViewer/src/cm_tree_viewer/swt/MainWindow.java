@@ -1,4 +1,4 @@
-package cm_tree_viewer;
+package cm_tree_viewer.swt;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FormAttachment;
