@@ -66,23 +66,6 @@ public class MainWindow {
 		data2.right = new FormAttachment(100, -5);
 		data2.bottom = new FormAttachment(100, -5);
 		_tree.setLayoutData(data2);
-		
-		for (int i=0; i<4; i++) {
-			TreeItem iItem = new TreeItem (_tree, 0);
-			iItem.setText ("TreeItem (0) -" + i);
-			for (int j=0; j<4; j++) {
-				TreeItem jItem = new TreeItem (iItem, 0);
-				jItem.setText ("TreeItem (1) -" + j);
-				for (int k=0; k<4; k++) {
-					TreeItem kItem = new TreeItem (jItem, 0);
-					kItem.setText ("TreeItem (2) -" + k);
-					for (int l=0; l<4; l++) {
-						TreeItem lItem = new TreeItem (kItem, 0);
-						lItem.setText ("TreeItem (3) -" + l);
-					}
-				}
-			}
-		}
 	}
 	
 	public void showModal() {
@@ -99,7 +82,7 @@ public class MainWindow {
 	}
 	
 	public Object clearTree(String rootText) {
-		_tree.clearAll(true);
+		_tree.removeAll();
 		TreeItem root = new TreeItem (_tree, 0);
 		root.setText(rootText);
 		return root;
