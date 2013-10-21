@@ -25,6 +25,15 @@ public class OutputManager implements java.io.Serializable {
 		}
 	}
 	
+	public class NodesTree {
+		public String text;
+		public List<NodesTree> children = new ArrayList<NodesTree>();
+		
+		public NodesTree( String nodeName ) {
+			text = nodeName;
+		}
+	}
+	
 	static OutputManager _instance;
 	List<VarInfo> _vars = new ArrayList<VarInfo>();
 	Map<Integer, Set<GraphNode>> _nodesOfVar = new TreeMap<Integer, Set<GraphNode>>();
@@ -61,6 +70,29 @@ public class OutputManager implements java.io.Serializable {
 	
 	public List<VarInfo> getVars() {
 		return _vars;
+	}
+	
+	public NodesTree buildNodesTree( String varName ) {
+		VarInfo selected = null;
+		for( VarInfo varInfo : _vars )
+			if(varInfo.name.compareTo(varName) == 0)
+				selected = varInfo;
+		
+		Set<GraphNode> graphNodes = _nodesOfVar.get(new Integer(selected.id));
+		NodesTree result = new NodesTree("root");
+		for(GraphNode graphNode : graphNodes)
+			buildNodesTreeRecursive( graphNode, result );
+		
+		return result;
+	}
+	
+	void buildNodesTreeRecursive( GraphNode graphNode, NodesTree nodesTree ) {
+		for(GraphNode localGraphNode : graphNode.getSourceNodes()) {
+			String text = graphNode.getName() + " - " + graphNode.getCodeLocation().getStartingLine();
+			NodesTree localNodesTree = new NodesTree(text);
+			nodesTree.children.add(localNodesTree);
+			buildNodesTreeRecursive( localGraphNode, localNodesTree );
+		}
 	}
 	
 }

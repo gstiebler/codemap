@@ -16,6 +16,7 @@ public class MainWindow {
 
 	Display _display = new Display();
 	List _list = null;
+	Tree _tree = null;
 	Shell _shell = null;
 	
 	public MainWindow() {
@@ -57,17 +58,17 @@ public class MainWindow {
 			}
 		});
 		
-		final Tree tree = new Tree (shell, SWT.BORDER);
+		_tree = new Tree (shell, SWT.BORDER);
 
 		FormData data2 = new FormData();
 		data2.top = new FormAttachment(_list, 5);
 		data2.left = new FormAttachment(0, 5);
 		data2.right = new FormAttachment(100, -5);
 		data2.bottom = new FormAttachment(100, -5);
-		tree.setLayoutData(data2);
+		_tree.setLayoutData(data2);
 		
 		for (int i=0; i<4; i++) {
-			TreeItem iItem = new TreeItem (tree, 0);
+			TreeItem iItem = new TreeItem (_tree, 0);
 			iItem.setText ("TreeItem (0) -" + i);
 			for (int j=0; j<4; j++) {
 				TreeItem jItem = new TreeItem (iItem, 0);
@@ -95,6 +96,20 @@ public class MainWindow {
 	
 	public void addVar(String name) {
 		_list.add(name);
+	}
+	
+	public Object clearTree(String rootText) {
+		_tree.clearAll(true);
+		TreeItem root = new TreeItem (_tree, 0);
+		root.setText(rootText);
+		return root;
+	}
+	
+	public Object addTreeItem(Object parent, String text) {
+		TreeItem pTreeItem = (TreeItem) parent;
+		TreeItem lItem = new TreeItem(pTreeItem, 0);
+		lItem.setText(text);
+		return lItem;
 	}
 	
 }
