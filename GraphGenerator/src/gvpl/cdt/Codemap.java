@@ -109,6 +109,9 @@ public class Codemap {
 		
 		fileNames.add(mainFile);
 		
+		OutputManager.setInstance();
+		OutputManager.getInstance().setSrcFiles(fileNames);
+		
 		List<IASTTranslationUnit> translationUnits = new ArrayList<IASTTranslationUnit>();
 		
 		for(String fileName : fileNames)
@@ -133,8 +136,6 @@ public class Codemap {
 				e.printStackTrace();
 			}
 		}
-		
-		OutputManager.setInstance();
 		
 		for(int i = 0; i < translationUnits.size(); ++i) {
 			DebugOptions.setCurrCpp(fileNames.get(i));

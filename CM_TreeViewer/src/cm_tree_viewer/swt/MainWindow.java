@@ -66,6 +66,8 @@ public class MainWindow {
 		data2.right = new FormAttachment(100, -5);
 		data2.bottom = new FormAttachment(100, -5);
 		_tree.setLayoutData(data2);
+
+		shell.setSize(700, 700);
 	}
 	
 	public void showModal() {
@@ -90,6 +92,7 @@ public class MainWindow {
 	
 	public Object addTreeItem(Object parent, String text) {
 		TreeItem pTreeItem = (TreeItem) parent;
+		pTreeItem.setExpanded(true);
 		TreeItem lItem = new TreeItem(pTreeItem, 0);
 		lItem.setText(text);
 		return lItem;

@@ -20,7 +20,7 @@ public class TreeViewer {
 		for (VarInfo varInfo : vars) 
 			_mainWindow.addVar(varInfo.name);
 		
-		NodesTree nodesTree = outputManager.buildNodesTree("a");
+		NodesTree nodesTree = outputManager.buildNodesTree("A");
 		buildWindowTree(nodesTree);
 		
 		_mainWindow.showModal();

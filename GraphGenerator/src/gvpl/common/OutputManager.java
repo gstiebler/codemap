@@ -2,7 +2,13 @@ package gvpl.common;
 
 import gvpl.graph.GraphNode;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +43,8 @@ public class OutputManager implements java.io.Serializable {
 	static OutputManager _instance;
 	List<VarInfo> _vars = new ArrayList<VarInfo>();
 	Map<Integer, Set<GraphNode>> _nodesOfVar = new TreeMap<Integer, Set<GraphNode>>();
+	List<String> _srcFiles = null;
+	Map<String, List<String>> _loadedSrcFiles = new HashMap<String, List<String>>();
 
 	public static void setInstance() {
 		_instance = new OutputManager();
@@ -73,6 +81,7 @@ public class OutputManager implements java.io.Serializable {
 	}
 	
 	public NodesTree buildNodesTree( String varName ) {
+		loadSrcFiles();
 		VarInfo selected = null;
 		for( VarInfo varInfo : _vars )
 			if(varInfo.name.compareTo(varName) == 0)
@@ -86,13 +95,57 @@ public class OutputManager implements java.io.Serializable {
 		return result;
 	}
 	
+	private String getTreeItemText( GraphNode graphNode ) {
+		CodeLocation codeLocation = graphNode.getCodeLocation();
+		String text = _loadedSrcFiles.get(codeLocation._fileName).get(codeLocation.getStartingLine());
+		text = text + " - " + codeLocation.getStartingLine();
+		return text.trim();
+	}
+	
 	void buildNodesTreeRecursive( GraphNode graphNode, NodesTree nodesTree ) {
+		String text = getTreeItemText(graphNode);
+		NodesTree localNodesTree = new NodesTree(text);
+		nodesTree.children.add(localNodesTree);
 		for(GraphNode localGraphNode : graphNode.getSourceNodes()) {
-			String text = graphNode.getName() + " - " + graphNode.getCodeLocation().getStartingLine();
-			NodesTree localNodesTree = new NodesTree(text);
-			nodesTree.children.add(localNodesTree);
 			buildNodesTreeRecursive( localGraphNode, localNodesTree );
 		}
+	}
+
+	public void setSrcFiles(List<String> srcFiles) {
+		_srcFiles = srcFiles;
+		for( int i = 0; i < _srcFiles.size(); ++i)
+			_srcFiles.set(i, _srcFiles.get(i).replace('\\', '/'));
+	}
+	
+	public void loadSrcFiles() {
+		for(String fileName : _srcFiles) {
+			_loadedSrcFiles.put(fileName, file2List(fileName));
+		}
+	}
+	
+	private List<String> file2List(String fileName) {
+		//Create a buffred reader so that you can read in the file
+	    BufferedReader reader;
+		try {
+			reader = new BufferedReader(new FileReader(new File(fileName)));
+			List<String> result = new ArrayList<String>();
+		    String line;
+			while((line = reader.readLine())!= null)
+			{
+				result.add(line);
+			}
+		    
+		    reader.close();
+
+		    return result;
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 }
