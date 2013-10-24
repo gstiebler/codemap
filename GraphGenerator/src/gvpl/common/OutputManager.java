@@ -90,7 +90,7 @@ public class OutputManager implements java.io.Serializable {
 		Set<GraphNode> graphNodes = _nodesOfVar.get(new Integer(selected.id));
 		NodesTree result = new NodesTree("root");
 		for(GraphNode graphNode : graphNodes)
-			buildNodesTreeRecursive( graphNode, result );
+			buildNodesTreeRecursive( graphNode, result, null );
 		
 		return result;
 	}
@@ -102,12 +102,16 @@ public class OutputManager implements java.io.Serializable {
 		return text.trim();
 	}
 	
-	void buildNodesTreeRecursive( GraphNode graphNode, NodesTree nodesTree ) {
-		String text = getTreeItemText(graphNode);
-		NodesTree localNodesTree = new NodesTree(text);
-		nodesTree.children.add(localNodesTree);
+	void buildNodesTreeRecursive( GraphNode graphNode, NodesTree nodesTree, CodeLocation parentCL ) {
+		CodeLocation codeLoc = graphNode.getCodeLocation();
+		NodesTree usedNodesTree = nodesTree;
+		if(codeLoc != parentCL) {
+			String text = getTreeItemText(graphNode);
+			usedNodesTree = new NodesTree(text);
+			nodesTree.children.add(usedNodesTree);
+		}
 		for(GraphNode localGraphNode : graphNode.getSourceNodes()) {
-			buildNodesTreeRecursive( localGraphNode, localNodesTree );
+			buildNodesTreeRecursive( localGraphNode, usedNodesTree, codeLoc );
 		}
 	}
 
