@@ -97,7 +97,7 @@ public class OutputManager implements java.io.Serializable {
 	
 	private String getTreeItemText( GraphNode graphNode ) {
 		CodeLocation codeLocation = graphNode.getCodeLocation();
-		String text = _loadedSrcFiles.get(codeLocation._fileName).get(codeLocation.getStartingLine());
+		String text = _loadedSrcFiles.get(codeLocation._fileName).get(codeLocation.getStartingLine() - 1);
 		text = text + " - " + codeLocation.getStartingLine();
 		return text.trim();
 	}

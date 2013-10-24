@@ -38,7 +38,7 @@ public class GraphNode implements java.io.Serializable {
 		_id = getNewId();
 		_name = name;
 		_type = type;
-		_codeLoc = CodeLocation.getLastCodeLocation();
+		_codeLoc = DebugOptions.getCurrCodeLocation();
 		OutputManager.getInstance().addGraphNode(this);
 		
 		logger.info("new graphnode {} ({})", name, _id);
@@ -49,7 +49,7 @@ public class GraphNode implements java.io.Serializable {
 		_parentVarId = parentVarId;
 		_name = name;
 		_type = type;
-		_codeLoc = CodeLocation.getLastCodeLocation();
+		_codeLoc = DebugOptions.getCurrCodeLocation();
 		OutputManager.getInstance().addGraphNode(this);
 		
 		logger.info("new graphnode ({}) var {} ({})", _id, _name, _parentVarId);

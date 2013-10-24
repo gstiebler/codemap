@@ -93,7 +93,10 @@ public class InstructionLine {
 	}
 
 	public void load(IASTStatement statement) {
+		CodeLocation previousCodeLocation = DebugOptions.getCurrCodeLocation();
+		
 		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(statement);
+		DebugOptions.setCurrCodeLocation(codeLocation);
 		logger.debug(" --- Code location: {}", codeLocation);
 		DebugOptions.setStartingLine(codeLocation.getStartingLine());
 		logger.debug("statement is: {}", statement.getClass());
@@ -145,6 +148,8 @@ public class InstructionLine {
 			logger.error("Node type not found!! Node: " + statement.toString());
 		} else
 			logger.error("Node type not found!! Node: " + statement.toString());
+
+		DebugOptions.setCurrCodeLocation(previousCodeLocation);
 	}
 	
 	private void loadSwitch(CPPASTSwitchStatement switchStatement) {

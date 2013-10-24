@@ -229,7 +229,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return;
 		}
 		InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+		
+		CodeLocation previousCL = DebugOptions.getCurrCodeLocation();
+		DebugOptions.setCurrCodeLocation(codeLocation);
 		il.LoadVariableInitialization(var, declarator);
+		DebugOptions.setCurrCodeLocation(previousCL);
 	}
 	
 	public void loadMain() {
@@ -507,7 +511,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 		addGlobalVar(binding, codeLocation, var);
 		
 		InstructionLine il = new InstructionLine(_gvplGraph, null, this);
+		
+		CodeLocation previousCL = DebugOptions.getCurrCodeLocation();
+		DebugOptions.setCurrCodeLocation(codeLocation);
 		il.LoadVariableInitialization(var, declarator);
+		DebugOptions.setCurrCodeLocation(previousCL);
 	}
 	
 	public void addGlobalVar( IBinding binding, CodeLocation fileLoc, IVar var ) {
