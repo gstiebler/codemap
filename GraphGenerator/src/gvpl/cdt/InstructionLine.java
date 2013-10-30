@@ -24,11 +24,9 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.cdt.core.dom.ast.IASTArraySubscriptExpression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
-import org.eclipse.cdt.core.dom.ast.IASTConditionalExpression;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
@@ -55,6 +53,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
@@ -368,6 +367,8 @@ public class InstructionLine {
 						positiveValue.getNode(), negativeValue.getNode());
 
 				return new Value(ifNode);
+			} else if (expr instanceof CPPASTCastExpression) {
+				return loadValue(((CPPASTCastExpression) expr).getOperand());
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 		} catch (ClassNotImplementedException e) {
