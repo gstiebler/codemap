@@ -48,7 +48,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		_astInterpreter = astInterpreter;
 	}
 
-	protected IVar getVarFromExpr(IASTExpression expr) throws NotFoundException {
+	protected IVar getVarFromExpr(IASTNode expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = getVarFromExprInternal(expr);
 
@@ -118,7 +118,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return new Value(node);
 	}
 	
-	protected IBinding getBindingFromExpr(IASTExpression expr) throws NotFoundException {
+	protected IBinding getBindingFromExpr(IASTNode expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		logger.debug("expr {} is {}", expr.getRawSignature(), expr.getClass());
 		if (expr instanceof IASTIdExpression) {
@@ -152,7 +152,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		}
 	}
 	
-	protected IVar getVarFromExprInternal(IASTExpression expr) throws NotFoundException {
+	protected IVar getVarFromExprInternal(IASTNode expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		if (expr instanceof IASTIdExpression)
 			return getLocalVarFromIdExpr((IASTIdExpression) expr);

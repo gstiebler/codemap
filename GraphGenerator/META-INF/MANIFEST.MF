@@ -5,5 +5,6 @@ Bundle-SymbolicName: GVPL_JDT
 Bundle-Version: 1.0.0.qualifier
 Bundle-ClassPath: 
 Export-Package: .
-Import-Package: org.eclipse.jdt.core.dom
+Import-Package: org.eclipse.cdt.core.parser.tests.scanner,
+ org.eclipse.jdt.core.dom
 Require-Bundle: org.junit

@@ -24,13 +24,16 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTArraySubscriptExpression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTConditionalExpression;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTEqualsInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
@@ -40,9 +43,10 @@ import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIfStatement;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
-import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
+import org.eclipse.cdt.core.dom.ast.IASTInitializerClause;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
@@ -68,7 +72,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTypeIdExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredFunctionInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
@@ -249,15 +252,17 @@ public class InstructionLine {
 			return;
 		}
 		
-		IASTInitializerExpression initExp = (IASTInitializerExpression) initializer;
-		IASTExpression rhsExpr = initExp.getExpression();
-
+		IASTEqualsInitializer initExp = (IASTEqualsInitializer) initializer;
+		IASTInitializerClause initClause = initExp.getInitializerClause();
+		
+		IASTNode expr = initClause;
+		
 		if (lhsVar instanceof PointerVar) {
-			loadRhsPointer((PointerVar) lhsVar, rhsExpr);
+			loadRhsPointer((PointerVar) lhsVar, expr);
 			return;
 		}
 
-		Value rhsValue = loadValue(rhsExpr);		
+		Value rhsValue = loadValue(expr);		
 		if(rhsValue == null) {
 			logger.error("Shoudn't happen");
 			GraphNode problemNode = _gvplGraph.addGraphNode("PROBLEM", NodeType.E_INVALID_NODE_TYPE);
@@ -288,7 +293,7 @@ public class InstructionLine {
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
-	public Value loadValue(IASTExpression expr) {
+	public Value loadValue(IASTNode expr) {
 		logger.debug("Load Value, Node type {}", expr.getClass());
 		ExecTreeLogger.log(expr.getRawSignature());
 		// Eh uma variavel
@@ -296,7 +301,7 @@ public class InstructionLine {
 		try {
 			if (expr instanceof IASTIdExpression) {
 				if (_parentBaseScope != null)
-					return _parentBaseScope.getValueFromExpr(expr);
+					return _parentBaseScope.getValueFromExpr((IASTIdExpression)expr);
 				else {
 					IASTName name = ((IASTIdExpression) expr).getName();
 					IBinding binding = name.resolveBinding();
@@ -496,7 +501,7 @@ public class InstructionLine {
 		return result.getNode();
 	}
 
-	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
+	void loadRhsPointer(PointerVar lhsPointer, IASTNode rhsOp) {
 		logger.debug("loading pointer of type: {}", rhsOp.getClass());
 		if (rhsOp instanceof CPPASTNewExpression) {
 			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
@@ -600,10 +605,6 @@ public class InstructionLine {
 				String problemName = ((CPPTemplateTypeParameter)idExprBinding).getName();
 				logger.warn("Class not working: CPPTemplateTypeParameter, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + problemName, NodeType.E_INVALID_NODE_TYPE));
-			} else if (idExprBinding instanceof CPPDeferredFunctionInstance) {
-				CPPDeferredFunctionInstance dfi = (CPPDeferredFunctionInstance) idExprBinding;
-				logger.warn("Class not working: CPPTemplateTypeParameter, {}", dfi.getName());
-				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + dfi.getName(), NodeType.E_INVALID_NODE_TYPE));
 			} else
 				logger.error("problem: instance: {}", idExprBinding.getClass());
 		} else if (nameExpr instanceof IASTFieldReference) {
@@ -814,7 +815,7 @@ public class InstructionLine {
 	 * @return The var that is pointed by the address
 	 * @throws NotFoundException 
 	 */
-	static IVar loadVarInAddress(IASTExpression address, BaseScopeCDT astLoader) throws NotFoundException {
+	static IVar loadVarInAddress(IASTNode address, BaseScopeCDT astLoader) throws NotFoundException {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
@@ -890,7 +891,7 @@ public class InstructionLine {
 	 * @return The variable that is currently pointed by the received pointer
 	 * @throws NotFoundException 
 	 */
-	public static IVar loadPointedVar(IASTExpression pointerExpr, BaseScopeCDT astLoader) throws NotFoundException {
+	public static IVar loadPointedVar(IASTNode pointerExpr, BaseScopeCDT astLoader) throws NotFoundException {
 		IVar pointerVar = astLoader.getVarFromExpr(pointerExpr);
 		if (pointerVar instanceof PointerVar)
 			return ((PointerVar) pointerVar).getVarInMem();

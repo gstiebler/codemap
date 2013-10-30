@@ -57,13 +57,11 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType.CPPClassTypeDelegate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.GPPASTExplicitTemplateInstantiation;
 
@@ -414,9 +412,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 				if(binding instanceof CPPClassInstance) {
 					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
 					templateName = (CPPASTName) classSpecialization.getDefinition();
-				} else if (binding instanceof CPPUnknownClass) {
-					logger.error("CPPUnknownClass, {}", binding.getName());
-					return null;
 				} else if (binding instanceof CPPDeferredClassInstance) {
 					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
 					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
@@ -450,10 +445,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				IBinding newBinding = _typedefBindings.get(binding);
 				if(newBinding != null)
 					return newBinding;
-			} else if (binding instanceof CPPClassTypeDelegate) {
-				CPPClassTypeDelegate ctd = (CPPClassTypeDelegate) binding;
-				binding = ctd.getBinding();
-			}
+			} 
 			return binding;
 		}
 		else if(declSpec instanceof CPPASTElaboratedTypeSpecifier)

@@ -31,7 +31,7 @@ import org.eclipse.cdt.core.parser.DefaultLogService;
 import org.eclipse.cdt.core.parser.IParserLogService;
 import org.eclipse.cdt.core.parser.IScannerInfo;
 import org.eclipse.cdt.core.parser.ScannerInfo;
-import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
+import org.eclipse.cdt.internal.core.dom.NullCodeReaderFactory;
 import org.eclipse.core.runtime.CoreException;
 
 import debug.DebugOptions;
@@ -86,7 +86,7 @@ public class Codemap {
 
 		Map<String, String> definedSymbols = new LinkedHashMap<String, String>();
 		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
-		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
+		ICodeReaderFactory readerFactory = NullCodeReaderFactory.getInstance();
 
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
 		ScriptManager sm = new ScriptManager(basePath, astInterpreter);
