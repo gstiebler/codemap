@@ -361,7 +361,7 @@ public class Function extends BaseScopeCDT {
 	}
 
 	@Override
-	protected GraphNode getNodeFromExpr(IASTExpression expr) {
+	protected GraphNode getNodeFromExpr(IASTNode expr) {
 		//if it's a local var, return it's node
 		GraphNode node = super.getNodeFromExpr(expr);
 		if(node != null)

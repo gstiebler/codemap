@@ -20,6 +20,8 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
+import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -70,15 +72,18 @@ public class MemberFunc extends Function {
 	@Override
 	void loadConstructorChain(Graph graph, BaseScope caller) {
 		ExecTreeLogger.log("");
-		for (ICPPASTConstructorChainInitializer initializer : _ccInitializer) {
-			IASTExpression expr = initializer.getInitializerValue();
-			if(expr != null) {
-				int startingLine = expr.getFileLocation().getStartingLineNumber();
-				DebugOptions.setStartingLine(startingLine);
+		for (ICPPASTConstructorChainInitializer chainInitializer : _ccInitializer) {
+			IASTInitializer initializer = chainInitializer.getInitializer();
+			if(initializer != null) {
+				IASTFileLocation fileLoc = initializer.getFileLocation();
+				if(fileLoc != null) {
+					int startingLine = fileLoc.getStartingLineNumber();
+					DebugOptions.setStartingLine(startingLine);
+				}
 			} else
 				continue;
 			
-			IASTName memberInitId = initializer.getMemberInitializerId();
+			IASTName memberInitId = chainInitializer.getMemberInitializerId();
 			IBinding memberBinding = memberInitId.resolveBinding();
 			InstructionLine instructionLine = new InstructionLine(graph, this, _astInterpreter);
 
@@ -88,7 +93,7 @@ public class MemberFunc extends Function {
 					logger.error("Problem with member {}", memberBinding.getName());
 					continue;
 				}
-				instructionLine.loadConstructorInitializer(var, expr);
+				instructionLine.loadConstructorInitializer(var, initializer);
 				MemberId memberId = _parentClass.getMember(memberBinding).getMemberId();
 				_initializedMembers._members.add(memberId);
 			} else if (memberBinding instanceof CPPConstructor) {
@@ -97,7 +102,7 @@ public class MemberFunc extends Function {
 					if (memberFunc == null)
 						continue;
 
-					IASTExpression initValue = initializer.getInitializerValue();
+					IASTExpression initValue = chainInitializer.getInitializerValue();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
 							memberFunc, initValue);
 					memberFunc.addFuncRef(parameters, graph, _thisVar, caller);

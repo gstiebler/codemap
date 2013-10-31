@@ -88,7 +88,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 			return _astInterpreter.getVarFromBinding(binding, codeLocation);
 	}
 	
-	protected GraphNode getNodeFromExpr(IASTExpression expr) {
+	protected GraphNode getNodeFromExpr(IASTNode expr) {
 		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var;
 		try {
@@ -101,7 +101,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		return null;
 	}
 	
-	protected Value getValueFromExpr(IASTExpression expr) {
+	protected Value getValueFromExpr(IASTNode expr) {
 		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var;
 		try {
