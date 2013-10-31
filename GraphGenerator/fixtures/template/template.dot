@@ -24,13 +24,13 @@ startinglines = "48_11_50";
 	node_000004 [ label = "vector::get_value", style=filled, fillcolor="#FFFFD0", startinglines=16 ]
 }
 subgraph cluster_4 {
-label = "vector::soma";
+label = "vector<float>::soma";
 parent = "cluster_1";
 startinglines = "16_52_53";
 	node_000008 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=41 ]
 	node_000009 [ label = "2", style=filled, fillcolor="#E9FFE9", startinglines=41 ]
 	node_000010 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=41 ]
-	node_000011 [ label = "vector::soma", style=filled, fillcolor="#FFFFD0", startinglines=41 ]
+	node_000011 [ label = "vector<float>::soma", style=filled, fillcolor="#FFFFD0", startinglines=41 ]
 }
 }
 	node_000002 -> node_000003

@@ -9,7 +9,6 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 /**
  * The class that holds information about the entire software being interpreted
  * 
@@ -17,7 +16,7 @@ import org.apache.logging.log4j.Logger;
  * 
  */
 public abstract class AstInterpreter extends BaseScope {
-	
+
 	static Logger logger = LogManager.getLogger(BaseScopeCDT.class.getName());
 
 	protected Map<TypeId, ClassDeclCDT> _typeIdToClass;

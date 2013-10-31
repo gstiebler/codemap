@@ -411,13 +411,17 @@ public class AstInterpreterCDT extends AstInterpreter {
 				CPPASTName templateName = null;
 				if(binding instanceof CPPClassInstance) {
 					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
-					templateName = (CPPASTName) classSpecialization.getDefinition();
+					if(_currCppFile._typeBindingToClass.get(binding) != null)
+						return binding;
+					return classSpecialization.getSpecializedBinding();
 				} else if (binding instanceof CPPDeferredClassInstance) {
 					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
 					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
 					IASTNode node = classTemplate.getDefinition();
 					if(node instanceof CPPASTName) {
 						templateName = (CPPASTName) node;
+						IBinding templateBinding = templateName.resolveBinding();
+						return templateBinding;
 					} else if (node == null)
 						return null;
 					else {
@@ -430,12 +434,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 					logger.error("Not implemented: {}", binding.getClass());
 					return null;
 				}
-				
-				if(templateName == null)
-					return null;
-				
-				IBinding templateBinding = templateName.resolveBinding();
-				return templateBinding;
 			}
 			IBinding binding = name.resolveBinding();
 			if(binding instanceof ProblemBinding) {
