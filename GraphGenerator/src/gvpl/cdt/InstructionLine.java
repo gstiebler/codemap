@@ -59,6 +59,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionList;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIdExpression;
@@ -243,6 +244,23 @@ public class InstructionLine {
 			return;
 		}
 		
+//		if(initializer instanceof IASTEqualsInitializer) {
+//			IASTEqualsInitializer eq = (IASTEqualsInitializer) initializer;
+//			IASTInitializerClause clause = eq.getInitializerClause();
+//			if (clause instanceof CPPASTNewExpression) {
+//				CPPASTNewExpression newExpr = (CPPASTNewExpression) clause;
+//				IASTInitializer init2 = newExpr.getInitializer();
+//				
+//				if (init2 instanceof CPPASTConstructorInitializer) { 
+//					// format: int a(5);
+//					CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) init2;
+//					IASTExpression initExpr = constrInit.getExpression();
+//					loadConstructorInitializer(lhsVar, initExpr);														
+//					return;
+//				}
+//			}
+//		}
+			
 		if (initializer instanceof CPPASTConstructorInitializer) { 
 			// format: int a(5);
 			CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) initializer;
@@ -369,6 +387,9 @@ public class InstructionLine {
 				return new Value(ifNode);
 			} else if (expr instanceof CPPASTCastExpression) {
 				return loadValue(((CPPASTCastExpression) expr).getOperand());
+			} else if (expr instanceof CPPASTExpressionList) {
+				CPPASTExpressionList exprList = (CPPASTExpressionList) expr;
+				throw new ClassNotImplementedException(expr.getClass().toString(), exprList.getRawSignature());
 			} else
 				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
 		} catch (ClassNotImplementedException e) {

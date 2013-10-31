@@ -30,6 +30,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
@@ -146,7 +147,9 @@ public abstract class BaseScopeCDT extends BaseScope{
 		} else if (expr instanceof CPPASTFieldReference) {
 			logger.error("not implemented CPPASTFieldReference", ((CPPASTFieldReference)expr).getFieldName());
 			throw new NotFoundException(expr.getRawSignature().toString());
-		}  else {
+		} else if (expr instanceof CPPASTCastExpression) {
+			return getBindingFromExpr(((CPPASTCastExpression)expr).getOperand());
+		} else {
 			logger.error("Type not found {}, ", expr.getClass());
 			throw new NotFoundException(expr.getRawSignature().toString());
 		}
@@ -181,6 +184,8 @@ public abstract class BaseScopeCDT extends BaseScope{
 			CPPASTArraySubscriptExpression subsExpr = (CPPASTArraySubscriptExpression) expr;
 			IASTExpression arrayExpr = subsExpr.getArrayExpression();
 			return getLocalVarFromIdExpr((IASTIdExpression) arrayExpr);
+		} else if (expr instanceof CPPASTCastExpression) {
+			return getVarFromExprInternal(((CPPASTCastExpression) expr).getOperand());
 		} else
 			logger.fatal("not implemented: {}", expr.getClass());
 		return null;
