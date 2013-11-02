@@ -56,6 +56,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
@@ -538,8 +539,8 @@ public class InstructionLine {
 			ClassDeclCDT classDecl = null;
 			if(namedSpec instanceof CPPASTNamedTypeSpecifier) {
 				CPPASTNamedTypeSpecifier typeSpec = (CPPASTNamedTypeSpecifier) namedSpec;
-				IBinding funcBinding = typeSpec.getName().resolveBinding();
-				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
+				IBinding classBinding = typeSpec.getName().resolveBinding();
+				classDecl = _astInterpreter.getClassDecl(classBinding);
 			}
 			
 			if (classDecl == null) {
@@ -754,8 +755,11 @@ public class InstructionLine {
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
 			return exprList.getExpressions();
+		} else if(paramExpr instanceof CPPASTConstructorInitializer) {
+			CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) paramExpr;
+			return constrInit.getArguments();
 		} else {
-			IASTNode[] parameters = new IASTExpression[1];
+			IASTNode[] parameters = new IASTNode[1];
 			parameters[0] = paramExpr;
 			return parameters;
 		}
