@@ -50,6 +50,7 @@ import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTInitializerClause;
 import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
@@ -369,7 +370,7 @@ public class InstructionLine {
 				CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) node;
 				IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
 				IVar varDecl = _parentBaseScope.getVarFromExpr(arrayExpr);
-				IASTExpression index = arraySubscrExpr.getSubscriptExpression();
+				ICPPASTInitializerClause index = arraySubscrExpr.getArgument();
 				Value indexValue = loadValue(index);
 				GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
 				return new Value(arrayResult);
@@ -498,7 +499,7 @@ public class InstructionLine {
 		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
 			Value rhsValue = loadValue(rhsExpr);
 			CPPASTArraySubscriptExpression indexExpr = (CPPASTArraySubscriptExpression) lhsOp;
-			IASTExpression subscriptExpr = indexExpr.getSubscriptExpression();
+			ICPPASTInitializerClause subscriptExpr = indexExpr.getArgument();
 			Value indexValue = loadValue(subscriptExpr);
 			return ArrayCDT.writeToArray( lhsVar, rhsValue, indexValue, _gvplGraph );
 		} else if (lhsVar instanceof PointerVar) {
