@@ -551,7 +551,12 @@ public class InstructionLine {
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
 			int numParameters = getChildExpressions(expr).length;
 			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
-			parameterValues = loadFunctionParameters(constructorFunc, expr);
+			
+			if(constructorFunc == null)
+				parameterValues = new ArrayList<FuncParameter>();
+			else
+				parameterValues = loadFunctionParameters(constructorFunc, expr);
+			
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBaseScope, _astInterpreter, classDecl.getTypeId());
 		} else if (rhsOp instanceof CPPASTFunctionCallExpression) {
