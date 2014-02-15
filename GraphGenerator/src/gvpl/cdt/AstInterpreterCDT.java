@@ -63,7 +63,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.GPPASTExplicitTemplateInstantiation;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -210,9 +209,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 		} else if ( declaration instanceof CPPASTTemplateSpecialization ){
 			CPPASTTemplateSpecialization ts = (CPPASTTemplateSpecialization) declaration;
 			loadDeclaration(ts.getDeclaration());
-		} else if ( declaration instanceof GPPASTExplicitTemplateInstantiation ){
-			GPPASTExplicitTemplateInstantiation ti = (GPPASTExplicitTemplateInstantiation) declaration;
-			logger.warn("Not implemented GPPASTExplicitTemplateInstantiation: {}", ti.getRawSignature());
 		} else
 			logger.error("Deu merda aqui. {}", declaration.getClass());
 	}

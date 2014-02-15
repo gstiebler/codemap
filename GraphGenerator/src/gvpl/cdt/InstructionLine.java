@@ -264,8 +264,9 @@ public class InstructionLine {
 		if (initializer instanceof CPPASTConstructorInitializer) { 
 			// format: int a(5);
 			CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) initializer;
-			IASTExpression initExpr = constrInit.getExpression();
-			loadConstructorInitializer(lhsVar, initExpr);														
+			IASTInitializerClause[] clause = constrInit.getArguments();
+			//IASTNode[] nodes = constrInit.getChildren();
+			loadConstructorInitializer(lhsVar, clause);														
 			return;
 		}
 		
@@ -300,6 +301,22 @@ public class InstructionLine {
 		} else {
 			parameterValues = new ArrayList<FuncParameter>();
 			Value value = loadValue(initExpr);
+			FuncParameter funcParameter = new FuncParameter(value, IndirectionType.E_INDIFERENT);
+			parameterValues.add(funcParameter);
+		}
+		lhsVar.callConstructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
+				_parentBaseScope, _astInterpreter);
+	}
+	
+	public void loadConstructorInitializer(IVar lhsVar, IASTNode[] nodes) {
+		List<FuncParameter> parameterValues = null;
+		if(lhsVar instanceof ClassVar) {
+			ClassVar classVar = (ClassVar) lhsVar;
+			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(nodes.length);
+			parameterValues = loadFunctionParameters(constructorFunc, nodes);
+		} else {
+			parameterValues = new ArrayList<FuncParameter>();
+			Value value = loadValue(nodes[0]);
 			FuncParameter funcParameter = new FuncParameter(value, IndirectionType.E_INDIFERENT);
 			parameterValues.add(funcParameter);
 		}
