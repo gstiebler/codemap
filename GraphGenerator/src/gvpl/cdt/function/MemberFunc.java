@@ -102,9 +102,9 @@ public class MemberFunc extends Function {
 					if (memberFunc == null)
 						continue;
 
-					IASTExpression initValue = chainInitializer.getInitializerValue();
+					IASTNode[] nodes = chainInitializer.getInitializer().getChildren();
 					List<FuncParameter> parameters = instructionLine.loadFunctionParameters(
-							memberFunc, initValue);
+							memberFunc, nodes);
 					memberFunc.addFuncRef(parameters, graph, _thisVar, caller);
 					break;
 				}

@@ -56,7 +56,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
@@ -771,6 +770,13 @@ public class InstructionLine {
 			return parameterValues;
 
 		IASTNode[] parameters = getChildExpressions(paramExpr);
+		
+		return loadFunctionParameters(func, parameters);
+	}
+	
+	public List<FuncParameter> loadFunctionParameters(Function func, IASTNode[] parameters) {
+		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
+
 		if(parameters == null) {
 			logger.error("No parameters on func {}", func);
 			return new ArrayList<FuncParameter>();
