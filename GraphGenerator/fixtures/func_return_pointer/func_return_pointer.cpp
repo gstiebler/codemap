@@ -1,4 +1,6 @@
 
+#define NULL 0
+
 int* func()
 {
 	int *x = new int;
@@ -31,6 +33,8 @@ Class* instancia()
     return Class::classInst;
 }
 
+char* headerOnlyFunc();
+
 int main() 
 {
 	int *a = func();
@@ -39,4 +43,8 @@ int main()
 	
 	Class *inst = instancia();
 	int d = inst->_a;
+    
+    int h = 200;
+    if(headerOnlyFunc() == NULL)
+        h = 100;
 }
