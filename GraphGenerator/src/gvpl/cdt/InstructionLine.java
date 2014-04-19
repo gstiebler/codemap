@@ -424,6 +424,11 @@ public class InstructionLine {
 		} catch (NotFoundException e) {
 			String nodeName = "INVALID_NODE_PROBLEM_" + e.getItemName() + "_" + e.getClass();
 			return new Value(_gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE));
+		} catch(Exception e) {
+			logger.fatal("Critical error. Code location: {}, Stack trace: {}, Msg: {}", 
+					DebugOptions.getCurrCodeLocation(), e.getStackTrace(), e.getMessage());
+			String nodeName = "FATAL_ERROR_NODE_PROBLEM" + e.getClass();
+			return new Value(_gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE));
 		}
 	}
 
