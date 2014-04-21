@@ -5,7 +5,12 @@ import gvpl.common.CodeLocation;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class DebugOptions {
+	
+	static Logger logger = LogManager.getLogger(DebugOptions.class.getName());
 
 	static int _startingLine = -797;
 	static List<Integer> _startingLineHistory = null;
@@ -60,6 +65,11 @@ public class DebugOptions {
 	
 	public static CodeLocation getCurrCodeLocation() {
 		return _currCodeLocation;
+	}
+	
+	public static void assertD(boolean test){
+		if(!test)
+			logger.error("Error in assert");
 	}
 	
 }

@@ -53,7 +53,7 @@ import debug.ExecTreeLogger;
 
 public class Function extends BaseScopeCDT {
 	
-	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	static Logger logger = LogManager.getLogger(Function.class.getName());
 	
 	private IVar _returnVar = null;
 	private IASTPointerOperator[] _returnPointerOps;

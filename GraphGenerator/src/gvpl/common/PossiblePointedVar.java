@@ -14,6 +14,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
 public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable {
@@ -23,7 +24,7 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 	 */
 	private static final long serialVersionUID = 2844409348993680741L;
 
-	static Logger logger = LogManager.getLogger(Graph.class.getName());
+	static Logger logger = LogManager.getLogger(PossiblePointedVar.class.getName());
 
 	public PossiblePointedVar _varTrue = null;
 	public PossiblePointedVar _varFalse = null;
@@ -204,9 +205,10 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 		}
 
 		PossiblePointedVar result = new PossiblePointedVar(ppv._finalVar);
-		if(ppv._finalVar.getName() == "NULL") {
+		if(ppv._finalVar.getName().equals("NULL")) {
 			result._finalVar = ppv._finalVar;
 		} else {
+			DebugOptions.assertD( ppv._finalVar instanceof IClassVar );
 			IClassVar finalClassVar = (IClassVar) ppv._finalVar;
 			result._finalVar = finalClassVar.getMember(memberId);
 		}
