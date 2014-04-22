@@ -271,7 +271,7 @@ public class InstructionLine {
 		lhsVar.receiveAssign(NodeType.E_VARIABLE, rhsValue, _gvplGraph);
 	}
 	
-	public void loadConstructorInitializer(IVar lhsVar, IASTExpression initExpr) {
+	public void loadConstructorInitializer(IVar lhsVar, IASTNode initExpr) {
 		List<FuncParameter> parameterValues = null;
 		if(lhsVar instanceof ClassVar) {
 			ClassVar classVar = (ClassVar) lhsVar;
@@ -533,7 +533,7 @@ public class InstructionLine {
 		return result.getNode();
 	}
 
-	void loadRhsPointer(PointerVar lhsPointer, IASTExpression rhsOp) {
+	void loadRhsPointer(PointerVar lhsPointer, IASTNode rhsOp) {
 		logger.debug("loading pointer of type: {}", rhsOp.getClass());
 		if (rhsOp instanceof CPPASTNewExpression) {
 			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
@@ -542,8 +542,8 @@ public class InstructionLine {
 			ClassDeclCDT classDecl = null;
 			if(namedSpec instanceof CPPASTNamedTypeSpecifier) {
 				CPPASTNamedTypeSpecifier typeSpec = (CPPASTNamedTypeSpecifier) namedSpec;
-				IBinding funcBinding = typeSpec.getName().resolveBinding();
-				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
+				IBinding classBinding = typeSpec.getName().resolveBinding();
+				classDecl = _astInterpreter.getClassDecl(classBinding);
 			}
 			
 			if (classDecl == null) {
@@ -555,7 +555,12 @@ public class InstructionLine {
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
 			int numParameters = getChildExpressions(expr).length;
 			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
+			
+			if(constructorFunc == null)
+				parameterValues = new ArrayList<FuncParameter>();
+			else
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
+			
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBaseScope, _astInterpreter, classDecl.getTypeId());
 		} else if (rhsOp instanceof CPPASTFunctionCallExpression) {
