@@ -35,6 +35,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
+import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
 public abstract class BaseScopeCDT extends BaseScope{
@@ -217,6 +218,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		if(varInMem ==  null)
 			return null;
 		
+		DebugOptions.assertD( varInMem instanceof IClassVar );
 		IClassVar ownerVar = (IClassVar) varInMem;
 
 		TypeId ownerType = varOfRef.getType();
