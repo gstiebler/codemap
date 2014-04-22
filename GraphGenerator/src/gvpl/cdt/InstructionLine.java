@@ -542,8 +542,8 @@ public class InstructionLine {
 			ClassDeclCDT classDecl = null;
 			if(namedSpec instanceof CPPASTNamedTypeSpecifier) {
 				CPPASTNamedTypeSpecifier typeSpec = (CPPASTNamedTypeSpecifier) namedSpec;
-				IBinding classBinding = typeSpec.getName().resolveBinding();
-				classDecl = _astInterpreter.getClassDecl(classBinding);
+				IBinding funcBinding = typeSpec.getName().resolveBinding();
+				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
 			}
 			
 			if (classDecl == null) {
@@ -555,12 +555,7 @@ public class InstructionLine {
 			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
 			int numParameters = getChildExpressions(expr).length;
 			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
-			
-			if(constructorFunc == null)
-				parameterValues = new ArrayList<FuncParameter>();
-			else
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
-			
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBaseScope, _astInterpreter, classDecl.getTypeId());
 		} else if (rhsOp instanceof CPPASTFunctionCallExpression) {
