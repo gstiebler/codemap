@@ -43,6 +43,7 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
@@ -51,11 +52,13 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionList;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIdExpression;
@@ -285,62 +288,78 @@ public class InstructionLine {
 				_parentBaseScope, _astInterpreter);
 	}
 
+	public void loadConstructorInitializer(IVar lhsVar, IASTNode[] nodes) {
+		List<FuncParameter> parameterValues = null;
+		if(lhsVar instanceof ClassVar) {
+			ClassVar classVar = (ClassVar) lhsVar;
+			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(nodes.length);
+			parameterValues = loadFunctionParameters(constructorFunc, nodes);
+		} else {
+			parameterValues = new ArrayList<FuncParameter>();
+			Value value = loadValue(nodes[0]);
+			FuncParameter funcParameter = new FuncParameter(value, IndirectionType.E_INDIFERENT);
+			parameterValues.add(funcParameter);
+		}
+		lhsVar.callConstructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
+				_parentBaseScope, _astInterpreter);
+	}
+
 	/*
 	 * @brief Alguma coisa que retorna um valor
 	 */
-	public Value loadValue(IASTExpression expr) {
-		logger.debug("Load Value, Node type {}", expr.getClass());
-		ExecTreeLogger.log(expr.getRawSignature());
+	public Value loadValue(IASTNode node) {
+		logger.debug("Load Value, Node type {}", node.getClass());
+		ExecTreeLogger.log(node.getRawSignature());
 		// Eh uma variavel
 
 		try {
-			if (expr instanceof IASTIdExpression) {
+			if (node instanceof IASTIdExpression) {
 				if (_parentBaseScope != null)
-					return _parentBaseScope.getValueFromExpr(expr);
+					return _parentBaseScope.getValueFromExpr((IASTIdExpression)node);
 				else {
-					IASTName name = ((IASTIdExpression) expr).getName();
+					IASTName name = ((IASTIdExpression) node).getName();
 					IBinding binding = name.resolveBinding();
 					if( binding instanceof ProblemBinding )
 						return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + binding, NodeType.E_INVALID_NODE_TYPE));
 					CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 					return new Value(_astInterpreter.getGlobalVar(binding, codeLocation));
 				}
-			} else if (expr instanceof IASTBinaryExpression) {// Eh uma
+			} else if (node instanceof IASTBinaryExpression) {// Eh uma
 																// expressao
-				return new Value(loadBinOp((IASTBinaryExpression) expr));
-			} else if (expr instanceof IASTLiteralExpression) {// Eh um valor
+				return new Value(loadBinOp((IASTBinaryExpression) node));
+			} else if (node instanceof IASTLiteralExpression) {// Eh um valor
 																// direto
-				return new Value(loadDirectValue((IASTLiteralExpression) expr));
-			} else if (expr instanceof IASTFunctionCallExpression) {// Eh
+				return new Value(loadDirectValue((IASTLiteralExpression) node));
+			} else if (node instanceof IASTFunctionCallExpression) {// Eh
 																	// umachamada
 																	// a funcao
-				return loadFunctionCall((IASTFunctionCallExpression) expr);
-			} else if (expr instanceof IASTFieldReference) {// reference to
+				return loadFunctionCall((IASTFunctionCallExpression) node);
+			} else if (node instanceof IASTFieldReference) {// reference to
 															// field of
 															// a struct
-				IVar varDecl = _parentBaseScope.getVarFromFieldRef((IASTFieldReference) expr);
+				IVar varDecl = _parentBaseScope.getVarFromFieldRef((IASTFieldReference) node);
 				if (varDecl == null)
 					return new Value(GraphNode.newGarbageNode(_gvplGraph, "INVALID_READ"));
 				else
 					return new Value(varDecl);
-			} else if (expr instanceof IASTUnaryExpression) {
-				return new Value(loadUnaryExpr((IASTUnaryExpression) expr));
-			} else if (expr instanceof CPPASTArraySubscriptExpression) {
+			} else if (node instanceof IASTUnaryExpression) {
+				return new Value(loadUnaryExpr((IASTUnaryExpression) node));
+			} else if (node instanceof CPPASTArraySubscriptExpression) {
 				// It's an array
-				CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
+				CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) node;
 				IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
 				IVar varDecl = _parentBaseScope.getVarFromExpr(arrayExpr);
 				IASTExpression index = arraySubscrExpr.getSubscriptExpression();
 				Value indexValue = loadValue(index);
 				GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
 				return new Value(arrayResult);
-			} else if (expr instanceof CPPASTNewExpression) {
-				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
-			} else if (expr instanceof CPPASTSimpleTypeConstructorExpression) {
-				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) expr;
+			} else if (node instanceof CPPASTNewExpression) {
+				throw new ClassNotImplementedException(node.getClass().toString(), node.getRawSignature());
+			} else if (node instanceof CPPASTSimpleTypeConstructorExpression) {
+				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) node;
 				return loadValue(stce.getInitialValue());
-			} else if (expr instanceof CPPASTTypeIdExpression) {
-				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) expr;
+			} else if (node instanceof CPPASTTypeIdExpression) {
+				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) node;
 				String raw = tie.getRawSignature();
 				if(raw.length() >= 8 && raw.substring(0, 7).compareTo("sizeof(") == 0) {
 					return new Value(_gvplGraph.addGraphNode(raw, NodeType.E_DIRECT_VALUE));
@@ -349,8 +368,8 @@ public class InstructionLine {
 					return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTTypeIdExpression",
 							NodeType.E_INVALID_NODE_TYPE));
 				}
-			} else if (expr instanceof CPPASTConditionalExpression) {
-				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) expr;
+			} else if (node instanceof CPPASTConditionalExpression) {
+				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) node;
 				IASTExpression positiveExpr = ce.getPositiveResultExpression();
 				IASTExpression negativeExpr = ce.getNegativeResultExpression();
 				IASTExpression conditionExpr = ce.getLogicalConditionExpression();
@@ -363,8 +382,21 @@ public class InstructionLine {
 						positiveValue.getNode(), negativeValue.getNode());
 
 				return new Value(ifNode);
+			} else if (node instanceof CPPASTCastExpression) {
+				return loadValue(((CPPASTCastExpression) node).getOperand());
+			} else if (node instanceof CPPASTExpressionList) {
+				CPPASTExpressionList exprList = (CPPASTExpressionList) node;
+				throw new ClassNotImplementedException(node.getClass().toString(), exprList.getRawSignature());
+			} else if (node instanceof CPPASTConstructorInitializer) {
+				//CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) node;
+				//IASTInitializerClause[] initClauses = constrInit.getArguments();
+				//if(initClauses.length > 1)
+				//	logger.error("Only dealing with 1 param. Work here. {}", node);
+				//return loadValue(initClauses[0]);
+				logger.fatal("Not implemented in this version of CDT");
+				return null;
 			} else
-				throw new ClassNotImplementedException(expr.getClass().toString(), expr.getRawSignature());
+				throw new ClassNotImplementedException(node.getClass().toString(), node.getRawSignature());
 		} catch (ClassNotImplementedException e) {
 			String nodeName = "INVALID_CLASS_" + e.getClassName();
 			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
@@ -372,6 +404,11 @@ public class InstructionLine {
 			return problemValue;
 		} catch (NotFoundException e) {
 			String nodeName = "INVALID_NODE_PROBLEM_" + e.getItemName() + "_" + e.getClass();
+			return new Value(_gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE));
+		} catch(Exception e) {
+			logger.fatal("Critical error. Code location: {}, Stack trace: {}, Msg: {}", 
+					DebugOptions.getCurrCodeLocation(), e.getStackTrace(), e.getMessage());
+			String nodeName = "FATAL_ERROR_NODE_PROBLEM" + e.getClass();
 			return new Value(_gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE));
 		}
 	}
@@ -721,23 +758,34 @@ public class InstructionLine {
 		return null;
 	}
 
-	private IASTExpression[] getChildExpressions(IASTExpression paramExpr) {
+	private IASTNode[] getChildExpressions(IASTNode paramExpr) {
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
 			return exprList.getExpressions();
+		} else if(paramExpr instanceof CPPASTConstructorInitializer) {
+			//CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) paramExpr;
+			logger.fatal("Not implemented in this version of CDT");
+			return null;
 		} else {
-			IASTExpression[] parameters = new IASTExpression[1];
+			IASTNode[] parameters = new IASTNode[1];
 			parameters[0] = paramExpr;
 			return parameters;
 		}
 	}
 	
-	public List<FuncParameter> loadFunctionParameters(Function func, IASTExpression paramExpr) {
+	public List<FuncParameter> loadFunctionParameters(Function func, IASTNode paramExpr) {
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		if (paramExpr == null)
 			return parameterValues;
 
-		IASTExpression[] parameters = getChildExpressions(paramExpr);
+		IASTNode[] parameters = getChildExpressions(paramExpr);
+		
+		return loadFunctionParameters(func, parameters);
+	}
+	
+	public List<FuncParameter> loadFunctionParameters(Function func, IASTNode[] parameters) {
+		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
+
 		if(parameters == null) {
 			logger.error("No parameters on func {}", func);
 			return new ArrayList<FuncParameter>();
@@ -754,7 +802,7 @@ public class InstructionLine {
 		}
 
 		for (int i = 0; i < parameters.length; i++) {
-			IASTExpression parameter = parameters[i];
+			IASTNode parameter = parameters[i];
 			FuncParameter localParameter = null;
 			FuncParameter insideFuncParameter = func.getOriginalParameter(i);
 
@@ -814,7 +862,7 @@ public class InstructionLine {
 	 * @return The var that is pointed by the address
 	 * @throws NotFoundException 
 	 */
-	static IVar loadVarInAddress(IASTExpression address, BaseScopeCDT astLoader) throws NotFoundException {
+	static IVar loadVarInAddress(IASTNode address, BaseScopeCDT astLoader) throws NotFoundException {
 		if (!(address instanceof IASTUnaryExpression)) {
 			// it's receiving the address from another pointer, like
 			// "int *b; int *a = b;"
@@ -890,7 +938,7 @@ public class InstructionLine {
 	 * @return The variable that is currently pointed by the received pointer
 	 * @throws NotFoundException 
 	 */
-	public static IVar loadPointedVar(IASTExpression pointerExpr, BaseScopeCDT astLoader) throws NotFoundException {
+	public static IVar loadPointedVar(IASTNode pointerExpr, BaseScopeCDT astLoader) throws NotFoundException {
 		IVar pointerVar = astLoader.getVarFromExpr(pointerExpr);
 		if (pointerVar instanceof PointerVar)
 			return ((PointerVar) pointerVar).getVarInMem();
