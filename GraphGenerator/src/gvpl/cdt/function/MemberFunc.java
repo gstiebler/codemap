@@ -21,6 +21,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
@@ -144,7 +145,7 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	protected IVar getVarFromExpr(IASTExpression expr) throws NotFoundException {
+	protected IVar getVarFromExpr(IASTNode expr) throws NotFoundException {
 		ExecTreeLogger.log(expr.getRawSignature());
 		IVar var = super.getVarFromExpr(expr);
 		if (var != null) 
