@@ -23,18 +23,20 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression;
 import org.eclipse.cdt.core.dom.ast.IASTIdExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCastExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -72,8 +74,8 @@ public abstract class BaseScopeCDT extends BaseScope{
 		
 	    IBinding binding = getBindingFromExpr(expr);
 	    CodeLocation codeLocation = null;
-		if (binding instanceof CPPVariable) {
-			IASTNode[] nodes = ((CPPVariable) binding).getDeclarations();
+		if (binding instanceof ICPPVariable) {
+			IASTNode[] nodes = ((ICPPVariable) binding).getDeclarations();
 			if (nodes != null && nodes.length > 0) {
 				codeLocation = CodeLocationCDT.NewFromFileLocation(nodes[0]);
 			}
@@ -142,14 +144,14 @@ public abstract class BaseScopeCDT extends BaseScope{
 		} else if (expr instanceof CPPASTLiteralExpression) {
 			//probably "this" pointer
 			return null;
-		} else if (expr instanceof CPPASTFunctionCallExpression) {
+		} else if (expr instanceof IASTFunctionCallExpression) {
 			logger.error("not implemented");
 			throw new NotFoundException(expr.getRawSignature().toString());
 		} else if (expr instanceof CPPASTFieldReference) {
 			logger.error("not implemented CPPASTFieldReference", ((CPPASTFieldReference)expr).getFieldName());
 			throw new NotFoundException(expr.getRawSignature().toString());
-		} else if (expr instanceof CPPASTCastExpression) {
-			return getBindingFromExpr(((CPPASTCastExpression)expr).getOperand());
+		} else if (expr instanceof ICPPASTCastExpression) {
+			return getBindingFromExpr(((ICPPASTCastExpression)expr).getOperand());
 		}  else {
 			logger.error("Type not found {}, ", expr.getClass());
 			throw new NotFoundException(expr.getRawSignature().toString());
@@ -185,8 +187,8 @@ public abstract class BaseScopeCDT extends BaseScope{
 			CPPASTArraySubscriptExpression subsExpr = (CPPASTArraySubscriptExpression) expr;
 			IASTExpression arrayExpr = subsExpr.getArrayExpression();
 			return getLocalVarFromIdExpr((IASTIdExpression) arrayExpr);
-		} else if (expr instanceof CPPASTCastExpression) {
-			return getVarFromExprInternal(((CPPASTCastExpression) expr).getOperand());
+		} else if (expr instanceof ICPPASTCastExpression) {
+			return getVarFromExprInternal(((ICPPASTCastExpression) expr).getOperand());
 		} else
 			logger.fatal("not implemented: {}", expr.getClass());
 		return null;

@@ -20,12 +20,12 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.IProblemBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
-import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
@@ -55,7 +55,7 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	public void loadDeclaration(CPPASTFunctionDeclarator decl) {
+	public void loadDeclaration(IASTFunctionDeclarator decl) {
 		super.loadDeclaration(decl);
 		
 		if (_funcName.equals(_parentClass.getName()))
@@ -190,7 +190,7 @@ public class MemberFunc extends Function {
 	@Override
 	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
 		ExecTreeLogger.log(binding.getName());
-		if(binding instanceof ProblemBinding) {
+		if(binding instanceof IProblemBinding) {
 			logger.warn("problem binding {}", binding.getName());
 			return null;
 		}

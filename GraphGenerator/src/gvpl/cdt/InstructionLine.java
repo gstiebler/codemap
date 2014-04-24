@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
@@ -43,40 +44,34 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTInitializerExpression;
 import org.eclipse.cdt.core.dom.ast.IASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
+import org.eclipse.cdt.core.dom.ast.IASTWhileStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
+import org.eclipse.cdt.core.dom.ast.IProblemBinding;
+import org.eclipse.cdt.core.dom.ast.ITypedef;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCastExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTDeleteExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTNewExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSwitchStatement;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTypeIdExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTUnaryExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPMethod;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCaseStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConditionalExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeleteExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionList;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTExpressionStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTIdExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNewExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleTypeConstructorExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSwitchStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTypeIdExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTUnaryExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTWhileStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredFunctionInstance;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethod;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTemplateTypeParameter;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -134,10 +129,10 @@ public class InstructionLine {
 				loadAssignBinOp((IASTBinaryExpression) expr);
 			else if (expr instanceof IASTFunctionCallExpression)
 				loadFunctionCall((IASTFunctionCallExpression) expr);
-			else if (expr instanceof CPPASTUnaryExpression)
+			else if (expr instanceof ICPPASTUnaryExpression)
 				logger.error("Not implemented: {}", expr.getClass());
 			else
-				loadDeleteOp((CPPASTDeleteExpression) expr);
+				loadDeleteOp((ICPPASTDeleteExpression) expr);
 		} else if (statement instanceof IASTReturnStatement) {
 			loadReturnStatement((IASTReturnStatement) statement);
 		} else if (statement instanceof IASTIfStatement) {
@@ -145,9 +140,9 @@ public class InstructionLine {
 		} else if (statement instanceof IASTCompoundStatement) {
 			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentBaseScope, _astInterpreter, _gvplGraph);
 			basicBlockLoader.load(statement);
-		} else if (statement instanceof CPPASTSwitchStatement) {
-			loadSwitch((CPPASTSwitchStatement) statement);
-		} else if (statement instanceof CPPASTWhileStatement) {
+		} else if (statement instanceof ICPPASTSwitchStatement) {
+			loadSwitch((ICPPASTSwitchStatement) statement);
+		} else if (statement instanceof IASTWhileStatement) {
 			logger.error("Node type not found!! Node: " + statement.toString());
 		} else
 			logger.error("Node type not found!! Node: " + statement.toString());
@@ -155,7 +150,7 @@ public class InstructionLine {
 		DebugOptions.setCurrCodeLocation(previousCodeLocation);
 	}
 	
-	private void loadSwitch(CPPASTSwitchStatement switchStatement) {
+	private void loadSwitch(ICPPASTSwitchStatement switchStatement) {
 		IASTExpression controlExpr = switchStatement.getControllerExpression();
 		CPPASTCompoundStatement body = (CPPASTCompoundStatement) switchStatement.getBody();
 		GraphNode controlNode = loadValue(controlExpr).getNode();
@@ -176,10 +171,10 @@ public class InstructionLine {
 			GraphNode condExpr = null;
 			for(;i < numStatements; i++){
 				statement = body.getStatements()[i];
-				if(statement instanceof CPPASTCaseStatement) {
-					IASTExpression caseExpr = ((CPPASTCaseStatement) statement).getExpression();
+				if(statement instanceof IASTCaseStatement) {
+					IASTExpression caseExpr = ((IASTCaseStatement) statement).getExpression();
 					condExpr = loadValue(caseExpr).getNode();
-				} else if (statement instanceof CPPASTExpressionStatement) {
+				} else if (statement instanceof IASTExpressionStatement) {
 					i++;
 					break;
 				}
@@ -202,7 +197,7 @@ public class InstructionLine {
 		}
 	}
 	
-	void loadDeleteOp(CPPASTDeleteExpression deleteExpr) {
+	void loadDeleteOp(ICPPASTDeleteExpression deleteExpr) {
 		IASTExpression opExpr = deleteExpr.getOperand();
 		IVar var;
 		try {
@@ -319,7 +314,7 @@ public class InstructionLine {
 				else {
 					IASTName name = ((IASTIdExpression) node).getName();
 					IBinding binding = name.resolveBinding();
-					if( binding instanceof ProblemBinding )
+					if( binding instanceof IProblemBinding )
 						return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + binding, NodeType.E_INVALID_NODE_TYPE));
 					CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 					return new Value(_astInterpreter.getGlobalVar(binding, codeLocation));
@@ -353,13 +348,13 @@ public class InstructionLine {
 				Value indexValue = loadValue(index);
 				GraphNode arrayResult = ArrayCDT.readFromArray(varDecl, indexValue, _gvplGraph);
 				return new Value(arrayResult);
-			} else if (node instanceof CPPASTNewExpression) {
+			} else if (node instanceof ICPPASTNewExpression) {
 				throw new ClassNotImplementedException(node.getClass().toString(), node.getRawSignature());
 			} else if (node instanceof CPPASTSimpleTypeConstructorExpression) {
 				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) node;
 				return loadValue(stce.getInitialValue());
-			} else if (node instanceof CPPASTTypeIdExpression) {
-				CPPASTTypeIdExpression tie = (CPPASTTypeIdExpression) node;
+			} else if (node instanceof ICPPASTTypeIdExpression) {
+				ICPPASTTypeIdExpression tie = (ICPPASTTypeIdExpression) node;
 				String raw = tie.getRawSignature();
 				if(raw.length() >= 8 && raw.substring(0, 7).compareTo("sizeof(") == 0) {
 					return new Value(_gvplGraph.addGraphNode(raw, NodeType.E_DIRECT_VALUE));
@@ -382,10 +377,10 @@ public class InstructionLine {
 						positiveValue.getNode(), negativeValue.getNode());
 
 				return new Value(ifNode);
-			} else if (node instanceof CPPASTCastExpression) {
-				return loadValue(((CPPASTCastExpression) node).getOperand());
-			} else if (node instanceof CPPASTExpressionList) {
-				CPPASTExpressionList exprList = (CPPASTExpressionList) node;
+			} else if (node instanceof ICPPASTCastExpression) {
+				return loadValue(((ICPPASTCastExpression) node).getOperand());
+			} else if (node instanceof IASTExpressionList) {
+				IASTExpressionList exprList = (IASTExpressionList) node;
 				throw new ClassNotImplementedException(node.getClass().toString(), exprList.getRawSignature());
 			} else if (node instanceof CPPASTConstructorInitializer) {
 				//CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) node;
@@ -535,13 +530,13 @@ public class InstructionLine {
 
 	void loadRhsPointer(PointerVar lhsPointer, IASTNode rhsOp) {
 		logger.debug("loading pointer of type: {}", rhsOp.getClass());
-		if (rhsOp instanceof CPPASTNewExpression) {
-			CPPASTNewExpression newExpr = (CPPASTNewExpression) rhsOp;
+		if (rhsOp instanceof ICPPASTNewExpression) {
+			ICPPASTNewExpression newExpr = (ICPPASTNewExpression) rhsOp;
 			IASTDeclSpecifier namedSpec = newExpr.getTypeId().getDeclSpecifier();
 			
 			ClassDeclCDT classDecl = null;
-			if(namedSpec instanceof CPPASTNamedTypeSpecifier) {
-				CPPASTNamedTypeSpecifier typeSpec = (CPPASTNamedTypeSpecifier) namedSpec;
+			if(namedSpec instanceof IASTNamedTypeSpecifier) {
+				IASTNamedTypeSpecifier typeSpec = (IASTNamedTypeSpecifier) namedSpec;
 				IBinding funcBinding = typeSpec.getName().resolveBinding();
 				classDecl = _astInterpreter.getClassFromFuncBinding(funcBinding);
 			}
@@ -552,13 +547,13 @@ public class InstructionLine {
 			}
 
 			List<FuncParameter> parameterValues = null;
-			IASTExpression expr = ((CPPASTNewExpression) rhsOp).getNewInitializer();
+			IASTExpression expr = ((ICPPASTNewExpression) rhsOp).getNewInitializer();
 			int numParameters = getChildExpressions(expr).length;
 			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
 			parameterValues = loadFunctionParameters(constructorFunc, expr);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBaseScope, _astInterpreter, classDecl.getTypeId());
-		} else if (rhsOp instanceof CPPASTFunctionCallExpression) {
+		} else if (rhsOp instanceof IASTFunctionCallExpression) {
 			Value result = loadFunctionCall((IASTFunctionCallExpression) rhsOp);
 			lhsPointer.setPointedVar(result.getVar());
 		} else if (rhsOp instanceof IASTLiteralExpression) {
@@ -596,15 +591,15 @@ public class InstructionLine {
 			IASTName name = idExpr.getName();
 			IBinding idExprBinding = name.resolveBinding();
 			
-			if (idExprBinding instanceof CPPMethod) {
+			if (idExprBinding instanceof ICPPMethod) {
 				Function func = null;
-				if (name instanceof CPPASTQualifiedName) { // static function		
-					IASTName[] names = ((CPPASTQualifiedName)name).getNames();
+				if (name instanceof ICPPASTQualifiedName) { // static function		
+					IASTName[] names = ((ICPPASTQualifiedName)name).getNames();
 					IASTName className = names[0];
 					IASTName funcName = names[1];
 					ClassDeclCDT classDecl = _astInterpreter.getClassDecl(className.resolveBinding());
 					func = classDecl.getMemberFunc(funcName.resolveBinding());
-				} else if (name instanceof CPPASTName){ // method from own class
+				} else if (name instanceof IASTName){ // method from own class
 					MemberFunc parentMF = getParentFunc();
 					func = parentMF.getParentClass().getMemberFunc(idExprBinding);
 				}
@@ -623,14 +618,14 @@ public class InstructionLine {
 				} else
 					return loadOwnMethod(paramExpr, func);
 				
-			} else if (idExprBinding instanceof CPPFunction) {
+			} else if (idExprBinding instanceof ICPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
-			} else if (idExprBinding instanceof ProblemBinding) {
-				String problemName = ((ProblemBinding)idExprBinding).getPhysicalNode().toString();
+			} else if (idExprBinding instanceof IProblemBinding) {
+				String problemName = ((IProblemBinding)idExprBinding).getPhysicalNode().toString();
 				logger.error("Problem binding: {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + problemName, NodeType.E_INVALID_NODE_TYPE));
-			} else if (idExprBinding instanceof CPPTypedef) {
-				String problemName = ((CPPTypedef)idExprBinding).getName();
+			} else if (idExprBinding instanceof ITypedef) {
+				String problemName = ((ITypedef)idExprBinding).getName();
 				logger.warn("Class not working: CPPTypedef, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTypedef_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else if (idExprBinding instanceof CPPTemplateTypeParameter) {
@@ -723,7 +718,7 @@ public class InstructionLine {
 			return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE" + ownerExpr.getRawSignature(), NodeType.E_INVALID_NODE_TYPE));
 		}
 		IBinding funcMemberBinding = fieldRef.getFieldName().resolveBinding();
-		if(funcMemberBinding instanceof ProblemBinding) {
+		if(funcMemberBinding instanceof IProblemBinding) {
 			logger.error("Problem binding. Member not found: {}", fieldRef.getFieldName());
 			String nodeName = "PROBLEM_BINDING_FIELD_REF" + fieldRef.getFieldName();
 			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
@@ -820,7 +815,7 @@ public class InstructionLine {
 			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE) {
 				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
 			} else if (insideFuncParameter.getType() == IndirectionType.E_FUNCTION_POINTER) {
-				CPPASTIdExpression idExpr = (CPPASTIdExpression) parameter;
+				IASTIdExpression idExpr = (IASTIdExpression) parameter;
 				IBinding binding = idExpr.getName().resolveBinding();
 				Function funcPointer = _astInterpreter.getFuncId(binding);
 				localParameter = new FuncParameter(funcPointer);
@@ -897,7 +892,7 @@ public class InstructionLine {
 		
 		// Check if the operator is a star
 		int operator = unExpr.getOperator();
-		if (operator == CPPASTUnaryExpression.op_star){
+		if (operator == ICPPASTUnaryExpression.op_star){
 			IASTExpression opExpr = unExpr.getOperand();
 			IVar pointerVar;
 			try {
@@ -909,15 +904,15 @@ public class InstructionLine {
 				logger.fatal("not expected here");
 
 			return pointerVar.getCurrentNode();
-		} else if (operator == CPPASTUnaryExpression.op_bracketedPrimary) {
+		} else if (operator == ICPPASTUnaryExpression.op_bracketedPrimary) {
 			return loadValue(unExpr.getOperand()).getNode();
-		} else if (operator == CPPASTUnaryExpression.op_not) {
+		} else if (operator == ICPPASTUnaryExpression.op_not) {
 			IASTExpression opExpr = unExpr.getOperand();
 			Value value = loadValue(opExpr);
 			return _gvplGraph.addNotOp(value.getNode());
-		} else if (operator == CPPASTUnaryExpression.op_sizeof) {
+		} else if (operator == ICPPASTUnaryExpression.op_sizeof) {
 			return _gvplGraph.addGraphNode("sizeof()" + unExpr.getRawSignature(), NodeType.E_DIRECT_VALUE);
-		} else if (operator == CPPASTUnaryExpression.op_minus) {
+		} else if (operator == ICPPASTUnaryExpression.op_minus) {
 			return _gvplGraph.addGraphNode(unExpr.getRawSignature(), NodeType.E_DIRECT_VALUE);
 		} else {
 			logger.fatal("not implemented {}", unExpr.getRawSignature());

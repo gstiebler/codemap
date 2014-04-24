@@ -27,6 +27,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
@@ -34,16 +35,16 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
-import org.eclipse.cdt.internal.core.dom.parser.ProblemBinding;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTBaseDeclSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IProblemBinding;
+import org.eclipse.cdt.core.dom.ast.ITypedef;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTElaboratedTypeSpecifier;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSimpleDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTElaboratedTypeSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTEnumerationSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLinkageSpecification;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTName;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamespaceDefinition;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTProblemDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTQualifiedName;
@@ -62,9 +63,7 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPNamespace;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.GPPASTExplicitTemplateInstantiation;
 
 import debug.DebugOptions;
@@ -146,25 +145,25 @@ public class AstInterpreterCDT extends AstInterpreter {
 			IASTDeclSpecifier declSpec = simpleDecl.getDeclSpecifier();
 			logger.debug(declSpec.getClass());
 
-			if (declSpec instanceof CPPASTCompositeTypeSpecifier) {
-				loadClassImplementation((CPPASTCompositeTypeSpecifier) declSpec);
-			} else if (declSpec instanceof CPPASTElaboratedTypeSpecifier) {
+			if (declSpec instanceof ICPPASTCompositeTypeSpecifier) {
+				loadClassImplementation(declSpec);
+			} else if (declSpec instanceof ICPPASTElaboratedTypeSpecifier) {
 				// forward declaration (always?)
 				loadClassDecl((CPPASTElaboratedTypeSpecifier) declSpec);
 			} else if (declSpec instanceof CPPASTSimpleDeclSpecifier) {
 				IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 				for (IASTDeclarator declarator : declarators) {
-					if (declarator instanceof CPPASTFunctionDeclarator) {
-						CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) declarator;
+					if (declarator instanceof IASTFunctionDeclarator) {
+						IASTFunctionDeclarator funcDecl = (IASTFunctionDeclarator) declarator;
 						loadFunctionDeclaration(funcDecl);
-					} else if (declarator instanceof CPPASTDeclarator) {
+					} else if (declarator instanceof IASTDeclarator) {
 						IASTName name = declarator.getName();
 						IBinding binding = name.resolveBinding();
-						if (binding instanceof CPPVariable) {
+						if (binding instanceof ICPPVariable) {
 							addGlobalVar(declarator, declSpec);
 						} else if (binding instanceof CPPField) {
 							initializeGlobalVar(binding, declarator);
-						} else if (binding instanceof CPPTypedef) {
+						} else if (binding instanceof ITypedef) {
 							logger.info("Not implemented CPPTypedef: {}", binding.getName());
 						} else {
 							logger.error("Not implemented: {}", binding.getClass());
@@ -172,18 +171,18 @@ public class AstInterpreterCDT extends AstInterpreter {
 					} else
 						logger.error("you're doing it wrong. {}", declarator.getClass());
 				}
-			} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
+			} else if (declSpec instanceof IASTNamedTypeSpecifier) {
 				IASTDeclarator[] declarators = simpleDecl.getDeclarators();
 				for (IASTDeclarator declarator : declarators) {
-					if(declarator instanceof CPPASTFunctionDeclarator) {
-						loadFunctionDeclaration((CPPASTFunctionDeclarator) declarator);
+					if(declarator instanceof IASTFunctionDeclarator) {
+						loadFunctionDeclaration((IASTFunctionDeclarator) declarator);
 						return;
 					}
 					
 					IASTName name = declarator.getName();
 					IBinding binding = name.resolveBinding();
-					if(binding instanceof CPPTypedef) {
-						IASTName dsName = ((CPPASTNamedTypeSpecifier) declSpec).getName();
+					if(binding instanceof ITypedef) {
+						IASTName dsName = ((IASTNamedTypeSpecifier) declSpec).getName();
 						IBinding originalClassBinding = dsName.resolveBinding();
 						_typedefBindings.put(binding, originalClassBinding);
 					} else
@@ -252,15 +251,15 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * @return A instance of Function
 	 */
 	private Function loadFunction(IASTFunctionDefinition funcDefinition) {
-		CPPASTFunctionDeclarator declarator = (CPPASTFunctionDeclarator) funcDefinition.getDeclarator();
+		IASTFunctionDeclarator declarator = (IASTFunctionDeclarator) funcDefinition.getDeclarator();
 		IASTName name = declarator.getName();
 
 		// method function
-		if (name instanceof CPPASTQualifiedName) {
-			loadMethod(funcDefinition, (CPPASTQualifiedName) name);
+		if (name instanceof ICPPASTQualifiedName) {
+			loadMethod(funcDefinition, (ICPPASTQualifiedName) name);
 		} // a function that is not a method
-		else if (name instanceof CPPASTName) {
-			Function function = loadSimpleFunction(name, (CPPASTFunctionDeclarator) declarator, funcDefinition);
+		else if (name instanceof IASTName) {
+			Function function = loadSimpleFunction(name, (IASTFunctionDeclarator) declarator, funcDefinition);
 			if (function.getName().equals("main"))
 				return function;
 		} else
@@ -269,12 +268,12 @@ public class AstInterpreterCDT extends AstInterpreter {
 		return null;
 	}
 
-	private void loadMethod(IASTFunctionDefinition declaration, CPPASTQualifiedName qn) {
+	private void loadMethod(IASTFunctionDefinition declaration, ICPPASTQualifiedName qn) {
 		IASTName[] names = qn.getNames();
 		IASTName className = names[0];
 		IBinding classBinding = className.resolveBinding();
-		if(classBinding instanceof ProblemBinding) {
-			logger.error("problem binding: {}", ((ProblemBinding)classBinding).getPhysicalNode());
+		if(classBinding instanceof IProblemBinding) {
+			logger.error("problem binding: {}", ((IProblemBinding)classBinding).getPhysicalNode());
 			return;
 		} else if(classBinding instanceof CPPDeferredClassInstance) {
 			logger.warn("Not implemented CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
@@ -287,8 +286,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 			return;
 		} else if (classBinding instanceof CPPClassType ) {
 			logger.info("CPPClassType: {}", ((CPPClassType)classBinding).getName());
-		} else if (classBinding instanceof CPPASTName ) {
-			logger.warn("Not implemented CPPASTName: {}", ((CPPASTName)classBinding));
+		} else if (classBinding instanceof IASTName ) {
+			logger.warn("Not implemented CPPASTName: {}", ((IASTName)classBinding));
 			return;
 		} else
 			logger.error("Not implemented {}", classBinding.getClass());
@@ -301,10 +300,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 		classDecl.loadMemberFunc(declaration, this);
 	}
 	
-	private Function loadFunctionDeclaration(CPPASTFunctionDeclarator decl) {
+	private Function loadFunctionDeclaration(IASTFunctionDeclarator decl) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(decl);
 		IBinding binding = decl.getName().resolveBinding();
-		if(binding instanceof CPPTypedef) {
+		if(binding instanceof ITypedef) {
 			_functionTypedefs.add(binding);
 			return null;
 		}
@@ -327,7 +326,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		return function;
 	}
 	
-	private Function loadSimpleFunction(IASTName name, CPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition funcDefinition) {
+	private Function loadSimpleFunction(IASTName name, IASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition funcDefinition) {
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
 		Function function = loadFunctionDeclaration(funcDeclarator);
 
@@ -342,14 +341,14 @@ public class AstInterpreterCDT extends AstInterpreter {
 		_classByLocation.put(classDecl.getCodeLocation(), classDecl);
 	}
 	
-	private ClassDeclCDT loadClassDecl(CPPASTBaseDeclSpecifier strDecl) {
+	private ClassDeclCDT loadClassDecl(ICPPASTDeclSpecifier strDecl) {
 		IASTName name = null;
-		if(strDecl instanceof CPPASTCompositeTypeSpecifier)
-			name = ((CPPASTCompositeTypeSpecifier)strDecl).getName();
-		else if(strDecl instanceof CPPASTElaboratedTypeSpecifier)
+		if(strDecl instanceof ICPPASTCompositeTypeSpecifier)
+			name = ((ICPPASTCompositeTypeSpecifier)strDecl).getName();
+		else if(strDecl instanceof ICPPASTElaboratedTypeSpecifier)
 			name = ((CPPASTElaboratedTypeSpecifier)strDecl).getName();
-		else if(strDecl instanceof CPPASTNamedTypeSpecifier)
-			name = ((CPPASTNamedTypeSpecifier)strDecl).getName();
+		else if(strDecl instanceof IASTNamedTypeSpecifier)
+			name = ((IASTNamedTypeSpecifier)strDecl).getName();
 		else
 			logger.fatal("you're doing it wrong. {}", strDecl.getClass());
 		
@@ -387,7 +386,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	 * 
 	 * @param strDecl
 	 */
-	private void loadClassImplementation(CPPASTCompositeTypeSpecifier strDecl) {		
+	private void loadClassImplementation(ICPPASTCompositeTypeSpecifier strDecl) {		
 		CodeLocation classLocation = CodeLocationCDT.NewFromFileLocation(strDecl);
 		ClassDeclCDT classDecl = _classByLocation.get(classLocation);
 		if(classDecl == null) {
@@ -402,18 +401,18 @@ public class AstInterpreterCDT extends AstInterpreter {
 	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) throws ClassNotImplementedException {
 		if(declSpec instanceof IASTNamedTypeSpecifier) {
 			IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
-			if(name instanceof CPPASTQualifiedName) {
-				IASTName[] names = ((CPPASTQualifiedName)name).getNames();
+			if(name instanceof ICPPASTQualifiedName) {
+				IASTName[] names = ((ICPPASTQualifiedName)name).getNames();
 				if(names.length > 1)
 					name = names[1];
 			}
 			if(name instanceof CPPASTTemplateId) {
 				CPPASTTemplateId tid = (CPPASTTemplateId) name;
 				IBinding binding = tid.resolveBinding();
-				CPPASTName templateName = null;
+				IASTName templateName = null;
 				if(binding instanceof CPPClassInstance) {
 					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
-					templateName = (CPPASTName) classSpecialization.getDefinition();
+					templateName = (IASTName) classSpecialization.getDefinition();
 				} else if (binding instanceof CPPUnknownClass) {
 					logger.error("CPPUnknownClass, {}", binding.getName());
 					return null;
@@ -421,8 +420,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
 					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
 					IASTNode node = classTemplate.getDefinition();
-					if(node instanceof CPPASTName) {
-						templateName = (CPPASTName) node;
+					if(node instanceof IASTName) {
+						templateName = (IASTName) node;
 					} else if (node == null)
 						return null;
 					else {
@@ -443,10 +442,10 @@ public class AstInterpreterCDT extends AstInterpreter {
 				return templateBinding;
 			}
 			IBinding binding = name.resolveBinding();
-			if(binding instanceof ProblemBinding) {
+			if(binding instanceof IProblemBinding) {
 				logger.error("ProblemBinding: {}", name.getRawSignature());
 			}
-			if(binding instanceof CPPTypedef) {
+			if(binding instanceof ITypedef) {
 				IBinding newBinding = _typedefBindings.get(binding);
 				if(newBinding != null)
 					return newBinding;
@@ -456,11 +455,11 @@ public class AstInterpreterCDT extends AstInterpreter {
 			}
 			return binding;
 		}
-		else if(declSpec instanceof CPPASTElaboratedTypeSpecifier)
-			return ((CPPASTElaboratedTypeSpecifier) declSpec).getName().resolveBinding();
-		else if(declSpec instanceof CPPASTSimpleDeclSpecifier) {
+		else if(declSpec instanceof ICPPASTElaboratedTypeSpecifier)
+			return ((ICPPASTElaboratedTypeSpecifier) declSpec).getName().resolveBinding();
+		else if(declSpec instanceof ICPPASTSimpleDeclSpecifier) {
 			return null;
-		} else if(declSpec instanceof CPPASTEnumerationSpecifier) {
+		} else if(declSpec instanceof IASTEnumerationSpecifier) {
 			return null;
 		} else {
 			throw new ClassNotImplementedException(declSpec.getClass().toString(), declSpec.getRawSignature().toString());

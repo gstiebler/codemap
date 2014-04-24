@@ -25,17 +25,16 @@ import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IBinding;
+import org.eclipse.cdt.core.dom.ast.ITypedef;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompositeTypeSpecifier;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDeclarator;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTNamedTypeSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTOperatorName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTTemplateId;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPScope.CPPScopeProblem;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTypedef;
 
 import debug.DebugOptions;
 
@@ -51,7 +50,7 @@ public class ClassDeclCDT extends ClassDecl{
 	private Map<IBinding, MemberFunc> _memberFuncIdMap;
 	private Map<CodeLocation, MemberFunc> _membersFuncLocation = new TreeMap<CodeLocation, MemberFunc>();
 	private List<ClassDeclCDT> _parentClasses = new ArrayList<ClassDeclCDT>();
-	CPPASTCompositeTypeSpecifier _classDecl;
+	ICPPASTCompositeTypeSpecifier _classDecl;
 
 	public ClassDeclCDT(AstInterpreterCDT astInterpreter, CodeLocation location, IBinding binding) {
 		super(location, binding);
@@ -59,8 +58,8 @@ public class ClassDeclCDT extends ClassDecl{
 		_astInterpreter = astInterpreter;
 	}
 	
-	private void getCDTMembers(CPPASTCompositeTypeSpecifier classDecl, 
-			List<CPPASTFunctionDeclarator> functionDeclarators, 
+	private void getCDTMembers(ICPPASTCompositeTypeSpecifier classDecl, 
+			List<IASTFunctionDeclarator> functionDeclarators, 
 			List<IASTFunctionDefinition> functionDefinitions, 
 			List<IASTDeclarator> membersDeclaration) {
 		IASTDeclaration[] members = classDecl.getMembers();
@@ -82,8 +81,8 @@ public class ClassDeclCDT extends ClassDecl{
 			if(declSpec instanceof IASTEnumerationSpecifier) {
 				EnumCDT.loadEnum( (IASTEnumerationSpecifier) declSpec, _astInterpreter );
 				continue;
-			} else if (declSpec instanceof CPPASTNamedTypeSpecifier) {
-				IASTName name = ((CPPASTNamedTypeSpecifier) declSpec).getName();
+			} else if (declSpec instanceof IASTNamedTypeSpecifier) {
+				IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
 				if(name instanceof CPPASTTemplateId) {
 					//((CPPASTNamedTypeSpecifier) declSpec).
 					logger.warn("Not implemented: CPPASTTemplateId, {}", name.getRawSignature());
@@ -98,7 +97,7 @@ public class ClassDeclCDT extends ClassDecl{
 				String rs = declarator.getRawSignature();
 				logger.debug("Member declarator: {}, type: {}", rs, declarator.getClass());
 				if (declarator instanceof IASTFunctionDeclarator)
-					functionDeclarators.add((CPPASTFunctionDeclarator) declarator);	
+					functionDeclarators.add((IASTFunctionDeclarator) declarator);	
 				else
 					membersDeclaration.add(declarator);
 			}
@@ -110,7 +109,7 @@ public class ClassDeclCDT extends ClassDecl{
 	 * @param classDecl Declaration of the type
 	 * @param graph The Graph
 	 */
-	public void loadAstDecl(CPPASTCompositeTypeSpecifier classDecl, Graph graph) {
+	public void loadAstDecl(ICPPASTCompositeTypeSpecifier classDecl, Graph graph) {
 		_classDecl = classDecl;
 
 		_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
@@ -118,7 +117,7 @@ public class ClassDeclCDT extends ClassDecl{
 		
 		loadBaseClasses(_classDecl.getBaseSpecifiers(), _astInterpreter);
 		
-		List<CPPASTFunctionDeclarator> functionDeclarators = new ArrayList<CPPASTFunctionDeclarator>();
+		List<IASTFunctionDeclarator> functionDeclarators = new ArrayList<IASTFunctionDeclarator>();
 		List<IASTFunctionDefinition> functionDefinitions = new ArrayList<IASTFunctionDefinition>();
 		List<IASTDeclarator> membersDeclaration = new ArrayList<IASTDeclarator>();
 		getCDTMembers(_classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
@@ -150,23 +149,23 @@ public class ClassDeclCDT extends ClassDecl{
 			}
 		}
 		
-		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators)
+		for(IASTFunctionDeclarator functionDeclarator : functionDeclarators)
 			loadMemberFuncDecl(functionDeclarator, _astInterpreter);
 		
 		for(IASTFunctionDefinition functionDefinition : functionDefinitions)
 			loadMemberFunc(functionDefinition, _astInterpreter);	
 	}
 	
-	public void updateBindings(CPPASTCompositeTypeSpecifier classDecl) {
+	public void updateBindings(ICPPASTCompositeTypeSpecifier classDecl) {
 		//_memberIdMap = new LinkedHashMap<IBinding, ClassMember>();
 		//_memberFuncIdMap = new LinkedHashMap<IBinding, MemberFunc>();
 		
-		List<CPPASTFunctionDeclarator> functionDeclarators = new ArrayList<CPPASTFunctionDeclarator>();
+		List<IASTFunctionDeclarator> functionDeclarators = new ArrayList<IASTFunctionDeclarator>();
 		List<IASTFunctionDefinition> functionDefinitions = new ArrayList<IASTFunctionDefinition>();
 		List<IASTDeclarator> membersDeclaration = new ArrayList<IASTDeclarator>();
 		getCDTMembers(classDecl, functionDeclarators, functionDefinitions, membersDeclaration);
 		
-		for(CPPASTFunctionDeclarator functionDeclarator : functionDeclarators){
+		for(IASTFunctionDeclarator functionDeclarator : functionDeclarators){
 			CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(functionDeclarator);
 			IBinding memberFuncBinding = functionDeclarator.getName().resolveBinding();
 			MemberFunc memberFunc = _membersFuncLocation.get(funcLocation);
@@ -213,10 +212,10 @@ public class ClassDeclCDT extends ClassDecl{
 		}
 	}
 	
-	private MemberFunc loadMemberFuncDecl(CPPASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
+	private MemberFunc loadMemberFuncDecl(IASTFunctionDeclarator funcDeclarator, AstInterpreterCDT astInterpreter) {
 		CodeLocation funcLocation = CodeLocationCDT.NewFromFileLocation(funcDeclarator);
 		IBinding memberFuncBinding = funcDeclarator.getName().resolveBinding();
-		if(memberFuncBinding instanceof CPPTypedef)
+		if(memberFuncBinding instanceof ITypedef)
 		{
 			logger.warn("Not implemented: CPPTypedef {}", memberFuncBinding.getName());
 			return null;
@@ -246,7 +245,7 @@ public class ClassDeclCDT extends ClassDecl{
 	public void loadMemberFunc(IASTFunctionDefinition member, AstInterpreterCDT astInterpreter) {
 		IASTDeclarator declarator = member.getDeclarator();
 		DebugOptions.setStartingLine(declarator.getFileLocation().getStartingLineNumber());
-		CPPASTFunctionDeclarator funcDeclarator = (CPPASTFunctionDeclarator) declarator;
+		IASTFunctionDeclarator funcDeclarator = (IASTFunctionDeclarator) declarator;
 		
 		MemberFunc memberFunc = loadMemberFuncDecl(funcDeclarator, astInterpreter);
 		memberFunc.initializeDefinition(funcDeclarator.getConstructorChain(), member);
