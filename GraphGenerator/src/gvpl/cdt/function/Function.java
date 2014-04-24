@@ -44,7 +44,6 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
@@ -105,8 +104,8 @@ public class Function extends BaseScopeCDT {
 		if( parentNode instanceof CPPASTSimpleDeclaration ) {
 			CPPASTSimpleDeclaration simpleDecl = (CPPASTSimpleDeclaration) parentNode;
 			_isStatic = simpleDecl.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_static;
-		} else if ( parentNode instanceof CPPASTFunctionDefinition ) {
-			CPPASTFunctionDefinition funcDef = (CPPASTFunctionDefinition) parentNode;
+		} else if ( parentNode instanceof IASTFunctionDefinition ) {
+			IASTFunctionDefinition funcDef = (IASTFunctionDefinition) parentNode;
 			_isStatic = funcDef.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_static;
 		} else {
 			logger.error("not good");
