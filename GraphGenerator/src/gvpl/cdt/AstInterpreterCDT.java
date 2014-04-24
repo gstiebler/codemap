@@ -257,7 +257,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			loadMethod(funcDefinition, (ICPPASTQualifiedName) name);
 		} // a function that is not a method
 		else if (name instanceof IASTName) {
-			Function function = loadSimpleFunction(name, (ICPPASTFunctionDeclarator) declarator, funcDefinition);
+			Function function = loadSimpleFunction((ICPPASTFunctionDeclarator) declarator, funcDefinition);
 			if (function.getName().equals("main"))
 				return function;
 		} else
@@ -324,7 +324,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		return function;
 	}
 	
-	private Function loadSimpleFunction(IASTName name, ICPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition funcDefinition) {
+	private Function loadSimpleFunction(ICPPASTFunctionDeclarator funcDeclarator, IASTFunctionDefinition funcDefinition) {
 		DebugOptions.setStartingLine(funcDeclarator.getFileLocation().getStartingLineNumber());
 		Function function = loadFunctionDeclaration(funcDeclarator);
 

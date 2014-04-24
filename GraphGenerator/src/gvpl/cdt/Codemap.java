@@ -1,5 +1,6 @@
 package gvpl.cdt;
 
+import gvpl.clang.CPPASTTranslationUnit;
 import gvpl.common.CodeLocation;
 import gvpl.common.FileFuncs;
 import gvpl.common.OutputManager;
@@ -52,6 +53,11 @@ public class Codemap {
 	}
 	
 	public static AstInterpreterCDT execute(String basePath, String mainFile) {
+		CPPASTTranslationUnit clangTranslationUnit = new CPPASTTranslationUnit(basePath, mainFile);
+		
+		
+		
+		
 		ScopeManager.reset();
 		DebugOptions.resetLines();
 		GraphNode.resetCounter();
@@ -141,7 +147,8 @@ public class Codemap {
 			DebugOptions.setCurrCpp(fileNames.get(i));
 			CodeLocation.setCurrentFileName(fileNames.get(i));
 			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
-			astInterpreter.loadDeclarations(translationUnits.get(i));
+			// astInterpreter.loadDeclarations(translationUnits.get(i));
+			astInterpreter.loadDeclarations(clangTranslationUnit);
 		}
 		
 		astInterpreter.loadMain();
