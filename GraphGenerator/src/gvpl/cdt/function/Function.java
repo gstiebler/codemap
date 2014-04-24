@@ -30,7 +30,6 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
@@ -38,15 +37,17 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionDefinition;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclSpecifier;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -80,7 +81,7 @@ public class Function extends BaseScopeCDT {
 		_ownBinding = ownBinding;
 		
 		if(ownBinding instanceof ICPPFunction) {
-			IASTNode node = ((ICPPFunction)ownBinding).getDefinition();
+			IASTNode node = ((CPPFunction)ownBinding).getDefinition();
 			if(node != null) {
 				node = node.getParent();
 				IASTDeclSpecifier declSpec = ((IASTFunctionDefinition)node).getDeclSpecifier();
@@ -98,7 +99,7 @@ public class Function extends BaseScopeCDT {
 		_returnType = _astInterpreter.getPrimitiveType();
 	}
 	
-	public void loadDeclaration(IASTFunctionDeclarator decl) {
+	public void loadDeclaration(ICPPASTFunctionDeclarator decl) {
 		_returnPointerOps = decl.getPointerOperators();
 		IASTNode parentNode = decl.getParent();
 		if( parentNode instanceof CPPASTSimpleDeclaration ) {
@@ -130,7 +131,7 @@ public class Function extends BaseScopeCDT {
 		_body = funcDefinition.getBody();
 		_bodyFileName = CodeLocation.getCurrentFileName();
 		_ccInitializer = ccInitializer;
-		IASTFunctionDeclarator declarator = (IASTFunctionDeclarator) funcDefinition.getDeclarator();
+		ICPPASTFunctionDeclarator declarator = (ICPPASTFunctionDeclarator) funcDefinition.getDeclarator();
 		loadFuncParameters(declarator.getParameters());
 
 		logger.debug("Storing body. Func: {}, File: {}", _externalName, DebugOptions.getCurrCpp());
@@ -190,8 +191,8 @@ public class Function extends BaseScopeCDT {
 				FuncParameter.IndirectionType parameterVarType = null;
 				parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
 				funcParameter = new FuncParameter(parameterVarType);
-				if(declSpec instanceof CPPASTSimpleDeclSpecifier)
-					funcParameter.setType(((CPPASTSimpleDeclSpecifier)declSpec).getType());
+				if(declSpec instanceof IASTSimpleDeclSpecifier)
+					funcParameter.setType(((IASTSimpleDeclSpecifier)declSpec).getType());
 			}
 
 			addParameter(binding, funcParameter);

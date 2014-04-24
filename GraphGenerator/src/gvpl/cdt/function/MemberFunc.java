@@ -20,14 +20,14 @@ import java.util.Map;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
-import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IProblemBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPField;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPField;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -55,7 +55,7 @@ public class MemberFunc extends Function {
 	}
 	
 	@Override
-	public void loadDeclaration(IASTFunctionDeclarator decl) {
+	public void loadDeclaration(ICPPASTFunctionDeclarator decl) {
 		super.loadDeclaration(decl);
 		
 		if (_funcName.equals(_parentClass.getName()))
@@ -82,7 +82,7 @@ public class MemberFunc extends Function {
 			IBinding memberBinding = memberInitId.resolveBinding();
 			InstructionLine instructionLine = new InstructionLine(graph, this, _astInterpreter);
 
-			if (memberBinding instanceof CPPField) {
+			if (memberBinding instanceof ICPPField) {
 				IVar var = getMemberFromBinding(memberBinding);
 				if(var == null) {
 					logger.error("Problem with member {}", memberBinding.getName());

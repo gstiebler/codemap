@@ -20,6 +20,7 @@ import gvpl.graph.GraphNode;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTArraySubscriptExpression;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFieldReference;
@@ -33,10 +34,10 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCastExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -75,7 +76,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 	    IBinding binding = getBindingFromExpr(expr);
 	    CodeLocation codeLocation = null;
 		if (binding instanceof ICPPVariable) {
-			IASTNode[] nodes = ((ICPPVariable) binding).getDeclarations();
+			IASTNode[] nodes = ((CPPVariable) binding).getDeclarations();
 			if (nodes != null && nodes.length > 0) {
 				codeLocation = CodeLocationCDT.NewFromFileLocation(nodes[0]);
 			}
@@ -134,9 +135,9 @@ public abstract class BaseScopeCDT extends BaseScope{
 				return idExpr.getName().resolveBinding();
 			} else
 				return getBindingFromExpr(opExpr);
-		} else if (expr instanceof CPPASTArraySubscriptExpression) {
+		} else if (expr instanceof IASTArraySubscriptExpression) {
 			//It's an array
-			CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) expr;
+			IASTArraySubscriptExpression arraySubscrExpr = (IASTArraySubscriptExpression) expr;
 			IASTExpression opExpr = arraySubscrExpr.getArrayExpression();
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();

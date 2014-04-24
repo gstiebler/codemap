@@ -621,7 +621,7 @@ public class InstructionLine {
 			} else if (idExprBinding instanceof ICPPFunction) {
 				return loadSimpleFunc(idExprBinding, paramExpr);
 			} else if (idExprBinding instanceof IProblemBinding) {
-				String problemName = ((IProblemBinding)idExprBinding).getPhysicalNode().toString();
+				String problemName = ((IProblemBinding)idExprBinding).getMessage();
 				logger.error("Problem binding: {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_BINDING_" + problemName, NodeType.E_INVALID_NODE_TYPE));
 			} else if (idExprBinding instanceof ITypedef) {
