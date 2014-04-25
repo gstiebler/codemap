@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import gvpl.common.FileFuncs;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,30 +25,25 @@ import org.eclipse.cdt.core.parser.ParserLanguage;
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	public List<CPPASTDeclaration> _declarations = new ArrayList<CPPASTDeclaration>();
-	
+
 	public CPPASTTranslationUnit(String path, String fileName) {
 		String astFileName = fileName.substring(0, fileName.length() - 4) + ".ast";
-		try {
-			List<String> lines = FileFuncs.readLines(new java.io.File(astFileName));
-			int pos = 4;
-			while(pos < lines.size()) {
-				String type = getType(lines.get(pos));
-				if(type.equals("FunctionDecl"))
-					_declarations.add(new CPPASTFunctionDeclaration(lines, pos));
-				pos = 1000;
+		Cursor cursor = new Cursor(astFileName);
+		while (!cursor.theEnd()) {
+			String type = getType(cursor.nextLine());
+			if (type.equals("FunctionDecl")) {
+				cursor.back();
+				_declarations.add(new CPPASTFunctionDeclaration(cursor));
 			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 	}
-	
+
 	public String getType(String line) {
 		String temp1 = line.split("-")[1];
 		String temp2 = temp1.split(" ")[0];
 		return temp2;
 	}
-	
+
 	@Override
 	public boolean accept(ASTVisitor arg0) {
 		// TODO Auto-generated method stub
@@ -108,19 +101,19 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	@Override
 	public void setParent(IASTNode arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setPropertyInParent(ASTNodeProperty arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void addDeclaration(IASTDeclaration arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
@@ -155,8 +148,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	@Override
 	public IASTDeclaration[] getDeclarations() {
-		IASTDeclaration[] decls = new IASTDeclaration [_declarations.size()];
-		for( int i = 0; i < decls.length; ++i )
+		IASTDeclaration[] decls = new IASTDeclaration[_declarations.size()];
+		for (int i = 0; i < decls.length; ++i)
 			decls[i] = _declarations.get(i);
 		return decls;
 	}
@@ -260,13 +253,13 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	@Override
 	public void setComments(IASTComment[] arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void setIndex(IIndex arg0) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

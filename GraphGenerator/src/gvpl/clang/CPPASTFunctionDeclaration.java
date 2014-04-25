@@ -13,9 +13,10 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	public IBinding _binding = null;
 	public String _funcName = null;
 	public CPPASTFunctionDeclarator _declarator = null;
+	public IASTStatement _body = null;
 	
-	public CPPASTFunctionDeclaration(List<String> lines, int pos) {
-		String line = lines.get(pos);
+	public CPPASTFunctionDeclaration(Cursor cursor) {
+		String line = cursor.nextLine();
 		String postX = line.split("0x")[1];
 		String bindText = postX.split(" ")[0];
 		int bindingId = Integer.parseInt(bindText, 16);
@@ -23,12 +24,12 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		_funcName = postBico.split(" ")[2];
 		_binding = new CPPFunction(bindingId, _funcName);
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition());
+		_body = new CPPASTCompoundStatement(cursor);
 	}
 	
 	@Override
 	public IASTStatement getBody() {
-		// TODO Auto-generated method stub
-		return null;
+		return _body;
 	}
 
 	@Override
