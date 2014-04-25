@@ -12,15 +12,18 @@ import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IASTTypeId;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctionScope;
 
 public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator{
 
 	public CPPASTName _name = null;
+	public IASTNode _parentNode = null;
 	
-	public CPPASTFunctionDeclarator(Binding binding) {
+	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode) {
 		_name = new CPPASTName(binding);
+		_parentNode = parentNode;
 	}
 	
 	@Override
@@ -32,7 +35,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	@Override
 	public IASTParameterDeclaration[] getParameters() {
 		// TODO Auto-generated method stub
-		return null;
+		return new ASTParameterDeclaration [0];
 	}
 
 	@Override
@@ -126,8 +129,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public IASTNode getParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return _parentNode;
 	}
 
 	@Override

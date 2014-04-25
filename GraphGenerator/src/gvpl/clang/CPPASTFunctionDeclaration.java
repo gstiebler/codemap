@@ -5,11 +5,12 @@ import java.util.List;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
 public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition {
 
-	public Binding _binding = null;
+	public IBinding _binding = null;
 	public String _funcName = null;
 	public CPPASTFunctionDeclarator _declarator = null;
 	
@@ -18,10 +19,10 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		String postX = line.split("0x")[1];
 		String bindText = postX.split(" ")[0];
 		int bindingId = Integer.parseInt(bindText, 16);
-		_binding = new Binding(bindingId);
 		String postBico = postX.split(">")[1];
 		_funcName = postBico.split(" ")[2];
-		_declarator = new CPPASTFunctionDeclarator(_binding);
+		_binding = new CPPFunction(bindingId, _funcName);
+		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition());
 	}
 	
 	@Override

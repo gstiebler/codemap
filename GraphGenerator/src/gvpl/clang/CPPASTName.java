@@ -12,10 +12,15 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTName implements org.eclipse.cdt.core.dom.ast.IASTName{
 
-	public Binding _binding = null;
+	public IBinding _binding = null;
 	
-	public CPPASTName(Binding binding) {
+	public CPPASTName(IBinding binding) {
 		_binding = binding;
+	}
+	
+	@Override
+	public String toString() {
+		return _binding.toString();
 	}
 	
 	@Override

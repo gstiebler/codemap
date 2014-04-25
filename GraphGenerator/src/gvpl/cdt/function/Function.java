@@ -46,7 +46,8 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction;
+//import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction; //CDT_CLANG
+import gvpl.clang.CPPFunction; //CDT_CLANG
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
