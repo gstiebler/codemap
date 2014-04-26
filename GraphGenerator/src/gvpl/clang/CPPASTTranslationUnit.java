@@ -33,7 +33,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			String type = getType(cursor.nextLine());
 			if (type.equals("FunctionDecl")) {
 				cursor.back();
-				_declarations.add(new CPPASTFunctionDeclaration(cursor));
+				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor()));
 			}
 		}
 	}

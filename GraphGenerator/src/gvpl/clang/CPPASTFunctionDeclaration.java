@@ -24,7 +24,7 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		_funcName = postBico.split(" ")[2];
 		_binding = new CPPFunction(bindingId, _funcName);
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition());
-		_body = new CPPASTCompoundStatement(cursor);
+		_body = new CPPASTCompoundStatement(cursor.getSubCursor());
 	}
 	
 	@Override

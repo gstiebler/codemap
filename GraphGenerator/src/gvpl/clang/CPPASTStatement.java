@@ -11,14 +11,9 @@ public class CPPASTStatement implements org.eclipse.cdt.core.dom.ast.IASTStateme
 
 	public CPPASTStatement(Cursor cursor) {
 		String stmtLine = cursor.nextLine();
-		int primaryIndent = Cursor.indentation(stmtLine);
+		cursor.back();
 		while(!cursor.theEnd()) {
-			String line = cursor.nextLine();
-			int currentIndent = Cursor.indentation(line);
-			if (currentIndent == primaryIndent) {
-				cursor.back();
-				break;
-			}
+			cursor.nextLine();
 		}
 		return;
 	}
