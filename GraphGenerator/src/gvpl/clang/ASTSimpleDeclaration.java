@@ -1,16 +1,22 @@
 package gvpl.clang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTNodeLocation;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
-public class CPPASTStatement implements org.eclipse.cdt.core.dom.ast.IASTStatement {
+public class ASTSimpleDeclaration implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
 
-	public CPPASTStatement(Cursor cursor) {
-		String stmtLine = cursor.nextLine();
+	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
+	
+	public ASTSimpleDeclaration(Cursor cursor) {
 		while(!cursor.theEnd()) {
 			cursor.nextLine();
 		}
@@ -78,6 +84,30 @@ public class CPPASTStatement implements org.eclipse.cdt.core.dom.ast.IASTStateme
 
 	@Override
 	public void setPropertyInParent(ASTNodeProperty arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void addDeclarator(IASTDeclarator arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IASTDeclSpecifier getDeclSpecifier() {
+		// TODO Auto-generated method stub
+		return new ASTDeclSpecifier();
+	}
+
+	@Override
+	public IASTDeclarator[] getDeclarators() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setDeclSpecifier(IASTDeclSpecifier arg0) {
 		// TODO Auto-generated method stub
 		
 	}

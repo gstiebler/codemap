@@ -19,7 +19,13 @@ public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IAS
 	public CPPASTCompoundStatement(Cursor cursor) {
 		String compoundLine = cursor.nextLine();
 		while(!cursor.theEnd()) {
-			_statements.add(new CPPASTStatement(cursor.getSubCursor()));
+			String stmtLine = cursor.nextLine();
+			cursor.back();
+			String stmtType = CPPASTTranslationUnit.getType(stmtLine);
+			if(stmtType.equals("DeclStmt"))
+				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));
+			else
+				_statements.add(new CPPASTStatement(cursor.getSubCursor()));
 		}
 	}
 	

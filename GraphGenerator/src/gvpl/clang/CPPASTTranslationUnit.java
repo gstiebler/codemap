@@ -38,7 +38,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 
-	public String getType(String line) {
+	public static String getType(String line) {
 		String temp1 = line.split("-")[1];
 		String temp2 = temp1.split(" ")[0];
 		return temp2;

@@ -2,18 +2,19 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTNodeLocation;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
-public class CPPASTStatement implements org.eclipse.cdt.core.dom.ast.IASTStatement {
+public class ASTDeclarationStatement implements org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement {
 
-	public CPPASTStatement(Cursor cursor) {
-		String stmtLine = cursor.nextLine();
-		while(!cursor.theEnd()) {
-			cursor.nextLine();
-		}
+	IASTDeclaration _declaration = null;
+	
+	public ASTDeclarationStatement(Cursor cursor) {
+		//String stmtLine = cursor.nextLine();
+		_declaration = new ASTSimpleDeclaration(cursor);
 	}
 	
 	@Override
@@ -78,6 +79,17 @@ public class CPPASTStatement implements org.eclipse.cdt.core.dom.ast.IASTStateme
 
 	@Override
 	public void setPropertyInParent(ASTNodeProperty arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public IASTDeclaration getDeclaration() {
+		return _declaration;
+	}
+
+	@Override
+	public void setDeclaration(IASTDeclaration arg0) {
 		// TODO Auto-generated method stub
 		
 	}
