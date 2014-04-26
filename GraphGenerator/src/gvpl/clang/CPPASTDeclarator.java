@@ -1,30 +1,32 @@
 package gvpl.clang;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
-import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
+import org.eclipse.cdt.core.dom.ast.IASTInitializer;
+import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTNodeLocation;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
-public class ASTSimpleDeclaration implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
+public class CPPASTDeclarator implements org.eclipse.cdt.core.dom.ast.IASTDeclarator {
 
-	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
+	String _declName;
+	String _type;
+	public CPPASTName _name = null;
 	
-	public ASTSimpleDeclaration(Cursor cursor) {
-		String firstLine = cursor.nextLine();
-		while(!cursor.theEnd()) {
-			String line = cursor.nextLine();
-			String type = CPPASTTranslationUnit.getType(line);
-			if(type.equals("VarDecl")) {
-				_declarators.add(new CPPASTDeclarator(line));
-			}
-		}
+	public CPPASTDeclarator(String line) {
+		String postBico = line.split(">")[1];
+		String[] strings = postBico.split(" ");
+		_declName = strings[2];
+		_type = strings[3];
+		_name = new CPPASTName(new CPPVariable(_declName));
+	}
+	
+	public String toString() {
+		return _declName;
 	}
 	
 	@Override
@@ -94,27 +96,55 @@ public class ASTSimpleDeclaration implements org.eclipse.cdt.core.dom.ast.IASTSi
 	}
 
 	@Override
-	public void addDeclarator(IASTDeclarator arg0) {
+	public int getRoleForName(IASTName arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void addPointerOperator(IASTPointerOperator arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public IASTDeclSpecifier getDeclSpecifier() {
+	public IASTInitializer getInitializer() {
 		// TODO Auto-generated method stub
-		return new CPPASTSimpleDeclSpecifier();
+		return null;
 	}
 
 	@Override
-	public IASTDeclarator[] getDeclarators() {
-		IASTDeclarator[] result = new IASTDeclarator [_declarators.size()];
-		return _declarators.toArray(result);
+	public IASTName getName() {
+		return _name;
 	}
 
 	@Override
-	public void setDeclSpecifier(IASTDeclSpecifier arg0) {
+	public IASTDeclarator getNestedDeclarator() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IASTPointerOperator[] getPointerOperators() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setInitializer(IASTInitializer arg0) {
 		// TODO Auto-generated method stub
 		
 	}
 
+	@Override
+	public void setName(IASTName arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setNestedDeclarator(IASTDeclarator arg0) {
+		// TODO Auto-generated method stub
+		
+	}
 }

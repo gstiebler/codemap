@@ -3,13 +3,12 @@ package gvpl.clang;
 import org.eclipse.cdt.core.dom.ILinkage;
 import org.eclipse.cdt.core.dom.ast.DOMException;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
-import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IFunctionType;
 import org.eclipse.cdt.core.dom.ast.IParameter;
 import org.eclipse.cdt.core.dom.ast.IScope;
 import org.eclipse.core.runtime.CoreException;
 
-public class CPPFunction implements IBinding, org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction {
+public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction {
 
 	int _bindingId = -1;
 	String _name;

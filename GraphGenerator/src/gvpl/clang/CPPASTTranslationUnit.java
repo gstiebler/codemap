@@ -149,9 +149,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	@Override
 	public IASTDeclaration[] getDeclarations() {
 		IASTDeclaration[] decls = new IASTDeclaration[_declarations.size()];
-		for (int i = 0; i < decls.length; ++i)
-			decls[i] = _declarations.get(i);
-		return decls;
+		return _declarations.toArray(decls);
 	}
 
 	@Override

@@ -110,9 +110,7 @@ public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IAS
 	@Override
 	public IASTStatement[] getStatements() {
 		IASTStatement[] result = new IASTStatement[_statements.size()];
-		for(int i = 0; i < _statements.size(); ++i)
-			result[i] = _statements.get(i);
-		return result;
+		return _statements.toArray(result);
 	}
 
 
