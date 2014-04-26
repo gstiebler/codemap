@@ -88,7 +88,7 @@ public class ASTFunctionDefinition implements org.eclipse.cdt.core.dom.ast.IASTF
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
 		// TODO Auto-generated method stub
-		return new ASTDeclSpecifier();
+		return new CPPASTSimpleDeclSpecifier();
 	}
 
 	@Override

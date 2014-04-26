@@ -97,7 +97,7 @@ public class ASTSimpleDeclaration implements org.eclipse.cdt.core.dom.ast.IASTSi
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
 		// TODO Auto-generated method stub
-		return new ASTDeclSpecifier();
+		return new CPPASTSimpleDeclSpecifier();
 	}
 
 	@Override
