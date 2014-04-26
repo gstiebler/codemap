@@ -11,7 +11,6 @@ public class CPPASTStatement implements org.eclipse.cdt.core.dom.ast.IASTStateme
 
 	public CPPASTStatement(Cursor cursor) {
 		String stmtLine = cursor.nextLine();
-		cursor.back();
 		while(!cursor.theEnd()) {
 			cursor.nextLine();
 		}

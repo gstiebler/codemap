@@ -31,15 +31,8 @@ public class Cursor {
 	}
 	
 	public String nextLine() {
-		String result = _lines.get(_pos++);
-		if (_pos >= _lines.size())
-			_theEnd = true;
-		
-		int currentIndent = Cursor.indentation(_lines.get(_pos));
-		if (currentIndent == _firstIndent) {
-			_theEnd = true;
-			_parent._pos = _pos;
-		}
+		String result = _lines.get(_pos);
+		setPos(_pos + 1);
 		return result;
 	}
 	
@@ -59,4 +52,23 @@ public class Cursor {
 		return new Cursor(_lines, _pos, this);
 	}
 	
+	private void setTheEnd() {
+		_theEnd = true;
+		if(_parent != null) {
+			_parent.setPos(_pos);
+		}
+	}
+	
+	private void setPos(int pos) {
+		_pos = pos;
+		if (_pos >= _lines.size())
+		{
+			setTheEnd();
+			return;
+		}
+		
+		int currentIndent = Cursor.indentation(_lines.get(_pos));
+		if (currentIndent <= _firstIndent)  
+			setTheEnd();
+	}
 }
