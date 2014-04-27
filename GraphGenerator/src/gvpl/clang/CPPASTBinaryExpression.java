@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -29,23 +30,23 @@ public class CPPASTBinaryExpression implements org.eclipse.cdt.core.dom.ast.IAST
 		_operand1 = loadOperand(cursor);
 		_operand2 = loadOperand(cursor);
 		
-		_opMap.put("*", 1);
-		_opMap.put("/", 2);
-		_opMap.put("%", 3);
-		_opMap.put("+", 4);
-		_opMap.put("-", 5);
-		_opMap.put("<<", 6);
-		_opMap.put("*", 7);
-		_opMap.put("<", 8);
-		_opMap.put(">", 9);
-		_opMap.put("<=", 10);
-		_opMap.put(">=", 11);
-		_opMap.put("&", 12);
-		_opMap.put("^", 13);
-		_opMap.put("|", 14);
-		_opMap.put("&&", 15);
-		_opMap.put("||", 16);
-		_opMap.put("=", 17);
+		_opMap.put("*", IASTBinaryExpression.op_multiply);
+		_opMap.put("/", IASTBinaryExpression.op_divide);
+		_opMap.put("%", IASTBinaryExpression.op_modulo);
+		_opMap.put("+", IASTBinaryExpression.op_plus);
+		_opMap.put("-", IASTBinaryExpression.op_minus);
+		_opMap.put("<<", IASTBinaryExpression.op_shiftLeft);
+		_opMap.put(">>", IASTBinaryExpression.op_shiftRight);
+		_opMap.put("<", IASTBinaryExpression.op_lessThan);
+		_opMap.put(">", IASTBinaryExpression.op_greaterThan);
+		_opMap.put("<=", IASTBinaryExpression.op_lessEqual);
+		_opMap.put(">=", IASTBinaryExpression.op_greaterEqual);
+		_opMap.put("&", IASTBinaryExpression.op_binaryAnd);
+		_opMap.put("^", IASTBinaryExpression.op_binaryXor);
+		_opMap.put("|", IASTBinaryExpression.op_binaryOr);
+		_opMap.put("&&", IASTBinaryExpression.op_logicalAnd);
+		_opMap.put("||", IASTBinaryExpression.op_logicalOr);
+		_opMap.put("=", IASTBinaryExpression.op_assign);
 
 		// Field descriptor #8 I
 /*		public static final int op_multiplyAssign = 18;
