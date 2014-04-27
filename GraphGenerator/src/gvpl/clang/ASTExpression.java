@@ -17,7 +17,7 @@ public class ASTExpression {
 			return new CPPASTLiteralExpression(cursor);
 		} else if(type.equals("BinaryOperator")) {
 			return new CPPASTBinaryExpression(cursor);
-		} else if(type.equals("ImplicitCastExpr")) {
+		} else if(type.equals("ImplicitCastExpr") || type.equals("ParenExpr")) {
 			cursor.nextLine();
 			return loadExpression(cursor);
 		} else {

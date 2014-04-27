@@ -13,9 +13,11 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
 	
 	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
+	IASTDeclSpecifier _declSpec;
 	
 	public ASTSimpleDeclaration(Cursor cursor) {
 		super(cursor.nextLine());
+		_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
 		while(!cursor.theEnd()) {
 			String line = cursor.nextLine();
 			String type = CPPASTTranslationUnit.getType(line);
@@ -29,8 +31,7 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
-		// TODO Auto-generated method stub
-		return new CPPASTSimpleDeclSpecifier();
+		return _declSpec;
 	}
 
 	@Override

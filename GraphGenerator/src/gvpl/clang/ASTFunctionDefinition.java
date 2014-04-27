@@ -13,6 +13,12 @@ import org.eclipse.cdt.core.dom.ast.IScope;
 
 public class ASTFunctionDefinition implements org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition {
 
+	IASTDeclSpecifier _declSpec;
+	
+	public ASTFunctionDefinition(Cursor cursor) {
+		_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
+	}
+	
 	@Override
 	public boolean accept(ASTVisitor arg0) {
 		// TODO Auto-generated method stub
@@ -87,8 +93,7 @@ public class ASTFunctionDefinition implements org.eclipse.cdt.core.dom.ast.IASTF
 
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
-		// TODO Auto-generated method stub
-		return new CPPASTSimpleDeclSpecifier();
+		return _declSpec;
 	}
 
 	@Override

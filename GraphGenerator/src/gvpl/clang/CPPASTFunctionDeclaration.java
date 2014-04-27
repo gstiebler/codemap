@@ -23,7 +23,7 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
 		_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
-		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(), cursor);
+		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(type.equals("CompoundStmt")) {
