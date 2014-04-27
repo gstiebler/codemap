@@ -56,17 +56,41 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return temp2;
 	}
 	
+	public static List<String> parseLine(String line) {
+		List<String> result = new ArrayList<String>();
+
+		String[] dash = line.split("-");
+		String[] space = dash[1].split(" ");
+		result.add(space[0]);
+		
+		String[] postX = space[1].split("0x");
+		String bindText = postX[1].split(" ")[0];
+		result.add(bindText);
+		
+		String[] postBico1 = dash[1].split("<");
+		String[] postBico2 = postBico1[1].split(">");
+		String[] comma = postBico2[0].split(", ");
+		result.add(comma[0]);
+		result.add(comma[1]);
+		
+		String[] plic = postBico2[1].split(" '");
+		String[] strings = plic[0].split(" ");
+		for(int i = 1; i < strings.length; ++i)
+			result.add(strings[i]);
+		
+		plic[1] = plic[1].substring(0, plic[1].length() - 1);
+		result.add(plic[1]);
+		
+		return result;
+	}
+	
 	public static BindingInfo parseBindingInfo(String line) {
 		BindingInfo result = new BindingInfo();
-		String postX = line.split("0x")[1];
-		String bindText = postX.split(" ")[0];
-		result.bindingId = Integer.parseInt(bindText, 16);
-		String postBico = postX.split(">")[1];
-		String[] strings = postBico.split(" ");
-		result.location = strings[1];
-		result.name = strings[2];	
-		result.type = strings[3];
-		result.type = result.type.substring(1, result.type.length() - 1);
+		List<String> parsedLine = parseLine(line);
+		result.bindingId = Integer.parseInt(parsedLine.get(1), 16);
+		result.location = parsedLine.get(3);
+		result.name = parsedLine.get(5);	
+		result.type = parsedLine.get(6);
 		return result;
 	}
 

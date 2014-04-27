@@ -24,7 +24,10 @@ public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IAS
 			String stmtType = CPPASTTranslationUnit.getType(stmtLine);
 			if(stmtType.equals("DeclStmt"))
 				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));
-			else
+			else if (stmtType.equals("BinaryOperator")) {
+				//List<String> parsedLine = CPPASTTranslationUnit.parseLine(stmtType);
+				
+			} else
 				_statements.add(new CPPASTStatement(cursor.getSubCursor()));
 		}
 	}
