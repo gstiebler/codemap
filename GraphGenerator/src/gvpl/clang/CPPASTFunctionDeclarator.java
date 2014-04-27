@@ -1,5 +1,10 @@
 package gvpl.clang;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
@@ -18,14 +23,26 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctionScope;
 
 public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator{
 
+	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclarator.class.getName());
+	
 	public CPPASTName _name = null;
 	public IASTNode _parentNode = null;
 	CPPASTFileLocation _location;
+	List<IASTParameterDeclaration> _parameters = new ArrayList<IASTParameterDeclaration>();
 	
-	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, String line) {
-		_name = new CPPASTName(binding, line);
+	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, Cursor cursor) {
+		_name = new CPPASTName(binding, cursor.getLine());
 		_parentNode = parentNode;
-		_location = new CPPASTFileLocation(line);
+		_location = new CPPASTFileLocation(cursor.getLine());
+		while(!cursor.theEnd()) {
+			String type = CPPASTTranslationUnit.getType(cursor.getLine());
+			if (type.equals("ParmVarDecl")) {
+				_parameters.add(new ASTParameterDeclaration(cursor.nextLine()));
+			} else {
+				return;
+				//logger.error("Error reading " + type);
+			}
+		}
 	}
 	
 	@Override
@@ -36,8 +53,8 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public IASTParameterDeclaration[] getParameters() {
-		// TODO Auto-generated method stub
-		return new ASTParameterDeclaration [0];
+		ASTParameterDeclaration[] result = new ASTParameterDeclaration[_parameters.size()];
+		return _parameters.toArray(result);
 	}
 
 	@Override
