@@ -17,9 +17,6 @@ public class ASTDeclarationStatement extends ASTNode implements org.eclipse.cdt.
 	}
 
 	@Override
-	public void setDeclaration(IASTDeclaration arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setDeclaration(IASTDeclaration arg0) { }
 
 }

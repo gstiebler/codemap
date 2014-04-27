@@ -33,7 +33,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, Cursor cursor) {
 		_name = new CPPASTName(binding, cursor.getLine());
 		_parentNode = parentNode;
-		_location = new CPPASTFileLocation(cursor.getLine());
+		_location = new CPPASTFileLocation(cursor.nextLine());
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if (type.equals("ParmVarDecl")) {

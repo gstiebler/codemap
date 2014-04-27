@@ -69,15 +69,9 @@ public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 	}
 
 	@Override
-	public void setParent(IASTNode arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setParent(IASTNode arg0) { }
 
 	@Override
-	public void setPropertyInParent(ASTNodeProperty arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setPropertyInParent(ASTNodeProperty arg0) { }
 
 }

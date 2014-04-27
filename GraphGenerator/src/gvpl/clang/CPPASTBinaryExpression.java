@@ -26,8 +26,8 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
 		_operator = parsedLine.get( parsedLine.size() - 1 );
 		
-		_operand1 = loadOperand(cursor);
-		_operand2 = loadOperand(cursor);
+		_operand1 = ASTExpression.loadExpression(cursor);
+		_operand2 = ASTExpression.loadExpression(cursor);
 		
 		_opMap.put("*", IASTBinaryExpression.op_multiply);
 		_opMap.put("/", IASTBinaryExpression.op_divide);
@@ -85,24 +85,6 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 
 		// Field descriptor #8 I
 		public static final int op_last = 29;*/
-	}
-
-	IASTExpression loadOperand(Cursor cursor) {
-		String line = cursor.getLine();
-		String type = CPPASTTranslationUnit.getType(line);
-		if(type.equals("DeclRefExpr")) {
-			return new CPPASTIdExpression(cursor);
-		} else if(type.equals("IntegerLiteral")) {
-			return new CPPASTLiteralExpression(cursor);
-		} else if(type.equals("BinaryOperator")) {
-			return new CPPASTBinaryExpression(cursor);
-		} else if(type.equals("ImplicitCastExpr")) {
-			cursor.nextLine();
-			return new CPPASTIdExpression(cursor);
-		} else {
-			logger.error("Error reading " + type);
-			return null;
-		}
 	}
 
 	@Override

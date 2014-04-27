@@ -23,6 +23,8 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));
 			else if (stmtType.equals("BinaryOperator")) {
 				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor()));
+			} else if (stmtType.equals("ReturnStmt")) {
+				_statements.add(new ASTReturnStatement(cursor.getSubCursor()));
 			} else {
 				logger.error("Error reading " + stmtType);
 			}

@@ -19,7 +19,7 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	
 	public CPPASTFunctionDeclaration(Cursor cursor) {
 		super(cursor.getLine());
-		String line = cursor.nextLine();
+		String line = cursor.getLine();
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
 		_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
