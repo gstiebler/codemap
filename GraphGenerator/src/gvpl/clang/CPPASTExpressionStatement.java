@@ -7,10 +7,8 @@ public class CPPASTExpressionStatement extends ASTNode implements org.eclipse.cd
 	IASTExpression _expression;
 	
 	public CPPASTExpressionStatement(Cursor cursor) {
-		super(cursor.nextLine());
-		cursor.back();
-		String line = cursor.nextLine();
-		cursor.back();
+		super(cursor.getLine());
+		String line = cursor.getLine();
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("BinaryOperator")) {
 			_expression = new CPPASTBinaryExpression(cursor);

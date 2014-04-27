@@ -30,6 +30,10 @@ public class Cursor {
 		_firstIndent = Cursor.indentation(firstLine);
 	}
 	
+	public String getLine() {
+		return _lines.get(_pos);
+	}
+	
 	public String nextLine() {
 		String result = _lines.get(_pos);
 		setPos(_pos + 1);

@@ -7,9 +7,7 @@ public class ASTDeclarationStatement extends ASTNode implements org.eclipse.cdt.
 	IASTDeclaration _declaration = null;
 	
 	public ASTDeclarationStatement(Cursor cursor) {
-		super(cursor.nextLine());
-		cursor.back();
-		//String stmtLine = cursor.nextLine();
+		super(cursor.getLine());
 		_declaration = new ASTSimpleDeclaration(cursor);
 	}
 

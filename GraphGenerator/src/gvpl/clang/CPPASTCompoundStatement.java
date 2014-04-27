@@ -13,8 +13,7 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 	public CPPASTCompoundStatement(Cursor cursor) {
 		super(cursor.nextLine());
 		while(!cursor.theEnd()) {
-			String stmtLine = cursor.nextLine();
-			cursor.back();
+			String stmtLine = cursor.getLine();
 			String stmtType = CPPASTTranslationUnit.getType(stmtLine);
 			if(stmtType.equals("DeclStmt"))
 				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));

@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
@@ -33,6 +35,8 @@ class BindingInfo {
 
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
+	static Logger logger = LogManager.getLogger(CPPASTTranslationUnit.class.getName());
+	
 	public List<CPPASTDeclaration> _declarations = new ArrayList<CPPASTDeclaration>();
 	private Map<Integer, IBinding> _bindings = new TreeMap<Integer, IBinding>();
 	static CPPASTTranslationUnit _instance;
@@ -41,11 +45,17 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		_instance = this;
 		String astFileName = fileName.substring(0, fileName.length() - 4) + ".ast";
 		Cursor cursor = new Cursor(astFileName);
+		cursor.nextLine();
+		cursor.nextLine();
+		cursor.nextLine();
 		while (!cursor.theEnd()) {
-			String type = getType(cursor.nextLine());
+			String line = cursor.getLine();
+			String type = getType(line);
 			if (type.equals("FunctionDecl")) {
-				cursor.back();
 				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor()));
+			} else {
+				logger.error("Not prepared for string " + line);
+				cursor.nextLine();
 			}
 		}
 	}

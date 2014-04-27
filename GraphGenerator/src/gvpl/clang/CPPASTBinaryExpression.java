@@ -17,8 +17,7 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 	Map<String, Integer> _opMap = new HashMap<String, Integer>();
 	
 	public CPPASTBinaryExpression(Cursor cursor) {
-		super(cursor.nextLine());
-		cursor.back();
+		super(cursor.getLine());
 		String line = cursor.nextLine();
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
 		_operator = parsedLine.get( parsedLine.size() - 1 );
@@ -85,8 +84,7 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 	}
 
 	IASTExpression loadOperand(Cursor cursor) {
-		String line = cursor.nextLine();
-		cursor.back();
+		String line = cursor.getLine();
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("DeclRefExpr")) {
 			return new CPPASTIdExpression(cursor);
