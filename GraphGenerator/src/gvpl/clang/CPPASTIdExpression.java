@@ -24,7 +24,7 @@ public class CPPASTIdExpression implements org.eclipse.cdt.core.dom.ast.IASTIdEx
 		int bindingId = Integer.parseInt(bindingStr, 16);
 		
 		IBinding binding = CPPASTTranslationUnit.getBinding(bindingId);
-		_name = new CPPASTName(binding);
+		_name = new CPPASTName(binding, line);
 	}
 	
 	@Override

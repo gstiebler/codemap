@@ -23,7 +23,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	CPPASTFileLocation _location;
 	
 	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, String line) {
-		_name = new CPPASTName(binding);
+		_name = new CPPASTName(binding, line);
 		_parentNode = parentNode;
 		_location = new CPPASTFileLocation(line);
 	}

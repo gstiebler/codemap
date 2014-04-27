@@ -11,7 +11,7 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	
 	public CPPASTDeclarator(String line) {
 		super(line);
-		_name = new CPPASTName(new CPPVariable(line));
+		_name = new CPPASTName(new CPPVariable(line), line);
 	}
 	
 	public String toString() {
