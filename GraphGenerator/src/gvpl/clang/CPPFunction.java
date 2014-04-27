@@ -15,6 +15,7 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	
 	public CPPFunction(int bindingId, String name) {
 		_bindingId = bindingId;
+		CPPASTTranslationUnit.addBinding(bindingId, this);
 		_name = name;
 	}
 	

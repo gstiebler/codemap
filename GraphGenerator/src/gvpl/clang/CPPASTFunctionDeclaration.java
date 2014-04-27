@@ -15,12 +15,9 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	
 	public CPPASTFunctionDeclaration(Cursor cursor) {
 		String line = cursor.nextLine();
-		String postX = line.split("0x")[1];
-		String bindText = postX.split(" ")[0];
-		int bindingId = Integer.parseInt(bindText, 16);
-		String postBico = postX.split(">")[1];
-		_funcName = postBico.split(" ")[2];
-		_binding = new CPPFunction(bindingId, _funcName);
+		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
+		_funcName = bindingInfo.name;
+		_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition());
 		_body = new CPPASTCompoundStatement(cursor.getSubCursor());
 	}

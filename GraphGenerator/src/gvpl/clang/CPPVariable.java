@@ -8,14 +8,15 @@ import org.eclipse.core.runtime.CoreException;
 
 public class CPPVariable implements org.eclipse.cdt.core.dom.ast.IVariable {
 
-	private String _name;
+	BindingInfo _bindingInfo;
 	
-	public CPPVariable(String name) {
-		_name = name;
+	public CPPVariable(String line) {
+		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
+		//CPPASTTranslationUnit.addBinding(this);
 	}
 	
 	public String toString() {
-		return _name;
+		return _bindingInfo.name;
 	}
 	
 	@Override

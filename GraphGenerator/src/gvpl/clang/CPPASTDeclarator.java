@@ -13,20 +13,14 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
 public class CPPASTDeclarator implements org.eclipse.cdt.core.dom.ast.IASTDeclarator {
 
-	String _declName;
-	String _type;
 	public CPPASTName _name = null;
 	
 	public CPPASTDeclarator(String line) {
-		String postBico = line.split(">")[1];
-		String[] strings = postBico.split(" ");
-		_declName = strings[2];
-		_type = strings[3];
-		_name = new CPPASTName(new CPPVariable(_declName));
+		_name = new CPPASTName(new CPPVariable(line));
 	}
 	
 	public String toString() {
-		return _declName;
+		return _name.toString();
 	}
 	
 	@Override

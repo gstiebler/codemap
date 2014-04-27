@@ -2,6 +2,8 @@ package gvpl.clang;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
@@ -22,11 +24,21 @@ import org.eclipse.cdt.core.dom.ast.IScope;
 import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 
+class BindingInfo {
+	public int bindingId;
+	public String location;
+	public String name;
+	public String type;
+}
+
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	public List<CPPASTDeclaration> _declarations = new ArrayList<CPPASTDeclaration>();
+	private Map<Integer, IBinding> _bindings = new TreeMap<Integer, IBinding>();
+	static CPPASTTranslationUnit _instance;
 
 	public CPPASTTranslationUnit(String path, String fileName) {
+		_instance = this;
 		String astFileName = fileName.substring(0, fileName.length() - 4) + ".ast";
 		Cursor cursor = new Cursor(astFileName);
 		while (!cursor.theEnd()) {
@@ -42,6 +54,20 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		String temp1 = line.split("-")[1];
 		String temp2 = temp1.split(" ")[0];
 		return temp2;
+	}
+	
+	public static BindingInfo parseBindingInfo(String line) {
+		BindingInfo result = new BindingInfo();
+		String postX = line.split("0x")[1];
+		String bindText = postX.split(" ")[0];
+		result.bindingId = Integer.parseInt(bindText, 16);
+		String postBico = postX.split(">")[1];
+		String[] strings = postBico.split(" ");
+		result.location = strings[1];
+		result.name = strings[2];	
+		result.type = strings[3];
+		result.type = result.type.substring(1, result.type.length() - 1);
+		return result;
 	}
 
 	@Override
@@ -258,6 +284,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public void setIndex(IIndex arg0) {
 		// TODO Auto-generated method stub
 
+	}
+
+	public static void addBinding(int bindingId, IBinding binding) {
+		_instance._bindings.put(bindingId, binding);
 	}
 
 }
