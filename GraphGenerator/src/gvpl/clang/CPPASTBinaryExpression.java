@@ -1,6 +1,8 @@
 package gvpl.clang;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
@@ -11,11 +13,13 @@ import org.eclipse.cdt.core.dom.ast.IASTNodeLocation;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IType;
 
+
 public class CPPASTBinaryExpression implements org.eclipse.cdt.core.dom.ast.IASTBinaryExpression {
 
 	String _operator;
 	IASTExpression _operand1;
 	IASTExpression _operand2;
+	Map<String, Integer> _opMap = new HashMap<String, Integer>();
 	
 	public CPPASTBinaryExpression(Cursor cursor) {
 		String line = cursor.nextLine();
@@ -24,6 +28,63 @@ public class CPPASTBinaryExpression implements org.eclipse.cdt.core.dom.ast.IAST
 		
 		_operand1 = loadOperand(cursor);
 		_operand2 = loadOperand(cursor);
+		
+		_opMap.put("*", 1);
+		_opMap.put("/", 2);
+		_opMap.put("%", 3);
+		_opMap.put("+", 4);
+		_opMap.put("-", 5);
+		_opMap.put("<<", 6);
+		_opMap.put("*", 7);
+		_opMap.put("<", 8);
+		_opMap.put(">", 9);
+		_opMap.put("<=", 10);
+		_opMap.put(">=", 11);
+		_opMap.put("&", 12);
+		_opMap.put("^", 13);
+		_opMap.put("|", 14);
+		_opMap.put("&&", 15);
+		_opMap.put("||", 16);
+		_opMap.put("=", 17);
+
+		// Field descriptor #8 I
+/*		public static final int op_multiplyAssign = 18;
+
+		// Field descriptor #8 I
+		public static final int op_divideAssign = 19;
+
+		// Field descriptor #8 I
+		public static final int op_moduloAssign = 20;
+
+		// Field descriptor #8 I
+		public static final int op_plusAssign = 21;
+
+		// Field descriptor #8 I
+		public static final int op_minusAssign = 22;
+
+		// Field descriptor #8 I
+		public static final int op_shiftLeftAssign = 23;
+
+		// Field descriptor #8 I
+		public static final int op_shiftRightAssign = 24;
+
+		// Field descriptor #8 I
+		public static final int op_binaryAndAssign = 25;
+
+		// Field descriptor #8 I
+		public static final int op_binaryXorAssign = 26;
+
+		// Field descriptor #8 I
+		public static final int op_binaryOrAssign = 27;
+
+		// Field descriptor #8 I
+		public static final int op_equals = 28;
+
+		// Field descriptor #8 I
+		public static final int op_notequals = 29;
+
+		// Field descriptor #8 I
+		public static final int op_last = 29;*/
 	}
 
 	IASTExpression loadOperand(Cursor cursor) {
@@ -127,8 +188,7 @@ public class CPPASTBinaryExpression implements org.eclipse.cdt.core.dom.ast.IAST
 
 	@Override
 	public int getOperator() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _opMap.get(_operator);
 	}
 
 	@Override
