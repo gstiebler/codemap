@@ -12,12 +12,12 @@ import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
-public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IASTCompoundStatement {
+public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTCompoundStatement {
 
 	public List<IASTStatement> _statements = new ArrayList<IASTStatement>();
 	
 	public CPPASTCompoundStatement(Cursor cursor) {
-		String compoundLine = cursor.nextLine();
+		super(cursor.nextLine());
 		while(!cursor.theEnd()) {
 			String stmtLine = cursor.nextLine();
 			cursor.back();
@@ -32,69 +32,9 @@ public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IAS
 	}
 	
 	@Override
-	public boolean accept(ASTVisitor arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean contains(IASTNode arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getContainingFilename() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTFileLocation getFileLocation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTNodeLocation[] getNodeLocations() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTNode getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ASTNodeProperty getPropertyInParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public String getRawSignature() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTTranslationUnit getTranslationUnit() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setParent(IASTNode arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPropertyInParent(ASTNodeProperty arg0) {
-		// TODO Auto-generated method stub
-		
+	public IASTStatement[] getStatements() {
+		IASTStatement[] result = new IASTStatement[_statements.size()];
+		return _statements.toArray(result);
 	}
 
 	@Override
@@ -107,12 +47,6 @@ public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IAS
 	public IScope getScope() {
 		// TODO Auto-generated method stub
 		return null;
-	}
-
-	@Override
-	public IASTStatement[] getStatements() {
-		IASTStatement[] result = new IASTStatement[_statements.size()];
-		return _statements.toArray(result);
 	}
 
 
