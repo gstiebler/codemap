@@ -1,33 +1,23 @@
 package gvpl.clang;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTNodeLocation;
-import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-import org.eclipse.cdt.core.dom.ast.IScope;
 
-public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IASTCompoundStatement {
+public class CPPASTExpressionStatement implements org.eclipse.cdt.core.dom.ast.IASTExpressionStatement {
 
-	public List<IASTStatement> _statements = new ArrayList<IASTStatement>();
+	IASTExpression _expression;
 	
-	public CPPASTCompoundStatement(Cursor cursor) {
-		String compoundLine = cursor.nextLine();
-		while(!cursor.theEnd()) {
-			String stmtLine = cursor.nextLine();
-			cursor.back();
-			String stmtType = CPPASTTranslationUnit.getType(stmtLine);
-			if(stmtType.equals("DeclStmt"))
-				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));
-			else if (stmtType.equals("BinaryOperator")) {
-				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor()));
-			} else
-				_statements.add(new CPPASTStatement(cursor.getSubCursor()));
+	public CPPASTExpressionStatement(Cursor cursor) {
+		String line = cursor.nextLine();
+		cursor.back();
+		String type = CPPASTTranslationUnit.getType(line);
+		if(type.equals("BinaryOperator")) {
+			_expression = new CPPASTBinaryExpression(cursor);
 		}
 	}
 	
@@ -98,22 +88,14 @@ public class CPPASTCompoundStatement implements org.eclipse.cdt.core.dom.ast.IAS
 	}
 
 	@Override
-	public void addStatement(IASTStatement arg0) {
+	public IASTExpression getExpression() {
+		return _expression;
+	}
+
+	@Override
+	public void setExpression(IASTExpression arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-
-	@Override
-	public IScope getScope() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTStatement[] getStatements() {
-		IASTStatement[] result = new IASTStatement[_statements.size()];
-		return _statements.toArray(result);
-	}
-
 
 }

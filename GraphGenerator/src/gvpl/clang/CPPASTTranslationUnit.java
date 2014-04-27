@@ -73,13 +73,16 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		result.add(comma[0]);
 		result.add(comma[1]);
 		
-		String[] plic = postBico2[1].split(" '");
-		String[] strings = plic[0].split(" ");
-		for(int i = 1; i < strings.length; ++i)
-			result.add(strings[i]);
-		
-		plic[1] = plic[1].substring(0, plic[1].length() - 1);
-		result.add(plic[1]);
+		String[] plic = postBico2[1].split("'");
+		for(String strPlic : plic) {
+			if(strPlic.substring(0, 1).equals(" ")) {
+				String[] strings = strPlic.split(" ");
+				for(int i = 1; i < strings.length; ++i)
+					result.add(strings[i]);
+			} else {
+				result.add(strPlic);
+			}
+		}
 		
 		return result;
 	}
