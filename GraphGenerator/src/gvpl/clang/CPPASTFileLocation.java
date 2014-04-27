@@ -12,7 +12,8 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 		String[] comma = secondBico[0].split(", ");
 		if(comma[0].contains("col")) {
 		} else if (comma[0].contains("line")) {
-			
+			String[] tp = comma[0].split(":");
+			_line = Integer.parseInt(tp[1]);
 		} else {
 			String[] tp = comma[0].split(":");
 			_line = Integer.parseInt(tp[tp.length - 2]);
