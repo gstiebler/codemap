@@ -69,9 +69,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		
 		String[] postBico1 = dash[1].split("<");
 		String[] postBico2 = postBico1[1].split(">");
-		String[] comma = postBico2[0].split(", ");
-		result.add(comma[0]);
-		result.add(comma[1]);
+		result.add(postBico2[0]);
 		
 		String[] plic = postBico2[1].split("'");
 		for(String strPlic : plic) {
@@ -92,8 +90,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		List<String> parsedLine = parseLine(line);
 		result.bindingId = Integer.parseInt(parsedLine.get(1), 16);
 		result.location = parsedLine.get(3);
-		result.name = parsedLine.get(5);	
-		result.type = parsedLine.get(6);
+		result.name = parsedLine.get(4);	
+		result.type = parsedLine.get(5);
 		return result;
 	}
 
@@ -315,6 +313,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	public static void addBinding(int bindingId, IBinding binding) {
 		_instance._bindings.put(bindingId, binding);
+	}
+	
+	public static IBinding getBinding(int bindingId) {
+		return _instance._bindings.get(bindingId);
 	}
 
 }
