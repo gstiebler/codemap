@@ -14,11 +14,13 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	public IASTStatement _body = null;
 	
 	public CPPASTFunctionDeclaration(Cursor cursor) {
+		super(cursor.nextLine());
+		cursor.back();
 		String line = cursor.nextLine();
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
 		_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
-		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition());
+		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(), line);
 		_body = new CPPASTCompoundStatement(cursor.getSubCursor());
 	}
 	

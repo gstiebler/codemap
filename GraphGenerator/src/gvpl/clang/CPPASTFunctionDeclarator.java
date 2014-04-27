@@ -20,10 +20,12 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	public CPPASTName _name = null;
 	public IASTNode _parentNode = null;
+	CPPASTFileLocation _location;
 	
-	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode) {
+	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, String line) {
 		_name = new CPPASTName(binding);
 		_parentNode = parentNode;
+		_location = new CPPASTFileLocation(line);
 	}
 	
 	@Override
@@ -117,8 +119,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public IASTFileLocation getFileLocation() {
-		// TODO Auto-generated method stub
-		return new CPPASTFileLocation();
+		return _location;
 	}
 
 	@Override
