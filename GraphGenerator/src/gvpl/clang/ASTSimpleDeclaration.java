@@ -16,15 +16,20 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 	IASTDeclSpecifier _declSpec;
 	
 	public ASTSimpleDeclaration(Cursor cursor) {
-		super(cursor.nextLine());
-		_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
-		while(!cursor.theEnd()) {
-			String line = cursor.nextLine();
-			String type = CPPASTTranslationUnit.getType(line);
-			if(type.equals("VarDecl")) {
-				_declarators.add(new CPPASTDeclarator(line));
-			} else {
-				logger.error("Error reading " + type);
+		super(cursor.getLine());
+		String baseType = CPPASTTranslationUnit.getType(cursor.nextLine());
+		if(baseType.equals("CXXRecordDecl")) {
+			_declSpec = new CPPASTCompositeTypeSpecifier(cursor);
+		} else {
+			_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
+			while(!cursor.theEnd()) {
+				String line = cursor.nextLine();
+				String type = CPPASTTranslationUnit.getType(line);
+				if(type.equals("VarDecl")) {
+					_declarators.add(new CPPASTDeclarator(line));
+				} else {
+					logger.error("Error reading " + type);
+				}
 			}
 		}
 	}
@@ -41,15 +46,9 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 	}
 
 	@Override
-	public void setDeclSpecifier(IASTDeclSpecifier arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setDeclSpecifier(IASTDeclSpecifier arg0) { }
 
 	@Override
-	public void addDeclarator(IASTDeclarator arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void addDeclarator(IASTDeclarator arg0) { }
 
 }

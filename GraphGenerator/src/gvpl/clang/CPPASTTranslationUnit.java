@@ -37,7 +37,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	static Logger logger = LogManager.getLogger(CPPASTTranslationUnit.class.getName());
 	
-	public List<CPPASTDeclaration> _declarations = new ArrayList<CPPASTDeclaration>();
+	public List<IASTDeclaration> _declarations = new ArrayList<IASTDeclaration>();
 	private Map<Integer, IBinding> _bindings = new TreeMap<Integer, IBinding>();
 	static CPPASTTranslationUnit _instance;
 
@@ -54,7 +54,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			if (type.equals("FunctionDecl")) {
 				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor()));
 			} else if (type.equals("CXXRecordDecl")) {
-				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor()));
+				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor()));
 			} else {
 				logger.error("Not prepared for string " + line);
 				cursor.nextLine();
