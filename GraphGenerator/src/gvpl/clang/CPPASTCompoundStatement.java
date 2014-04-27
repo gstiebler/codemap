@@ -3,11 +3,15 @@ package gvpl.clang;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
 public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTCompoundStatement {
 
+	static Logger logger = LogManager.getLogger(CPPASTCompoundStatement.class.getName());
+	
 	public List<IASTStatement> _statements = new ArrayList<IASTStatement>();
 	
 	public CPPASTCompoundStatement(Cursor cursor) {
@@ -19,8 +23,9 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));
 			else if (stmtType.equals("BinaryOperator")) {
 				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor()));
-			} else
-				_statements.add(new CPPASTStatement(cursor.getSubCursor()));
+			} else {
+				logger.error("Error reading " + stmtType);
+			}
 		}
 	}
 	

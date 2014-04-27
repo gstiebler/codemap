@@ -3,11 +3,15 @@ package gvpl.clang;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 
 public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
 
+	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
+	
 	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
 	
 	public ASTSimpleDeclaration(Cursor cursor) {
@@ -17,6 +21,8 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 			String type = CPPASTTranslationUnit.getType(line);
 			if(type.equals("VarDecl")) {
 				_declarators.add(new CPPASTDeclarator(line));
+			} else {
+				logger.error("Error reading " + type);
 			}
 		}
 	}

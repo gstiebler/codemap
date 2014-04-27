@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
@@ -8,6 +10,8 @@ import org.eclipse.cdt.core.dom.ast.IScope;
 
 public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition {
 
+	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
+	
 	public IBinding _binding = null;
 	public String _funcName = null;
 	public CPPASTFunctionDeclarator _declarator = null;
@@ -20,7 +24,15 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		_funcName = bindingInfo.name;
 		_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(), line);
-		_body = new CPPASTCompoundStatement(cursor.getSubCursor());
+		
+		String type = CPPASTTranslationUnit.getType(cursor.getLine());
+		if(type.equals("CompoundStmt")) {
+			_body = new CPPASTCompoundStatement(cursor.getSubCursor());
+		} else if (type.equals("ParmVarDecl")) {
+			logger.error("Error reading " + type);
+		} else {
+			logger.error("Error reading " + type);
+		}
 	}
 	
 	@Override

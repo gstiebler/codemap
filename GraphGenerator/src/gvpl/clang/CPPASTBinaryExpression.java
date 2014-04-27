@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IType;
@@ -11,6 +13,8 @@ import org.eclipse.cdt.core.dom.ast.IType;
 
 public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTBinaryExpression {
 
+	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
+	
 	String _operator;
 	IASTExpression _operand1;
 	IASTExpression _operand2;
@@ -95,8 +99,10 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		} else if(type.equals("ImplicitCastExpr")) {
 			cursor.nextLine();
 			return new CPPASTIdExpression(cursor);
-		} else
+		} else {
+			logger.error("Error reading " + type);
 			return null;
+		}
 	}
 
 	@Override
