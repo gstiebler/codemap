@@ -25,6 +25,8 @@ public class ASTExpression {
 				type.equals("CXXFunctionalCastExpr")) {
 			cursor.nextLine();
 			return loadExpression(cursor);
+		} else if(type.equals("CallExpr")) {
+			return new ASTFunctionCallExpression(cursor);
 		} else {
 			logger.error("Error reading " + type);
 			return null;

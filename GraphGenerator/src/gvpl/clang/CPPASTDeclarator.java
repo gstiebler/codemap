@@ -1,7 +1,6 @@
 package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
@@ -9,16 +8,15 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclarator {
 
 	public CPPASTName _name = null;
-	IASTExpression _initialValue;
+	IASTInitializer _initializer;
 	
 	public CPPASTDeclarator(Cursor cursor) {
 		super(cursor.getLine());
 		String line = cursor.getLine();
 		_name = new CPPASTName(new CPPVariable(line), line);
 		String line2 = cursor.nextLine();
-		while(!cursor.theEnd()) {
-			_initialValue = ASTExpression.loadExpression(cursor);
-		}
+		if(!cursor.theEnd())
+			_initializer = new CPPASTInitializerExpression(cursor);
 	}
 	
 	public String toString() {
@@ -44,8 +42,7 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 
 	@Override
 	public IASTInitializer getInitializer() {
-		// TODO Auto-generated method stub
-		return null;
+		return _initializer;
 	}
 
 	@Override
