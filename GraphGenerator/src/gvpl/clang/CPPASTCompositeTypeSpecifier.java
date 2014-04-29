@@ -1,5 +1,8 @@
 package gvpl.clang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
@@ -8,11 +11,25 @@ import org.eclipse.cdt.core.dom.ast.IScope;
 
 public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier {
 
-	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTCompositeTypeSpecifier.class.getName());
 
+	List<IASTDeclaration> _members = new ArrayList<IASTDeclaration>();
+	
 	public CPPASTCompositeTypeSpecifier(Cursor cursor) {
 		super(cursor);
+		
+		String line = cursor.nextLine();
+		String classType = CPPASTTranslationUnit.getType( line );
+		if(!classType.equals("CXXRecordDecl"))
+			logger.error("Type not expected " + classType);
+		
 		while(!cursor.theEnd()) {
+			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
+			if(type.equals("CXXMethodDecl")) {
+				_members.add(new CPPASTFunctionDeclaration(cursor));
+			} else {
+				logger.error("Type not expected " + classType);
+			}
 			cursor.nextLine();
 		}
 	}
@@ -28,8 +45,8 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 
 	@Override
 	public IASTDeclaration[] getMembers() {
-		logger.error("Not implemented");
-		return null;
+		IASTDeclaration[] result = new IASTDeclaration[_members.size()];
+		return _members.toArray(result);
 	}
 
 	@Override
