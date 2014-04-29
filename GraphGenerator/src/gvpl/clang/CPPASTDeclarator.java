@@ -9,9 +9,14 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 
 	public CPPASTName _name = null;
 	
-	public CPPASTDeclarator(String line) {
-		super(line);
+	public CPPASTDeclarator(Cursor cursor) {
+		super(cursor.getLine());
+		String line = cursor.nextLine();
 		_name = new CPPASTName(new CPPVariable(line), line);
+		while(!cursor.theEnd()) {
+			String line2 = cursor.nextLine();
+			int x = 5;
+		}
 	}
 	
 	public String toString() {
