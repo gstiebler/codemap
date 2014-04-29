@@ -13,11 +13,16 @@ public class ASTExpression {
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("DeclRefExpr")) {
 			return new CPPASTIdExpression(cursor);
-		} else if(type.equals("IntegerLiteral")) {
+		} else if(type.equals("IntegerLiteral") ||
+				type.equals("FloatingLiteral")) {
 			return new CPPASTLiteralExpression(cursor);
 		} else if(type.equals("BinaryOperator")) {
 			return new CPPASTBinaryExpression(cursor);
-		} else if(type.equals("ImplicitCastExpr") || type.equals("ParenExpr")) {
+		} else if(type.equals("ImplicitCastExpr") ||
+				type.equals("ParenExpr") ||
+				type.equals("CStyleCastExpr") ||
+				type.equals("ImplicitCastExpr") ||
+				type.equals("CXXFunctionalCastExpr")) {
 			cursor.nextLine();
 			return loadExpression(cursor);
 		} else {

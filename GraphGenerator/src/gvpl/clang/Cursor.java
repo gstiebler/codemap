@@ -75,4 +75,8 @@ public class Cursor {
 		if (currentIndent <= _firstIndent)  
 			setTheEnd();
 	}
+	
+	public String toString() {
+		return _pos + " - " + getLine();
+	}
 }
