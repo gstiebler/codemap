@@ -22,8 +22,8 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 			_declSpec = new CPPASTCompositeTypeSpecifier(cursor);
 		} else {
 			_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
-			String line = cursor.nextLine();
 			while(!cursor.theEnd()) {
+				String line = cursor.getLine();
 				String type = CPPASTTranslationUnit.getType(line);
 				if(type.equals("VarDecl")) {
 					_declarators.add(new CPPASTDeclarator(cursor));
