@@ -35,6 +35,9 @@ public class Cursor {
 	}
 	
 	public String nextLine() {
+		if(theEnd())
+			return "";
+		
 		String result = _lines.get(_pos);
 		setPos(_pos + 1);
 		return result;

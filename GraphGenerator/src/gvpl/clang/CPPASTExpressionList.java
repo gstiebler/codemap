@@ -1,5 +1,8 @@
 package gvpl.clang;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -9,19 +12,20 @@ public class CPPASTExpressionList extends ASTNode implements org.eclipse.cdt.cor
 
 	static Logger logger = LogManager.getLogger(CPPASTExpressionList.class.getName());
 	
-	IASTExpression[] _expressions;
+	List<IASTExpression> _expressions = new ArrayList<IASTExpression>();
 	
 	public CPPASTExpressionList(Cursor cursor) {
 		super(cursor.getLine());
 		while(!cursor.theEnd()) {
+			_expressions.add(ASTExpression.loadExpression(cursor));
 			cursor.nextLine();
 		}
-		logger.error("not implemented");
 	}
 
 	@Override
 	public IASTExpression[] getExpressions() {
-		return _expressions;
+		IASTExpression[] result = new IASTExpression[_expressions.size()];
+		return _expressions.toArray(result);
 	}
 
 	@Override
