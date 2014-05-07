@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
 public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier {
@@ -14,14 +15,20 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 	static Logger logger = LogManager.getLogger(CPPASTCompositeTypeSpecifier.class.getName());
 
 	List<IASTDeclaration> _members = new ArrayList<IASTDeclaration>();
+	IASTName _name;
 	
 	public CPPASTCompositeTypeSpecifier(Cursor cursor) {
 		super(cursor);
 		
 		String line = cursor.nextLine();
+		//_name = new CPPASTName(binding, line);
 		String classType = CPPASTTranslationUnit.getType( line );
 		if(!classType.equals("CXXRecordDecl"))
 			logger.error("Type not expected " + classType);
+		
+		//This line or the next?
+		IBinding binding = new CPPClassType(line);
+		_name = new CPPASTName(binding, line);
 		
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
@@ -51,8 +58,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 
 	@Override
 	public IASTName getName() {
-		logger.error("Not implemented");
-		return null;
+		return _name;
 	}
 
 	@Override
@@ -106,7 +112,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 	@Override
 	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
 		// TODO Auto-generated method stub
-		return null;
+		return new ICPPASTBaseSpecifier[0];
 	}
 
 }
