@@ -9,10 +9,10 @@ public class ASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.
 	IASTDeclarator _declarator;
 	
 	public ASTParameterDeclaration(Cursor cursor) {
-		super(cursor.nextLine());
+		super(cursor.getLine());
 		
 		_declSpec = new ASTDeclSpecifier(cursor);
-		//_declarator = new CPPASTDeclarator(cursor);
+		_declarator = new CPPASTDeclarator(cursor.getSubCursor());
 	}
 
 	@Override
