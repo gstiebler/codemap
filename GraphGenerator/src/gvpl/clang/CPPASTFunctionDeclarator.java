@@ -37,7 +37,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if (type.equals("ParmVarDecl")) {
-				_parameters.add(new ASTParameterDeclaration(cursor.nextLine()));
+				_parameters.add(new ASTParameterDeclaration(cursor));
 			} else {
 				return;
 				//logger.error("Error reading " + type);

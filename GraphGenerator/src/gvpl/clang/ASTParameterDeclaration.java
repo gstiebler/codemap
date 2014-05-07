@@ -5,33 +5,31 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 
 public class ASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration{
 
-	public ASTParameterDeclaration(String line) {
-		super(line);
+	IASTDeclSpecifier _declSpec;
+	IASTDeclarator _declarator;
+	
+	public ASTParameterDeclaration(Cursor cursor) {
+		super(cursor.nextLine());
+		
+		_declSpec = new ASTDeclSpecifier(cursor);
+		//_declarator = new CPPASTDeclarator(cursor);
 	}
 
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
-		// TODO Auto-generated method stub
-		return null;
+		return _declSpec;
 	}
 
 	@Override
 	public IASTDeclarator getDeclarator() {
-		// TODO Auto-generated method stub
-		return null;
+		return _declarator;
 	}
 
 	@Override
-	public void setDeclSpecifier(IASTDeclSpecifier arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setDeclSpecifier(IASTDeclSpecifier arg0) {}
 
 	@Override
-	public void setDeclarator(IASTDeclarator arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setDeclarator(IASTDeclarator arg0) {}
 
 
 }
