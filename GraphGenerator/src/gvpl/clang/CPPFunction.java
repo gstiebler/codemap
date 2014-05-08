@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ILinkage;
 import org.eclipse.cdt.core.dom.ast.DOMException;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -12,9 +14,13 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 
 	int _bindingId = -1;
 	String _name;
+	boolean _isStatic = false;
 	
-	public CPPFunction(int bindingId, String name) {
+	public CPPFunction(int bindingId, String name, Cursor cursor) {
 		_bindingId = bindingId;
+		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
+		if(strings.size() > 6 && strings.get(6).equals("static"))
+			_isStatic = true;
 		CPPASTTranslationUnit.addBinding(bindingId, this);
 		_name = name;
 	}
@@ -67,8 +73,7 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 
 	@Override
 	public boolean isStatic() throws DOMException {
-		// TODO Auto-generated method stub
-		return false;
+		return _isStatic;
 	}
 
 	@Override

@@ -5,8 +5,8 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassType;
 
 public class CPPMethod extends CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPMethod {
 
-	public CPPMethod(int bindingId, String name) {
-		super(bindingId, name);
+	public CPPMethod(int bindingId, String name, Cursor cursor) {
+		super(bindingId, name, cursor);
 		// TODO Auto-generated constructor stub
 	}
 

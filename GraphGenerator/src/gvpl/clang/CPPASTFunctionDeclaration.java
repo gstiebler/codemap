@@ -23,9 +23,9 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
 		if(isMethod)
-			_binding = new CPPMethod(bindingInfo.bindingId, _funcName);
+			_binding = new CPPMethod(bindingInfo.bindingId, _funcName, cursor.getSubCursor());
 		else
-			_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
+			_binding = new CPPFunction(bindingInfo.bindingId, _funcName, cursor.getSubCursor());
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
