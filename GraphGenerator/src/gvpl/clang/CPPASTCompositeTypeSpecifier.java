@@ -33,7 +33,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
 			if(type.equals("CXXMethodDecl")) {
-				_members.add(new CPPASTFunctionDeclaration(cursor));
+				_members.add(new CPPASTFunctionDeclaration(cursor, true));
 			} else {
 				logger.error("Type not expected " + classType);
 			}

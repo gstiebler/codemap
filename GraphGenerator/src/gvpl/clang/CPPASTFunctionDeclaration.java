@@ -17,12 +17,15 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	public CPPASTFunctionDeclarator _declarator = null;
 	public IASTStatement _body = null;
 	
-	public CPPASTFunctionDeclaration(Cursor cursor) {
+	public CPPASTFunctionDeclaration(Cursor cursor, boolean isMethod) {
 		super(cursor.getLine());
 		String line = cursor.getLine();
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
-		_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
+		if(isMethod)
+			_binding = new CPPMethod(bindingInfo.bindingId, _funcName);
+		else
+			_binding = new CPPFunction(bindingInfo.bindingId, _funcName);
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
