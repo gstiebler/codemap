@@ -28,7 +28,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 		
 		//This line or the next?
 		IBinding binding = new CPPClassType(line);
-		_name = new CPPASTName(binding, line);
+		_name = CPPASTName.loadASTName(binding, line);
 		
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );

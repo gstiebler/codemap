@@ -31,7 +31,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	List<IASTParameterDeclaration> _parameters = new ArrayList<IASTParameterDeclaration>();
 	
 	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, Cursor cursor) {
-		_name = new CPPASTName(binding, cursor.getLine());
+		_name = CPPASTName.loadASTName(binding, cursor.getLine());
 		_parentNode = parentNode;
 		_location = new CPPASTFileLocation(cursor.nextLine());
 		while(!cursor.theEnd()) {

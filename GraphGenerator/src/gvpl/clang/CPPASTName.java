@@ -8,6 +8,14 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 
 	public IBinding _binding = null;
 	
+	public static CPPASTName loadASTName(IBinding binding, String line) {
+		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
+		if(bi.type.equals("CXXMethod"))
+			return new CPPASTQualifiedName(binding, line);
+		else
+			return new CPPASTName(binding, line);
+	}
+	
 	public CPPASTName(IBinding binding, String line) {
 		super(line);
 		_binding = binding;
