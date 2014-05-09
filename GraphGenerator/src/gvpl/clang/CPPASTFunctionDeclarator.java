@@ -201,7 +201,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	@Override
 	public ICPPASTConstructorChainInitializer[] getConstructorChain() {
 		// TODO Auto-generated method stub
-		return null;
+		return new ICPPASTConstructorChainInitializer[0];
 	}
 
 	@Override

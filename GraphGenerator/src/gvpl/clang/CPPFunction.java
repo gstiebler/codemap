@@ -18,11 +18,14 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	
 	public CPPFunction(int bindingId, String name, Cursor cursor) {
 		_bindingId = bindingId;
-		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
-		if(strings.size() > 6 && strings.get(6).equals("static"))
-			_isStatic = true;
+		_isStatic = isStatic(cursor.getLine());
 		CPPASTTranslationUnit.addBinding(bindingId, this);
 		_name = name;
+	}
+	
+	public static boolean isStatic(String line) {
+		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		return strings.size() > 6 && strings.get(6).equals("static");
 	}
 	
 	public String toString() {

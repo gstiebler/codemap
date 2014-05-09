@@ -1,16 +1,20 @@
 package gvpl.clang;
 
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
+
 public class ASTDeclSpecifier extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier{
 
+	int _storageClass = -1;
+	
 	public ASTDeclSpecifier(Cursor cursor) {
 		super(cursor.getLine());
-		// TODO Auto-generated constructor stub
+		if(CPPMethod.isStatic(cursor.getLine()))
+			_storageClass = IASTDeclSpecifier.sc_static;
 	}
 
 	@Override
 	public int getStorageClass() {
-		// TODO Auto-generated method stub
-		return 0;
+		return _storageClass;
 	}
 
 	@Override

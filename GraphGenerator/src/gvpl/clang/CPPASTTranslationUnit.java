@@ -40,6 +40,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public List<IASTDeclaration> _declarations = new ArrayList<IASTDeclaration>();
 	private Map<Integer, IBinding> _bindings = new TreeMap<Integer, IBinding>();
 	static CPPASTTranslationUnit _instance;
+	static public IASTName lastClassName;
 
 	public CPPASTTranslationUnit(String path, String fileName) {
 		_instance = this;

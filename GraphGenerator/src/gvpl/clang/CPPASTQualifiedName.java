@@ -9,7 +9,8 @@ public class CPPASTQualifiedName extends CPPASTName implements org.eclipse.cdt.c
 	
 	public CPPASTQualifiedName(IBinding binding, String line) {
 		super(binding, line);
-		_names[0] = this;
+		_names[0] = ((CPPMethod) binding).className;
+		_names[1] = this;
 		// TODO Auto-generated constructor stub
 	}
 
