@@ -10,6 +10,7 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 
 	CPPASTFileLocation _location;
+	protected IASTNode _parent;
 	
 	public ASTNode(String line) {
 		_location = new CPPASTFileLocation(line);
@@ -46,8 +47,7 @@ public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 
 	@Override
 	public IASTNode getParent() {
-		// TODO Auto-generated method stub
-		return null;
+		return _parent;
 	}
 
 	@Override

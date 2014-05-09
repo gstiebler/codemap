@@ -5,8 +5,11 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTQualifiedName extends CPPASTName implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName {
 
+	IASTName[] _names = new IASTName[2];
+	
 	public CPPASTQualifiedName(IBinding binding, String line) {
 		super(binding, line);
+		_names[0] = this;
 		// TODO Auto-generated constructor stub
 	}
 
@@ -30,8 +33,7 @@ public class CPPASTQualifiedName extends CPPASTName implements org.eclipse.cdt.c
 
 	@Override
 	public IASTName[] getNames() {
-		// TODO Auto-generated method stub
-		return null;
+		return _names;
 	}
 
 	@Override
