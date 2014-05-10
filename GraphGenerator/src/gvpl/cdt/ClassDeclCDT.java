@@ -85,7 +85,7 @@ public class ClassDeclCDT extends ClassDecl{
 				IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
 				if(name instanceof ICPPASTTemplateId) {
 					//((CPPASTNamedTypeSpecifier) declSpec).
-					logger.warn("Not implemented: CPPASTTemplateId, {}", name.getRawSignature());
+					logger.error("Not implemented: CPPASTTemplateId, {}", name.getRawSignature());
 					continue;
 				}
 			}

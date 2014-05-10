@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
@@ -9,40 +11,13 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
 public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 
+	static Logger logger = LogManager.getLogger(ASTNode.class.getName());
+	
 	CPPASTFileLocation _location;
 	protected IASTNode _parent;
 	
 	public ASTNode(String line) {
 		_location = new CPPASTFileLocation(line);
-	}
-	
-	@Override
-	public boolean accept(ASTVisitor arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean contains(IASTNode arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getContainingFilename() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTFileLocation getFileLocation() {
-		return _location;
-	}
-
-	@Override
-	public IASTNodeLocation[] getNodeLocations() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -51,20 +26,48 @@ public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 	}
 
 	@Override
+	public IASTFileLocation getFileLocation() {
+		return _location;
+	}
+	
+	@Override
+	public boolean accept(ASTVisitor arg0) {
+		logger.error("Not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean contains(IASTNode arg0) {
+		logger.error("Not implemented");
+		return false;
+	}
+
+	@Override
+	public String getContainingFilename() {
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public IASTNodeLocation[] getNodeLocations() {
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
 	public ASTNodeProperty getPropertyInParent() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public String getRawSignature() {
-		// TODO Auto-generated method stub
-		return null;
+		return _location.toString();
 	}
 
 	@Override
 	public IASTTranslationUnit getTranslationUnit() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 

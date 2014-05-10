@@ -103,6 +103,11 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 	}
 
 	@Override
+	public String getRawSignature() {
+		return _operator;
+	}
+
+	@Override
 	public IType getExpressionType() {
 		// TODO Auto-generated method stub
 		return null;
