@@ -81,8 +81,7 @@ public class CPPASTIdExpression implements org.eclipse.cdt.core.dom.ast.IASTIdEx
 
 	@Override
 	public String getRawSignature() {
-		// TODO Auto-generated method stub
-		return null;
+		return _name.toString();
 	}
 
 	@Override
