@@ -16,10 +16,17 @@ import org.eclipse.core.runtime.CoreException;
 public class CPPClassType implements org.eclipse.cdt.core.dom.ast.cpp.ICPPClassType {
 
 	BindingInfo _bindingInfo;
+	String _name;
 	
 	public CPPClassType(String line) {
 		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
+		_name = _bindingInfo.type;
 		CPPASTTranslationUnit.addBinding(_bindingInfo.bindingId, this);
+	}
+	
+	@Override
+	public String toString() {
+		return _name;
 	}
 	
 	@Override
