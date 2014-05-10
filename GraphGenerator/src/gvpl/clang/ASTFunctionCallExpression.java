@@ -1,11 +1,15 @@
 package gvpl.clang;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IType;
 
 public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression{
 
+	static Logger logger = LogManager.getLogger(ASTFunctionCallExpression.class.getName());
+	
 	IASTExpression _functionNameExpression;
 	IASTExpressionList _exprList;
 	
@@ -27,7 +31,7 @@ public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cd
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 

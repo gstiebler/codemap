@@ -1,9 +1,13 @@
 package gvpl.clang;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 
 public class ASTDeclSpecifier extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier{
 
+	static Logger logger = LogManager.getLogger(ASTDeclSpecifier.class.getName());
+	
 	int _storageClass = -1;
 	
 	public ASTDeclSpecifier(Cursor cursor) {
@@ -19,19 +23,19 @@ public class ASTDeclSpecifier extends ASTNode implements org.eclipse.cdt.core.do
 
 	@Override
 	public boolean isConst() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isInline() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isVolatile() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return false;
 	}
 
