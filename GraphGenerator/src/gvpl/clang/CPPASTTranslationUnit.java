@@ -41,6 +41,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	private Map<Integer, IBinding> _bindings = new TreeMap<Integer, IBinding>();
 	static CPPASTTranslationUnit _instance;
 	static public IASTName lastClassName;
+	static String _fileName;
 
 	public CPPASTTranslationUnit(String path, String fileName) {
 		_instance = this;
@@ -349,5 +350,13 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	@Override
 	public void setPropertyInParent(ASTNodeProperty arg0) {}
+
+	public static void setFileName(String file) {
+		_fileName = file;
+	}
+	
+	public static String getFileName() {
+		return _fileName;
+	}
 
 }

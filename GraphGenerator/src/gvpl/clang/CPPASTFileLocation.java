@@ -34,6 +34,8 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 			for(int i = 1; i < lenthFile; i++)
 				_file = _file + ":" + tp[i];
 			
+			CPPASTTranslationUnit.setFileName( _file );
+			
 			_line = Integer.parseInt(tp[lenthFile]);
 			_col = Integer.parseInt(tp[lenthFile + 1]);
 		}
@@ -70,6 +72,9 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 		if(_file != null)
 			return _file;
 		
+		if(_parent == null)
+			return CPPASTTranslationUnit.getFileName();
+			
 		return _parent.getFileLocation().getFileName();
 	}
 
@@ -77,6 +82,12 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 	public int getStartingLineNumber() {
 		if(_line >= 0)
 			return _line;
+
+		if(_parent == null)
+		{
+			logger.error("Unexpected null parent");
+			return -1;
+		}
 		
 		return _parent.getFileLocation().getStartingLineNumber();
 	}
