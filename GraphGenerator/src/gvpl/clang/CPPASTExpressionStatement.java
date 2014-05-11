@@ -21,9 +21,6 @@ public class CPPASTExpressionStatement extends ASTNode implements org.eclipse.cd
 	}
 
 	@Override
-	public void setExpression(IASTExpression arg0) {
-		// TODO Auto-generated method stub
-		
-	}
+	public void setExpression(IASTExpression arg0) {}
 
 }

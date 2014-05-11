@@ -12,11 +12,12 @@ import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IType;
 
-public class CPPASTIdExpression implements org.eclipse.cdt.core.dom.ast.IASTIdExpression {
+public class CPPASTIdExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTIdExpression {
 
 	public CPPASTName _name = null;
 		
 	public CPPASTIdExpression(Cursor cursor) {
+		super(cursor.getLine());
 		String line = cursor.nextLine();
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
 		String bindingStr = parsedLine.get(6);
@@ -30,82 +31,10 @@ public class CPPASTIdExpression implements org.eclipse.cdt.core.dom.ast.IASTIdEx
 	public String toString() {
 		return _name.toString();
 	}
-	
-	@Override
-	public IType getExpressionType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public boolean accept(ASTVisitor arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean contains(IASTNode arg0) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public String getContainingFilename() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTFileLocation getFileLocation() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTNodeLocation[] getNodeLocations() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public IASTNode getParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public ASTNodeProperty getPropertyInParent() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 	@Override
 	public String getRawSignature() {
 		return _name.toString();
-	}
-
-	@Override
-	public IASTTranslationUnit getTranslationUnit() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void setParent(IASTNode arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void setPropertyInParent(ASTNodeProperty arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
-		return 0;
 	}
 
 	@Override
@@ -114,9 +43,20 @@ public class CPPASTIdExpression implements org.eclipse.cdt.core.dom.ast.IASTIdEx
 	}
 
 	@Override
-	public void setName(IASTName arg0) {
+	public IType getExpressionType() {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
+		return null;
 	}
 
+	@Override
+	public int getRoleForName(IASTName arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return 0;
+	}
+
+	@Override
+	public void setName(IASTName arg0) {}
+	
 }

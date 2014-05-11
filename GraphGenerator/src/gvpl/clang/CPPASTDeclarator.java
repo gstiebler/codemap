@@ -31,13 +31,14 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	@Override
 	public int getRoleForName(IASTName arg0) {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public void addPointerOperator(IASTPointerOperator arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 	@Override
@@ -48,18 +49,21 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	@Override
 	public IASTDeclarator getNestedDeclarator() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IASTPointerOperator[] getPointerOperators() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public void setInitializer(IASTInitializer arg0) {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		
 	}
 

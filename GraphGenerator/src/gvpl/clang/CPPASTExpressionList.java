@@ -31,6 +31,7 @@ public class CPPASTExpressionList extends ASTNode implements org.eclipse.cdt.cor
 	@Override
 	public IType getExpressionType() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 

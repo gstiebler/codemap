@@ -13,7 +13,7 @@ import org.eclipse.cdt.core.dom.ast.IType;
 
 public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTBinaryExpression {
 
-	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTBinaryExpression.class.getName());
 	
 	String _operator;
 	IASTExpression _operand1;
@@ -110,24 +110,25 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 	@Override
 	public IType getExpressionType() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public void setOperand1(IASTExpression arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 	@Override
 	public void setOperand2(IASTExpression arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 	@Override
 	public void setOperator(int arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 }

@@ -76,7 +76,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return 0;
 	}
 
@@ -112,7 +112,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 
 	@Override
 	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
-		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return new ICPPASTBaseSpecifier[0];
 	}
 

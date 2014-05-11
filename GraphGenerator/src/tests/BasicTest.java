@@ -13,11 +13,11 @@ public class BasicTest {
 	public void funcCall() {
 		TestsUtil.baseTest("func_call");
 	}
-//	
-//	@Test
-//	public void memberFunc() {
-//		TestsUtil.baseTest("member_func");
-//	}
+	
+	@Test
+	public void memberFunc() {
+		TestsUtil.baseTest("member_func");
+	}
 //	
 //	@Test
 //	public void memberFunc2() {

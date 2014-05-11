@@ -40,12 +40,13 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 	@Override
 	public void addStatement(IASTStatement arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 	@Override
 	public IScope getScope() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 

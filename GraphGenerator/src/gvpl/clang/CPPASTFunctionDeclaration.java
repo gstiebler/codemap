@@ -44,6 +44,7 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 
@@ -55,25 +56,26 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	@Override
 	public IScope getScope() {
 		// TODO Auto-generated method stub
+		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public void setBody(IASTStatement arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 	@Override
 	public void setDeclSpecifier(IASTDeclSpecifier arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 	@Override
 	public void setDeclarator(IASTFunctionDeclarator arg0) {
 		// TODO Auto-generated method stub
-		
+		logger.error("Not implemented");
 	}
 
 }
