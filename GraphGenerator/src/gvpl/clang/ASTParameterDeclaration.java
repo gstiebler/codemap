@@ -2,17 +2,18 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 public class ASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration{
 
 	IASTDeclSpecifier _declSpec;
 	IASTDeclarator _declarator;
 	
-	public ASTParameterDeclaration(Cursor cursor) {
-		super(cursor.getLine());
+	public ASTParameterDeclaration(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
 		
-		_declSpec = new CPPASTSimpleDeclSpecifier(cursor.getSubCursor());
-		_declarator = new CPPASTDeclarator(cursor.getSubCursor());
+		_declSpec = new CPPASTSimpleDeclSpecifier(cursor.getSubCursor(), this);
+		_declarator = new CPPASTDeclarator(cursor.getSubCursor(), this);
 	}
 
 	@Override

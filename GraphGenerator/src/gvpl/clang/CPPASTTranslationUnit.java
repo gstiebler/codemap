@@ -53,9 +53,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			String line = cursor.getLine();
 			String type = getType(line);
 			if (type.equals("FunctionDecl")) {
-				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false));
+				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));
 			} else if (type.equals("CXXRecordDecl")) {
-				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor()));
+				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else {
 				logger.error("Not prepared for string " + line);
 				cursor.nextLine();

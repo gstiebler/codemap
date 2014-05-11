@@ -1,17 +1,18 @@
 package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 public class CPPASTExpressionStatement extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTExpressionStatement {
 
 	IASTExpression _expression;
 	
-	public CPPASTExpressionStatement(Cursor cursor) {
-		super(cursor.getLine());
+	public CPPASTExpressionStatement(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("BinaryOperator")) {
-			_expression = new CPPASTBinaryExpression(cursor);
+			_expression = new CPPASTBinaryExpression(cursor, this);
 		}
 	}
 

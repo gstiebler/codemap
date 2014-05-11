@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IType;
 
 public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression{
@@ -13,10 +14,10 @@ public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cd
 	IASTExpression _functionNameExpression;
 	IASTExpressionList _exprList;
 	
-	public ASTFunctionCallExpression(Cursor cursor) {
-		super(cursor.nextLine());
-		_functionNameExpression = ASTExpression.loadExpression(cursor);
-		_exprList = new CPPASTExpressionList(cursor);
+	public ASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
+		super(cursor.nextLine(), parent);
+		_functionNameExpression = ASTExpression.loadExpression(cursor, this);
+		_exprList = new CPPASTExpressionList(cursor, this);
 	}
 
 	@Override

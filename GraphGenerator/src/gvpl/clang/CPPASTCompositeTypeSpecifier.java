@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
@@ -17,8 +18,8 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 	List<IASTDeclaration> _members = new ArrayList<IASTDeclaration>();
 	IASTName _name;
 	
-	public CPPASTCompositeTypeSpecifier(Cursor cursor) {
-		super(cursor);
+	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent) {
+		super(cursor, parent);
 		
 		String line = cursor.nextLine();
 		//_name = new CPPASTName(binding, line);
@@ -28,13 +29,13 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 		
 		//This line or the next?
 		IBinding binding = new CPPClassType(line);
-		_name = CPPASTName.loadASTName(binding, line);
+		_name = CPPASTName.loadASTName(binding, line, this);
 		CPPASTTranslationUnit.lastClassName = _name;
 		
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
 			if(type.equals("CXXMethodDecl")) {
-				_members.add(new CPPASTFunctionDeclaration(cursor, true));
+				_members.add(new CPPASTFunctionDeclaration(cursor, true, this));
 			} else {
 				logger.error("Type not expected " + classType);
 			}

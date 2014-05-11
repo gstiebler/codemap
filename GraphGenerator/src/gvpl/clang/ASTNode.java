@@ -16,8 +16,9 @@ public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 	CPPASTFileLocation _location;
 	protected IASTNode _parent;
 	
-	public ASTNode(String line) {
-		_location = new CPPASTFileLocation(line);
+	public ASTNode(String line, IASTNode parent) {
+		_parent = parent;
+		_location = new CPPASTFileLocation(line, parent);
 	}
 
 	@Override

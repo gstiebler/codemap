@@ -2,22 +2,23 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ILinkage;
 import org.eclipse.cdt.core.dom.ast.IASTCompletionContext;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTName{
 
 	public IBinding _binding = null;
 	
-	public static CPPASTName loadASTName(IBinding binding, String line) {
+	public static CPPASTName loadASTName(IBinding binding, String line, IASTNode parent) {
 		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
 		if(bi.type.equals("CXXMethod"))
-			return new CPPASTQualifiedName(binding, line);
+			return new CPPASTQualifiedName(binding, line, parent);
 		else
-			return new CPPASTName(binding, line);
+			return new CPPASTName(binding, line, parent);
 	}
 	
-	public CPPASTName(IBinding binding, String line) {
-		super(line);
+	public CPPASTName(IBinding binding, String line, IASTNode parent) {
+		super(line, parent);
 		_binding = binding;
 	}
 	

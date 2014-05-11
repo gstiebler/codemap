@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
@@ -13,9 +14,9 @@ public class ASTFunctionDefinition extends ASTNode implements org.eclipse.cdt.co
 	
 	IASTDeclSpecifier _declSpec;
 	
-	public ASTFunctionDefinition(Cursor cursor) {
-		super(cursor.getLine());
-		_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
+	public ASTFunctionDefinition(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
+		_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 	}
 
 	@Override

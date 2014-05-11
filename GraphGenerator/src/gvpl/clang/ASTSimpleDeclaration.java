@@ -7,6 +7,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
 
@@ -15,18 +16,18 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
 	IASTDeclSpecifier _declSpec;
 	
-	public ASTSimpleDeclaration(Cursor cursor) {
-		super(cursor.getLine());
+	public ASTSimpleDeclaration(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
 		String baseType = CPPASTTranslationUnit.getType(cursor.nextLine());
 		if(baseType.equals("CXXRecordDecl")) {
-			_declSpec = new CPPASTCompositeTypeSpecifier(cursor);
+			_declSpec = new CPPASTCompositeTypeSpecifier(cursor, this);
 		} else {
-			_declSpec = new CPPASTSimpleDeclSpecifier(cursor);
+			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 			while(!cursor.theEnd()) {
 				String line = cursor.getLine();
 				String type = CPPASTTranslationUnit.getType(line);
 				if(type.equals("VarDecl")) {
-					_declarators.add(new CPPASTDeclarator(cursor));
+					_declarators.add(new CPPASTDeclarator(cursor, this));
 				} else {
 					logger.error("Error reading " + type);
 				}

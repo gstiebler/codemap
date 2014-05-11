@@ -26,18 +26,18 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclarator.class.getName());
 	
 	public CPPASTName _name = null;
-	public IASTNode _parentNode = null;
+	public IASTNode _parent = null;
 	CPPASTFileLocation _location;
 	List<IASTParameterDeclaration> _parameters = new ArrayList<IASTParameterDeclaration>();
 	
-	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, Cursor cursor) {
-		_name = CPPASTName.loadASTName(binding, cursor.getLine());
-		_parentNode = parentNode;
-		_location = new CPPASTFileLocation(cursor.nextLine());
+	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parent, Cursor cursor) {
+		_name = CPPASTName.loadASTName(binding, cursor.getLine(), this);
+		_parent = parent;
+		_location = new CPPASTFileLocation(cursor.nextLine(), this);
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if (type.equals("ParmVarDecl")) {
-				_parameters.add(new ASTParameterDeclaration(cursor));
+				_parameters.add(new ASTParameterDeclaration(cursor, this));
 			} else {
 				return;
 				//logger.error("Error reading " + type);
@@ -158,7 +158,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public IASTNode getParent() {
-		return _parentNode;
+		return _parent;
 	}
 
 	@Override

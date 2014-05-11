@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IType;
 
 public class CPPASTExpressionList extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTExpressionList {
@@ -14,10 +15,10 @@ public class CPPASTExpressionList extends ASTNode implements org.eclipse.cdt.cor
 	
 	List<IASTExpression> _expressions = new ArrayList<IASTExpression>();
 	
-	public CPPASTExpressionList(Cursor cursor) {
-		super(cursor.getLine());
+	public CPPASTExpressionList(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
 		while(!cursor.theEnd()) {
-			_expressions.add(ASTExpression.loadExpression(cursor));
+			_expressions.add(ASTExpression.loadExpression(cursor, this));
 			cursor.nextLine();
 		}
 	}

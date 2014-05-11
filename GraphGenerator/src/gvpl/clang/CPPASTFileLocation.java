@@ -3,24 +3,39 @@ package gvpl.clang;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFileLocation{
 
-	static Logger logger = LogManager.getLogger(ASTNode.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTFileLocation.class.getName());
 
 	int _line = -1;
+	int _col = -1;
+	String _file;
+	IASTNode _parent;
 	
-	public CPPASTFileLocation(String line) {
+	public CPPASTFileLocation(String line, IASTNode parent) {
+		_parent = parent;
 		String[] firstBico = line.split("<");
 		String[] secondBico = firstBico[1].split(">");
 		String[] comma = secondBico[0].split(", ");
+		String text = comma[0];
 		if(comma[0].contains("col")) {
-		} else if (comma[0].contains("line")) {
-			String[] tp = comma[0].split(":");
+			String[] tp = text.split(":");
+			_col = Integer.parseInt(tp[1]);
+		} else if (text.contains("line")) {
+			String[] tp = text.split(":");
 			_line = Integer.parseInt(tp[1]);
+			_col = Integer.parseInt(tp[2]);
 		} else {
-			String[] tp = comma[0].split(":");
-			_line = Integer.parseInt(tp[tp.length - 2]);
+			String[] tp = text.split(":");
+			int lenthFile = tp.length - 2;
+			_file = tp[0];
+			for(int i = 1; i < lenthFile; i++)
+				_file = _file + ":" + tp[i];
+			
+			_line = Integer.parseInt(tp[lenthFile]);
+			_col = Integer.parseInt(tp[lenthFile + 1]);
 		}
 	}
 	
@@ -40,9 +55,7 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 
 	@Override
 	public int getNodeOffset() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return 0;
+		return getStartingLineNumber() * 1000 + _col;
 	}
 
 	@Override
@@ -54,14 +67,18 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 
 	@Override
 	public String getFileName() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return "nada.cpp";
+		if(_file != null)
+			return _file;
+		
+		return _parent.getFileLocation().getFileName();
 	}
 
 	@Override
 	public int getStartingLineNumber() {
-		return _line;
+		if(_line >= 0)
+			return _line;
+		
+		return _parent.getFileLocation().getStartingLineNumber();
 	}
 
 }

@@ -2,14 +2,15 @@ package gvpl.clang;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSimpleDeclSpecifier;
 
 public class CPPASTSimpleDeclSpecifier extends ASTDeclSpecifier implements ICPPASTSimpleDeclSpecifier{
 	
 	static Logger logger = LogManager.getLogger(CPPASTSimpleDeclSpecifier.class.getName());
 
-	public CPPASTSimpleDeclSpecifier(Cursor cursor) {
-		super(cursor);
+	public CPPASTSimpleDeclSpecifier(Cursor cursor, IASTNode parent) {
+		super(cursor, parent);
 	}
 
 	@Override

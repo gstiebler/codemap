@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
@@ -14,17 +15,17 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 	
 	public List<IASTStatement> _statements = new ArrayList<IASTStatement>();
 	
-	public CPPASTCompoundStatement(Cursor cursor) {
-		super(cursor.nextLine());
+	public CPPASTCompoundStatement(Cursor cursor, IASTNode parent) {
+		super(cursor.nextLine(), parent);
 		while(!cursor.theEnd()) {
 			String stmtLine = cursor.getLine();
 			String stmtType = CPPASTTranslationUnit.getType(stmtLine);
 			if(stmtType.equals("DeclStmt"))
-				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor()));
+				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor(), this));
 			else if (stmtType.equals("BinaryOperator")) {
-				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor()));
+				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor(), this));
 			} else if (stmtType.equals("ReturnStmt")) {
-				_statements.add(new ASTReturnStatement(cursor.getSubCursor()));
+				_statements.add(new ASTReturnStatement(cursor.getSubCursor(), this));
 			} else {
 				logger.error("Error reading " + stmtType);
 			}

@@ -4,6 +4,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IScope;
@@ -17,8 +18,8 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	public CPPASTFunctionDeclarator _declarator = null;
 	public IASTStatement _body = null;
 	
-	public CPPASTFunctionDeclaration(Cursor cursor, boolean isMethod) {
-		super(cursor.getLine());
+	public CPPASTFunctionDeclaration(Cursor cursor, boolean isMethod, IASTNode parent) {
+		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
@@ -26,11 +27,11 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 			_binding = new CPPMethod(bindingInfo.bindingId, _funcName, cursor.getSubCursor());
 		else
 			_binding = new CPPFunction(bindingInfo.bindingId, _funcName, cursor.getSubCursor());
-		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor), cursor);
+		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor, this), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(type.equals("CompoundStmt")) {
-			_body = new CPPASTCompoundStatement(cursor.getSubCursor());
+			_body = new CPPASTCompoundStatement(cursor.getSubCursor(), this);
 		} else {
 			logger.error("Error reading " + type);
 		}

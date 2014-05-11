@@ -2,11 +2,12 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration {
 
-	public CPPASTParameterDeclaration(String line) {
-		super(line);
+	public CPPASTParameterDeclaration(String line, IASTNode parent) {
+		super(line, parent);
 	}
 
 	@Override

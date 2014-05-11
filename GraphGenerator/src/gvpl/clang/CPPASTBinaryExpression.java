@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IType;
 
 
@@ -20,14 +21,14 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 	IASTExpression _operand2;
 	Map<String, Integer> _opMap = new HashMap<String, Integer>();
 	
-	public CPPASTBinaryExpression(Cursor cursor) {
-		super(cursor.getLine());
+	public CPPASTBinaryExpression(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
 		_operator = parsedLine.get( parsedLine.size() - 1 );
 		
-		_operand1 = ASTExpression.loadExpression(cursor);
-		_operand2 = ASTExpression.loadExpression(cursor);
+		_operand1 = ASTExpression.loadExpression(cursor, this);
+		_operand2 = ASTExpression.loadExpression(cursor, this);
 		
 		_opMap.put("*", IASTBinaryExpression.op_multiply);
 		_opMap.put("/", IASTBinaryExpression.op_divide);
