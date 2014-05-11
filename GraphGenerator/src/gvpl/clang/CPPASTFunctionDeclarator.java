@@ -5,16 +5,23 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
+import org.eclipse.cdt.core.dom.ast.ASTVisitor;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
+import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IASTNodeLocation;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 import org.eclipse.cdt.core.dom.ast.IASTTypeId;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctionScope;
 
-public class CPPASTFunctionDeclarator extends CPPASTDeclarator implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator{
+public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator{
 
 	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclarator.class.getName());
 	
@@ -24,7 +31,6 @@ public class CPPASTFunctionDeclarator extends CPPASTDeclarator implements org.ec
 	List<IASTParameterDeclaration> _parameters = new ArrayList<IASTParameterDeclaration>();
 	
 	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parentNode, Cursor cursor) {
-		super(cursor);
 		_name = CPPASTName.loadASTName(binding, cursor.getLine());
 		_parentNode = parentNode;
 		_location = new CPPASTFileLocation(cursor.nextLine());
@@ -38,32 +44,17 @@ public class CPPASTFunctionDeclarator extends CPPASTDeclarator implements org.ec
 			}
 		}
 	}
-
+	
 	@Override
-	public IASTNode getParent() {
-		return _parentNode;
-	}
-
-	@Override
-	public IASTFileLocation getFileLocation() {
-		return _location;
-	}
-
-	@Override
-	public IASTName getName() {
-		return _name;
+	public void addParameterDeclaration(IASTParameterDeclaration arg0) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	@Override
 	public IASTParameterDeclaration[] getParameters() {
 		ASTParameterDeclaration[] result = new ASTParameterDeclaration[_parameters.size()];
 		return _parameters.toArray(result);
-	}
-
-	@Override
-	public void addParameterDeclaration(IASTParameterDeclaration arg0) {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
 	}
 
 	@Override
@@ -80,22 +71,144 @@ public class CPPASTFunctionDeclarator extends CPPASTDeclarator implements org.ec
 	}
 
 	@Override
-	public void addConstructorToChain(ICPPASTConstructorChainInitializer arg0) {
+	public void addPointerOperator(IASTPointerOperator arg0) {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 	}
 
 	@Override
-	public void addExceptionSpecificationTypeId(IASTTypeId arg0) {
+	public IASTInitializer getInitializer() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public IASTName getName() {
+		return _name;
+	}
+
+	@Override
+	public IASTDeclarator getNestedDeclarator() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public IASTPointerOperator[] getPointerOperators() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public void setInitializer(IASTInitializer arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		
+	}
+
+	@Override
+	public void setName(IASTName arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		
+	}
+
+	@Override
+	public void setNestedDeclarator(IASTDeclarator arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		
+	}
+
+	@Override
+	public boolean accept(ASTVisitor arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return false;
+	}
+
+	@Override
+	public boolean contains(IASTNode arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return false;
+	}
+
+	@Override
+	public String getContainingFilename() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public IASTFileLocation getFileLocation() {
+		return _location;
+	}
+
+	@Override
+	public IASTNodeLocation[] getNodeLocations() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public IASTNode getParent() {
+		return _parentNode;
+	}
+
+	@Override
+	public ASTNodeProperty getPropertyInParent() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public String getRawSignature() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public IASTTranslationUnit getTranslationUnit() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
+
+	@Override
+	public void setParent(IASTNode arg0) {}
+
+	@Override
+	public void setPropertyInParent(ASTNodeProperty arg0) {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 	}
+
+	@Override
+	public int getRoleForName(IASTName arg0) {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return 0;
+	}
+
+	@Override
+	public void addConstructorToChain(ICPPASTConstructorChainInitializer arg0) {}
+
+	@Override
+	public void addExceptionSpecificationTypeId(IASTTypeId arg0) {}
 
 	@Override
 	public ICPPASTConstructorChainInitializer[] getConstructorChain() {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
-		return null;
+		return new ICPPASTConstructorChainInitializer[0];
 	}
 
 	@Override
