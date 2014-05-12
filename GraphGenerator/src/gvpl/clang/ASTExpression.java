@@ -28,8 +28,20 @@ public class ASTExpression {
 			return loadExpression(cursor, parent);
 		} else if(type.equals("CallExpr")) {
 			return new ASTFunctionCallExpression(cursor, parent);
+		} else if(type.equals("CXXConstructExpr")) {
+			logger.error("Error reading " + type);
+			while(!cursor.theEnd())
+				cursor.nextLine();
+			return null;
+		} else if(type.equals("MemberExpr")) {
+			logger.error("Error reading " + type);
+			while(!cursor.theEnd())
+				cursor.nextLine();
+			return null;
 		} else {
 			logger.error("Error reading " + type);
+			while(!cursor.theEnd())
+				cursor.nextLine();
 			return null;
 		}
 	}

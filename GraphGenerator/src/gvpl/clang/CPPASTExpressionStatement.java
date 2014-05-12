@@ -12,7 +12,7 @@ public class CPPASTExpressionStatement extends ASTNode implements org.eclipse.cd
 		String line = cursor.getLine();
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("BinaryOperator")) {
-			_expression = new CPPASTBinaryExpression(cursor, this);
+			_expression = new CPPASTBinaryExpression(cursor.getSubCursor(), this);
 		}
 	}
 

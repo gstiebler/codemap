@@ -21,7 +21,9 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 		String baseType = CPPASTTranslationUnit.getType(cursor.nextLine());
 		if(baseType.equals("CXXRecordDecl")) {
 			_declSpec = new CPPASTCompositeTypeSpecifier(cursor, this);
-		} else {
+		} else if(baseType.equals("FieldDecl")) {
+			logger.error("Not implemented  " + baseType);
+		} else if(baseType.equals("DeclStmt")) {
 			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 			while(!cursor.theEnd()) {
 				String line = cursor.getLine();
@@ -32,6 +34,8 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 					logger.error("Error reading " + type);
 				}
 			}
+		} else {
+			logger.error("Not implemented  " + baseType);
 		}
 	}
 

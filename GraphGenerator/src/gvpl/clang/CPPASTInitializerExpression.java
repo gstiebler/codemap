@@ -10,7 +10,7 @@ public class CPPASTInitializerExpression extends ASTNode implements org.eclipse.
 	public CPPASTInitializerExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		while(!cursor.theEnd()) {
-			_initExpression = ASTExpression.loadExpression(cursor, this);
+			_initExpression = ASTExpression.loadExpression(cursor.getSubCursor(), this);
 		}
 	}
 
