@@ -34,10 +34,7 @@ public class ASTExpression {
 				cursor.nextLine();
 			return null;
 		} else if(type.equals("MemberExpr")) {
-			logger.error("Error reading " + type);
-			while(!cursor.theEnd())
-				cursor.nextLine();
-			return null;
+			return new CPPASTFieldReference(cursor.getSubCursor(), parent);
 		} else {
 			logger.error("Error reading " + type);
 			while(!cursor.theEnd())
