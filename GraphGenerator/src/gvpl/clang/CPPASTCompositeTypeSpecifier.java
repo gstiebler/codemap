@@ -20,7 +20,7 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 	
 	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
-		
+		cursor.nextLine();
 		String line = cursor.nextLine();
 		//_name = new CPPASTName(binding, line);
 		String classType = CPPASTTranslationUnit.getType( line );

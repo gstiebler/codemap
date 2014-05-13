@@ -18,12 +18,13 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 	
 	public ASTSimpleDeclaration(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		String baseType = CPPASTTranslationUnit.getType(cursor.nextLine());
+		String baseType = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(baseType.equals("CXXRecordDecl")) {
-			_declSpec = new CPPASTCompositeTypeSpecifier(cursor, this);
+			_declSpec = new CPPASTCompositeTypeSpecifier(cursor.getSubCursor(), this);
 		} else if(baseType.equals("FieldDecl")) {
-			logger.error("Not implemented  " + baseType);
+			_declarators.add(new CPPASTDeclarator(cursor.getSubCursor(), this));
 		} else if(baseType.equals("DeclStmt")) {
+			cursor.nextLine();
 			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 			while(!cursor.theEnd()) {
 				String line = cursor.getLine();
