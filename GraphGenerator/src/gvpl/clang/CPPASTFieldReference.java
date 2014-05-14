@@ -14,19 +14,23 @@ public class CPPASTFieldReference extends ASTNode implements IASTFieldReference 
 	static Logger logger = LogManager.getLogger(CPPASTFieldReference.class.getName());
 	
 	IASTName _fieldName;
+	IASTExpression _fieldOwner;
 	
 	public CPPASTFieldReference(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		IBinding binding = new CPPField(cursor);
 		_fieldName = CPPASTName.loadASTName(binding, cursor.nextLine(), this);
-		
-		// TODO read field owner
-		cursor.nextLine();
+		_fieldOwner = ASTExpression.loadExpression(cursor.getSubCursor(), this);
 	}
 
 	@Override
 	public IASTName getFieldName() {
 		return _fieldName;
+	}
+
+	@Override
+	public IASTExpression getFieldOwner() {
+		return _fieldOwner;
 	}
 
 	@Override
@@ -41,13 +45,6 @@ public class CPPASTFieldReference extends ASTNode implements IASTFieldReference 
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 		return 0;
-	}
-
-	@Override
-	public IASTExpression getFieldOwner() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
 	}
 
 	@Override
