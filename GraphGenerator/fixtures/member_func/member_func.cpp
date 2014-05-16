@@ -46,8 +46,8 @@ int main() {
 	str2.a = 45.98;
 	str2.h = 9099.0;
 	
-	str2.seg.setM1(15);
 	str2.seg.si.soEsse = 17.15;
+	str2.seg.setM1(15);
 	
 	float r = str2.inc_a5(6.0);
 	
