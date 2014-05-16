@@ -79,6 +79,12 @@ public class Cursor {
 			setTheEnd();
 	}
 	
+	public void runToTheEnd() {
+		Cursor cursor = getSubCursor();
+		while(!cursor.theEnd())
+			cursor.nextLine();
+	}
+	
 	public String toString() {
 		return _pos + " - " + getLine();
 	}

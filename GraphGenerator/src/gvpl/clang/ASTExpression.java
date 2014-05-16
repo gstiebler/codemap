@@ -30,8 +30,7 @@ public class ASTExpression {
 			return new ASTFunctionCallExpression(cursor, parent);
 		} else if(type.equals("CXXConstructExpr")) {
 			logger.error("Error reading " + type);
-			while(!cursor.theEnd())
-				cursor.nextLine();
+			cursor.runToTheEnd();
 			return null;
 		} else if(type.equals("MemberExpr")) {
 			return new CPPASTFieldReference(cursor.getSubCursor(), parent);

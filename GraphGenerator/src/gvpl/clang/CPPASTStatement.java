@@ -7,9 +7,7 @@ public class CPPASTStatement extends ASTNode implements org.eclipse.cdt.core.dom
 
 	public CPPASTStatement(Cursor cursor, IASTNode parent) {
 		super(cursor.nextLine(), parent);
-		while(!cursor.theEnd()) {
-			cursor.nextLine();
-		}
+		cursor.runToTheEnd();
 	}
 
 
