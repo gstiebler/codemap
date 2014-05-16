@@ -19,7 +19,7 @@ public class CPPField implements ICPPField {
 	
 	public CPPField(Cursor cursor) {
 		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
-		String bindingStr = strings.get(6);
+		String bindingStr = strings.get(strings.size() - 1);
 		int bindingId = Integer.parseInt(bindingStr.split("0x")[1], 16);
 		CPPASTTranslationUnit.addBinding(bindingId, this);
 	}

@@ -82,10 +82,19 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		result.add(bindText);
 		
 		String[] postBico1 = dash[1].split("<");
-		String[] postBico2 = postBico1[1].split(">");
+		
+		String postBico11 = "";
+		for(int i = 1; i < postBico1.length; i++)
+			postBico11 = postBico11 + postBico1[i];
+		
+		String[] postBico2 = postBico11.split(">");
 		result.add(postBico2[0]);
 		
-		String[] plic = postBico2[1].split("'");
+		String postBico21 = "";
+		for(int i = 1; i < postBico2.length; i++)
+			postBico21 = postBico21 + postBico2[i];
+		
+		String[] plic = postBico21.split("'");
 		for(String strPlic : plic) {
 			if(strPlic.substring(0, 1).equals(" ")) {
 				String[] strings = strPlic.split(" ");
