@@ -85,6 +85,10 @@ public class Cursor {
 			cursor.nextLine();
 	}
 	
+	public int getPos() {
+		return _pos;
+	}
+	
 	public String toString() {
 		return _pos + " - " + getLine();
 	}
