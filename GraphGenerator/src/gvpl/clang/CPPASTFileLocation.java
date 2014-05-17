@@ -41,6 +41,10 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 		}
 	}
 	
+	public CPPASTFileLocation(String fileName) {
+		_file = fileName;
+	}
+	
 	@Override
 	public IASTFileLocation asFileLocation() {
 		// TODO Auto-generated method stub

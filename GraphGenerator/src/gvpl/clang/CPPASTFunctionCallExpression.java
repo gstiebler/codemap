@@ -6,11 +6,11 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IType;
 
-public class CPASTFunctionCallExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression {
+public class CPPASTFunctionCallExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression {
 
 	static Logger logger = LogManager.getLogger(ASTExpression.class.getName());
 	
-	public CPASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
+	public CPPASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		cursor.runToTheEnd();
 	}

@@ -141,6 +141,19 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 
 	@Override
+	public IASTFileLocation getFileLocation() {
+		return new CPPASTFileLocation(_fileName);
+	}
+
+	public static void setFileName(String file) {
+		_fileName = file;
+	}
+	
+	public static String getFileName() {
+		return _fileName;
+	}
+
+	@Override
 	public boolean accept(ASTVisitor arg0) {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
@@ -156,13 +169,6 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	@Override
 	public String getContainingFilename() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
-	}
-
-	@Override
-	public IASTFileLocation getFileLocation() {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 		return null;
@@ -367,13 +373,5 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	@Override
 	public void setPropertyInParent(ASTNodeProperty arg0) {}
-
-	public static void setFileName(String file) {
-		_fileName = file;
-	}
-	
-	public static String getFileName() {
-		return _fileName;
-	}
 
 }

@@ -17,8 +17,10 @@ public class CPPASTExpressionStatement extends ASTNode implements org.eclipse.cd
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("BinaryOperator")) {
 			_expression = new CPPASTBinaryExpression(cursor.getSubCursor(), this);
+		} else if(type.equals("CXXMemberCallExpr")) {
+			_expression = new CPPASTFunctionCallExpression(cursor.getSubCursor(), this);
 		} else {
-			logger.error("Not implemented " + type);
+			logger.error("Not implemented {}, line {}", type, cursor.getPos() + 1);
 			cursor.runToTheEnd();
 		}
 	}

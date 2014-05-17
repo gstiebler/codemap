@@ -27,8 +27,7 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 			} else if (stmtType.equals("ReturnStmt")) {
 				_statements.add(new ASTReturnStatement(cursor.getSubCursor(), this));
 			} else if (stmtType.equals("CXXMemberCallExpr")) {
-				logger.error("Error reading {}, line {}", stmtType, cursor.getPos() + 1);
-				cursor.runToTheEnd();
+				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor(), this));
 			} else {
 				logger.error("Error reading " + stmtType);
 				cursor.runToTheEnd();
