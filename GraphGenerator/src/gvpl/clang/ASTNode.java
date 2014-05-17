@@ -63,7 +63,7 @@ public class ASTNode implements org.eclipse.cdt.core.dom.ast.IASTNode {
 
 	@Override
 	public String getRawSignature() {
-		return _location.toString();
+		return toString();
 	}
 
 	@Override
