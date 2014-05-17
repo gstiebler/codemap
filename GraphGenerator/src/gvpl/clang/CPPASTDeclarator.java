@@ -16,8 +16,18 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 		String line = cursor.getLine();
 		_name = CPPASTName.loadASTName(new CPPVariable(line), line, this);
 		String line2 = cursor.nextLine();
-		if(!cursor.theEnd())
-			_initializer = new CPPASTInitializerExpression(cursor.getSubCursor(), this);
+		
+		String type = CPPASTTranslationUnit.getType(cursor.getLine());
+		if(!cursor.theEnd()) {
+			if(type.equals("CStyleCastExpr") || 
+					type.equals("CXXFunctionalCastExpr") || 
+					type.equals("CallExpr") || 
+					type.equals("BinaryOperator") || 
+					type.equals("CXXMemberCallExpr"))
+				_initializer = new CPPASTInitializerExpression(cursor.getSubCursor(), this);
+			else
+				cursor.runToTheEnd();				
+		}
 	}
 	
 	public String toString() {
@@ -27,6 +37,11 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	@Override
 	public IASTName getName() {
 		return _name;
+	}
+
+	@Override
+	public IASTInitializer getInitializer() {
+		return _initializer;
 	}
 
 	@Override
@@ -40,11 +55,6 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	public void addPointerOperator(IASTPointerOperator arg0) {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
-	}
-
-	@Override
-	public IASTInitializer getInitializer() {
-		return _initializer;
 	}
 
 	@Override
