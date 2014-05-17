@@ -73,6 +73,12 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 	}
 
 	@Override
+	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
+		logger.error("Not implemented");
+		return new ICPPASTBaseSpecifier[0];
+	}
+
+	@Override
 	public IScope getScope() {
 		logger.error("Not implemented");
 		return null;
@@ -119,11 +125,5 @@ public class CPPASTCompositeTypeSpecifier extends ASTDeclSpecifier implements or
 
 	@Override
 	public void addBaseSpecifier(ICPPASTBaseSpecifier arg0) { }
-
-	@Override
-	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
-		logger.error("Not implemented");
-		return new ICPPASTBaseSpecifier[0];
-	}
 
 }

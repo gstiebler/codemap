@@ -34,10 +34,11 @@ public class ASTExpression {
 			return null;
 		} else if(type.equals("MemberExpr")) {
 			return new CPPASTFieldReference(cursor.getSubCursor(), parent);
+		} else if(type.equals("CXXMemberCallExpr")) {
+			return new CPASTFunctionCallExpression(cursor.getSubCursor(), parent);
 		} else {
 			logger.error("Error reading " + type);
-			while(!cursor.theEnd())
-				cursor.nextLine();
+			cursor.runToTheEnd();
 			return null;
 		}
 	}
