@@ -11,7 +11,7 @@ startinglines = "16_22_22";
 	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
 	node_000004 [ label = "b", startingline=26 ]
 	node_000008 [ label = "c", startingline=6 ]
-	node_000009 [ label = "3.000000e", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
+	node_000009 [ label = "3.000000e01", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
 	node_000013 [ label = "d", startingline=11 ]
 	node_000014 [ label = "8.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=31 ]
 	node_000018 [ label = "e", startingline=18 ]

@@ -57,6 +57,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
+			} else if (type.equals("CXXMethodDecl")) {
+				_declarations.add(new CPPASTFunctionDeclaration(cursor, true, this));
+				cursor.runToTheEnd();
 			} else {
 				logger.error("Not prepared for type " + type);
 				cursor.runToTheEnd();
@@ -74,14 +77,19 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		List<String> result = new ArrayList<String>();
 
 		String[] dash = line.split("-");
-		String[] space = dash[1].split(" ");
+		
+		String dash1 = "";
+		for(int i = 1; i < dash.length; i++)
+			dash1 = dash1 + dash[i];
+		
+		String[] space = dash1.split(" ");
 		result.add(space[0]);
 		
 		String[] postX = space[1].split("0x");
 		String bindText = postX[1].split(" ")[0];
 		result.add(bindText);
 		
-		String[] postBico1 = dash[1].split("<");
+		String[] postBico1 = dash1.split("<");
 		
 		String postBico11 = "";
 		for(int i = 1; i < postBico1.length; i++)
