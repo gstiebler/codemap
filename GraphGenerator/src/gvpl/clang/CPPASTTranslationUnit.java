@@ -81,11 +81,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		String bindText = postX[1].split(" ")[0];
 		result.add(bindText);
 		
-		String dash1 = "";
-		for(int i = 1; i < dash.length; i++)
-			dash1 = dash1 + dash[i];
-		
-		String[] postBico1 = dash1.split("<");
+		String[] postBico1 = dash[1].split("<");
 		
 		String postBico11 = "";
 		for(int i = 1; i < postBico1.length; i++)
