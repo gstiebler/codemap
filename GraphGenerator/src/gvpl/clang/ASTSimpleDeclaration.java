@@ -22,6 +22,7 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 		if(baseType.equals("CXXRecordDecl")) {
 			_declSpec = new CPPASTCompositeTypeSpecifier(cursor.getSubCursor(), this);
 		} else if(baseType.equals("FieldDecl")) {
+			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 			_declarators.add(new CPPASTDeclarator(cursor.getSubCursor(), this));
 		} else if(baseType.equals("DeclStmt")) {
 			cursor.nextLine();

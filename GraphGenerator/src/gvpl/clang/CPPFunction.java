@@ -40,6 +40,12 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	public boolean isStatic() throws DOMException {
 		return _isStatic;
 	}
+
+	public IASTNode getDefinition() {
+		// TODO Auto-generated method stub
+		logger.error("Not implemented");
+		return null;
+	}
 	
 	@Override
 	public Object getAdapter(Class arg0) {
@@ -155,12 +161,6 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 
 	@Override
 	public IScope getScope() throws DOMException {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
-	}
-
-	public IASTNode getDefinition() {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 		return null;

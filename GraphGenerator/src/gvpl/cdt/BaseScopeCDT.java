@@ -247,7 +247,8 @@ public abstract class BaseScopeCDT extends BaseScope{
 		ExecTreeLogger.log("Var name: " + name);
 		
 		IVar varDecl = addVarDecl(name.toString(), type, decl.getPointerOperators(), graph, _astInterpreter);
-		_localVariables.put(name.resolveBinding(), varDecl);
+		IBinding binding = name.resolveBinding();
+		_localVariables.put(binding, varDecl);
 		return varDecl;
 	}
 
