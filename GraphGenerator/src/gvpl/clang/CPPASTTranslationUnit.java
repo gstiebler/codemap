@@ -60,7 +60,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else if (type.equals("CXXMethodDecl")) {
 				_declarations.add(new CPPASTFunctionDeclaration(cursor, true, this));
-				cursor.runToTheEnd();
+				//cursor.runToTheEnd();
 			} else {
 				logger.error("Not prepared for type " + type);
 				cursor.runToTheEnd();
@@ -129,12 +129,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	public static void addBinding(BindingInfo bindingInfo, IBinding binding) {
 		_instance._idToBinding.put(bindingInfo.bindingId, binding);
-		
-		String typeName = bindingInfo.type;
-		if(bindingInfo.name.equals("struct") || bindingInfo.name.equals("class"))
-			typeName = bindingInfo.name + " " + bindingInfo.type; 
-		_instance._typeNameToBinding.put(typeName, binding);
 	}
+
+	public static void addBinding(String typeName, IBinding binding) {
+		_instance._typeNameToBinding.put(typeName, binding);
+		logger.debug("Adding type {}, {} to bindings", typeName, binding);
+	}	
 	
 	public static IBinding getBinding(int bindingId) {
 		return _instance._idToBinding.get(bindingId);

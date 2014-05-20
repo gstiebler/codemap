@@ -25,7 +25,8 @@ public class CPPClassType implements org.eclipse.cdt.core.dom.ast.cpp.ICPPClassT
 	public CPPClassType(String line) {
 		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_name = _bindingInfo.type;
-		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
+		String typeName = _bindingInfo.name + " " + _bindingInfo.type;
+		CPPASTTranslationUnit.addBinding(typeName, this);
 	}
 	
 	@Override
