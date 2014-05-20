@@ -1,17 +1,30 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-public class ASTDeclSpecifier extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier{
+public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier{
 
-	static Logger logger = LogManager.getLogger(ASTDeclSpecifier.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTBaseDeclSpecifier.class.getName());
 	
 	int _storageClass = -1;
 	
-	public ASTDeclSpecifier(Cursor cursor, IASTNode parent) {
+	public static IASTDeclSpecifier loadDeclSpec(Cursor cursor, IASTNode parent) {
+		String line = cursor.getLine();
+		List<String> lines = CPPASTTranslationUnit.parseLine(line);
+		String type = lines.get(lines.size() - 1);
+		//TODO improve, it will not work with typedefs or defines
+		if(type.equals("float") || type.equals("int") || type.equals("bool") )
+			return new CPPASTSimpleDeclSpecifier(cursor, parent);
+		else
+			return new CPPASTNamedTypeSpecifier(cursor, parent);
+	}
+	
+	CPPASTBaseDeclSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		if(CPPMethod.isStatic(cursor.getLine()))
 			_storageClass = IASTDeclSpecifier.sc_static;

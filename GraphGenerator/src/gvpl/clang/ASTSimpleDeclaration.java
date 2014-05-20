@@ -22,11 +22,11 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 		if(baseType.equals("CXXRecordDecl")) {
 			_declSpec = new CPPASTCompositeTypeSpecifier(cursor.getSubCursor(), this);
 		} else if(baseType.equals("FieldDecl")) {
-			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
+			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor, this);
 			_declarators.add(new CPPASTDeclarator(cursor.getSubCursor(), this));
 		} else if(baseType.equals("DeclStmt")) {
 			cursor.nextLine();
-			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
+			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor, this);
 			while(!cursor.theEnd()) {
 				String line = cursor.getLine();
 				String type = CPPASTTranslationUnit.getType(line);

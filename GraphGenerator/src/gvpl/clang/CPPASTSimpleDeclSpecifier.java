@@ -5,7 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSimpleDeclSpecifier;
 
-public class CPPASTSimpleDeclSpecifier extends ASTDeclSpecifier implements ICPPASTSimpleDeclSpecifier{
+public class CPPASTSimpleDeclSpecifier extends CPPASTBaseDeclSpecifier implements ICPPASTSimpleDeclSpecifier{
 	
 	static Logger logger = LogManager.getLogger(CPPASTSimpleDeclSpecifier.class.getName());
 
