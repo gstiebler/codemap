@@ -38,7 +38,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	static Logger logger = LogManager.getLogger(CPPASTTranslationUnit.class.getName());
 	
 	public List<IASTDeclaration> _declarations = new ArrayList<IASTDeclaration>();
-	private Map<Integer, IBinding> _bindings = new TreeMap<Integer, IBinding>();
+	private Map<Integer, IBinding> _idToBinding = new TreeMap<Integer, IBinding>();
+	private Map<String, IBinding> _typeNameToBinding = new TreeMap<String, IBinding>();
 	static CPPASTTranslationUnit _instance;
 	static public IASTName lastClassName;
 	static String _fileName;
@@ -127,11 +128,20 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 
 	public static void addBinding(BindingInfo bindingInfo, IBinding binding) {
-		_instance._bindings.put(bindingInfo.bindingId, binding);
+		_instance._idToBinding.put(bindingInfo.bindingId, binding);
+		
+		String typeName = bindingInfo.type;
+		if(bindingInfo.name.equals("struct") || bindingInfo.name.equals("class"))
+			typeName = bindingInfo.name + " " + bindingInfo.type; 
+		_instance._typeNameToBinding.put(typeName, binding);
 	}
 	
 	public static IBinding getBinding(int bindingId) {
-		return _instance._bindings.get(bindingId);
+		return _instance._idToBinding.get(bindingId);
+	}
+	
+	public static IBinding getBinding(String typeName) {
+		return _instance._typeNameToBinding.get(typeName);
 	}
 
 	@Override

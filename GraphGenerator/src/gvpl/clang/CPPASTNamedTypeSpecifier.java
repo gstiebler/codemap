@@ -11,7 +11,8 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 	public CPPASTNamedTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
 		String line = cursor.getLine();
-		IBinding binding = new CPPClassType(line);
+		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
+		IBinding binding = CPPASTTranslationUnit.getBinding(bi.type);
 		_name = CPPASTName.loadASTName(binding, line, parent);
 	}
 
