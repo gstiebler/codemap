@@ -2,11 +2,17 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier {
 
+	IASTName _name;
+	
 	public CPPASTNamedTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
+		String line = cursor.getLine();
+		IBinding binding = new CPPClassType(line);
+		_name = CPPASTName.loadASTName(binding, line, parent);
 	}
 
 	@Override
@@ -18,9 +24,7 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 
 	@Override
 	public IASTName getName() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		return _name;
 	}
 
 	@Override

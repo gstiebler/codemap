@@ -12,8 +12,8 @@ public class CPPMethod extends CPPFunction implements org.eclipse.cdt.core.dom.a
 
 	public IASTName className;
 	
-	public CPPMethod(int bindingId, String name, Cursor cursor) {
-		super(bindingId, name, cursor);
+	public CPPMethod(BindingInfo bi, String name, Cursor cursor) {
+		super(bi, name, cursor);
 		className = CPPASTTranslationUnit.lastClassName;
 	}
 

@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ILinkage;
@@ -18,10 +16,8 @@ public class CPPField implements ICPPField {
 	static Logger logger = LogManager.getLogger(CPPField.class.getName());
 	
 	public CPPField(Cursor cursor) {
-		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
-		String bindingStr = strings.get(strings.size() - 1);
-		int bindingId = Integer.parseInt(bindingStr.split("0x")[1], 16);
-		CPPASTTranslationUnit.addBinding(bindingId, this);
+		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(cursor.getLine());
+		CPPASTTranslationUnit.addBinding(bi, this);
 	}
 
 	@Override

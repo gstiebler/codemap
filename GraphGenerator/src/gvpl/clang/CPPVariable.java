@@ -16,7 +16,7 @@ public class CPPVariable implements org.eclipse.cdt.core.dom.ast.IVariable {
 	
 	public CPPVariable(String line) {
 		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
-		CPPASTTranslationUnit.addBinding(_bindingInfo.bindingId, this);
+		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
 	}
 	
 	public String toString() {

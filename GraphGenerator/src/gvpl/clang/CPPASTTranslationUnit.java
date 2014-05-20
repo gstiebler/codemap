@@ -126,8 +126,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return result;
 	}
 
-	public static void addBinding(int bindingId, IBinding binding) {
-		_instance._bindings.put(bindingId, binding);
+	public static void addBinding(BindingInfo bindingInfo, IBinding binding) {
+		_instance._bindings.put(bindingInfo.bindingId, binding);
 	}
 	
 	public static IBinding getBinding(int bindingId) {

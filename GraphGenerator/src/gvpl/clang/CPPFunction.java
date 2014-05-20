@@ -20,10 +20,10 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	String _name;
 	boolean _isStatic = false;
 	
-	public CPPFunction(int bindingId, String name, Cursor cursor) {
-		_bindingId = bindingId;
+	public CPPFunction(BindingInfo bi, String name, Cursor cursor) {
+		_bindingId = bi.bindingId;
 		_isStatic = isStatic(cursor.getLine());
-		CPPASTTranslationUnit.addBinding(bindingId, this);
+		CPPASTTranslationUnit.addBinding(bi, this);
 		_name = name;
 	}
 	
