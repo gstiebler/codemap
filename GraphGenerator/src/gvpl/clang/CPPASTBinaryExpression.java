@@ -25,7 +25,11 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
-		_operator = parsedLine.get( parsedLine.size() - 1 );
+		
+		if(parsedLine.get(0).equals("BinaryOperator"))
+			_operator = parsedLine.get( parsedLine.size() - 1 );
+		else
+			_operator = parsedLine.get( 5 );
 		
 		_operand1 = ASTExpression.loadExpression(cursor, this);
 		_operand2 = ASTExpression.loadExpression(cursor, this);
@@ -47,10 +51,10 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		_opMap.put("&&", IASTBinaryExpression.op_logicalAnd);
 		_opMap.put("||", IASTBinaryExpression.op_logicalOr);
 		_opMap.put("=", IASTBinaryExpression.op_assign);
+		_opMap.put("*=", IASTBinaryExpression.op_multiplyAssign);
+		_opMap.put("+=", IASTBinaryExpression.op_plusAssign);
 
-		// Field descriptor #8 I
-/*		public static final int op_multiplyAssign = 18;
-
+/*
 		// Field descriptor #8 I
 		public static final int op_divideAssign = 19;
 
@@ -86,6 +90,9 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 
 		// Field descriptor #8 I
 		public static final int op_last = 29;*/
+		
+		if(!_opMap.containsKey(_operator))
+			logger.error("Operator {} not found");
 	}
 
 	@Override

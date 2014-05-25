@@ -59,6 +59,10 @@ public class Cursor {
 		return new Cursor(_lines, _pos, this);
 	}
 	
+	public Cursor getDetachedSubCursor() {
+		return new Cursor(_lines, _pos, null);
+	}
+	
 	private void setTheEnd() {
 		_theEnd = true;
 		if(_parent != null) {

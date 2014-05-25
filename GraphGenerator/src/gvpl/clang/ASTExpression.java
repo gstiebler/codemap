@@ -33,7 +33,15 @@ public class ASTExpression {
 			cursor.runToTheEnd();
 			return null;
 		} else if(type.equals("MemberExpr")) {
-			return new CPPASTFieldReference(cursor.getSubCursor(), parent);
+			Cursor dcursor = cursor.getDetachedSubCursor();
+			dcursor.nextLine();
+			String secType = CPPASTTranslationUnit.getType(dcursor.getLine());
+			if(secType.equals("CXXThisExpr")) {
+				IASTExpression result = new CPPASTIdExpression(cursor, parent);
+				cursor.runToTheEnd();
+				return result;
+			} else
+				return new CPPASTFieldReference(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXMemberCallExpr")) {
 			return new CPPASTFunctionCallExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXThisExpr")) {

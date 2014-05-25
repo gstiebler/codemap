@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
+import gvpl.clang.CPPVariable;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
@@ -37,7 +38,6 @@ import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpressi
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPVariable;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -76,10 +76,11 @@ public abstract class BaseScopeCDT extends BaseScope{
 	    IBinding binding = getBindingFromExpr(expr);
 	    CodeLocation codeLocation = null;
 		if (binding instanceof ICPPVariable) {
-			IASTNode[] nodes = ((CPPVariable) binding).getDeclarations();
-			if (nodes != null && nodes.length > 0) {
-				codeLocation = CodeLocationCDT.NewFromFileLocation(nodes[0]);
-			}
+			CPPVariable cppvar = (CPPVariable) binding;
+//			IASTNode[] nodes = cppvar.getDeclarations();
+//			if (nodes != null && nodes.length > 0) {
+//				codeLocation = CodeLocationCDT.NewFromFileLocation(nodes[0]);
+//			}
 		}
 		
 	    var = getVarFromBinding(binding, codeLocation);
