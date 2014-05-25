@@ -55,23 +55,23 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			String line = cursor.getLine();
 			String type = getType(line);
 			if (type.equals("FunctionDecl")) {
-				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null, null));
+				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else if (type.equals("CXXMethodDecl")) {
 				List<String> strings = parseLineSimple(line);
+				int parentId = hexStrToInt(strings.get(3));
 				int prevId = hexStrToInt(strings.get(5));
 				IBinding binding = getBinding(prevId);
 				if(binding == null)
 					logger.error("Prev Id {} not found", strings.get(5));
 				
-				// alias to binding
-				int currId = hexStrToInt(strings.get(1));
-				BindingInfo bi = new BindingInfo();
-				bi.bindingId = currId;
-				addBinding(bi, binding);
+				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor, true, this);
+				
+				CPPClassType ct = (CPPClassType) getBinding(parentId);
+				ct._parent.replaceFuncDecl(binding, funcDecl);
 						
-				_declarations.add(new CPPASTFunctionDeclaration(cursor, true, binding, this));
+				_declarations.add(funcDecl);
 				//cursor.runToTheEnd();
 			} else {
 				logger.error("Not prepared for type " + type);

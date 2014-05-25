@@ -21,12 +21,15 @@ public class CPPClassType implements org.eclipse.cdt.core.dom.ast.cpp.ICPPClassT
 
 	BindingInfo _bindingInfo;
 	String _name;
+	public CPPASTCompositeTypeSpecifier _parent;
 	
-	public CPPClassType(String line) {
+	public CPPClassType(String line, CPPASTCompositeTypeSpecifier parent) {
+		_parent = parent;
 		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_name = _bindingInfo.type;
 		String typeName = _bindingInfo.name + " " + _bindingInfo.type;
 		CPPASTTranslationUnit.addBinding(typeName, this);
+		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
 	}
 	
 	@Override

@@ -18,19 +18,17 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 	public CPPASTFunctionDeclarator _declarator = null;
 	public IASTStatement _body = null;
 	
-	public CPPASTFunctionDeclaration(Cursor cursor, boolean isMethod, IBinding binding, IASTNode parent) {
+	public CPPASTFunctionDeclaration(Cursor cursor, boolean isMethod, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		_funcName = bindingInfo.name;
-		if(binding != null)
-			_binding = binding;
-		else {
-			if(isMethod)
-				_binding = new CPPMethod(bindingInfo, _funcName, cursor.getSubCursor());
-			else
-				_binding = new CPPFunction(bindingInfo, _funcName, cursor.getSubCursor());
-		}
+
+		if(isMethod)
+			_binding = new CPPMethod(bindingInfo, _funcName, cursor.getSubCursor());
+		else
+			_binding = new CPPFunction(bindingInfo, _funcName, cursor.getSubCursor());
+			
 		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor, this), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());

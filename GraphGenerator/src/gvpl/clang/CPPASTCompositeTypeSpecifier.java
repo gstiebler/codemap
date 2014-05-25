@@ -20,22 +20,21 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	
 	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
-		cursor.nextLine();
 		String line = cursor.nextLine();
+		cursor.nextLine();
 		//_name = new CPPASTName(binding, line);
 		String classType = CPPASTTranslationUnit.getType( line );
 		if(!classType.equals("CXXRecordDecl"))
 			logger.error("Type not expected " + classType);
 		
-		//This line or the next?
-		IBinding binding = new CPPClassType(line);
+		IBinding binding = new CPPClassType(line, this);
 		_name = CPPASTName.loadASTName(binding, line, this);
 		CPPASTTranslationUnit.lastClassName = _name;
 		
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
 			if(type.equals("CXXMethodDecl")) {
-				_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, null, this));
+				_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, this));
 			} else if(type.equals("FieldDecl")) {
 				_members.add(new ASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXDestructorDecl")) {
@@ -47,6 +46,20 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			} else {
 				logger.error("Type not expected " + type);
 				cursor.nextLine();
+			}
+		}
+	}
+	
+	public void replaceFuncDecl(IBinding binding, CPPASTFunctionDeclaration funcDecl) {
+		for(int i = 0; i < _members.size(); ++i) {
+			IASTDeclaration member = _members.get(i);
+			if(member instanceof CPPASTFunctionDeclaration) {
+				CPPASTFunctionDeclaration currFuncDecl = (CPPASTFunctionDeclaration) member;
+				IBinding currBinding = currFuncDecl.getDeclarator().getName().getBinding();
+				if(currBinding == binding) {
+					_members.set(i, funcDecl);
+					return;
+				}
 			}
 		}
 	}
