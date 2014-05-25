@@ -35,7 +35,7 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
 			if(type.equals("CXXMethodDecl")) {
-				_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, this));
+				_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, null, this));
 			} else if(type.equals("FieldDecl")) {
 				_members.add(new ASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXDestructorDecl")) {

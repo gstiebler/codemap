@@ -16,8 +16,7 @@ public class CPPASTIdExpression extends ASTNode implements org.eclipse.cdt.core.
 		String line = cursor.nextLine();
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
 		String bindingStr = parsedLine.get(6);
-		bindingStr = bindingStr.split("0x")[1];
-		int bindingId = Integer.parseInt(bindingStr, 16);
+		int bindingId = CPPASTTranslationUnit.hexStrToInt(bindingStr);
 		
 		IBinding binding = CPPASTTranslationUnit.getBinding(bindingId);
 		_name = CPPASTName.loadASTName(binding, line, this);

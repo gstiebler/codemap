@@ -17,8 +17,12 @@ public class CPPASTFunctionCallExpression extends ASTNode implements org.eclipse
 		super(cursor.nextLine(), parent);
 		_funcNameExpr = ASTExpression.loadExpression(cursor.getSubCursor(), parent);
 		// TODO prepare for multiple parameters
-		while(!cursor.theEnd()) {
+		if(!cursor.theEnd()) {
 			_paramExpr = ASTExpression.loadExpression(cursor.getSubCursor(), parent);
+		}
+		if(!cursor.theEnd()) {
+			cursor.runToTheEnd();
+			logger.error("Should implement multiple parameters");
 		}
 	}
 

@@ -55,11 +55,23 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			String line = cursor.getLine();
 			String type = getType(line);
 			if (type.equals("FunctionDecl")) {
-				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));
+				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null, null));
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else if (type.equals("CXXMethodDecl")) {
-				_declarations.add(new CPPASTFunctionDeclaration(cursor, true, this));
+				List<String> strings = parseLineSimple(line);
+				int prevId = hexStrToInt(strings.get(5));
+				IBinding binding = getBinding(prevId);
+				if(binding == null)
+					logger.error("Prev Id {} not found", strings.get(5));
+				
+				// alias to binding
+				int currId = hexStrToInt(strings.get(1));
+				BindingInfo bi = new BindingInfo();
+				bi.bindingId = currId;
+				addBinding(bi, binding);
+						
+				_declarations.add(new CPPASTFunctionDeclaration(cursor, true, binding, this));
 				//cursor.runToTheEnd();
 			} else {
 				logger.error("Not prepared for type " + type);
@@ -72,6 +84,28 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		String temp1 = line.split("-")[1];
 		String temp2 = temp1.split(" ")[0];
 		return temp2;
+	}
+	
+	public static int hexStrToInt(String hexStr) {
+		String bindingStr = hexStr.split("0x")[1];
+		return Integer.parseInt(bindingStr, 16);
+	}
+	
+	public static List<String> parseLineSimple(String line) {
+		List<String> result = new ArrayList<String>();
+		
+		String[] plic = line.split("'");
+		for(int i = 0; i < plic.length; ++i) {
+			if((i % 2) == 0) {
+				String[] space = plic[i].split(" ");
+				for(String splited : space)
+					result.add(splited);
+			} else {
+				result.add(plic[i]);
+			}
+		}
+		
+		return result;
 	}
 	
 	public static List<String> parseLine(String line) {

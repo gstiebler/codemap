@@ -22,8 +22,7 @@ public class CPPASTFieldReference extends ASTNode implements IASTFieldReference 
 		super(cursor.getLine(), parent);
 		List<String> lines = CPPASTTranslationUnit.parseLine(cursor.getLine());
 		String bindingStr = lines.get(lines.size() - 1);
-		bindingStr = bindingStr.split("0x")[1];
-		int bindingId = Integer.parseInt(bindingStr, 16);
+		int bindingId = CPPASTTranslationUnit.hexStrToInt(bindingStr);
 		IBinding binding = CPPASTTranslationUnit.getBinding(bindingId);
 		_fieldName = CPPASTName.loadASTName(binding, cursor.nextLine(), this);
 		_fieldOwner = ASTExpression.loadExpression(cursor.getSubCursor(), this);
