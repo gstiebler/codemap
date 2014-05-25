@@ -36,6 +36,10 @@ public class ASTExpression {
 			return new CPPASTFieldReference(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXMemberCallExpr")) {
 			return new CPPASTFunctionCallExpression(cursor.getSubCursor(), parent);
+		} else if(type.equals("CXXThisExpr")) {
+			logger.warn("Check if {} should be treated", type);
+			cursor.runToTheEnd();
+			return null;
 		} else {
 			logger.error("Error reading " + type);
 			cursor.runToTheEnd();
