@@ -10,8 +10,11 @@ public class CPPASTFunctionCallExpression extends ASTNode implements org.eclipse
 
 	static Logger logger = LogManager.getLogger(ASTExpression.class.getName());
 	
+	IASTExpression _funcNameExpr;
+	
 	public CPPASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
-		super(cursor.getLine(), parent);
+		super(cursor.nextLine(), parent);
+		_funcNameExpr = ASTExpression.loadExpression(cursor.getSubCursor(), parent);
 		cursor.runToTheEnd();
 	}
 
@@ -24,9 +27,7 @@ public class CPPASTFunctionCallExpression extends ASTNode implements org.eclipse
 
 	@Override
 	public IASTExpression getFunctionNameExpression() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		return _funcNameExpr;
 	}
 
 	@Override
