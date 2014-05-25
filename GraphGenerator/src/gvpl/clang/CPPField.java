@@ -15,11 +15,18 @@ public class CPPField implements ICPPField {
 	
 	static Logger logger = LogManager.getLogger(CPPField.class.getName());
 	
+	BindingInfo _bi;
+	
 	public CPPField(Cursor cursor) {
-		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(cursor.getLine());
-		CPPASTTranslationUnit.addBinding(bi, this);
+		_bi = CPPASTTranslationUnit.parseBindingInfo(cursor.getLine());
+		CPPASTTranslationUnit.addBinding(_bi, this);
 	}
 
+	@Override
+	public String toString() {
+		return _bi.name;
+	}
+	
 	@Override
 	public ICompositeType getCompositeTypeOwner() throws DOMException {
 		// TODO Auto-generated method stub

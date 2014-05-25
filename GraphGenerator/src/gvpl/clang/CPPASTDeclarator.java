@@ -5,6 +5,7 @@ import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclarator {
 
@@ -14,7 +15,16 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	public CPPASTDeclarator(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
-		_name = CPPASTName.loadASTName(new CPPVariable(line), line, this);
+		String firstType = CPPASTTranslationUnit.getType(line);
+		IBinding binding = null;
+		if(firstType.equals("FieldDecl"))
+			binding = new CPPField(cursor);
+		else if(firstType.equals("VarDecl") || firstType.equals("ParmVarDecl"))
+			binding = new CPPVariable(line);
+		else
+			logger.error("Type not expected: {}", firstType);
+		
+		_name = CPPASTName.loadASTName(binding, line, this);
 		String line2 = cursor.nextLine();
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
