@@ -111,11 +111,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public static List<String> parseLine(String line) {
 		List<String> result = new ArrayList<String>();
 
-		String[] dash = line.split("-");
-		
-		String dash1 = "";
-		for(int i = 1; i < dash.length; i++)
-			dash1 = dash1 + dash[i];
+		int dashIndex = line.indexOf('-');
+		String dash1 = line.substring(dashIndex + 1);
 		
 		String[] space = dash1.split(" ");
 		result.add(space[0]);
