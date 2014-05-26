@@ -12,9 +12,9 @@ subgraph cluster_2 {
 label = "sPri::func1";
 parent = "cluster_1";
 startinglines = "19_20_21";
-	node_000003 [ label = "20.0", style=filled, fillcolor="#E9FFE9", startinglines=14 ]
+	node_000003 [ label = "2.000000e+01", style=filled, fillcolor="#E9FFE9", startinglines=14 ]
 	node_000004 [ label = "str1.sIntA.soEsse", startingline=14 ]
-	node_000005 [ label = "30.0", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
+	node_000005 [ label = "3.000000e+01", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
 	node_000006 [ label = "str1.sIntB.soEsse", startingline=15 ]
 }
 }
