@@ -18,11 +18,11 @@ public class BasicTest {
 	public void memberFunc() {
 		TestsUtil.baseTest("member_func");
 	}
-//	
-//	@Test
-//	public void memberFunc2() {
-//		TestsUtil.baseTest("member_func2");
-//	}
+	
+	@Test
+	public void memberFunc2() {
+		TestsUtil.baseTest("member_func2");
+	}
 //	
 //	@Test
 //	public void memberFuncInsideMemberFunc() {
