@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -12,7 +14,8 @@ public class CPPASTIdExpression extends ASTNode implements org.eclipse.cdt.core.
 	public CPPASTIdExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
-		int bindingId = CPPASTTranslationUnit.getLastBindingId(line);
+		List<Integer> ids = CPPASTTranslationUnit.getIds(line);
+		int bindingId = ids.get(ids.size() - 1);
 		IBinding binding = CPPASTTranslationUnit.getBinding(bindingId);
 		_name = CPPASTName.loadASTName(binding, line, this);
 	}

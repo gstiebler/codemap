@@ -59,12 +59,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else if (type.equals("CXXMethodDecl")) {
-				List<String> strings = parseLineSimple(line);
-				int parentId = hexStrToInt(strings.get(3));
-				int prevId = hexStrToInt(strings.get(5));
+				List<Integer> ids = getIds(line);
+				int parentId = ids.get(1);
+				int prevId = ids.get(2);
 				IBinding binding = getBinding(prevId);
 				if(binding == null)
-					logger.error("Prev Id {} not found", strings.get(5));
+					logger.error("Prev Id {} not found", prevId);
 				
 				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor, true, this);
 				
@@ -101,28 +101,41 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 	
-	public static int getLastBindingId(String line) {
-		List<String> parsedLine = parseLine(line);
+	public static List<Integer> getIds(String line) {
+		List<String> parsedLine = parseLineSimple(line);
 		
-		int lastBindingId = -1;
+		List<Integer> ids = new ArrayList<Integer>();
 		for(String pLine : parsedLine) {
 			int currBindingId = hexStrToInt(pLine);
 			if(currBindingId != -1)
-				lastBindingId = currBindingId;
+				ids.add(currBindingId);
 		}
-		return lastBindingId;
+		return ids;
 	}
 	
-	public static List<String> parseLineSimple(String line) {
+	private static List<String> parseLineSimple(String line) {
 		List<String> result = new ArrayList<String>();
 		
 		String[] plic = line.split("'");
 		for(int i = 0; i < plic.length; ++i) {
-			if((i % 2) == 0) {
-				String[] space = plic[i].split(" ");
+			if((i % 2) == 0) { // outside plics
+				
+				String[] postBico1 = plic[i].split("<");
+				String[] space = postBico1[0].split(" ");
 				for(String splited : space)
 					result.add(splited);
-			} else {
+				
+				for(int j = 1; j < postBico1.length; ++j) {
+					String[] postBico2 = postBico1[j].split(">");
+					result.add(postBico2[0]);
+					
+					for(int k = 1; k < postBico2.length; ++k) {
+						String[] space2 = postBico2[k].split(" ");
+						for(String splited : space2)
+							result.add(splited);
+					}
+				}
+			} else { // what's inside plics
 				result.add(plic[i]);
 			}
 		}
