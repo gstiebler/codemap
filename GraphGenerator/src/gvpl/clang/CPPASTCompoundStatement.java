@@ -18,20 +18,33 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 	public CPPASTCompoundStatement(Cursor cursor, IASTNode parent) {
 		super(cursor.nextLine(), parent);
 		while(!cursor.theEnd()) {
-			String stmtLine = cursor.getLine();
-			String stmtType = CPPASTTranslationUnit.getType(stmtLine);
-			if(stmtType.equals("DeclStmt"))
-				_statements.add(new ASTDeclarationStatement(cursor.getSubCursor(), this));
-			else if (stmtType.equals("BinaryOperator") || stmtType.equals("CompoundAssignOperator")) {
-				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor(), this));
-			} else if (stmtType.equals("ReturnStmt")) {
-				_statements.add(new ASTReturnStatement(cursor.getSubCursor(), this));
-			} else if (stmtType.equals("CXXMemberCallExpr")) {
-				_statements.add(new CPPASTExpressionStatement(cursor.getSubCursor(), this));
-			} else {
-				logger.error("Error reading " + stmtType);
-				cursor.runToTheEnd();
-			}
+			IASTStatement stmt = loadStatement(cursor.getSubCursor(), this);
+			if(stmt != null)
+				_statements.add(stmt);
+		}
+	}
+	
+	public static IASTStatement loadStatement(Cursor cursor, ASTNode parent) {
+		String stmtLine = cursor.getLine();
+		String stmtType = CPPASTTranslationUnit.getType(stmtLine);
+		if(stmtType.equals("DeclStmt"))
+			return new ASTDeclarationStatement(cursor, parent);
+		else if (stmtType.equals("BinaryOperator") || stmtType.equals("CompoundAssignOperator")) {
+			return new CPPASTExpressionStatement(cursor, parent);
+		} else if (stmtType.equals("ReturnStmt")) {
+			return new ASTReturnStatement(cursor, parent);
+		} else if (stmtType.equals("CXXMemberCallExpr")) {
+			return new CPPASTExpressionStatement(cursor, parent);
+		} else if (stmtType.equals("IfStmt")) {
+			return new CPPASTIfStatement(cursor, parent);
+		} else if (stmtType.equals("CompoundStmt")) {
+			return new CPPASTCompoundStatement(cursor, parent);
+		} else if (stmtType.equals("<<<NULL>>>")) {
+			return null;
+		} else {
+			logger.error("Error reading " + stmtType);
+			cursor.runToTheEnd();
+			return null;
 		}
 	}
 	

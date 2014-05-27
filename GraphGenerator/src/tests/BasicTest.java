@@ -33,11 +33,11 @@ public class BasicTest {
 	public void funcInsideFunc() {
 		TestsUtil.baseTest("func_inside_func");
 	}
-//	
-//	@Test
-//	public void ifCall() {
-//		TestsUtil.baseTest("if_call");
-//	}
+	
+	@Test
+	public void ifCall() {
+		TestsUtil.baseTest("if_call");
+	}
 //	
 //	@Test
 //	public void forLoop() {
