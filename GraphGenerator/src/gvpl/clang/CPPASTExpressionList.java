@@ -19,7 +19,7 @@ public class CPPASTExpressionList extends ASTNode implements org.eclipse.cdt.cor
 		super(cursor.getLine(), parent);
 		while(!cursor.theEnd()) {
 			_expressions.add(ASTExpression.loadExpression(cursor, this));
-			cursor.nextLine();
+			//cursor.nextLine();
 		}
 	}
 

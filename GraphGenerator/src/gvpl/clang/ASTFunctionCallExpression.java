@@ -12,12 +12,12 @@ public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cd
 	static Logger logger = LogManager.getLogger(ASTFunctionCallExpression.class.getName());
 	
 	IASTExpression _functionNameExpression;
-	IASTExpressionList _exprList;
+	IASTExpressionList _parameterExpression;
 	
 	public ASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.nextLine(), parent);
 		_functionNameExpression = ASTExpression.loadExpression(cursor, this);
-		_exprList = new CPPASTExpressionList(cursor, this);
+		_parameterExpression = new CPPASTExpressionList(cursor, this);
 	}
 
 	@Override
@@ -27,7 +27,7 @@ public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cd
 
 	@Override
 	public IASTExpression getParameterExpression() {
-		return _exprList;
+		return _parameterExpression;
 	}
 
 	@Override

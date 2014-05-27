@@ -19,8 +19,10 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 		IBinding binding = null;
 		if(firstType.equals("FieldDecl"))
 			binding = new CPPField(cursor);
-		else if(firstType.equals("VarDecl") || firstType.equals("ParmVarDecl"))
+		else if(firstType.equals("VarDecl"))
 			binding = new CPPVariable(line);
+		else if(firstType.equals("ParmVarDecl"))
+			binding = new CPPParameter(line);
 		else
 			logger.error("Type not expected: {}", firstType);
 		
