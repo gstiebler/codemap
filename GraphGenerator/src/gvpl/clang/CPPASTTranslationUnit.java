@@ -87,8 +87,30 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 	
 	public static int hexStrToInt(String hexStr) {
-		String bindingStr = hexStr.split("0x")[1];
-		return Integer.parseInt(bindingStr, 16);
+		String[] strings = hexStr.split("0x");
+		if(strings.length != 2)
+			return -1;
+		if(!strings[0].equals(""))
+			return -1;
+		
+		String bindingStr = strings[1];
+		try {
+			return Integer.parseInt(bindingStr, 16);
+		} catch(NumberFormatException e) {
+			return -1;
+		}
+	}
+	
+	public static int getLastBindingId(String line) {
+		List<String> parsedLine = parseLine(line);
+		
+		int lastBindingId = -1;
+		for(String pLine : parsedLine) {
+			int currBindingId = hexStrToInt(pLine);
+			if(currBindingId != -1)
+				lastBindingId = currBindingId;
+		}
+		return lastBindingId;
 	}
 	
 	public static List<String> parseLineSimple(String line) {
