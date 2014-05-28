@@ -19,6 +19,8 @@ public class CPPASTIfStatement extends ASTNode implements ICPPASTIfStatement{
 		_conditionExpr = ASTExpression.loadExpression(cursor.getSubCursor(), this);
 		_thenClause = CPPASTCompoundStatement.loadStatement(cursor.getSubCursor(), this);
 		_elseClause = CPPASTCompoundStatement.loadStatement(cursor.getSubCursor(), this);
+		if(!cursor.theEnd())
+			cursor.runToTheEnd();
 	}
 
 	@Override
