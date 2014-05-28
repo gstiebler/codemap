@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
@@ -22,7 +24,12 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
-		_funcName = bindingInfo.name;
+		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		
+		int nameIndex = strings.size() - 2;
+		if(strings.get(strings.size() - 1).equals("static"))
+			nameIndex = strings.size() - 3;
+		_funcName = strings.get(nameIndex);
 
 		if(isMethod)
 			_binding = new CPPMethod(bindingInfo, _funcName, cursor.getSubCursor());
@@ -37,6 +44,11 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		} else {
 			logger.error("Error reading " + type);
 		}
+	}
+	
+	@Override
+	public String toString() {
+		return _funcName;
 	}
 	
 	@Override

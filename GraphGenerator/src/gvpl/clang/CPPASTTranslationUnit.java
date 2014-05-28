@@ -140,53 +140,26 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			}
 		}
 		
-		return result;
+		List<String> result2 = new ArrayList<String>();
+		for(String res : result) {
+			if(!res.equals(""))
+				result2.add(res);
+		}
+			
+		return result2;
 	}
 	
 	public static List<String> parseLine(String line) {
-		List<String> result = new ArrayList<String>();
-
 		int dashIndex = line.indexOf('-');
 		String dash1 = line.substring(dashIndex + 1);
-		
-		String[] space = dash1.split(" ");
-		result.add(space[0]);
-		
-		String[] postX = space[1].split("0x");
-		String bindText = postX[1].split(" ")[0];
-		result.add(bindText);
-		
-		String[] postBico1 = dash1.split("<");
-		
-		String postBico11 = "";
-		for(int i = 1; i < postBico1.length; i++)
-			postBico11 = postBico11 + postBico1[i];
-		
-		String[] postBico2 = postBico11.split(">");
-		result.add(postBico2[0]);
-		
-		String postBico21 = "";
-		for(int i = 1; i < postBico2.length; i++)
-			postBico21 = postBico21 + postBico2[i];
-		
-		String[] plic = postBico21.split("'");
-		for(String strPlic : plic) {
-			if(strPlic.substring(0, 1).equals(" ")) {
-				String[] strings = strPlic.split(" ");
-				for(int i = 1; i < strings.length; ++i)
-					result.add(strings[i]);
-			} else {
-				result.add(strPlic);
-			}
-		}
-		
+		List<String> result = parseLineSimple(dash1);
 		return result;
 	}
 	
 	public static BindingInfo parseBindingInfo(String line) {
 		BindingInfo result = new BindingInfo();
 		List<String> parsedLine = parseLine(line);
-		result.bindingId = Integer.parseInt(parsedLine.get(1), 16);
+		result.bindingId = hexStrToInt(parsedLine.get(1));
 		result.location = parsedLine.get(3);
 		result.name = parsedLine.get(4);	
 		result.type = parsedLine.get(5);
