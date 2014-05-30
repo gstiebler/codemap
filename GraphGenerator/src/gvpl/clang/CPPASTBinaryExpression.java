@@ -54,16 +54,12 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		_opMap.put("*=", IASTBinaryExpression.op_multiplyAssign);
 		_opMap.put("+=", IASTBinaryExpression.op_plusAssign);
 		_opMap.put("-=", IASTBinaryExpression.op_minusAssign);
+		_opMap.put("/=", IASTBinaryExpression.op_divideAssign);
 
 /*
-		// Field descriptor #8 I
-		public static final int op_divideAssign = 19;
 
 		// Field descriptor #8 I
 		public static final int op_moduloAssign = 20;
-
-		// Field descriptor #8 I
-		public static final int op_minusAssign = 22;
 
 		// Field descriptor #8 I
 		public static final int op_shiftLeftAssign = 23;
