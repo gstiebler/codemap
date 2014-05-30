@@ -6,11 +6,11 @@ subgraph cluster_1 {
 label = "main";
 parent = "G";
 startinglines = "2_8_8";
-	node_000003 [ label = "19.3", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000003 [ label = "1.930000e+01", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
 	node_000004 [ label = "str1.h", startingline=10 ]
-	node_000005 [ label = "12.3", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
+	node_000005 [ label = "1.230000e+01", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
 	node_000006 [ label = "g", startingline=13 ]
-	node_000007 [ label = "15.6", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
+	node_000007 [ label = "1.560000e+01", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
 	node_000008 [ label = "k", startingline=13 ]
 	node_000009 [ label = "/", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
 	node_000010 [ label = "m", startingline=15 ]
@@ -30,7 +30,7 @@ startinglines = "2_8_8";
 	node_000024 [ label = ">", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=24 ]
 	node_000025 [ label = "z", startingline=26 ]
 	node_000026 [ label = "x", startingline=27 ]
-	node_000027 [ label = "400.0", style=filled, fillcolor="#E9FFE9", startinglines=28 ]
+	node_000027 [ label = "4.000000e+02", style=filled, fillcolor="#E9FFE9", startinglines=28 ]
 	node_000028 [ label = "str1.h", startingline=28 ]
 	node_000029 [ label = "z", startingline=32 ]
 	node_000030 [ label = "20", style=filled, fillcolor="#E9FFE9", startinglines=33 ]

@@ -38,11 +38,11 @@ public class BasicTest {
 	public void ifCall() {
 		TestsUtil.baseTest("if_call");
 	}
-//	
-//	@Test
-//	public void forLoop() {
-//		TestsUtil.baseTest("for_loop");
-//	}
+	
+	@Test
+	public void forLoop() {
+		TestsUtil.baseTest("for_loop");
+	}
 //	
 //	@Test
 //	public void operators() {
