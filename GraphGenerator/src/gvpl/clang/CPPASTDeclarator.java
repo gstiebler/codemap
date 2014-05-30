@@ -27,7 +27,7 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 			logger.error("Type not expected: {}", firstType);
 		
 		_name = CPPASTName.loadASTName(binding, line, this);
-		String line2 = cursor.nextLine();
+		cursor.nextLine();
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(!cursor.theEnd()) {
@@ -39,8 +39,12 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 					type.equals("ImplicitCastExpr") || 
 					type.equals("IntegerLiteral"))
 				_initializer = new CPPASTInitializerExpression(cursor.getSubCursor(), this);
-			else
+			else if (type.equals("CXXConstructExpr"))
 				cursor.runToTheEnd();				
+			else {
+				logger.error("Not implemented {}", type);
+				cursor.runToTheEnd();				
+			}
 		}
 	}
 	
