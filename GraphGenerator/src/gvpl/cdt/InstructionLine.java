@@ -28,6 +28,7 @@ import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
+import org.eclipse.cdt.core.dom.ast.IASTConditionalExpression;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
@@ -363,8 +364,8 @@ public class InstructionLine {
 					return new Value(_gvplGraph.addGraphNode("PROBLEM_NODE_CPPASTTypeIdExpression",
 							NodeType.E_INVALID_NODE_TYPE));
 				}
-			} else if (node instanceof CPPASTConditionalExpression) {
-				CPPASTConditionalExpression ce = (CPPASTConditionalExpression) node;
+			} else if (node instanceof IASTConditionalExpression) {
+				IASTConditionalExpression ce = (IASTConditionalExpression) node;
 				IASTExpression positiveExpr = ce.getPositiveResultExpression();
 				IASTExpression negativeExpr = ce.getNegativeResultExpression();
 				IASTExpression conditionExpr = ce.getLogicalConditionExpression();
