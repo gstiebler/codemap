@@ -17,8 +17,7 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		List<String> strings = CPPASTTranslationUnit.parseLine(line);
 		// may have *
 		String completeType = strings.get(strings.size() - 1);
-		// separates the * if it exists
-		String simpleType = completeType.split("\\*")[0].trim();
+		String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
 		IBinding binding = CPPASTTranslationUnit.getBinding(simpleType);
 		
 		if(binding == null) {

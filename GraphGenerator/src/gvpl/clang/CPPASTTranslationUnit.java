@@ -91,6 +91,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return temp2;
 	}
 	
+	public static String simplifyType(String line) {
+		return line.replace("class", "").replace("struct", "").replace("*", "").replace("&", "").trim();
+	}
+	
 	public static int hexStrToInt(String hexStr) {
 		String[] strings = hexStr.split("0x");
 		if(strings.length != 2)
