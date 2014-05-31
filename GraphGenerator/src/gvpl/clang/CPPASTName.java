@@ -14,6 +14,8 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 			logger.error("Binding should not be null");
 		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
 		if(bi.type.equals("CXXMethod"))
+//		String type = CPPASTTranslationUnit.getType(line);
+//		if(type.equals("CXXMethod"))
 			return new CPPASTQualifiedName(binding, line, parent);
 		else
 			return new CPPASTName(binding, line, parent);

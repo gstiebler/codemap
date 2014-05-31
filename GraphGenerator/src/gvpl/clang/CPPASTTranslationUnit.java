@@ -164,7 +164,15 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public static BindingInfo parseBindingInfo(String line) {
 		BindingInfo result = new BindingInfo();
 		List<String> parsedLine = parseLine(line);
+
 		result.bindingId = hexStrToInt(parsedLine.get(1));
+		
+		if(parsedLine.get(0).equals("CXXNewExpr")) {
+			result.location = parsedLine.get(2);
+			result.type = parsedLine.get(3);
+			return result;
+		}
+		
 		result.location = parsedLine.get(3);
 		result.name = parsedLine.get(4);	
 		result.type = parsedLine.get(5);

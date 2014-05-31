@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -11,8 +13,19 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 	public CPPASTNamedTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
 		String line = cursor.getLine();
-		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
-		IBinding binding = CPPASTTranslationUnit.getBinding(bi.type);
+		
+		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		// may have *
+		String completeType = strings.get(strings.size() - 1);
+		// separates the * if it exists
+		String simpleType = completeType.split("\\*")[0].trim();
+		IBinding binding = CPPASTTranslationUnit.getBinding(simpleType);
+		
+		if(binding == null) {
+			BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
+			binding = CPPASTTranslationUnit.getBinding(bi.type);
+		}
+		
 		_name = CPPASTName.loadASTName(binding, line, parent);
 	}
 
