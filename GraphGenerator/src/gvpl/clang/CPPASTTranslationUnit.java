@@ -64,7 +64,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
-			} else if (type.equals("CXXMethodDecl")) {
+			} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
 				List<Integer> ids = getIds(line);
 				int parentId = ids.get(1);
 				int prevId = ids.get(2);
@@ -80,7 +80,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				_declarations.add(funcDecl);
 				//cursor.runToTheEnd();
 			} else {
-				logger.error("Not prepared for type " + type);
+				logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
 				cursor.runToTheEnd();
 			}
 		}
@@ -175,6 +175,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		if(parsedLine.get(0).equals("CXXNewExpr")) {
 			result.location = parsedLine.get(2);
 			result.type = parsedLine.get(3);
+			return result;
+		} else if (parsedLine.get(0).equals("CXXCtorInitializer")) {
+			result.bindingId = hexStrToInt(parsedLine.get(2));
+			result.type = parsedLine.get(3);
+			result.name = parsedLine.get(4);
 			return result;
 		}
 		

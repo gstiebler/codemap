@@ -1,9 +1,9 @@
 
 class sInterno
 {
+public:
 	float soEsse;
 	
-public:
 	sInterno(int dummy, float init);
 	void addSoEsse(float valuE);
 };
@@ -18,13 +18,12 @@ void sInterno::addSoEsse(float valuE)
 
 class sPri
 {
+public:
 	float a;
 	float h;
 	
 	sInterno sint;
 	sInterno earlyInit;
-	
-public:
 	sPri(float add, int dummy) : 
 		earlyInit(1, 15.0),
 		sint(81, dummy)

@@ -88,11 +88,11 @@ public class BasicTest {
 	public void constructor() {
 		TestsUtil.baseTest("constructor");
 	}
-//	
-//	@Test
-//	public void constructorChain() {
-//		TestsUtil.baseTest("constructor_chain");
-//	}
+	
+	@Test
+	public void constructorChain() {
+		TestsUtil.baseTest("constructor_chain");
+	}
 //
 //	@Test
 //	public void funcPointerReference() {

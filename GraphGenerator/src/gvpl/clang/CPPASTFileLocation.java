@@ -23,6 +23,9 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 		if(line.contains("<invalid sloc>"))
 			return;
 		
+		if(!line.contains("<"))
+			return;
+		
 		String[] firstBico = line.split("<");
 		String[] secondBico = firstBico[1].split(">");
 		String[] comma = secondBico[0].split(", ");

@@ -29,6 +29,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	public IASTNode _parent = null;
 	CPPASTFileLocation _location;
 	List<IASTParameterDeclaration> _parameters = new ArrayList<IASTParameterDeclaration>();
+	List<ICPPASTConstructorChainInitializer> _constrChainInit = new ArrayList<ICPPASTConstructorChainInitializer>();
 	
 	public CPPASTFunctionDeclarator(IBinding binding, IASTNode parent, Cursor cursor) {
 		_name = CPPASTName.loadASTName(binding, cursor.getLine(), this);
@@ -37,7 +38,9 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if (type.equals("ParmVarDecl")) {
-				_parameters.add(new ASTParameterDeclaration(cursor, this));
+				_parameters.add(new ASTParameterDeclaration(cursor.getSubCursor(), this));
+			} else if (type.equals("CXXCtorInitializer")) {
+				_constrChainInit.add(new CPPASTConstructorChainInitializer(cursor.getSubCursor(), this));
 			} else {
 				return;
 				//logger.error("Error reading " + type);
@@ -55,6 +58,12 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	public IASTParameterDeclaration[] getParameters() {
 		ASTParameterDeclaration[] result = new ASTParameterDeclaration[_parameters.size()];
 		return _parameters.toArray(result);
+	}
+
+	@Override
+	public ICPPASTConstructorChainInitializer[] getConstructorChain() {
+		ICPPASTConstructorChainInitializer[] result = new ICPPASTConstructorChainInitializer[_constrChainInit.size()];
+		return _constrChainInit.toArray(result);
 	}
 
 	@Override
@@ -203,13 +212,6 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public void addExceptionSpecificationTypeId(IASTTypeId arg0) {}
-
-	@Override
-	public ICPPASTConstructorChainInitializer[] getConstructorChain() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return new ICPPASTConstructorChainInitializer[0];
-	}
 
 	@Override
 	public IASTTypeId[] getExceptionSpecification() {

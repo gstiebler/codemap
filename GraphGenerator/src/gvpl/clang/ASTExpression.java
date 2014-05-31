@@ -52,7 +52,7 @@ public class ASTExpression {
 			cursor.runToTheEnd();
 			return null;
 		} else {
-			logger.error("Error reading " + type);
+			logger.error("Error reading {}, line {}", type, cursor.getPos());
 			cursor.runToTheEnd();
 			return null;
 		}

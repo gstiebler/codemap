@@ -46,12 +46,16 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 			cursor.getSubCursor().runToTheEnd();
 			type = CPPASTTranslationUnit.getType(cursor.getLine());
 			logger.error("Error reading CXXCtorInitializer");
+			cursor.runToTheEnd();
 		}
+		
+		if(cursor.theEnd())
+			return;
 		
 		if(type.equals("CompoundStmt")) {
 			_body = new CPPASTCompoundStatement(cursor.getSubCursor(), this);
 		} else {
-			logger.error("Error reading " + type);
+			logger.error("Error reading {}, line {}", type, cursor.getPos());
 			cursor.runToTheEnd();
 		}
 	}
