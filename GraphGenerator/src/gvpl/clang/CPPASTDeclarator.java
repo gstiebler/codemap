@@ -54,7 +54,8 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 					type.equals("CXXMemberCallExpr") || 
 					type.equals("ImplicitCastExpr") || 
 					type.equals("IntegerLiteral") || 
-					type.equals("ConditionalOperator"))
+					type.equals("ConditionalOperator") || 
+					type.equals("UnaryOperator"))
 				_initializer = new CPPASTInitializerExpression(cursor.getSubCursor(), this);
 			else if (type.equals("CXXConstructExpr"))
 				cursor.runToTheEnd();				
