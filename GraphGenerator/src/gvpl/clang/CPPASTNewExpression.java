@@ -15,8 +15,9 @@ public class CPPASTNewExpression extends ASTNode implements ICPPASTNewExpression
 		super(cursor.getLine(), parent);
 		_typeId = new CPPASTTypeId(cursor, this);
 		cursor.nextLine();
-		_newInit = ASTExpression.loadExpression(cursor, this);
-		//cursor.runToTheEnd();
+		if(!cursor.theEnd()) {
+			_newInit = ASTExpression.loadExpression(cursor.getSubCursor(), this);
+		}
 	}
 
 	@Override
