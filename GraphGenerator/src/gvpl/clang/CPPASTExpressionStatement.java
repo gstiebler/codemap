@@ -13,16 +13,7 @@ public class CPPASTExpressionStatement extends ASTNode implements org.eclipse.cd
 	
 	public CPPASTExpressionStatement(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		String line = cursor.getLine();
-		String type = CPPASTTranslationUnit.getType(line);
-		if(type.equals("BinaryOperator") || type.equals("CompoundAssignOperator")) {
-			_expression = new CPPASTBinaryExpression(cursor.getSubCursor(), this);
-		} else if(type.equals("CXXMemberCallExpr") || type.equals("CallExpr")) {
-			_expression = new ASTFunctionCallExpression(cursor.getSubCursor(), this);
-		} else {
-			logger.error("Not implemented {}, line {}", type, cursor.getPos() + 1);
-			cursor.runToTheEnd();
-		}
+		_expression = ASTExpression.loadExpression(cursor, this);
 	}
 
 	@Override

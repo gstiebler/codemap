@@ -17,7 +17,7 @@ public class ASTExpression {
 		} else if(type.equals("IntegerLiteral") ||
 				type.equals("FloatingLiteral")) {
 			return new CPPASTLiteralExpression(cursor, parent);
-		} else if(type.equals("BinaryOperator")) {
+		} else if(type.equals("BinaryOperator") || type.equals("CompoundAssignOperator")) {
 			return new CPPASTBinaryExpression(cursor, parent);
 		} else if(type.equals("ImplicitCastExpr") ||
 				type.equals("ParenExpr") ||
