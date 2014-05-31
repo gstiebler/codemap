@@ -8,13 +8,13 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IScope;
 
-public class ASTFunctionDefinition extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition {
+public class CPPASTFunctionDefinition extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition {
 
-	static Logger logger = LogManager.getLogger(ASTFunctionDefinition.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTFunctionDefinition.class.getName());
 	
 	IASTDeclSpecifier _declSpec;
 	
-	public ASTFunctionDefinition(Cursor cursor, IASTNode parent) {
+	public CPPASTFunctionDefinition(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 	}

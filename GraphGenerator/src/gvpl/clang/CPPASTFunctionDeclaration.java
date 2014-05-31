@@ -36,7 +36,7 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		else
 			_binding = new CPPFunction(bindingInfo, _funcName, cursor.getSubCursor());
 			
-		_declarator = new CPPASTFunctionDeclarator(_binding, new ASTFunctionDefinition(cursor, this), cursor);
+		_declarator = new CPPASTFunctionDeclarator(_binding, new CPPASTFunctionDefinition(cursor, this), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(type.equals("CompoundStmt")) {
