@@ -21,11 +21,15 @@ public class CPPASTUnaryExpression extends ASTNode implements IASTUnaryExpressio
 		
 		_opMap.put("&", IASTUnaryExpression.op_amper);
 		_opMap.put("*", IASTUnaryExpression.op_star);
+		// TODO diferentiate prefixed and postfiexed
+		_opMap.put("++", IASTUnaryExpression.op_postFixIncr);
 		
 		String operatorStr = strings.get(strings.size() - 1);
 
-		if(!_opMap.containsKey(operatorStr))
+		if(!_opMap.containsKey(operatorStr)) {
 			logger.error("Operator {} not found");
+			return;
+		}
 		_operator = _opMap.get(operatorStr);
 		
 		cursor.nextLine();
