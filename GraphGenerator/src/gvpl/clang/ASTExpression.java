@@ -46,6 +46,8 @@ public class ASTExpression {
 			return new CPPASTConditionalExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("UnaryOperator")) {
 			return new CPPASTUnaryExpression(cursor.getSubCursor(), parent);
+		} else if(type.equals("CXXNewExpr")) {
+			return new CPPASTNewExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXThisExpr")) {
 			logger.warn("Check if {} should be treated", type);
 			cursor.runToTheEnd();

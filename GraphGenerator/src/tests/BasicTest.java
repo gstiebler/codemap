@@ -58,16 +58,16 @@ public class BasicTest {
 	public void pointerFunc() {
 		TestsUtil.baseTest("pointer_func");
 	}
-//	
-//	@Test
-//	public void reference() {
-//		TestsUtil.baseTest("reference");
-//	}
-//	
-//	@Test
-//	public void newOp() {
-//		TestsUtil.baseTest("new_op");
-//	}
+	
+	@Test
+	public void reference() {
+		TestsUtil.baseTest("reference");
+	}
+	
+	@Test
+	public void newOp() {
+		TestsUtil.baseTest("new_op");
+	}
 //	
 //	@Test
 //	public void writePointedInsideBlock() {

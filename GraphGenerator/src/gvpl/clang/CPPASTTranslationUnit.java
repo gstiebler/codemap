@@ -53,6 +53,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		cursor.nextLine();
 		while (!cursor.theEnd()) {
 			String line = cursor.getLine();
+			if(line.contains("<invalid sloc>")) {
+				cursor.runToTheEnd();
+				return;
+			}
+			
 			String type = getType(line);
 			if (type.equals("FunctionDecl")) {
 				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));

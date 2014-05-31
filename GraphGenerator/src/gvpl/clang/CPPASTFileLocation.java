@@ -1,5 +1,8 @@
 package gvpl.clang;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
@@ -16,6 +19,10 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 	
 	public CPPASTFileLocation(String line, IASTNode parent) {
 		_parent = parent;
+		
+		if(line.contains("<invalid sloc>"))
+			return;
+		
 		String[] firstBico = line.split("<");
 		String[] secondBico = firstBico[1].split(">");
 		String[] comma = secondBico[0].split(", ");
