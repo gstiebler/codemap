@@ -6,12 +6,14 @@ struct sInterno
 
 class sSeg
 {
+public:
 	int m1, n1;
 	sInterno si;
 };
 
 class sPri
 {
+public:
 	float a;
 	float h;
 	

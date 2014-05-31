@@ -68,16 +68,16 @@ public class BasicTest {
 	public void newOp() {
 		TestsUtil.baseTest("new_op");
 	}
-//	
-//	@Test
-//	public void writePointedInsideBlock() {
-//		TestsUtil.baseTest("write_pointed_inside_block");
-//	}
-//	
-//	@Test
-//	public void classStructure() {
-//		TestsUtil.baseTest("class_structure");
-//	}
+	
+	@Test
+	public void writePointedInsideBlock() {
+		TestsUtil.baseTest("write_pointed_inside_block");
+	}
+	
+	@Test
+	public void classStructure() {
+		TestsUtil.baseTest("class_structure");
+	}
 //	
 //	@Test
 //	public void classNew() {
