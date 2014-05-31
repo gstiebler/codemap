@@ -48,13 +48,9 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(!cursor.theEnd()) {
 			if(type.equals("CXXConstructExpr")) {
-				if(cursor.getLine().contains("(void")) {
-					cursor.runToTheEnd();
-				} else {
-					_initializer = new CPPASTConstructorInitializer(cursor.getSubCursor(), this);
-					if(((CPPASTConstructorInitializer)_initializer).getExpression() == null)
-						_initializer = null;
-				}
+				_initializer = new CPPASTConstructorInitializer(cursor.getSubCursor(), this);
+				if(((CPPASTConstructorInitializer)_initializer).getExpression() == null)
+					_initializer = null;
 			} else  {
 				_initializer = new CPPASTInitializerExpression(cursor.getSubCursor(), this);
 				if(((CPPASTInitializerExpression)_initializer).getExpression() == null)

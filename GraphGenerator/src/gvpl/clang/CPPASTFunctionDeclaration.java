@@ -31,7 +31,10 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 			nameIndex = strings.size() - 3;
 		_funcName = strings.get(nameIndex);
 
-		if(isMethod)
+		String firstType = CPPASTTranslationUnit.getType(line);
+		if(firstType.equals("CXXConstructorDecl")) {
+			_binding = new CPPConstructor(bindingInfo, _funcName, cursor.getSubCursor());
+		} else if(isMethod)
 			_binding = new CPPMethod(bindingInfo, _funcName, cursor.getSubCursor());
 		else
 			_binding = new CPPFunction(bindingInfo, _funcName, cursor.getSubCursor());

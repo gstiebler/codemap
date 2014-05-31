@@ -9,11 +9,14 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTNewExpression;
 public class CPPASTNewExpression extends ASTNode implements ICPPASTNewExpression {
 
 	IASTTypeId _typeId;
+	IASTExpression _newInit;
 	
 	public CPPASTNewExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		_typeId = new CPPASTTypeId(cursor, this);
-		cursor.runToTheEnd();
+		cursor.nextLine();
+		_newInit = ASTExpression.loadExpression(cursor, this);
+		//cursor.runToTheEnd();
 	}
 
 	@Override
@@ -22,14 +25,14 @@ public class CPPASTNewExpression extends ASTNode implements ICPPASTNewExpression
 	}
 
 	@Override
-	public IType getExpressionType() {
+	public IASTExpression getNewInitializer() {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
-		return null;
+		return _newInit;
 	}
 
 	@Override
-	public IASTExpression getNewInitializer() {
+	public IType getExpressionType() {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 		return null;

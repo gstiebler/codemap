@@ -29,9 +29,8 @@ public class ASTExpression {
 		} else if(type.equals("CallExpr") || type.equals("CXXMemberCallExpr")) {
 			return new ASTFunctionCallExpression(cursor, parent);
 		} else if(type.equals("CXXConstructExpr")) {
-			logger.error("Error reading " + type);
-			cursor.runToTheEnd();
-			return null;
+			cursor.nextLine();
+			return new CPPASTExpressionList(cursor, parent);
 		} else if(type.equals("MemberExpr")) {
 			Cursor dcursor = cursor.getDetachedSubCursor();
 			dcursor.nextLine();

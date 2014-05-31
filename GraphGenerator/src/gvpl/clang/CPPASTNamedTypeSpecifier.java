@@ -18,7 +18,15 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		// may have *
 		String completeType = strings.get(strings.size() - 1);
 		String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
-		IBinding binding = CPPASTTranslationUnit.getBinding(simpleType);
+		String firstType = CPPASTTranslationUnit.getType(line);
+		IBinding binding = null;
+		if(firstType.equals("CXXNewExpr")) {
+			cursor.nextLine();
+			List<String> stringsConstr = CPPASTTranslationUnit.parseLine(cursor.getLine());
+			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, stringsConstr.get(4));
+		} else {
+			binding = CPPASTTranslationUnit.getBinding(simpleType);
+		}
 		
 		if(binding == null) {
 			BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);

@@ -40,6 +40,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public List<IASTDeclaration> _declarations = new ArrayList<IASTDeclaration>();
 	private Map<Integer, IBinding> _idToBinding = new TreeMap<Integer, IBinding>();
 	private Map<String, IBinding> _typeNameToBinding = new TreeMap<String, IBinding>();
+	private Map<String, CPPConstructor> _constructorsBinding = new TreeMap<String, CPPConstructor>();
 	static CPPASTTranslationUnit _instance;
 	static public IASTName lastClassName;
 	static String _fileName;
@@ -222,6 +223,16 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	
 	public static String getFileName() {
 		return _fileName;
+	}
+
+	public static void addConstructorBinding(CPPConstructor cppConstructor, String classStr, String params) {
+		String key = classStr + "-<>-" + params;
+		_instance._constructorsBinding.put(key, cppConstructor);
+	}
+
+	public static CPPConstructor getConstructorBinding(String classStr, String params) {
+		String key = classStr + "-<>-" + params;
+		return _instance._constructorsBinding.get(key);
 	}
 
 	@Override
