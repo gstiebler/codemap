@@ -58,9 +58,11 @@ public class MemberFunc extends Function {
 	public void loadDeclaration(ICPPASTFunctionDeclarator decl) {
 		super.loadDeclaration(decl);
 		
+		// TODO create a special class for constructor functions
 		if (_funcName.equals(_parentClass.getName()))
 			_parentClass.setConstructorFunc(this);
-		
+
+		// TODO create a special class for destructor functions
 		if (_funcName.length() > 0 && _funcName.charAt(0) == '~')
 			_parentClass.setDestructorFunc(this);
 		
@@ -158,6 +160,7 @@ public class MemberFunc extends Function {
 			return var;
 		
 		String exprStr = expr.getRawSignature();
+		// TODO Create a special class for "this"
 		if (exprStr.equals("this")) {
 			// quite weird, but to deal with "this" in source code, i had to use "this" here
 			MemberFunc thisMemberFunc = (MemberFunc) this;

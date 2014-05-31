@@ -32,6 +32,7 @@ public:
 
 class sSeg
 {
+public:
 	sInterno interno;
 };
 

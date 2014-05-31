@@ -63,6 +63,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 		String rs = expr.getRawSignature();
 		// deal with a hardcoded string, but we don't want the "this" pointer. 
 		// the "this" will be treated elsewhere
+		// TODO Create a special class for "this"
 	    if (expr instanceof CPPASTLiteralExpression && !rs.equals("this")) {
 	    	// it's a hardcoded string between aspas (?)
 	    	CPPASTLiteralExpression literal = (CPPASTLiteralExpression)expr;
@@ -176,6 +177,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 			return val.getVar();
 		} else if (expr instanceof CPPASTLiteralExpression) {
 			String exprStr = expr.getRawSignature();
+			// TODO Create a special class for "this"
 			if (exprStr.equals("this")) {
 				// quite weird, but to deal with "this" in source code, i had to use "this" here
 				MemberFunc thisMemberFunc = (MemberFunc) this;
@@ -215,6 +217,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 
 		IVar varOfRef = null;
 		String ownerStr = owner.getRawSignature();
+		// TODO Create a special class for "this"
 		if (ownerStr.equals("this")) {
 			// quite weird, but to deal with "this" in source code, i had to use "this" here
 			MemberFunc thisMemberFunc = (MemberFunc) this;

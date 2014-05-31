@@ -174,7 +174,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 		
 		result.location = parsedLine.get(3);
-		result.name = parsedLine.get(4);	
+		result.name = parsedLine.get(4);
+		if(parsedLine.get(0).equals("ParmVarDecl")) {
+			if(parsedLine.size() < 6)
+				return result;
+		}
+		
 		result.type = parsedLine.get(5);
 		return result;
 	}

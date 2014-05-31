@@ -83,11 +83,11 @@ public class BasicTest {
 	public void classNew() {
 		TestsUtil.baseTest("class_new");
 	}
-//	
-//	@Test
-//	public void constructor() {
-//		TestsUtil.baseTest("constructor");
-//	}
+	
+	@Test
+	public void constructor() {
+		TestsUtil.baseTest("constructor");
+	}
 //	
 //	@Test
 //	public void constructorChain() {

@@ -41,7 +41,14 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 				logger.error("Type not expected " + type);
 				cursor.nextLine();
 			} else if(type.equals("CXXConstructorDecl")) {
-				logger.error("Type not expected " + type);
+				List<Integer> ids = CPPASTTranslationUnit.getIds(cursor.getLine());
+				if(ids.size() == 1) {
+					_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, this));
+				} else {
+					cursor.runToTheEnd();
+				}
+			} else if(type.equals("AccessSpecDecl")) {
+				logger.info("AccessSpecDecl");
 				cursor.runToTheEnd();
 			} else {
 				logger.error("Type not expected " + type);

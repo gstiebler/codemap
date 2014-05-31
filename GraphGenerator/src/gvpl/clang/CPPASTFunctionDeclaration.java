@@ -39,10 +39,17 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		_declarator = new CPPASTFunctionDeclarator(_binding, new CPPASTFunctionDefinition(cursor, this), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
+		if(type.equals("CXXCtorInitializer")) {
+			cursor.getSubCursor().runToTheEnd();
+			type = CPPASTTranslationUnit.getType(cursor.getLine());
+			logger.error("Error reading CXXCtorInitializer");
+		}
+		
 		if(type.equals("CompoundStmt")) {
 			_body = new CPPASTCompoundStatement(cursor.getSubCursor(), this);
 		} else {
 			logger.error("Error reading " + type);
+			cursor.runToTheEnd();
 		}
 	}
 	
