@@ -56,6 +56,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IProblemBinding;
 import org.eclipse.cdt.core.dom.ast.ITypedef;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCastExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTDeleteExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTNewExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
@@ -239,9 +240,9 @@ public class InstructionLine {
 			return;
 		}
 		
-		if (initializer instanceof CPPASTConstructorInitializer) { 
+		if (initializer instanceof ICPPASTConstructorInitializer) { 
 			// format: int a(5);
-			CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) initializer;
+			ICPPASTConstructorInitializer constrInit = (ICPPASTConstructorInitializer) initializer;
 			IASTExpression initExpr = constrInit.getExpression();
 			loadConstructorInitializer(lhsVar, initExpr);														
 			return;
