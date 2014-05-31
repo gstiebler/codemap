@@ -53,11 +53,11 @@ public class BasicTest {
 	public void pointer() {
 		TestsUtil.baseTest("pointer");
 	}
-//	
-//	@Test
-//	public void pointerFunc() {
-//		TestsUtil.baseTest("pointer_func");
-//	}
+	
+	@Test
+	public void pointerFunc() {
+		TestsUtil.baseTest("pointer_func");
+	}
 //	
 //	@Test
 //	public void reference() {

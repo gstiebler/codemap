@@ -26,7 +26,7 @@ public class ASTExpression {
 				type.equals("CXXFunctionalCastExpr")) {
 			cursor.nextLine();
 			return loadExpression(cursor, parent);
-		} else if(type.equals("CallExpr")) {
+		} else if(type.equals("CallExpr") || type.equals("CXXMemberCallExpr")) {
 			return new ASTFunctionCallExpression(cursor, parent);
 		} else if(type.equals("CXXConstructExpr")) {
 			logger.error("Error reading " + type);
@@ -42,8 +42,6 @@ public class ASTExpression {
 				return result;
 			} else
 				return new CPPASTFieldReference(cursor.getSubCursor(), parent);
-		} else if(type.equals("CXXMemberCallExpr")) {
-			return new CPPASTFunctionCallExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("ConditionalOperator")) {
 			return new CPPASTConditionalExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("UnaryOperator")) {
