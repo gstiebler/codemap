@@ -48,11 +48,11 @@ public class BasicTest {
 	public void operators() {
 		TestsUtil.baseTest("operators");
 	}
-//	
-//	@Test
-//	public void pointer() {
-//		TestsUtil.baseTest("pointer");
-//	}
+	
+	@Test
+	public void pointer() {
+		TestsUtil.baseTest("pointer");
+	}
 //	
 //	@Test
 //	public void pointerFunc() {

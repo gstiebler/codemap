@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -11,6 +13,7 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 
 	public CPPASTName _name = null;
 	IASTInitializer _initializer;
+	IASTPointerOperator[] _pointerOperators;
 	
 	public CPPASTDeclarator(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
@@ -27,6 +30,19 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 			logger.error("Type not expected: {}", firstType);
 		
 		_name = CPPASTName.loadASTName(binding, line, this);
+		
+		{
+			List<String> strings = CPPASTTranslationUnit.parseLine(line);
+			String currType = strings.get(strings.size() - 1);
+			int count = currType.length() - currType.replace("*", "").length();
+			if(count > 0) {
+				_pointerOperators = new IASTPointerOperator [count];
+				for(int i = 0; i < count; i++) {
+					_pointerOperators[i] = new CPPASTPointer(cursor, this);
+				}
+			}
+		}
+		
 		cursor.nextLine();
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());
@@ -64,6 +80,11 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	}
 
 	@Override
+	public IASTPointerOperator[] getPointerOperators() {
+		return _pointerOperators;
+	}
+
+	@Override
 	public int getRoleForName(IASTName arg0) {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
@@ -71,20 +92,10 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	}
 
 	@Override
-	public void addPointerOperator(IASTPointerOperator arg0) {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-	}
+	public void addPointerOperator(IASTPointerOperator arg0) {}
 
 	@Override
 	public IASTDeclarator getNestedDeclarator() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
-	}
-
-	@Override
-	public IASTPointerOperator[] getPointerOperators() {
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 		return null;
