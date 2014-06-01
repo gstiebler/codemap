@@ -34,14 +34,16 @@ public class ASTExpression {
 			return new CPPASTExpressionList(cursor, parent);
 		} else if(type.equals("MemberExpr")) {
 			Cursor dcursor = cursor.getDetachedSubCursor();
-			dcursor.nextLine();
-			String secType = CPPASTTranslationUnit.getType(dcursor.getLine());
-			if(secType.equals("CXXThisExpr")) {
-				IASTExpression result = new CPPASTIdExpression(cursor, parent);
-				cursor.runToTheEnd();
-				return result;
-			} else
-				return new CPPASTFieldReference(cursor.getSubCursor(), parent);
+			while(!dcursor.theEnd()) {
+				String secType = CPPASTTranslationUnit.getType(dcursor.getLine());
+				if(secType.equals("CXXThisExpr")) {
+					IASTExpression result = new CPPASTIdExpression(cursor, parent);
+					cursor.runToTheEnd();
+					return result;
+				}
+				dcursor.nextLine();
+			}
+			return new CPPASTFieldReference(cursor.getSubCursor(), parent);
 		} else if(type.equals("ConditionalOperator")) {
 			return new CPPASTConditionalExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("UnaryOperator")) {

@@ -28,6 +28,7 @@ public class DebugOptions {
 	public static void setStartingLine(int startingLine) {
 		_startingLine = startingLine;
 		_startingLineHistory.add(startingLine);
+		System.out.println("Line: " + startingLine);
 	}
 
 	public static int getStartingLine() {

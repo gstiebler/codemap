@@ -26,8 +26,8 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IProblemBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPConstructor;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPField;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPConstructor;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -93,7 +93,7 @@ public class MemberFunc extends Function {
 				instructionLine.loadConstructorInitializer(var, expr);
 				MemberId memberId = _parentClass.getMember(memberBinding).getMemberId();
 				_initializedMembers._members.add(memberId);
-			} else if (memberBinding instanceof CPPConstructor) {
+			} else if (memberBinding instanceof ICPPConstructor) {
 				for (ClassDeclCDT parentClass : _parentClass.getParentClassesCDT()) {
 					MemberFunc memberFunc = parentClass.getMemberFunc(memberBinding);
 					if (memberFunc == null)

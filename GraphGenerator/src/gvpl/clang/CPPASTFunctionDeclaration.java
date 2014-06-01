@@ -29,6 +29,8 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		int nameIndex = strings.size() - 2;
 		if(strings.get(strings.size() - 1).equals("static"))
 			nameIndex = strings.size() - 3;
+		else if (strings.get(strings.size() - 1).equals("pure"))
+			nameIndex = strings.size() - 4;
 		_funcName = strings.get(nameIndex);
 
 		String firstType = CPPASTTranslationUnit.getType(line);
