@@ -41,13 +41,10 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 		
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
-			if(type.equals("CXXMethodDecl")) {
+			if(type.equals("CXXMethodDecl") || type.equals("CXXDestructorDecl")) {
 				_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, this));
 			} else if(type.equals("FieldDecl")) {
 				_members.add(new ASTSimpleDeclaration(cursor.getSubCursor(), this));
-			} else if(type.equals("CXXDestructorDecl")) {
-				logger.error("Type not expected " + type);
-				cursor.nextLine();
 			} else if(type.equals("CXXConstructorDecl")) {
 				List<Integer> ids = CPPASTTranslationUnit.getIds(cursor.getLine());
 				if(ids.size() == 1) {

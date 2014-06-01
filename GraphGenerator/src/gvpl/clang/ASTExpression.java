@@ -55,6 +55,8 @@ public class ASTExpression {
 			return new CPPASTNewExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("ArraySubscriptExpr")) {
 			return new CPPASTArraySubscriptExpression(cursor.getSubCursor(), parent);
+		} else if(type.equals("CXXDeleteExpr")) {
+			return new CPPASTDeleteExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXThisExpr")) {
 			logger.warn("Check if {} should be treated", type);
 			cursor.runToTheEnd();

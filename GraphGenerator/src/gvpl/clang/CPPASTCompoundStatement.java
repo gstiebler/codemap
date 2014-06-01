@@ -28,19 +28,19 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 		String stmtLine = cursor.getLine();
 		String stmtType = CPPASTTranslationUnit.getType(stmtLine);
 		if(stmtType.equals("DeclStmt"))
-			return new ASTDeclarationStatement(cursor, parent);
-		else if (stmtType.equals("BinaryOperator") || stmtType.equals("CompoundAssignOperator")) {
-			return new CPPASTExpressionStatement(cursor, parent);
+			return new ASTDeclarationStatement(cursor.getSubCursor(), parent);
+		else if (stmtType.equals("BinaryOperator") || stmtType.equals("CompoundAssignOperator") || stmtType.equals("CXXDeleteExpr")) {
+			return new CPPASTExpressionStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("ReturnStmt")) {
-			return new ASTReturnStatement(cursor, parent);
+			return new ASTReturnStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("CXXMemberCallExpr") || stmtType.equals("CallExpr")) {
-			return new CPPASTExpressionStatement(cursor, parent);
+			return new CPPASTExpressionStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("IfStmt")) {
-			return new CPPASTIfStatement(cursor, parent);
+			return new CPPASTIfStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("ForStmt")) {
-			return new CPPASTForStatement(cursor, parent);
+			return new CPPASTForStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("CompoundStmt")) {
-			return new CPPASTCompoundStatement(cursor, parent);
+			return new CPPASTCompoundStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("<<<NULL>>>")) {
 			return null;
 		} else {

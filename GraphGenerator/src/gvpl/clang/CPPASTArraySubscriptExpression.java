@@ -30,7 +30,7 @@ public class CPPASTArraySubscriptExpression extends ASTNode implements IASTArray
 	@Override
 	public IType getExpressionType() {
 		// TODO Auto-generated method stub
-		logger.warn("Not implemented");
+		logger.error("Not implemented");
 		return null;
 	}
 
