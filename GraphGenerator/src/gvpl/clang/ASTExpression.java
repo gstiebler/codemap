@@ -34,12 +34,15 @@ public class ASTExpression {
 			return new CPPASTExpressionList(cursor, parent);
 		} else if(type.equals("MemberExpr")) {
 			Cursor dcursor = cursor.getDetachedSubCursor();
+			dcursor.nextLine();
 			while(!dcursor.theEnd()) {
 				String secType = CPPASTTranslationUnit.getType(dcursor.getLine());
 				if(secType.equals("CXXThisExpr")) {
 					IASTExpression result = new CPPASTIdExpression(cursor, parent);
 					cursor.runToTheEnd();
 					return result;
+				} else if (secType.equals("MemberExpr")) {
+					break;
 				}
 				dcursor.nextLine();
 			}
