@@ -118,11 +118,11 @@ public class BasicTest {
 	public void inheritance() {
 		TestsUtil.baseTest("inheritance");
 	}
-//
-//	@Test
-//	public void polymorphism() {
-//		TestsUtil.baseTest("polymorphism");
-//	}
+
+	@Test
+	public void polymorphism() {
+		TestsUtil.baseTest("polymorphism");
+	}
 //
 //	@Test
 //	public void polymorphism2() {

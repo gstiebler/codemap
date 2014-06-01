@@ -17,7 +17,15 @@ public class CPPASTConstructorChainInitializer extends ASTNode implements ICPPAS
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
 		List<Integer> ids = CPPASTTranslationUnit.getIds(line);
-		IBinding binding = CPPASTTranslationUnit.getBinding(ids.get(0));
+		IBinding binding;
+		if(ids.size() == 0) {
+			line = cursor.getLine();
+			List<String> strings = CPPASTTranslationUnit.parseLine(line);
+			String typeName = CPPASTTranslationUnit.simplifyType(strings.get(3));
+			binding = CPPASTTranslationUnit.getConstructorBinding(typeName, strings.get(4));
+		} else {
+			binding = CPPASTTranslationUnit.getBinding(ids.get(0));
+		}
 		_memberInitId = CPPASTName.loadASTName(binding, line, this);
 		_initValue = ASTExpression.loadExpression(cursor.getSubCursor(), this);
 	}

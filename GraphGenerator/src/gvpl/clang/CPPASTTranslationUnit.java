@@ -185,6 +185,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			result.type = parsedLine.get(3);
 			result.name = parsedLine.get(4);
 			return result;
+		} else if (parsedLine.get(0).equals("CXXConstructExpr")) {
+			result.location = parsedLine.get(2);
+			result.type = parsedLine.get(3);
+			result.name = parsedLine.get(4);
+			return result;
 		}
 		
 		result.location = parsedLine.get(3);
