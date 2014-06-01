@@ -8,21 +8,21 @@ parent = "G";
 startinglines = "33_39_39";
 	node_000001 [ label = "3.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=40 ]
 	node_000002 [ label = "a", startingline=40 ]
-	node_000015 [ label = "q", startingline=42 ]
-	node_000016 [ label = "4.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=43 ]
-	node_000029 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=44 ]
-	node_000036 [ label = "9.099000e+03", style=filled, fillcolor="#E9FFE9", startinglines=46 ]
-	node_000037 [ label = "str2_pointed.h", startingline=46 ]
-	node_000038 [ label = "1.795000e+01", style=filled, fillcolor="#E9FFE9", startinglines=47 ]
-	node_000039 [ label = "str1.sint.soEsse", startingline=47 ]
-	node_000040 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=49 ]
-	node_000041 [ label = "p", startingline=49 ]
-	node_000042 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=51 ]
-	node_000043 [ label = "g", startingline=51 ]
-	node_000044 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=52 ]
-	node_000045 [ label = "k", startingline=52 ]
-	node_000049 [ label = "x", startingline=55 ]
-	node_000053 [ label = "z", startingline=58 ]
+	node_000018 [ label = "q", startingline=42 ]
+	node_000019 [ label = "4.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=43 ]
+	node_000032 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=44 ]
+	node_000042 [ label = "9.099000e+03", style=filled, fillcolor="#E9FFE9", startinglines=46 ]
+	node_000043 [ label = "str2_pointed.h", startingline=46 ]
+	node_000044 [ label = "1.795000e+01", style=filled, fillcolor="#E9FFE9", startinglines=47 ]
+	node_000045 [ label = "str1.sint.soEsse", startingline=47 ]
+	node_000046 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=49 ]
+	node_000047 [ label = "p", startingline=49 ]
+	node_000048 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=51 ]
+	node_000049 [ label = "g", startingline=51 ]
+	node_000050 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=52 ]
+	node_000051 [ label = "k", startingline=52 ]
+	node_000055 [ label = "x", startingline=55 ]
+	node_000059 [ label = "z", startingline=58 ]
 subgraph cluster_2 {
 label = "sInterno::sInterno";
 parent = "cluster_1";
@@ -34,90 +34,106 @@ subgraph cluster_3 {
 label = "sPri::sPri";
 parent = "cluster_1";
 startinglines = "40_41_9";
-	node_000009 [ label = "2.340000e+01", style=filled, fillcolor="#E9FFE9", startinglines=28 ]
-	node_000010 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
-	node_000011 [ label = "str1.a", startingline=28 ]
-	node_000012 [ label = "5.894500e+02", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
-	node_000013 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=29 ]
-	node_000014 [ label = "str1.h", startingline=29 ]
-}
+	node_000012 [ label = "2.340000e+01", style=filled, fillcolor="#E9FFE9", startinglines=28 ]
+	node_000013 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
+	node_000014 [ label = "str1.a", startingline=28 ]
+	node_000015 [ label = "5.894500e+02", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
+	node_000016 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=29 ]
+	node_000017 [ label = "str1.h", startingline=29 ]
 subgraph cluster_4 {
 label = "sInterno::sInterno";
-parent = "cluster_1";
-startinglines = "29_42_43";
-	node_000021 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000022 [ label = "str2_pointed.sint.soEsse", startingline=9 ]
+parent = "cluster_3";
+startinglines = "41_9_27";
+	node_000010 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000011 [ label = "str1.sint.soEsse", startingline=9 ]
+}
 }
 subgraph cluster_5 {
 label = "sPri::sPri";
 parent = "cluster_1";
-startinglines = "42_43_9";
-	node_000023 [ label = "2.340000e+01", style=filled, fillcolor="#E9FFE9", startinglines=28 ]
-	node_000024 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
-	node_000025 [ label = "str2_pointed.a", startingline=28 ]
-	node_000026 [ label = "5.894500e+02", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
-	node_000027 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=29 ]
-	node_000028 [ label = "str2_pointed.h", startingline=29 ]
-}
+startinglines = "29_42_43";
+	node_000026 [ label = "2.340000e+01", style=filled, fillcolor="#E9FFE9", startinglines=28 ]
+	node_000027 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
+	node_000028 [ label = "str2_pointed.a", startingline=28 ]
+	node_000029 [ label = "5.894500e+02", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
+	node_000030 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=29 ]
+	node_000031 [ label = "str2_pointed.h", startingline=29 ]
 subgraph cluster_6 {
+label = "sInterno::sInterno";
+parent = "cluster_5";
+startinglines = "42_43_27";
+	node_000024 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000025 [ label = "str2_pointed.sint.soEsse", startingline=9 ]
+}
+}
+subgraph cluster_7 {
 label = "sInterno::sInterno";
 parent = "cluster_1";
 startinglines = "28_29_44";
-	node_000033 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000034 [ label = "str3.sint.soEsse", startingline=9 ]
+	node_000036 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000037 [ label = "str3.sint.soEsse", startingline=9 ]
 }
-subgraph cluster_7 {
+subgraph cluster_8 {
 label = "sPri::sPri";
 parent = "cluster_1";
 startinglines = "29_44_9";
-	node_000035 [ label = "str3.a", startingline=23 ]
+	node_000041 [ label = "str3.a", startingline=23 ]
+subgraph cluster_9 {
+label = "sInterno::sInterno";
+parent = "cluster_8";
+startinglines = "44_9_22";
+	node_000039 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000040 [ label = "str3.sint.soEsse", startingline=9 ]
 }
-subgraph cluster_8 {
+}
+subgraph cluster_10 {
 label = "sInterno::sInterno";
 parent = "cluster_1";
 startinglines = "51_52_54";
-	node_000047 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000048 [ label = "s.soEsse", startingline=9 ]
+	node_000053 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000054 [ label = "s.soEsse", startingline=9 ]
 }
-subgraph cluster_9 {
+subgraph cluster_11 {
 label = "sInterno::sInterno";
 parent = "cluster_1";
 startinglines = "9_55_57";
-	node_000051 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000052 [ label = "seg.interno.soEsse", startingline=9 ]
+	node_000057 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000058 [ label = "seg.interno.soEsse", startingline=9 ]
 }
 }
 	node_000001 -> node_000002
-	node_000002 -> node_000010
-	node_000016 -> node_000024
-	node_000029 -> node_000035
-	node_000036 -> node_000037
-	node_000037 -> node_000044
-	node_000038 -> node_000039
-	node_000039 -> node_000040
-	node_000040 -> node_000041
+	node_000002 -> node_000013
+	node_000019 -> node_000027
+	node_000032 -> node_000041
 	node_000042 -> node_000043
+	node_000043 -> node_000050
 	node_000044 -> node_000045
+	node_000045 -> node_000046
+	node_000046 -> node_000047
+	node_000048 -> node_000049
+	node_000050 -> node_000051
 	node_000007 -> node_000008
-	node_000008 -> node_000013
-	node_000008 -> node_000015
-	node_000009 -> node_000010
-	node_000010 -> node_000011
-	node_000011 -> node_000042
 	node_000012 -> node_000013
 	node_000013 -> node_000014
-	node_000014 -> node_000042
-	node_000021 -> node_000022
-	node_000022 -> node_000027
-	node_000023 -> node_000024
-	node_000024 -> node_000025
-	node_000025 -> node_000044
+	node_000014 -> node_000048
+	node_000015 -> node_000016
+	node_000016 -> node_000017
+	node_000017 -> node_000048
+	node_000010 -> node_000011
+	node_000011 -> node_000016
+	node_000011 -> node_000018
 	node_000026 -> node_000027
 	node_000027 -> node_000028
-	node_000033 -> node_000034
-	node_000035 -> node_000040
-	node_000047 -> node_000048
-	node_000048 -> node_000049
-	node_000051 -> node_000052
-	node_000052 -> node_000053
+	node_000028 -> node_000050
+	node_000029 -> node_000030
+	node_000030 -> node_000031
+	node_000024 -> node_000025
+	node_000025 -> node_000030
+	node_000036 -> node_000037
+	node_000041 -> node_000046
+	node_000039 -> node_000040
+	node_000053 -> node_000054
+	node_000054 -> node_000055
+	node_000057 -> node_000058
+	node_000058 -> node_000059
 }
