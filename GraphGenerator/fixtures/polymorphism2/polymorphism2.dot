@@ -5,7 +5,7 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "37_43_43";
+startinglines = "29_43_43";
 	node_000012 [ label = "classB._bMember", style=filled, fillcolor="#FFE9E9", startinglines=34 ]
 	node_000013 [ label = "true", style=filled, fillcolor="#E9FFE9", startinglines=49 ]
 	node_000014 [ label = "40", style=filled, fillcolor="#E9FFE9", startinglines=58 ]

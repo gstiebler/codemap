@@ -123,11 +123,11 @@ public class BasicTest {
 	public void polymorphism() {
 		TestsUtil.baseTest("polymorphism");
 	}
-//
-//	@Test
-//	public void polymorphism2() {
-//		TestsUtil.baseTest("polymorphism2");
-//	}
+
+	@Test
+	public void polymorphism2() {
+		TestsUtil.baseTest("polymorphism2");
+	}
 //
 //	@Test
 //	public void polymorphism3() {
