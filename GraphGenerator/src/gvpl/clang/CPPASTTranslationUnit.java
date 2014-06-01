@@ -27,10 +27,10 @@ import org.eclipse.cdt.core.index.IIndex;
 import org.eclipse.cdt.core.parser.ParserLanguage;
 
 class BindingInfo {
-	public int bindingId;
-	public String location;
-	public String name;
-	public String type;
+	public int bindingId = -1;
+	public String location = "";
+	public String name = "";
+	public String type = "";
 }
 
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
@@ -171,6 +171,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		List<String> parsedLine = parseLine(line);
 
 		result.bindingId = hexStrToInt(parsedLine.get(1));
+		
+		if(parsedLine.get(0).equals("public")) {
+			return result;
+		}
 		
 		if(parsedLine.get(0).equals("CXXNewExpr")) {
 			result.location = parsedLine.get(2);

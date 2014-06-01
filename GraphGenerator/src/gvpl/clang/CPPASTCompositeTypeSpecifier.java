@@ -16,11 +16,19 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	static Logger logger = LogManager.getLogger(CPPASTCompositeTypeSpecifier.class.getName());
 
 	List<IASTDeclaration> _members = new ArrayList<IASTDeclaration>();
+	List<ICPPASTBaseSpecifier> _baseSpecs = new ArrayList<ICPPASTBaseSpecifier>();
 	IASTName _name;
 	
 	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
 		String line = cursor.nextLine();
+		while(true) {
+			String type = CPPASTTranslationUnit.getType(cursor.getLine());
+			if(!type.equals("public"))
+				break;
+
+			_baseSpecs.add(new CPPASTBaseSpecifier(cursor.getSubCursor(), this));
+		}
 		cursor.nextLine();
 		//_name = new CPPASTName(binding, line);
 		String classType = CPPASTTranslationUnit.getType( line );
@@ -72,6 +80,12 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	}
 
 	@Override
+	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
+		ICPPASTBaseSpecifier[] result = new ICPPASTBaseSpecifier[_baseSpecs.size()];
+		return _baseSpecs.toArray(result);
+	}
+
+	@Override
 	public void addMemberDeclaration(IASTDeclaration arg0) { }
 
 	@Override
@@ -89,12 +103,6 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	@Override
 	public IASTName getName() {
 		return _name;
-	}
-
-	@Override
-	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
-		logger.error("Not implemented");
-		return new ICPPASTBaseSpecifier[0];
 	}
 
 	@Override
