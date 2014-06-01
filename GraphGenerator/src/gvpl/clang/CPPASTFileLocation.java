@@ -20,7 +20,7 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 	public CPPASTFileLocation(String line, IASTNode parent) {
 		_parent = parent;
 		
-		if(line.contains("<invalid sloc>"))
+		if(line.contains("<invalid sloc>") || line.contains("<<<NULL>>>"))
 			return;
 		
 		if(!line.contains("<"))

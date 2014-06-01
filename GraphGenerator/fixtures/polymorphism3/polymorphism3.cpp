@@ -4,6 +4,8 @@ class BaseClass
 public:
 	int _baseMember;
 	
+	virtual int process(int baseParam) = 0;
+	
 	void initialize()
 	{
         _baseMember = 8;
@@ -19,8 +21,6 @@ public:
     {
         return _baseMember - valor;
     }
-	
-	virtual int process(int baseParam) = 0;
 };
 
 class ClassA : public BaseClass

@@ -38,7 +38,7 @@ public class ASTExpression {
 			while(!dcursor.theEnd()) {
 				String secType = CPPASTTranslationUnit.getType(dcursor.getLine());
 				if(secType.equals("CXXThisExpr")) {
-					IASTExpression result = new CPPASTIdExpression(cursor, parent);
+					IASTExpression result = new CPPASTIdExpression(cursor.getSubCursor(), parent);
 					cursor.runToTheEnd();
 					return result;
 				} else if (secType.equals("MemberExpr")) {
