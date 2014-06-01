@@ -19,6 +19,7 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 		String type = lines.get(lines.size() - 1);
 		// separates *
 		String simpleType = CPPASTTranslationUnit.simplifyType(type);
+		simpleType = simpleType.split(" ")[0];
 		//TODO improve, it will not work with typedefs or defines
 		if(simpleType.equals("float") || simpleType.equals("int") || simpleType.equals("bool") )
 			return new CPPASTSimpleDeclSpecifier(cursor, parent);

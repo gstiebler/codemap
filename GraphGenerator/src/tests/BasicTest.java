@@ -133,11 +133,11 @@ public class BasicTest {
 	public void polymorphism3() {
 		TestsUtil.baseTest("polymorphism3");
 	}
-//
-//	@Test
-//	public void array() {
-//		TestsUtil.baseTest("array");
-//	}
+
+	@Test
+	public void array() {
+		TestsUtil.baseTest("array");
+	}
 //
 //	@Test
 //	public void destructor() {

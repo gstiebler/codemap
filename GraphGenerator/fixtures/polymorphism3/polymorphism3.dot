@@ -5,22 +5,22 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "51_57_57";
-	node_000017 [ label = "A", startingline=15 ]
-	node_000022 [ label = "B", startingline=20 ]
-	node_000028 [ label = "D", startingline=20 ]
+startinglines = "42_57_57";
+	node_000017 [ label = "A", startingline=17 ]
+	node_000022 [ label = "B", startingline=22 ]
+	node_000028 [ label = "D", startingline=22 ]
 subgraph cluster_2 {
 label = "BaseClass::initialize";
 parent = "cluster_1";
 startinglines = "60_61_63";
-	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000002 [ label = "classA._baseMember", startingline=9 ]
-	node_000003 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+	node_000001 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
+	node_000002 [ label = "classA._baseMember", startingline=11 ]
+	node_000003 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
 	node_000006 [ label = "classA._baseMember", startingline=33 ]
 subgraph cluster_3 {
 label = "ClassA::process";
 parent = "cluster_2";
-startinglines = "63_9_10";
+startinglines = "63_11_12";
 	node_000004 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=33 ]
 	node_000005 [ label = "ClassA::process", style=filled, fillcolor="#FFFFD0", startinglines=33 ]
 }
@@ -28,15 +28,15 @@ startinglines = "63_9_10";
 subgraph cluster_4 {
 label = "BaseClass::initialize";
 parent = "cluster_1";
-startinglines = "10_33_64";
-	node_000007 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
-	node_000008 [ label = "classB._baseMember", startingline=9 ]
-	node_000009 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=10 ]
+startinglines = "12_33_64";
+	node_000007 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
+	node_000008 [ label = "classB._baseMember", startingline=11 ]
+	node_000009 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
 	node_000012 [ label = "classB._baseMember", startingline=48 ]
 subgraph cluster_5 {
 label = "ClassB::process";
 parent = "cluster_4";
-startinglines = "64_9_10";
+startinglines = "64_11_12";
 	node_000010 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=48 ]
 	node_000011 [ label = "ClassB::process", style=filled, fillcolor="#FFFFD0", startinglines=48 ]
 }
@@ -44,29 +44,29 @@ startinglines = "64_9_10";
 subgraph cluster_6 {
 label = "ClassA::calculoA";
 parent = "cluster_1";
-startinglines = "10_48_66";
+startinglines = "12_48_66";
 	node_000013 [ label = "4", style=filled, fillcolor="#E9FFE9", startinglines=38 ]
-	node_000016 [ label = "ClassA::calculoA", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
+	node_000016 [ label = "ClassA::calculoA", style=filled, fillcolor="#FFFFD0", startinglines=17 ]
 subgraph cluster_7 {
 label = "BaseClass::soma";
 parent = "cluster_6";
 startinglines = "48_66_38";
-	node_000014 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]
-	node_000015 [ label = "BaseClass::soma", style=filled, fillcolor="#FFFFD0", startinglines=15 ]
+	node_000014 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=17 ]
+	node_000015 [ label = "BaseClass::soma", style=filled, fillcolor="#FFFFD0", startinglines=17 ]
 }
 }
 subgraph cluster_8 {
 label = "ClassB::calculoB";
 parent = "cluster_1";
-startinglines = "38_15_67";
+startinglines = "38_17_67";
 	node_000018 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
-	node_000021 [ label = "ClassB::calculoB", style=filled, fillcolor="#FFFFD0", startinglines=20 ]
+	node_000021 [ label = "ClassB::calculoB", style=filled, fillcolor="#FFFFD0", startinglines=22 ]
 subgraph cluster_9 {
 label = "BaseClass::sub";
 parent = "cluster_8";
-startinglines = "15_67_53";
-	node_000019 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
-	node_000020 [ label = "BaseClass::sub", style=filled, fillcolor="#FFFFD0", startinglines=20 ]
+startinglines = "17_67_53";
+	node_000019 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=22 ]
+	node_000020 [ label = "BaseClass::sub", style=filled, fillcolor="#FFFFD0", startinglines=22 ]
 }
 }
 subgraph cluster_10 {
@@ -74,13 +74,13 @@ label = "ClassB::calculoB";
 parent = "cluster_1";
 startinglines = "69_71_72";
 	node_000024 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
-	node_000027 [ label = "ClassB::calculoB", style=filled, fillcolor="#FFFFD0", startinglines=20 ]
+	node_000027 [ label = "ClassB::calculoB", style=filled, fillcolor="#FFFFD0", startinglines=22 ]
 subgraph cluster_11 {
 label = "BaseClass::sub";
 parent = "cluster_10";
 startinglines = "71_72_53";
-	node_000025 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
-	node_000026 [ label = "BaseClass::sub", style=filled, fillcolor="#FFFFD0", startinglines=20 ]
+	node_000025 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=22 ]
+	node_000026 [ label = "BaseClass::sub", style=filled, fillcolor="#FFFFD0", startinglines=22 ]
 }
 }
 }

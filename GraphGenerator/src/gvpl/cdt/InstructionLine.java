@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTArraySubscriptExpression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
@@ -65,7 +66,6 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTypeIdExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPMethod;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
@@ -340,9 +340,9 @@ public class InstructionLine {
 					return new Value(varDecl);
 			} else if (node instanceof IASTUnaryExpression) {
 				return new Value(loadUnaryExpr((IASTUnaryExpression) node));
-			} else if (node instanceof CPPASTArraySubscriptExpression) {
+			} else if (node instanceof IASTArraySubscriptExpression) {
 				// It's an array
-				CPPASTArraySubscriptExpression arraySubscrExpr = (CPPASTArraySubscriptExpression) node;
+				IASTArraySubscriptExpression arraySubscrExpr = (IASTArraySubscriptExpression) node;
 				IASTExpression arrayExpr = arraySubscrExpr.getArrayExpression();
 				IVar varDecl = _parentBaseScope.getVarFromExpr(arrayExpr);
 				IASTExpression index = arraySubscrExpr.getSubscriptExpression();
@@ -478,9 +478,9 @@ public class InstructionLine {
 		if (lhsOp instanceof IASTUnaryExpression) {
 			IASTUnaryExpression unOp = (IASTUnaryExpression) lhsOp;
 			logger.debug("Operator: {} in var {}", unOp.getOperator(), lhsVar.getName());
-		} else if (lhsOp instanceof CPPASTArraySubscriptExpression) {
+		} else if (lhsOp instanceof IASTArraySubscriptExpression) {
 			Value rhsValue = loadValue(rhsExpr);
-			CPPASTArraySubscriptExpression indexExpr = (CPPASTArraySubscriptExpression) lhsOp;
+			IASTArraySubscriptExpression indexExpr = (IASTArraySubscriptExpression) lhsOp;
 			IASTExpression subscriptExpr = indexExpr.getSubscriptExpression();
 			Value indexValue = loadValue(subscriptExpr);
 			return ArrayCDT.writeToArray( lhsVar, rhsValue, indexValue, _gvplGraph );
