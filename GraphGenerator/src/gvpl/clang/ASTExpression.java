@@ -15,7 +15,8 @@ public class ASTExpression {
 		if(type.equals("DeclRefExpr")) {
 			return new CPPASTIdExpression(cursor, parent);
 		} else if(type.equals("IntegerLiteral") ||
-				type.equals("FloatingLiteral")) {
+				type.equals("FloatingLiteral") ||
+				type.equals("CXXBoolLiteralExpr")) {
 			return new CPPASTLiteralExpression(cursor, parent);
 		} else if(type.equals("BinaryOperator") || type.equals("CompoundAssignOperator")) {
 			return new CPPASTBinaryExpression(cursor, parent);

@@ -93,21 +93,21 @@ public class BasicTest {
 	public void constructorChain() {
 		TestsUtil.baseTest("constructor_chain");
 	}
-//
-//	@Test
-//	public void funcPointerReference() {
-//		TestsUtil.baseTest("func_pointer_reference");
-//	}
-//
-//	@Test
-//	public void ifPointer() {
-//		TestsUtil.baseTest("if_pointer");
-//	}
-//
-//	@Test
-//	public void ifPointer2() {
-//		TestsUtil.baseTest("if_pointer2");
-//	}
+
+	@Test
+	public void funcPointerReference() {
+		TestsUtil.baseTest("func_pointer_reference");
+	}
+
+	@Test
+	public void ifPointer() {
+		TestsUtil.baseTest("if_pointer");
+	}
+
+	@Test
+	public void ifPointer2() {
+		TestsUtil.baseTest("if_pointer2");
+	}
 //	
 //	@Test
 //	public void ifMember() {
