@@ -34,6 +34,7 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
+import org.eclipse.cdt.core.dom.ast.IASTDefaultStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
@@ -61,18 +62,15 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTDeleteExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTNewExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSimpleTypeConstructorExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSwitchStatement;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTypeIdExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTUnaryExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPDeferredTemplateInstance;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPMethod;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTCompoundStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTConstructorInitializer;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTDefaultStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleTypeConstructorExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredFunctionInstance;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPMethodSpecialization;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPTemplateTypeParameter;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPSpecialization;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPTemplateTypeParameter;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -153,7 +151,7 @@ public class InstructionLine {
 	
 	private void loadSwitch(ICPPASTSwitchStatement switchStatement) {
 		IASTExpression controlExpr = switchStatement.getControllerExpression();
-		CPPASTCompoundStatement body = (CPPASTCompoundStatement) switchStatement.getBody();
+		IASTCompoundStatement body = (IASTCompoundStatement) switchStatement.getBody();
 		GraphNode controlNode = loadValue(controlExpr).getNode();
 		int numStatements = body.getStatements().length;
 		
@@ -161,7 +159,7 @@ public class InstructionLine {
 		for (int i = 0; i < numStatements; i++) {
 			IASTStatement statement = null;
 			statement = body.getStatements()[i];
-			if (!(statement instanceof CPPASTDefaultStatement)) continue;
+			if (!(statement instanceof IASTDefaultStatement)) continue;
 			
 			defaultStatement = body.getStatements()[i + 1];
 		}
@@ -351,8 +349,8 @@ public class InstructionLine {
 				return new Value(arrayResult);
 			} else if (node instanceof ICPPASTNewExpression) {
 				throw new ClassNotImplementedException(node.getClass().toString(), node.getRawSignature());
-			} else if (node instanceof CPPASTSimpleTypeConstructorExpression) {
-				CPPASTSimpleTypeConstructorExpression stce = (CPPASTSimpleTypeConstructorExpression) node;
+			} else if (node instanceof ICPPASTSimpleTypeConstructorExpression) {
+				ICPPASTSimpleTypeConstructorExpression stce = (ICPPASTSimpleTypeConstructorExpression) node;
 				return loadValue(stce.getInitialValue());
 			} else if (node instanceof ICPPASTTypeIdExpression) {
 				ICPPASTTypeIdExpression tie = (ICPPASTTypeIdExpression) node;
@@ -383,7 +381,7 @@ public class InstructionLine {
 			} else if (node instanceof IASTExpressionList) {
 				IASTExpressionList exprList = (IASTExpressionList) node;
 				throw new ClassNotImplementedException(node.getClass().toString(), exprList.getRawSignature());
-			} else if (node instanceof CPPASTConstructorInitializer) {
+			} else if (node instanceof ICPPASTConstructorInitializer) {
 				//CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) node;
 				//IASTInitializerClause[] initClauses = constrInit.getArguments();
 				//if(initClauses.length > 1)
@@ -629,12 +627,12 @@ public class InstructionLine {
 				String problemName = ((ITypedef)idExprBinding).getName();
 				logger.warn("Class not working: CPPTypedef, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTypedef_" + problemName, NodeType.E_INVALID_NODE_TYPE));
-			} else if (idExprBinding instanceof CPPTemplateTypeParameter) {
-				String problemName = ((CPPTemplateTypeParameter)idExprBinding).getName();
+			} else if (idExprBinding instanceof ICPPTemplateTypeParameter) {
+				String problemName = ((ICPPTemplateTypeParameter)idExprBinding).getName();
 				logger.warn("Class not working: CPPTemplateTypeParameter, {}", problemName);
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + problemName, NodeType.E_INVALID_NODE_TYPE));
-			} else if (idExprBinding instanceof CPPDeferredFunctionInstance) {
-				CPPDeferredFunctionInstance dfi = (CPPDeferredFunctionInstance) idExprBinding;
+			} else if (idExprBinding instanceof ICPPDeferredTemplateInstance) {
+				ICPPDeferredTemplateInstance dfi = (ICPPDeferredTemplateInstance) idExprBinding;
 				logger.warn("Class not working: CPPTemplateTypeParameter, {}", dfi.getName());
 				return new Value(_gvplGraph.addGraphNode("PROBLEM_CPPTemplateTypeParameter_" + dfi.getName(), NodeType.E_INVALID_NODE_TYPE));
 			} else
@@ -724,8 +722,8 @@ public class InstructionLine {
 			String nodeName = "PROBLEM_BINDING_FIELD_REF" + fieldRef.getFieldName();
 			GraphNode problemGraphNode = _gvplGraph.addGraphNode(nodeName, NodeType.E_INVALID_NODE_TYPE);
 			return new Value(problemGraphNode);
-		} else if (funcMemberBinding instanceof CPPMethodSpecialization) {
-			funcMemberBinding = ((CPPMethodSpecialization)funcMemberBinding).getSpecializedBinding();
+		} else if (funcMemberBinding instanceof  ICPPSpecialization) {
+			funcMemberBinding = (( ICPPSpecialization)funcMemberBinding).getSpecializedBinding();
 		}
 		
 		IVar varInMem = var.getVarInMem();
@@ -758,7 +756,7 @@ public class InstructionLine {
 		if (paramExpr instanceof IASTExpressionList) {
 			IASTExpressionList exprList = (IASTExpressionList) paramExpr;
 			return exprList.getExpressions();
-		} else if(paramExpr instanceof CPPASTConstructorInitializer) {
+		} else if(paramExpr instanceof ICPPASTConstructorInitializer) {
 			//CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) paramExpr;
 			logger.fatal("Not implemented in this version of CDT");
 			return null;

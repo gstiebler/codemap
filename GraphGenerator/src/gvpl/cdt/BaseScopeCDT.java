@@ -33,12 +33,9 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCastExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFieldReference;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFunctionCallExpression;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTLiteralExpression;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -65,9 +62,9 @@ public abstract class BaseScopeCDT extends BaseScope{
 		// deal with a hardcoded string, but we don't want the "this" pointer. 
 		// the "this" will be treated elsewhere
 		// TODO Create a special class for "this"
-	    if (expr instanceof CPPASTLiteralExpression && !rs.equals("this")) {
+	    if (expr instanceof ICPPASTLiteralExpression && !rs.equals("this")) {
 	    	// it's a hardcoded string between aspas (?)
-	    	CPPASTLiteralExpression literal = (CPPASTLiteralExpression)expr;
+	    	ICPPASTLiteralExpression literal = (ICPPASTLiteralExpression)expr;
 	    	String str = literal.getRawSignature();
 	    	Var tempVar = new Var(_gvplGraph, str, null);
 	    	GraphNode node = _gvplGraph.addGraphNode(str, NodeType.E_DIRECT_VALUE);
@@ -145,14 +142,14 @@ public abstract class BaseScopeCDT extends BaseScope{
 			//TODO use the index!!
 			//IASTExpression index = arraySubscrExpr.getSubscriptExpression();
 			return ((IASTIdExpression) opExpr).getName().resolveBinding();
-		} else if (expr instanceof CPPASTLiteralExpression) {
+		} else if (expr instanceof ICPPASTLiteralExpression) {
 			//probably "this" pointer
 			return null;
 		} else if (expr instanceof IASTFunctionCallExpression) {
 			logger.error("not implemented");
 			throw new NotFoundException(expr.getRawSignature().toString());
-		} else if (expr instanceof CPPASTFieldReference) {
-			logger.error("not implemented CPPASTFieldReference", ((CPPASTFieldReference)expr).getFieldName());
+		} else if (expr instanceof ICPPASTFieldReference) {
+			logger.error("not implemented CPPASTFieldReference", ((ICPPASTFieldReference)expr).getFieldName());
 			throw new NotFoundException(expr.getRawSignature().toString());
 		} else if (expr instanceof ICPPASTCastExpression) {
 			return getBindingFromExpr(((ICPPASTCastExpression)expr).getOperand());
@@ -171,10 +168,10 @@ public abstract class BaseScopeCDT extends BaseScope{
 		} else if (expr instanceof IASTUnaryExpression) {
 			IASTExpression opExpr = ((IASTUnaryExpression) expr).getOperand();
 			return getVarFromExprInternal(opExpr);
-		} else if (expr instanceof CPPASTFunctionCallExpression) {
+		} else if (expr instanceof IASTFunctionCallExpression) {
 			//TODO gambiérre??
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
-			Value val = instructionLine.loadFunctionCall((CPPASTFunctionCallExpression) expr);
+			Value val = instructionLine.loadFunctionCall((IASTFunctionCallExpression) expr);
 			return val.getVar();
 		} else if (expr instanceof ICPPASTLiteralExpression) {
 			String exprStr = expr.getRawSignature();
@@ -188,8 +185,8 @@ public abstract class BaseScopeCDT extends BaseScope{
 				return addVarDecl(expr.getRawSignature(), _astInterpreter.getPrimitiveType(), 
 						IndirectionType.E_VARIABLE, _gvplGraph, _astInterpreter);
 			}
-		} else if (expr instanceof CPPASTArraySubscriptExpression) {
-			CPPASTArraySubscriptExpression subsExpr = (CPPASTArraySubscriptExpression) expr;
+		} else if (expr instanceof IASTArraySubscriptExpression) {
+			IASTArraySubscriptExpression subsExpr = (IASTArraySubscriptExpression) expr;
 			IASTExpression arrayExpr = subsExpr.getArrayExpression();
 			return getLocalVarFromIdExpr((IASTIdExpression) arrayExpr);
 		} else if (expr instanceof ICPPASTCastExpression) {
