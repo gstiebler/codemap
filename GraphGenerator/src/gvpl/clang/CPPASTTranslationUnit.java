@@ -176,6 +176,13 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			return result;
 		}
 		
+		if(parsedLine.get(2).equals("prev")) {
+			result.location = parsedLine.get(4);
+			result.type = parsedLine.get(7);
+			result.name = result.type;
+			return result;
+		}
+		
 		if(parsedLine.get(0).equals("CXXNewExpr")) {
 			result.location = parsedLine.get(2);
 			result.type = parsedLine.get(3);
