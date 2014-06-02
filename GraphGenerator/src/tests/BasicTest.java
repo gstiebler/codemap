@@ -154,20 +154,20 @@ public class BasicTest {
 //		TestsUtil.baseTest("operator_overload");
 //	}
 //
-//	@Test
-//	public void nestedIf() {
-//		TestsUtil.baseTest("nested_if");
-//	}
+	@Test
+	public void nestedIf() {
+		TestsUtil.baseTest("nested_if");
+	}
 //
 //	@Test
 //	public void switchTest() {
 //		TestsUtil.baseTest("switch");
 //	}
 //
-//	@Test
-//	public void garbage() {
-//		TestsUtil.baseTest("garbage");
-//	}
+	@Test
+	public void garbage() {
+		TestsUtil.baseTest("garbage");
+	}
 //
 //	@Test
 //	public void postInitFunc() {
@@ -178,11 +178,11 @@ public class BasicTest {
 //	public void files() {
 //		TestsUtil.baseTest("files");
 //	}
-//
-//	@Test
-//	public void headerOnlyFunc() {
-//		TestsUtil.baseTest("header_only_func");
-//	}
+
+	@Test
+	public void headerOnlyFunc() {
+		TestsUtil.baseTest("header_only_func");
+	}
 //
 //	@Test
 //	public void events() {
@@ -198,11 +198,11 @@ public class BasicTest {
 //	public void globalVar() {
 //		TestsUtil.baseTest("global_var");
 //	}
-//
-//	@Test
-//	public void deepMethod() {
-//		TestsUtil.baseTest("deep_method");
-//	}
+
+	@Test
+	public void deepMethod() {
+		TestsUtil.baseTest("deep_method");
+	}
 //
 //	@Test
 //	public void staticMember() {
