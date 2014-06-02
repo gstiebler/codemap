@@ -33,6 +33,7 @@ import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
 import org.eclipse.cdt.core.dom.ast.IASTUnaryExpression;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCastExpression;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTLiteralExpression;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTArraySubscriptExpression;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTFieldReference;
@@ -175,7 +176,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 			InstructionLine instructionLine = new InstructionLine(_gvplGraph, this, _astInterpreter);
 			Value val = instructionLine.loadFunctionCall((CPPASTFunctionCallExpression) expr);
 			return val.getVar();
-		} else if (expr instanceof CPPASTLiteralExpression) {
+		} else if (expr instanceof ICPPASTLiteralExpression) {
 			String exprStr = expr.getRawSignature();
 			// TODO Create a special class for "this"
 			if (exprStr.equals("this")) {
