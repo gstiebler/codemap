@@ -47,13 +47,13 @@ public abstract class CppMaps {
 		_assignBinOpTypes.put(IASTBinaryExpression.op_binaryXorAssign, "^");
 		_assignBinOpTypes.put(IASTBinaryExpression.op_binaryOrAssign, "|");
 
-		_opAssignStrToId.put("*", IASTBinaryExpression.op_multiplyAssign);
-		_opAssignStrToId.put("/", IASTBinaryExpression.op_divideAssign);
-		_opAssignStrToId.put("%", IASTBinaryExpression.op_moduloAssign);
-		_opAssignStrToId.put("+", IASTBinaryExpression.op_plusAssign);
-		_opAssignStrToId.put("-", IASTBinaryExpression.op_minusAssign);
-		_opAssignStrToId.put("<<", IASTBinaryExpression.op_shiftLeftAssign);
-		_opAssignStrToId.put(">>", IASTBinaryExpression.op_shiftRightAssign);
+		_opAssignStrToId.put("*=", IASTBinaryExpression.op_multiplyAssign);
+		_opAssignStrToId.put("/=", IASTBinaryExpression.op_divideAssign);
+		_opAssignStrToId.put("%=", IASTBinaryExpression.op_moduloAssign);
+		_opAssignStrToId.put("+=", IASTBinaryExpression.op_plusAssign);
+		_opAssignStrToId.put("-=", IASTBinaryExpression.op_minusAssign);
+		_opAssignStrToId.put("<<=", IASTBinaryExpression.op_shiftLeftAssign);
+		_opAssignStrToId.put(">>=", IASTBinaryExpression.op_shiftRightAssign);
 	}
 
 	public static String getBinOpString(Integer op) {

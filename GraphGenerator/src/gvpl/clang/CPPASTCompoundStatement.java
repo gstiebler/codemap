@@ -29,11 +29,15 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 		String stmtType = CPPASTTranslationUnit.getType(stmtLine);
 		if(stmtType.equals("DeclStmt"))
 			return new ASTDeclarationStatement(cursor.getSubCursor(), parent);
-		else if (stmtType.equals("BinaryOperator") || stmtType.equals("CompoundAssignOperator") || stmtType.equals("CXXDeleteExpr")) {
+		else if (stmtType.equals("BinaryOperator") || 
+				stmtType.equals("CompoundAssignOperator") || 
+				stmtType.equals("CXXDeleteExpr")) {
 			return new CPPASTExpressionStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("ReturnStmt")) {
 			return new ASTReturnStatement(cursor.getSubCursor(), parent);
-		} else if (stmtType.equals("CXXMemberCallExpr") || stmtType.equals("CallExpr")) {
+		} else if (stmtType.equals("CXXMemberCallExpr") || 
+				stmtType.equals("CallExpr") || 
+				stmtType.equals("CXXOperatorCallExpr")) {
 			return new CPPASTExpressionStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("IfStmt")) {
 			return new CPPASTIfStatement(cursor.getSubCursor(), parent);

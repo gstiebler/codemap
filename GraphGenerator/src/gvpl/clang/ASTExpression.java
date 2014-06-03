@@ -19,7 +19,9 @@ public class ASTExpression {
 				type.equals("CXXBoolLiteralExpr") ||
 				type.equals("CXXThisExpr")) {
 			return new CPPASTLiteralExpression(cursor, parent);
-		} else if(type.equals("BinaryOperator") || type.equals("CompoundAssignOperator")) {
+		} else if(type.equals("BinaryOperator") || 
+				type.equals("CompoundAssignOperator") || 
+				type.equals("CXXOperatorCallExpr")) {
 			return new CPPASTBinaryExpression(cursor, parent);
 		} else if(type.equals("ImplicitCastExpr") ||
 				type.equals("ParenExpr") ||
@@ -28,7 +30,8 @@ public class ASTExpression {
 				type.equals("CXXFunctionalCastExpr")) {
 			cursor.nextLine();
 			return loadExpression(cursor, parent);
-		} else if(type.equals("CallExpr") || type.equals("CXXMemberCallExpr")) {
+		} else if(type.equals("CallExpr") || 
+				type.equals("CXXMemberCallExpr")) {
 			return new ASTFunctionCallExpression(cursor, parent);
 		} else if(type.equals("CXXConstructExpr")) {
 			cursor.nextLine();

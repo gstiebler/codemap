@@ -16,7 +16,8 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 
 	static Logger logger = LogManager.getLogger(CPPASTBinaryExpression.class.getName());
 	
-	String _operator;
+	int _operator;
+	String _opStr;
 	IASTExpression _operand1;
 	IASTExpression _operand2;
 	Map<String, Integer> _opMap = new HashMap<String, Integer>();
@@ -27,9 +28,14 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
 		
 		if(parsedLine.get(0).equals("BinaryOperator"))
-			_operator = parsedLine.get( parsedLine.size() - 1 );
-		else
-			_operator = parsedLine.get( 5 );
+			_opStr = parsedLine.get( parsedLine.size() - 1 );
+		else if(parsedLine.get(0).equals("CXXOperatorCallExpr")) {
+			cursor.nextLine();
+			List<String> currParsedLine = CPPASTTranslationUnit.parseLine(cursor.nextLine());
+			_opStr = currParsedLine.get(7);
+			_opStr = _opStr.split("operator")[1];
+		} else
+			_opStr = parsedLine.get( 5 );
 		
 		_operand1 = ASTExpression.loadExpression(cursor, this);
 		_operand2 = ASTExpression.loadExpression(cursor, this);
@@ -85,8 +91,10 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		// Field descriptor #8 I
 		public static final int op_last = 29;*/
 		
-		if(!_opMap.containsKey(_operator))
+		if(!_opMap.containsKey(_opStr))
 			logger.error("Operator {} not found");
+		
+		_operator = _opMap.get(_opStr);
 	}
 
 	@Override
@@ -101,12 +109,12 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 
 	@Override
 	public int getOperator() {
-		return _opMap.get(_operator);
+		return _operator;
 	}
 
 	@Override
 	public String getRawSignature() {
-		return _operator;
+		return _opStr;
 	}
 
 	@Override

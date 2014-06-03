@@ -7,15 +7,15 @@ public:
 	
 	sPri() : _a(0.0), _b(1.0) {}
 	
-	void operator+(sPri &other)
+	void operator+=(sPri &other)
 	{
 		_a += other._a;
 	}
 	
-	void operator-(sPri &other);
+	void operator-=(sPri &other);
 };
 
-void sPri::operator-(sPri &other)
+void sPri::operator-=(sPri &other)
 {
 	_a -= other._a;
 }

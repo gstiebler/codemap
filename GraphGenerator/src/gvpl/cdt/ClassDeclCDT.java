@@ -32,8 +32,8 @@ import org.eclipse.cdt.core.dom.ast.ITypedef;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBaseSpecifier;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTOperatorName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTemplateId;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTOperatorName;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPScope.CPPScopeProblem;
 
 import debug.DebugOptions;
@@ -231,10 +231,10 @@ public class ClassDeclCDT extends ClassDecl{
 		_memberFuncIdMap.put(memberFuncBinding, memberFunc);
 		_membersFuncLocation.put(funcLocation, memberFunc);
 		
-		if(funcDeclarator.getName() instanceof CPPASTOperatorName)
+		if(funcDeclarator.getName() instanceof ICPPASTOperatorName)
 		{
 			String name = memberFunc.getName();
-			String op = name.substring(name.length() - 1);
+			String op = name.split("operator")[1];
 			Integer opId = CppMaps._opAssignStrToId.get(op);
 			_opOverloadMethods.put(opId, memberFunc);
 		}

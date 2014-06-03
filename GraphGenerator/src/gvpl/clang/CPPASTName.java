@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.eclipse.cdt.core.dom.ILinkage;
 import org.eclipse.cdt.core.dom.ast.IASTCompletionContext;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -13,11 +15,15 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 		if(binding == null)
 			logger.error("Binding should not be null");
 		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
-		if(bi.type.equals("CXXMethod"))
-//		String type = CPPASTTranslationUnit.getType(line);
-//		if(type.equals("CXXMethod"))
+
+		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		// TODO improve check if the function is an operator
+		if(strings.size() >= 5 && strings.get(4).contains("operator")) 
+			return new CPPASTOperatorName(binding, line, parent);
+		
+		if(bi.type.equals("CXXMethod")) {
 			return new CPPASTQualifiedName(binding, line, parent);
-		else
+		} else
 			return new CPPASTName(binding, line, parent);
 	}
 	
