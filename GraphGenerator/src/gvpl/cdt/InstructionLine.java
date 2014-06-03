@@ -153,7 +153,8 @@ public class InstructionLine {
 		IASTExpression controlExpr = switchStatement.getControllerExpression();
 		IASTCompoundStatement body = (IASTCompoundStatement) switchStatement.getBody();
 		GraphNode controlNode = loadValue(controlExpr).getNode();
-		int numStatements = body.getStatements().length;
+		IASTStatement[] stmts = body.getStatements();
+		int numStatements = stmts.length;
 		
 		IASTStatement defaultStatement = null;
 		for (int i = 0; i < numStatements; i++) {
@@ -161,7 +162,8 @@ public class InstructionLine {
 			statement = body.getStatements()[i];
 			if (!(statement instanceof IASTDefaultStatement)) continue;
 			
-			defaultStatement = body.getStatements()[i + 1];
+			defaultStatement = stmts[i + 1];
+			break;
 		}
 		
 		boolean first = true;

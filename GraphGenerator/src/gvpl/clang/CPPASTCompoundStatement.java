@@ -21,6 +21,11 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 			IASTStatement stmt = loadStatement(cursor.getSubCursor(), this);
 			if(stmt != null)
 				_statements.add(stmt);
+			if (stmt instanceof CPPASTCaseStatement) {
+				_statements.add(((CPPASTCaseStatement)stmt)._clangStmt);
+			} else if (stmt instanceof CPPASTDefaultStatement) {
+				_statements.add(((CPPASTDefaultStatement)stmt)._clangStmt);
+			}
 		}
 	}
 	
@@ -45,8 +50,16 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 			return new CPPASTForStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("CompoundStmt")) {
 			return new CPPASTCompoundStatement(cursor.getSubCursor(), parent);
+		} else if (stmtType.equals("SwitchStmt")) {
+			return new CPPASTSwitchStatement(cursor.getSubCursor(), parent);
+		} else if (stmtType.equals("CaseStmt")) {
+			return new CPPASTCaseStatement(cursor.getSubCursor(), parent);
+		} else if (stmtType.equals("DefaultStmt")) {
+			return new CPPASTDefaultStatement(cursor.getSubCursor(), parent);
 		} else if (stmtType.equals("<<<NULL>>>")) {
 			return null;
+		} else if (stmtType.equals("BreakStmt")) {
+			return new CPPASTBreakStatement(cursor.getSubCursor(), parent);
 		} else {
 			logger.error("Error reading " + stmtType);
 			cursor.runToTheEnd();
