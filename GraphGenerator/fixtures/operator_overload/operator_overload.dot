@@ -12,48 +12,48 @@ startinglines = "18_23_23";
 	node_000010 [ label = "strOut._b", style=filled, fillcolor="#FFE9E9", startinglines=8 ]
 	node_000011 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
 	node_000012 [ label = "strIn._a", startingline=26 ]
-	node_000015 [ label = "c", startingline=28 ]
-	node_000018 [ label = "d", startingline=30 ]
+	node_000016 [ label = "c", startingline=28 ]
+	node_000020 [ label = "d", startingline=30 ]
 subgraph cluster_2 {
 label = "sPri::sPri";
 parent = "cluster_1";
 startinglines = "23_23_24";
-	node_000003 [ label = "0.0", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
-	node_000005 [ label = "1.0", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
+	node_000003 [ label = "0.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
+	node_000005 [ label = "1.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
 }
 subgraph cluster_3 {
 label = "sPri::sPri";
 parent = "cluster_1";
 startinglines = "8_8_25";
-	node_000007 [ label = "0.0", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
-	node_000009 [ label = "1.0", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
+	node_000007 [ label = "0.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
+	node_000009 [ label = "1.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
 }
 subgraph cluster_4 {
-label = "sPri::operator +";
+label = "sPri::operator+=";
 parent = "cluster_1";
 startinglines = "8_26_27";
 	node_000013 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=12 ]
 	node_000014 [ label = "strOut._a", startingline=12 ]
 }
 subgraph cluster_5 {
-label = "sPri::operator -";
+label = "sPri::operator-=";
 parent = "cluster_1";
 startinglines = "12_28_29";
-	node_000016 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
-	node_000017 [ label = "strOut._a", startingline=20 ]
+	node_000017 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=20 ]
+	node_000018 [ label = "strOut._a", startingline=20 ]
 }
 }
 	node_000008 -> node_000013
 	node_000011 -> node_000012
 	node_000012 -> node_000013
-	node_000012 -> node_000016
+	node_000012 -> node_000017
 	node_000003 -> node_000004
 	node_000005 -> node_000006
 	node_000007 -> node_000008
 	node_000009 -> node_000010
 	node_000013 -> node_000014
-	node_000014 -> node_000015
 	node_000014 -> node_000016
-	node_000016 -> node_000017
+	node_000014 -> node_000017
 	node_000017 -> node_000018
+	node_000018 -> node_000020
 }

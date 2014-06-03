@@ -18,8 +18,15 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 
 		List<String> strings = CPPASTTranslationUnit.parseLine(line);
 		// TODO improve check if the function is an operator
-		if(strings.size() >= 5 && strings.get(4).contains("operator")) 
-			return new CPPASTOperatorName(binding, line, parent);
+		if(strings.size() >= 5) {
+			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
+			int index = 4;
+			if(ids.size() == 3)
+				index = 8;
+			
+			if(strings.get(index).contains("operator"))
+				return new CPPASTOperatorName(binding, line, parent);
+		}
 		
 		if(bi.type.equals("CXXMethod")) {
 			return new CPPASTQualifiedName(binding, line, parent);

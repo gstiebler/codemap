@@ -516,7 +516,8 @@ public class InstructionLine {
 		IASTExpression rhsOp = binExpr.getOperand2();
 		Value rhsValue = _parentBaseScope.getValueFromExpr(rhsOp);
 		
-		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(binExpr.getOperator());
+		int operator = binExpr.getOperator();
+		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(operator);
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsValue, IndirectionType.E_REFERENCE));
 		if(opFunc == null) {

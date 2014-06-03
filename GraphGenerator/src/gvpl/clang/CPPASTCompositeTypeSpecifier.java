@@ -74,6 +74,7 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 				}
 			}
 		}
+		logger.error("Could not replace function from binding {}", binding);
 	}
 
 	@Override
