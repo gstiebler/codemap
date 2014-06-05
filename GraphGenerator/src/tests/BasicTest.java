@@ -168,11 +168,11 @@ public class BasicTest {
 	public void garbage() {
 		TestsUtil.baseTest("garbage");
 	}
-//
-//	@Test
-//	public void postInitFunc() {
-//		TestsUtil.baseTest("post_init_func");
-//	}
+
+	@Test
+	public void postInitFunc() {
+		TestsUtil.baseTest("post_init_func");
+	}
 //
 //	@Test
 //	public void files() {

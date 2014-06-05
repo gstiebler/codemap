@@ -41,6 +41,11 @@ public class CPPASTFunctionDeclaration extends CPPASTDeclaration implements org.
 		else
 			_binding = new CPPFunction(bindingInfo, _funcName, cursor.getSubCursor());
 			
+		{
+			int bindingId = Binding.getBindingId(_binding);
+			CPPASTTranslationUnit.addBindingOwner(bindingId, this);
+		}	
+	
 		_declarator = new CPPASTFunctionDeclarator(_binding, new CPPASTFunctionDefinition(cursor, this), cursor);
 		
 		String type = CPPASTTranslationUnit.getType(cursor.getLine());

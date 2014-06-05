@@ -33,6 +33,16 @@ class BindingInfo {
 	public String type = "";
 }
 
+class BindingSynonym {
+	int originalBindingId;
+	IBinding second;
+	
+	BindingSynonym(int originalBindingId, IBinding second) {
+		this.originalBindingId = originalBindingId;
+		this.second = second;
+	}
+}
+
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	static Logger logger = LogManager.getLogger(CPPASTTranslationUnit.class.getName());
@@ -44,6 +54,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	static CPPASTTranslationUnit _instance;
 	static public IASTName lastClassName;
 	static String _fileName;
+	
+	private Map<Integer, Object> _bindingOwners = new TreeMap<Integer, Object>();
+	private List<BindingSynonym> _bindingSynonyms = new ArrayList<BindingSynonym>();
 
 	public CPPASTTranslationUnit(String path, String fileName) {
 		_instance = this;
@@ -60,30 +73,21 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			}
 			
 			String type = getType(line);
-			if (type.equals("FunctionDecl")) {
-				_declarations.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null));
+			if (type.equals("FunctionDecl") || type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
+				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null);
+				_declarations.add(funcDecl);
+				List<Integer> ids = getIds(line);
+				if(ids.size() > 1) {
+					_bindingSynonyms.add(new BindingSynonym(ids.get(0), funcDecl._binding));
+				}
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
-			} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
-				List<Integer> ids = getIds(line);
-				int parentId = ids.get(1);
-				int prevId = ids.get(2);
-				IBinding binding = getBinding(prevId);
-				if(binding == null)
-					logger.error("Prev Id {} not found", prevId);
-				
-				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor, true, this);
-				
-				CPPClassType ct = (CPPClassType) getBinding(parentId);
-				ct._parent.replaceFuncDecl(binding, funcDecl);
-						
-				_declarations.add(funcDecl);
-				//cursor.runToTheEnd();
 			} else {
 				logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
 				cursor.runToTheEnd();
 			}
 		}
+		fixBindingSynonyms();
 	}
 
 	public static String getType(String line) {
@@ -254,6 +258,21 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public static CPPConstructor getConstructorBinding(String classStr, String params) {
 		String key = classStr + "-<>-" + params;
 		return _instance._constructorsBinding.get(key);
+	}
+	
+	public static void addBindingOwner(int bindingId, Object bindingOwner) {
+		_instance._bindingOwners.put(bindingId, bindingOwner);
+	}
+	
+	public void fixBindingSynonyms() {
+		for(BindingSynonym bindingSynonym : _bindingSynonyms) {
+			Object object = _bindingOwners.get(bindingSynonym.originalBindingId);
+			if(object instanceof CPPASTName) {
+				((CPPASTName)object)._binding = bindingSynonym.second;
+			} else if (object instanceof CPPASTFunctionDeclaration) {
+				((CPPASTFunctionDeclaration)object)._binding = bindingSynonym.second;
+			}
+		}
 	}
 
 	@Override

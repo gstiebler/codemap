@@ -37,6 +37,9 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 	public CPPASTName(IBinding binding, String line, IASTNode parent) {
 		super(line, parent);
 		_binding = binding;
+
+		int bindingId = Binding.getBindingId(binding);
+		CPPASTTranslationUnit.addBindingOwner(bindingId, this);	
 	}
 	
 	@Override

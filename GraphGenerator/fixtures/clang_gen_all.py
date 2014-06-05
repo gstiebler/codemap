@@ -3,7 +3,7 @@ import os
 path = os.getcwd()
 
 print path
-clang_path = "C:\\Projetos\\clang\\build\\Release\\bin\\clang-check.exe"
+clang_path = "\"C:\\Program Files\\LLVM\\bin\\clang-check.exe\""
 for x in os.walk(path):
     curr_path = x[0]
     strings = curr_path.split("\\")
