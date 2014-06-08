@@ -33,13 +33,13 @@ class BindingInfo {
 	public String type = "";
 }
 
-class BindingSynonym {
+class BindingOwner {
 	int originalBindingId;
-	IBinding second;
+	Object owner;
 	
-	BindingSynonym(int originalBindingId, IBinding second) {
+	BindingOwner(int originalBindingId, Object owner) {
 		this.originalBindingId = originalBindingId;
-		this.second = second;
+		this.owner = owner;
 	}
 }
 
@@ -55,8 +55,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	static public IASTName lastClassName;
 	static String _fileName;
 	
-	private Map<Integer, Object> _bindingOwners = new TreeMap<Integer, Object>();
-	private List<BindingSynonym> _bindingSynonyms = new ArrayList<BindingSynonym>();
+	private List<BindingOwner> _bindingOwners = new ArrayList<BindingOwner>();
+	public Map<Integer, IBinding> _bindingSynonyms = new TreeMap<Integer, IBinding>();
 
 	public CPPASTTranslationUnit(String path, String fileName) {
 		_instance = this;
@@ -77,8 +77,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null);
 				_declarations.add(funcDecl);
 				List<Integer> ids = getIds(line);
+				// has previous binding
 				if(ids.size() > 1) {
-					_bindingSynonyms.add(new BindingSynonym(ids.get(0), funcDecl._binding));
+					int oldId = ids.get(1);
+					if(ids.size() == 3) // has parent id
+						oldId = ids.get(2);
+					_bindingSynonyms.put(oldId, funcDecl._binding);
 				}
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
@@ -261,16 +265,18 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 	
 	public static void addBindingOwner(int bindingId, Object bindingOwner) {
-		_instance._bindingOwners.put(bindingId, bindingOwner);
+		_instance._bindingOwners.add(new BindingOwner(bindingId, bindingOwner));
 	}
 	
 	public void fixBindingSynonyms() {
-		for(BindingSynonym bindingSynonym : _bindingSynonyms) {
-			Object object = _bindingOwners.get(bindingSynonym.originalBindingId);
-			if(object instanceof CPPASTName) {
-				((CPPASTName)object)._binding = bindingSynonym.second;
-			} else if (object instanceof CPPASTFunctionDeclaration) {
-				((CPPASTFunctionDeclaration)object)._binding = bindingSynonym.second;
+		for(BindingOwner bindingOwner : _bindingOwners) {
+			IBinding binding = _bindingSynonyms.get(bindingOwner.originalBindingId);
+			if(binding == null)
+				continue;
+			if(bindingOwner.owner instanceof CPPASTName) {
+				((CPPASTName)bindingOwner.owner)._binding = binding;
+			} else if (bindingOwner.owner instanceof CPPASTFunctionDeclaration) {
+				((CPPASTFunctionDeclaration)bindingOwner.owner)._binding = binding;
 			}
 		}
 	}

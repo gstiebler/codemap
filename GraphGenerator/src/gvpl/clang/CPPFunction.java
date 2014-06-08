@@ -19,12 +19,15 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	int _bindingId = -1;
 	String _name;
 	boolean _isStatic = false;
+	String _hex;
 	
 	public CPPFunction(BindingInfo bi, String name, Cursor cursor) {
 		_bindingId = bi.bindingId;
 		_isStatic = isStatic(cursor.getLine());
 		CPPASTTranslationUnit.addBinding(bi, this);
 		_name = name;
+
+		_hex = "0x" + Integer.toHexString(_bindingId);
 	}
 	
 	public static boolean isStatic(String line) {
