@@ -9,19 +9,19 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
+public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
 
 	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
 	
 	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
 	IASTDeclSpecifier _declSpec;
 	
-	public ASTSimpleDeclaration(Cursor cursor, IASTNode parent) {
+	public CPPASTSimpleDeclaration(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String baseType = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(baseType.equals("CXXRecordDecl")) {
 			_declSpec = new CPPASTCompositeTypeSpecifier(cursor.getSubCursor(), this);
-		} else if(baseType.equals("FieldDecl")) {
+		} else if(baseType.equals("FieldDecl") || baseType.equals("VarDecl")) {
 			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor, this);
 			_declarators.add(new CPPASTDeclarator(cursor.getSubCursor(), this));
 		} else if(baseType.equals("DeclStmt")) {
@@ -38,6 +38,7 @@ public class ASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.cor
 			}
 		} else {
 			logger.error("Not implemented  " + baseType);
+			cursor.runToTheEnd();
 		}
 	}
 

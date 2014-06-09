@@ -4,12 +4,12 @@ rankdir=LR;
 label = "root";
 	node_000001 [ label = "0", style=filled, fillcolor="#E9FFE9", startinglines=2 ]
 	node_000002 [ label = "global_var", startingline=2 ]
-	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=2 ]
-	node_000004 [ label = "global2", startingline=2 ]
+	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=-1 ]
+	node_000004 [ label = "global2", startingline=-1 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "2_4_4";
+startinglines = "-1_4_4";
 	node_000005 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=6 ]
 	node_000006 [ label = "global_var", startingline=6 ]
 	node_000007 [ label = "a", startingline=7 ]

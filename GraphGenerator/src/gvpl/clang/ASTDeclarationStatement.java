@@ -9,7 +9,7 @@ public class ASTDeclarationStatement extends ASTNode implements org.eclipse.cdt.
 	
 	public ASTDeclarationStatement(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		_declaration = new ASTSimpleDeclaration(cursor, this);
+		_declaration = new CPPASTSimpleDeclaration(cursor, this);
 	}
 
 	@Override

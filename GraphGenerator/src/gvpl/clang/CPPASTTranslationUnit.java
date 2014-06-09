@@ -90,8 +90,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 						
 				_declarations.add(funcDecl);
 				//cursor.runToTheEnd();
-			} else if (type.equals("CXXRecordDecl")) {
-				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
+			} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
+				_declarations.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else {
 				logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
 				cursor.runToTheEnd();
