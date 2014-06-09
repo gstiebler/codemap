@@ -243,11 +243,11 @@ public class BasicTest {
 //	public void typedef() {
 //		TestsUtil.baseTest("typedef");
 //	}
-//
-//	@Test
-//	public void namespace() {
-//		TestsUtil.baseTest("namespace");
-//	}
+
+	@Test
+	public void namespace() {
+		TestsUtil.baseTest("namespace");
+	}
 //
 //	@Test
 //	public void charStr() {

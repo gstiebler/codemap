@@ -66,51 +66,56 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		cursor.nextLine();
 		cursor.nextLine();
 		while (!cursor.theEnd()) {
-			String line = cursor.getLine();
-			if(line.contains("<invalid sloc>")) {
-				cursor.runToTheEnd();
-				return;
-			}
-			
-			String type = getType(line);
-			if (type.equals("FunctionDecl")) {
-				addFuncDecl(cursor);
-			} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
-				List<Integer> ids = getIds(line);
-				int parentId = ids.get(1);
-				int prevId = ids.get(2);
-				IBinding binding = getBinding(prevId);
-				if(binding == null)
-					logger.error("Prev Id {} not found", prevId);
-
-				CPPASTFunctionDeclaration funcDecl = addFuncDecl(cursor);
-				
-				CPPClassType ct = (CPPClassType) getBinding(parentId);
-				ct._parent.replaceFuncDecl(binding, funcDecl);
-						
-				_declarations.add(funcDecl);
-				//cursor.runToTheEnd();
-			} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
-				_declarations.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), null));
-			} else {
-				logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
-				cursor.runToTheEnd();
-			}
+			IASTDeclaration decl = loadDeclaration(cursor);
+			if(decl != null)
+				_declarations.add(decl);
 		}
 		fixBindingSynonyms();
 	}
 	
-	CPPASTFunctionDeclaration addFuncDecl(Cursor cursor) {
+	static IASTDeclaration loadDeclaration(Cursor cursor) {
+		String line = cursor.getLine();
+		if(line.contains("<invalid sloc>")) {
+			cursor.runToTheEnd();
+			return null;
+		}
+		
+		String type = getType(line);
+		if (type.equals("FunctionDecl")) {
+			return loadFuncDecl(cursor);
+		} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
+			List<Integer> ids = getIds(line);
+			int parentId = ids.get(1);
+			int prevId = ids.get(2);
+			IBinding binding = getBinding(prevId);
+			if(binding == null)
+				logger.error("Prev Id {} not found", prevId);
+
+			CPPASTFunctionDeclaration funcDecl = loadFuncDecl(cursor);
+			
+			CPPClassType ct = (CPPClassType) getBinding(parentId);
+			ct._parent.replaceFuncDecl(binding, funcDecl);
+					
+			return funcDecl;
+		} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
+			return new CPPASTSimpleDeclaration(cursor.getSubCursor(), null);
+		} else {
+			logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
+			cursor.runToTheEnd();
+			return null;
+		}
+	}
+	
+	static CPPASTFunctionDeclaration loadFuncDecl(Cursor cursor) {
 		String line = cursor.getLine();
 		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null);
-		_declarations.add(funcDecl);
 		List<Integer> ids = getIds(line);
 		// has previous binding
 		if(ids.size() > 1) {
 			int oldId = ids.get(1);
 			if(ids.size() == 3) // has parent id
 				oldId = ids.get(2);
-			_bindingSynonyms.put(oldId, funcDecl._binding);
+			_instance._bindingSynonyms.put(oldId, funcDecl._binding);
 		}
 		return funcDecl;
 	}
