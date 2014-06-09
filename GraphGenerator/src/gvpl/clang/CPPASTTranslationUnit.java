@@ -73,17 +73,23 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			}
 			
 			String type = getType(line);
-			if (type.equals("FunctionDecl") || type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
-				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null);
-				_declarations.add(funcDecl);
+			if (type.equals("FunctionDecl")) {
+				addFuncDecl(cursor);
+			} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
 				List<Integer> ids = getIds(line);
-				// has previous binding
-				if(ids.size() > 1) {
-					int oldId = ids.get(1);
-					if(ids.size() == 3) // has parent id
-						oldId = ids.get(2);
-					_bindingSynonyms.put(oldId, funcDecl._binding);
-				}
+				int parentId = ids.get(1);
+				int prevId = ids.get(2);
+				IBinding binding = getBinding(prevId);
+				if(binding == null)
+					logger.error("Prev Id {} not found", prevId);
+
+				CPPASTFunctionDeclaration funcDecl = addFuncDecl(cursor);
+				
+				CPPClassType ct = (CPPClassType) getBinding(parentId);
+				ct._parent.replaceFuncDecl(binding, funcDecl);
+						
+				_declarations.add(funcDecl);
+				//cursor.runToTheEnd();
 			} else if (type.equals("CXXRecordDecl")) {
 				_declarations.add(new ASTSimpleDeclaration(cursor.getSubCursor(), null));
 			} else {
@@ -92,6 +98,21 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			}
 		}
 		fixBindingSynonyms();
+	}
+	
+	CPPASTFunctionDeclaration addFuncDecl(Cursor cursor) {
+		String line = cursor.getLine();
+		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null);
+		_declarations.add(funcDecl);
+		List<Integer> ids = getIds(line);
+		// has previous binding
+		if(ids.size() > 1) {
+			int oldId = ids.get(1);
+			if(ids.size() == 3) // has parent id
+				oldId = ids.get(2);
+			_bindingSynonyms.put(oldId, funcDecl._binding);
+		}
+		return funcDecl;
 	}
 
 	public static String getType(String line) {
