@@ -69,14 +69,14 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		cursor.nextLine();
 		cursor.nextLine();
 		while (!cursor.theEnd()) {
-			IASTDeclaration decl = loadDeclaration(cursor);
+			IASTDeclaration decl = loadDeclaration(cursor, null);
 			if(decl != null)
 				_declarations.add(decl);
 		}
 		fixBindingSynonyms();
 	}
 	
-	static IASTDeclaration loadDeclaration(Cursor cursor) {
+	static IASTDeclaration loadDeclaration(Cursor cursor, ASTNode parent) {
 		String line = cursor.getLine();
 		if(line.contains("<invalid sloc>")) {
 			cursor.runToTheEnd();
@@ -85,7 +85,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		
 		String type = getType(line);
 		if (type.equals("FunctionDecl")) {
-			return loadFuncDecl(cursor);
+			return loadFuncDecl(cursor, false);
 		} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
 			List<Integer> ids = getIds(line);
 			int parentId = ids.get(1);
@@ -94,16 +94,16 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			if(binding == null)
 				logger.error("Prev Id {} not found", prevId);
 
-			CPPASTFunctionDeclaration funcDecl = loadFuncDecl(cursor);
+			CPPASTFunctionDeclaration funcDecl = loadFuncDecl(cursor, true);
 			
 			CPPClassType ct = (CPPClassType) getBinding(parentId);
 			ct._parent.replaceFuncDecl(binding, funcDecl);
 					
 			return funcDecl;
 		} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
-			return new CPPASTSimpleDeclaration(cursor.getSubCursor(), null);
+			return new CPPASTSimpleDeclaration(cursor.getSubCursor(), parent);
 		} else if (type.equals("NamespaceDecl")) {
-			return new CPPASTNamespaceDefinition(cursor.getSubCursor(), null);
+			return new CPPASTNamespaceDefinition(cursor.getSubCursor(), parent);
 		} else if (type.equals("EmptyDecl") || 
 				type.equals("UsingDecl") || 
 				type.equals("UsingDirectiveDecl") || 
@@ -117,9 +117,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 	
-	static CPPASTFunctionDeclaration loadFuncDecl(Cursor cursor) {
+	static CPPASTFunctionDeclaration loadFuncDecl(Cursor cursor, boolean isMethod) {
 		String line = cursor.getLine();
-		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), false, null);
+		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), isMethod, null);
 		List<Integer> ids = getIds(line);
 		// has previous binding
 		if(ids.size() > 1) {

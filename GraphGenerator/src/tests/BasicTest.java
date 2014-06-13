@@ -203,11 +203,11 @@ public class BasicTest {
 	public void deepMethod() {
 		TestsUtil.baseTest("deep_method");
 	}
-//
-//	@Test
-//	public void staticMember() {
-//		TestsUtil.baseTest("static_member");
-//	}
+
+	@Test
+	public void staticMember() {
+		TestsUtil.baseTest("static_member");
+	}
 
 	@Test
 	public void parentClassMethod() {

@@ -1,6 +1,7 @@
 
 class Class
 {
+public:
 	static int _globalVar;
 	static char *_strChar;
 	static int _global2;
