@@ -6,6 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier{
 
@@ -29,7 +30,17 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 	
 	CPPASTBaseDeclSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		if(CPPMethod.isStatic(cursor.getLine()))
+		List<Integer> ids = CPPASTTranslationUnit.getIds(cursor.getLine());
+		IBinding previousBinding = null;
+		if(ids.size() >= 3) {// has bind, prev and parent
+			int prev = ids.get(2);
+			previousBinding = CPPASTTranslationUnit.getBinding(prev);
+		}
+		if(previousBinding instanceof CPPMethod) {
+			if( ((CPPMethod)previousBinding)._isStatic ) {
+				_storageClass = IASTDeclSpecifier.sc_static;
+			}
+		} else if(CPPMethod.isStatic(cursor.getLine()))
 			_storageClass = IASTDeclSpecifier.sc_static;
 	}
 

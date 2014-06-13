@@ -33,7 +33,7 @@ public class ASTExpression {
 			return loadExpression(cursor, parent);
 		} else if(type.equals("CallExpr") || 
 				type.equals("CXXMemberCallExpr")) {
-			return new ASTFunctionCallExpression(cursor, parent);
+			return new CPPASTFunctionCallExpression(cursor, parent);
 		} else if(type.equals("CXXConstructExpr")) {
 			cursor.nextLine();
 			return new CPPASTExpressionList(cursor, parent);

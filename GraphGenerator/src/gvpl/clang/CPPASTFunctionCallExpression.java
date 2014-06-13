@@ -7,14 +7,14 @@ import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IType;
 
-public class ASTFunctionCallExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression{
+public class CPPASTFunctionCallExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTFunctionCallExpression{
 
-	static Logger logger = LogManager.getLogger(ASTFunctionCallExpression.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTFunctionCallExpression.class.getName());
 	
 	IASTExpression _functionNameExpression;
 	IASTExpressionList _parameterExpression;
 	
-	public ASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
+	public CPPASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.nextLine(), parent);
 		_functionNameExpression = ASTExpression.loadExpression(cursor, this);
 		_parameterExpression = new CPPASTExpressionList(cursor, this);
