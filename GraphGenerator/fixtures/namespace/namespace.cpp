@@ -8,12 +8,12 @@ public:
     int _memberA;
 };
 
-void soma(int a, int b);
+int soma(int a, int b);
 
 };
 
 
-void namespaceA::soma(int a, int b)
+int namespaceA::soma(int a, int b)
 {
     return a + b;
 }

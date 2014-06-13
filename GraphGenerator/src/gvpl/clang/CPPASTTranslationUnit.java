@@ -1,6 +1,8 @@
 package gvpl.clang;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -51,6 +53,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	private Map<Integer, IBinding> _idToBinding = new TreeMap<Integer, IBinding>();
 	private Map<String, IBinding> _typeNameToBinding = new TreeMap<String, IBinding>();
 	private Map<String, CPPConstructor> _constructorsBinding = new TreeMap<String, CPPConstructor>();
+	Deque<String> _namespaces = new ArrayDeque<String>();
 	static CPPASTTranslationUnit _instance;
 	static public IASTName lastClassName;
 	static String _fileName;
@@ -99,6 +102,14 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			return funcDecl;
 		} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
 			return new CPPASTSimpleDeclaration(cursor.getSubCursor(), null);
+		} else if (type.equals("NamespaceDecl")) {
+			return new CPPASTNamespaceDefinition(cursor.getSubCursor(), null);
+		} else if (type.equals("EmptyDecl") || 
+				type.equals("UsingDecl") || 
+				type.equals("UsingDirectiveDecl") || 
+				type.equals("UsingShadowDecl")) {
+			cursor.runToTheEnd();
+			return null;
 		} else {
 			logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
 			cursor.runToTheEnd();
@@ -307,6 +318,26 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 
+	public static void addNamespace(String namespaceName) {
+		_instance._namespaces.push(namespaceName);
+	}
+	
+	public static void removeNamespace() {
+		if(_instance._namespaces.size() == 0) {
+			logger.error("Empty namespaces stack");
+			return;
+		}
+		_instance._namespaces.remove();
+	}
+	
+	public static String getCurrentNamespace() {
+		String result = "";
+		for(String namespace : _instance._namespaces) {
+			result = result + namespace + "::";
+		}
+		return result;
+	}
+	
 	@Override
 	public boolean accept(ASTVisitor arg0) {
 		// TODO Auto-generated method stub

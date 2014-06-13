@@ -12,14 +12,25 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTNamespaceDefinition;
 public class CPPASTNamespaceDefinition extends ASTNode implements ICPPASTNamespaceDefinition{
 
 	List<IASTDeclaration> _decls = new ArrayList<IASTDeclaration>();
+	String _name;
 	
 	public CPPASTNamespaceDefinition(Cursor cursor, IASTNode parent) {
-		super(cursor.getLine(), parent);		
+		super(cursor.getLine(), parent);
+		String line = cursor.nextLine();
+		List<String> lines = CPPASTTranslationUnit.parseLine(line);
+		_name = lines.get(4);
+		CPPASTTranslationUnit.addNamespace(_name);
 		while (!cursor.theEnd()) {
 			IASTDeclaration decl = CPPASTTranslationUnit.loadDeclaration(cursor);
 			if(decl != null)
 				_decls.add(decl);
 		}
+		CPPASTTranslationUnit.removeNamespace();
+	}
+	
+	@Override
+	public String toString() {
+		return _name;
 	}
 
 	@Override
