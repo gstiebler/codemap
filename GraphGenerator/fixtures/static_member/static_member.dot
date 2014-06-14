@@ -2,28 +2,28 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000001 [ label = "0", style=filled, fillcolor="#E9FFE9", startinglines=12 ]
-	node_000002 [ label = "Class::_globalVar", startingline=12 ]
-	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
-	node_000004 [ label = "Class::_global2", startingline=13 ]
-	node_000015 [ label = "_intP_pointed", startingline=33 ]
+	node_000001 [ label = "0", style=filled, fillcolor="#E9FFE9", startinglines=13 ]
+	node_000002 [ label = "_globalVar", startingline=13 ]
+	node_000003 [ label = "18", style=filled, fillcolor="#E9FFE9", startinglines=14 ]
+	node_000004 [ label = "_global2", startingline=14 ]
+	node_000015 [ label = "_intP_pointed", startingline=34 ]
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "17_23_23";
-	node_000005 [ label = "b", startingline=25 ]
-	node_000006 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
-	node_000007 [ label = "Class::_global2", startingline=26 ]
-	node_000011 [ label = "c", startingline=28 ]
-	node_000013 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=33 ]
-	node_000014 [ label = "*_intP", startingline=33 ]
+startinglines = "18_24_24";
+	node_000005 [ label = "b", startingline=26 ]
+	node_000006 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=27 ]
+	node_000007 [ label = "_global2", startingline=27 ]
+	node_000011 [ label = "c", startingline=29 ]
+	node_000013 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=34 ]
+	node_000014 [ label = "*_intP", startingline=34 ]
 subgraph cluster_2 {
 label = "Class::func";
 parent = "cluster_1";
-startinglines = "25_26_27";
-	node_000008 [ label = "a", startingline=19 ]
-	node_000009 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=20 ]
-	node_000010 [ label = "Class::_globalVar", startingline=20 ]
+startinglines = "26_27_28";
+	node_000008 [ label = "a", startingline=20 ]
+	node_000009 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=21 ]
+	node_000010 [ label = "_globalVar", startingline=21 ]
 }
 }
 	node_000001 -> node_000002
