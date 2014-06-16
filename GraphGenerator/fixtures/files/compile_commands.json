@@ -1,0 +1,17 @@
+[
+  { "directory": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/",
+    "command": "C:/Projetos/clang/build/Release/bin/clang++ -Iinc_folder files.cpp",
+    "file": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/files.cpp" },
+    
+  { "directory": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/inc_folder/",
+    "command": "C:/Projetos/clang/build/Release/bin/clang++ soma2.cpp",
+    "file": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/inc_folder/soma2.cpp" },
+    
+  { "directory": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/sub_folder/",
+    "command": "C:/Projetos/clang/build/Release/bin/clang++ soma3.cpp",
+    "file": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/sub_folder/soma3.cpp" },
+    
+  { "directory": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/",
+    "command": "C:/Projetos/clang/build/Release/bin/clang++ static_func.cpp",
+    "file": "C:/Projetos/GVPL/GraphGenerator/fixtures/files/static_func.cpp" }
+]

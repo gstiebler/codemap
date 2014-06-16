@@ -1,6 +1,7 @@
 
 class ClassTest
 {
+public:
 	int _member;
 
 	static int staticFunc(int staticParam);

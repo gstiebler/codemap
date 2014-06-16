@@ -1,3 +1,4 @@
-inc_folder/soma2.cpp
-sub_folder/soma3.cpp
-static_func.cpp
+files.ast
+inc_folder/soma2.ast
+sub_folder/soma3.ast
+static_func.ast
