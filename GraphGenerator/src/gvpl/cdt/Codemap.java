@@ -101,7 +101,7 @@ public class Codemap {
 		for(String fileName : fileNames)
 		{
 			logger.debug(" -- ** Processing cpp: {}", fileName);
-			CPPASTTranslationUnit clangTranslationUnit = new CPPASTTranslationUnit(basePath, mainFile);
+			CPPASTTranslationUnit clangTranslationUnit = new CPPASTTranslationUnit(basePath, fileName);
 			translationUnits.add(clangTranslationUnit);
 		}
 		

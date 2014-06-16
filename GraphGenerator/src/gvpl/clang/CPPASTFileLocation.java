@@ -1,8 +1,5 @@
 package gvpl.clang;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
@@ -49,6 +46,9 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 			_line = Integer.parseInt(tp[lenthFile]);
 			_col = Integer.parseInt(tp[lenthFile + 1]);
 		}
+		
+		if(_file != null && _file.substring(0, 2).equals("./"))
+			_file = _file.substring(2, _file.length() - 2);
 	}
 	
 	public CPPASTFileLocation(String fileName) {
