@@ -15,25 +15,12 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.cdt.core.dom.ICodeReaderFactory;
-import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
-import org.eclipse.cdt.core.dom.ast.gnu.cpp.GPPLanguage;
-import org.eclipse.cdt.core.parser.CodeReader;
-import org.eclipse.cdt.core.parser.DefaultLogService;
-import org.eclipse.cdt.core.parser.IParserLogService;
-import org.eclipse.cdt.core.parser.IScannerInfo;
-import org.eclipse.cdt.core.parser.ScannerInfo;
-import org.eclipse.cdt.internal.core.parser.scanner2.FileCodeReaderFactory;
-import org.eclipse.core.runtime.CoreException;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -54,16 +41,12 @@ public class Codemap {
 	
 	public static AstInterpreterCDT execute(String basePath, String mainFile) {
 		CPPASTTranslationUnit clangTranslationUnit = new CPPASTTranslationUnit(basePath, mainFile);
-		
-		
-		
-		
+	
 		ScopeManager.reset();
 		DebugOptions.resetLines();
 		GraphNode.resetCounter();
 		FileDriver.resetCounter();
 
-		IParserLogService log = new DefaultLogService();
 		List<String> readIncludePaths = null;
 		Set<String> allIncludePaths = new LinkedHashSet<String>();
 		String includesFilePath = basePath + "includes.txt";
@@ -90,10 +73,6 @@ public class Codemap {
 			allIncludePaths.toArray(includePaths);
 		}
 
-		Map<String, String> definedSymbols = new LinkedHashMap<String, String>();
-		IScannerInfo info = new ScannerInfo(definedSymbols, includePaths);
-		ICodeReaderFactory readerFactory = FileCodeReaderFactory.getInstance();
-
 		AstInterpreterCDT astInterpreter = new AstInterpreterCDT(new gvpl.graph.Graph());
 		ScriptManager sm = new ScriptManager(basePath, astInterpreter);
 		astInterpreter.setScriptManager(sm);
@@ -118,32 +97,7 @@ public class Codemap {
 		OutputManager.setInstance();
 		OutputManager.getInstance().setSrcFiles(fileNames);
 		
-		List<IASTTranslationUnit> translationUnits = new ArrayList<IASTTranslationUnit>();
-		
-		for(String fileName : fileNames)
-		{
-			logger.debug(" -- ** Processing cpp: {}", fileName);
-			CodeLocation.setCurrentFileName(fileName);
-			String code = "";
-			try {
-				code = FileUtils.readFileToString(new File(fileName));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			CodeReader reader = new CodeReader(code.toCharArray());
-			IASTTranslationUnit translationUnit = null;
-			try {
-				translationUnit = GPPLanguage.getDefault().getASTTranslationUnit(reader, info,
-						readerFactory, null, log);
-				translationUnits.add(translationUnit);
-			} catch (CoreException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-		for(int i = 0; i < translationUnits.size(); ++i) {
+		for(int i = 0; i < 1; ++i) {
 			DebugOptions.setCurrCpp(fileNames.get(i));
 			CodeLocation.setCurrentFileName(fileNames.get(i));
 			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
