@@ -21,6 +21,7 @@ import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ast.IASTTranslationUnit;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -40,8 +41,6 @@ public class Codemap {
 	}
 	
 	public static AstInterpreterCDT execute(String basePath, String mainFile) {
-		CPPASTTranslationUnit clangTranslationUnit = new CPPASTTranslationUnit(basePath, mainFile);
-	
 		ScopeManager.reset();
 		DebugOptions.resetLines();
 		GraphNode.resetCounter();
@@ -97,12 +96,20 @@ public class Codemap {
 		OutputManager.setInstance();
 		OutputManager.getInstance().setSrcFiles(fileNames);
 		
-		for(int i = 0; i < 1; ++i) {
+		List<IASTTranslationUnit> translationUnits = new ArrayList<IASTTranslationUnit>();
+		
+		for(String fileName : fileNames)
+		{
+			logger.debug(" -- ** Processing cpp: {}", fileName);
+			CPPASTTranslationUnit clangTranslationUnit = new CPPASTTranslationUnit(basePath, mainFile);
+			translationUnits.add(clangTranslationUnit);
+		}
+		
+		for(int i = 0; i < translationUnits.size(); ++i) {
 			DebugOptions.setCurrCpp(fileNames.get(i));
 			CodeLocation.setCurrentFileName(fileNames.get(i));
 			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
-			// astInterpreter.loadDeclarations(translationUnits.get(i));
-			astInterpreter.loadDeclarations(clangTranslationUnit);
+			astInterpreter.loadDeclarations(translationUnits.get(i));
 		}
 		
 		astInterpreter.loadMain();
