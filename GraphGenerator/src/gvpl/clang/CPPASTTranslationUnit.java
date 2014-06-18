@@ -144,7 +144,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 	
 	public static String simplifyType(String line) {
-		return line.replace("class", "").replace("struct", "").replace("*", "").replace("&", "").trim();
+		String result = line.replace("class", "").replace("struct", "").replace("*", "").replace("&", "").trim();
+		return result.split(" ")[0];
 	}
 	
 	public static int hexStrToInt(String hexStr) {
@@ -163,7 +164,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 	
 	public static List<Integer> getIds(String line) {
-		List<String> parsedLine = parseLineSimple(line);
+		List<String> parsedLine = parseLineSimple(line, false);
 		
 		List<Integer> ids = new ArrayList<Integer>();
 		for(String pLine : parsedLine) {
@@ -174,7 +175,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return ids;
 	}
 	
-	private static List<String> parseLineSimple(String line) {
+	private static List<String> parseLineSimple(String line, boolean includePlic) {
 		List<String> result = new ArrayList<String>();
 		
 		String[] plic = line.split("'");
@@ -197,7 +198,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 					}
 				}
 			} else { // what's inside plics
-				result.add(plic[i]);
+				if(includePlic) {
+					result.add("'" + plic[i] + "'");
+				} else {
+					result.add(plic[i]);
+				}
 			}
 		}
 		
@@ -210,10 +215,21 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return result2;
 	}
 	
+	public static String getUserType(String line) {
+		List<String> lines = parseLineSimple(line, true);
+		String userType = "";
+		for(int i = lines.size() - 1; i >= 0; --i) {
+			userType = lines.get(i);
+			if(userType.substring(0, 1).equals("'"))
+				return userType.split("'")[1];
+		}
+		return userType;
+	}
+	
 	public static List<String> parseLine(String line) {
 		int dashIndex = line.indexOf('-');
 		String dash1 = line.substring(dashIndex + 1);
-		List<String> result = parseLineSimple(dash1);
+		List<String> result = parseLineSimple(dash1, false);
 		return result;
 	}
 	

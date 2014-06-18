@@ -47,13 +47,13 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	}
 
 	public IASTNode getDefinition() {
-//		IASTNode result = null;
-//		if(_parent._body != null)
-//			result = _parent._declarator;
-//		return _parent._declarator;
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		IASTNode result = null;
+		if(_parent._body != null)
+			result = _parent._declarator;
+		return result;
+//		// TODO Auto-generated method stub
+//		logger.error("Not implemented");
+//		return null;
 	}
 	
 	@Override

@@ -22,7 +22,10 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 			type = strings.get(5);
 		}
 		
-		if(type.equals("CXXMethod") || type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
+		if((type.equals("CXXMethod") || 
+				type.equals("CXXMethodDecl") || 
+				type.equals("CXXConstructorDecl")) &&
+					binding != null) {
 			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
 			if(CPPASTQualifiedName.isOperator(line) && ids.size() == 1)// if it's the operator declaration, the name is OperatorName
 				return new CPPASTOperatorName(binding, line, parent);

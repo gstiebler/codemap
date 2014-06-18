@@ -23,8 +23,12 @@ public class CPPASTFunctionDefinition extends CPPASTDeclaration implements org.e
 	
 	public CPPASTFunctionDefinition(Cursor cursor, boolean isMethod, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		_declSpec = new CPPASTSimpleDeclSpecifier(cursor, this);
 		String line = cursor.getLine();
+		String firstType = CPPASTTranslationUnit.getType(line);
+		if(firstType.equals("CXXConstructorDecl") || firstType.equals("CXXDestructorDecl"))
+			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, parent);
+		else
+			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), this);
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		List<String> strings = CPPASTTranslationUnit.parseLine(line);
 		
@@ -35,7 +39,6 @@ public class CPPASTFunctionDefinition extends CPPASTDeclaration implements org.e
 			nameIndex = strings.size() - 4;
 		_funcName = strings.get(nameIndex);
 
-		String firstType = CPPASTTranslationUnit.getType(line);
 		if(firstType.equals("CXXConstructorDecl")) {
 			_binding = new CPPConstructor(bindingInfo, _funcName, cursor.getSubCursor(), this);
 		} else if(isMethod)
