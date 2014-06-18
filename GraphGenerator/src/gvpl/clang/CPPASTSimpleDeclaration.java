@@ -11,7 +11,7 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 
 public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration {
 
-	static Logger logger = LogManager.getLogger(CPPASTFunctionDeclaration.class.getName());
+	static Logger logger = LogManager.getLogger(CPPASTSimpleDeclaration.class.getName());
 	
 	public List<IASTDeclarator> _declarators = new ArrayList<IASTDeclarator>();
 	IASTDeclSpecifier _declSpec;

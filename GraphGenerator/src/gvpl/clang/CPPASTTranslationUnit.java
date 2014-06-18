@@ -96,9 +96,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 			IASTDeclaration funcDecl = loadFuncDecl(cursor, true, null);
 			
-			if(funcDecl instanceof CPPASTFunctionDeclaration) {
+			if(funcDecl instanceof CPPASTFunctionDefinition) {
 				CPPClassType ct = (CPPClassType) getBinding(parentId);
-				ct._parent.replaceFuncDecl(binding, (CPPASTFunctionDeclaration)funcDecl);
+				ct._parent.replaceFuncDecl(binding, (CPPASTFunctionDefinition)funcDecl);
 			}
 					
 			return funcDecl;
@@ -121,7 +121,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	
 	static IASTDeclaration loadFuncDecl(Cursor cursor, boolean isMethod, ASTNode parent) {
 		String line = cursor.getLine();
-		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), isMethod, parent);
+		CPPASTFunctionDefinition funcDecl = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
 		List<Integer> ids = getIds(line);
 		// has previous binding
 		if(ids.size() > 1) {
@@ -323,8 +323,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				continue;
 			if(bindingOwner.owner instanceof CPPASTName) {
 				((CPPASTName)bindingOwner.owner)._binding = binding;
-			} else if (bindingOwner.owner instanceof CPPASTFunctionDeclaration) {
-				((CPPASTFunctionDeclaration)bindingOwner.owner)._binding = binding;
+			} else if (bindingOwner.owner instanceof CPPASTFunctionDefinition) {
+				((CPPASTFunctionDefinition)bindingOwner.owner)._binding = binding;
 			}
 		}
 	}

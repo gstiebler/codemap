@@ -20,9 +20,9 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	String _name;
 	boolean _isStatic = false;
 	String _hex;
-	CPPASTFunctionDeclaration _parent;
+	CPPASTFunctionDefinition _parent;
 	
-	public CPPFunction(BindingInfo bi, String name, Cursor cursor, CPPASTFunctionDeclaration parent) {
+	public CPPFunction(BindingInfo bi, String name, Cursor cursor, CPPASTFunctionDefinition parent) {
 		_parent = parent;
 		_bindingId = bi.bindingId;
 		_isStatic = isStatic(cursor.getLine());
