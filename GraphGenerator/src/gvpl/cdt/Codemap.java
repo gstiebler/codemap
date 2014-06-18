@@ -109,6 +109,7 @@ public class Codemap {
 			DebugOptions.setCurrCpp(fileNames.get(i));
 			CodeLocation.setCurrentFileName(fileNames.get(i));
 			logger.debug(" -*- Loading declarations {}", fileNames.get(i));
+			System.out.println("Processing TU from " + fileNames.get(i));
 			astInterpreter.loadDeclarations(translationUnits.get(i));
 		}
 		

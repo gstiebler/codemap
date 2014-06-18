@@ -122,7 +122,6 @@ public class Function extends BaseScopeCDT {
 		logger.debug("Loading declaration of func {}", _funcName);
 		
 		setName(calcName());
-		System.out.println("Named func " + this);
 		logger.debug("Storing func parameter. Func: {}, File: {}", _externalName, DebugOptions.getCurrCpp());
 		
 		_declLocation = CodeLocationCDT.NewFromFileLocation(decl);

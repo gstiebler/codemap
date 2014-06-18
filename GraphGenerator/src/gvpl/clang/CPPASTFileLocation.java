@@ -48,7 +48,7 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 		}
 		
 		if(_file != null && _file.substring(0, 2).equals("./"))
-			_file = _file.substring(2, _file.length() - 2);
+			_file = _file.substring(2, _file.length());
 	}
 	
 	public CPPASTFileLocation(String fileName) {
