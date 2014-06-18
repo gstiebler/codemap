@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ILinkage;
@@ -33,8 +31,11 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	}
 	
 	public static boolean isStatic(String line) {
-		List<String> strings = CPPASTTranslationUnit.parseLine(line);
-		return strings.size() > 6 && strings.get(6).equals("static");
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
+		if(!strings.containsKey("storageClass"))
+			return false;
+		String storageClass = strings.get("storageClass");
+		return storageClass.equals("static");
 	}
 	
 	public String toString() {

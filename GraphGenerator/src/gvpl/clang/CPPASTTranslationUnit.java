@@ -45,6 +45,45 @@ class BindingOwner {
 	}
 }
 
+class ClangLine {
+	Map<String, List<String> > _values = new TreeMap<String, List<String> >();
+
+	
+	public static List<String> initList(String firstElement) {
+		List<String> result = new ArrayList<String>();
+		result.add(firstElement);
+		return result;
+	}
+	
+	public void put(String key, String value) {
+		if(_values.containsKey(key)) {
+			_values.get(key).add(value);
+		} else {
+			_values.put(key, initList(value));
+		}
+	}
+	
+	public String get(String key) {
+		return _values.get(key).get(0);
+	}
+	
+	public String getAndCheck(String key) {
+		if(_values.containsKey(key)) {
+			return get(key);
+		} else {
+			return "";
+		}
+	}
+	
+	public String get(String key, int index) {
+		return _values.get(key).get(index);
+	}
+	
+	public boolean containsKey(String key) {
+		return _values.containsKey(key);
+	}
+}
+
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
 
 	static Logger logger = LogManager.getLogger(CPPASTTranslationUnit.class.getName());
@@ -233,53 +272,92 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return result;
 	}
 	
+	public static String[] breakIn2(String line, char splitter) {
+		String[] result = new String[2];
+		int pos = line.indexOf(splitter);
+		result[0] = line.substring(0, pos);
+		result[1] = line.substring(pos + 1, line.length());
+		
+		return result;
+	}
+	
+	public static ClangLine lineToMap(String line) {
+		ClangLine result = new ClangLine();
+		String[] lines = breakIn2(line, ' ');
+		String mainType = lines[0].split("-")[1];
+		result.put("mainType", mainType);
+		line = lines[1];
+		while(true) {
+			lines = breakIn2(line, ':');
+			String key = lines[0];
+			char firstChar = lines[1].charAt(0);
+			if(firstChar == '\'') {
+				String excludeFirstchar = lines[1].substring(1);
+				lines = breakIn2(excludeFirstchar, '\'');
+			} else {
+				lines = breakIn2(lines[1], ' ');
+			}
+			String value = lines[0];
+			result.put(key, value);
+			line = lines[1];
+			if(line.length() == 0)
+				break;
+		}
+		return result;
+	}
+	
 	public static BindingInfo parseBindingInfo(String line) {
 		BindingInfo result = new BindingInfo();
-		List<String> parsedLine = parseLine(line);
+		ClangLine parsedLine = lineToMap(line);
 
-		result.bindingId = hexStrToInt(parsedLine.get(1));
+		result.bindingId = hexStrToInt(parsedLine.get("pointer"));
 		
-		if(parsedLine.get(0).equals("public")) {
-			return result;
-		}
-		
-		if(parsedLine.get(2).equals("prev")) {
-			result.location = parsedLine.get(4);
-			result.type = parsedLine.get(7);
-			result.name = result.type;
-			return result;
-		} else if (parsedLine.size() >= 5 && parsedLine.get(4).equals("prev")) {
-			result.location = parsedLine.get(6);
-			result.type = parsedLine.get(9);
-			result.name = parsedLine.get(8);
-			return result;
-		}
-		
-		if(parsedLine.get(0).equals("CXXNewExpr")) {
-			result.location = parsedLine.get(2);
-			result.type = parsedLine.get(3);
-			return result;
-		} else if (parsedLine.get(0).equals("CXXCtorInitializer")) {
-			result.bindingId = hexStrToInt(parsedLine.get(2));
-			result.type = parsedLine.get(3);
-			result.name = parsedLine.get(4);
-			return result;
-		} else if (parsedLine.get(0).equals("CXXConstructExpr")) {
-			result.location = parsedLine.get(2);
-			result.type = parsedLine.get(3);
-			result.name = parsedLine.get(4);
-			return result;
-		}
-		
-		result.location = parsedLine.get(3);
-		result.name = parsedLine.get(4);
-		if(parsedLine.get(0).equals("ParmVarDecl")) {
-			if(parsedLine.size() < 6)
-				return result;
-		}
-		
-		result.type = parsedLine.get(5);
+		result.location = parsedLine.get("srcRange");
+		result.type = parsedLine.get("type");
+		result.type = parsedLine.get("name");
 		return result;
+		
+//		if(parsedLine.get(0).equals("public")) {
+//			return result;
+//		}
+//		
+//		if(parsedLine.get(2).equals("prev")) {
+//			result.location = parsedLine.get("srcRange").get(0);
+//			result.type = parsedLine.get("type").get(0);
+//			result.name = result.type;
+//			return result;
+//		} else if (parsedLine.size() >= 5 && parsedLine.get(4).equals("prev")) {
+//			result.location = parsedLine.get("srcRange").get(0);
+//			result.type = parsedLine.get("type").get(0);
+//			result.type = parsedLine.get("name").get(0);
+//			return result;
+//		}
+//		
+//		if(parsedLine.get(0).equals("CXXNewExpr")) {
+//			result.location = parsedLine.get("srcRange").get(0);
+//			result.type = parsedLine.get("type").get(0);
+//			return result;
+//		} else if (parsedLine.get(0).equals("CXXCtorInitializer")) {
+//			result.bindingId = hexStrToInt(parsedLine.get("pointer").get(0));
+//			result.type = parsedLine.get("type").get(0);
+//			result.type = parsedLine.get("name").get(0);
+//			return result;
+//		} else if (parsedLine.get(0).equals("CXXConstructExpr")) {
+//			result.location = parsedLine.get(2);
+//			result.type = parsedLine.get(3);
+//			result.name = parsedLine.get(4);
+//			return result;
+//		}
+//		
+//		result.location = parsedLine.get(3);
+//		result.name = parsedLine.get(4);
+//		if(parsedLine.get(0).equals("ParmVarDecl")) {
+//			if(parsedLine.size() < 6)
+//				return result;
+//		}
+//		
+//		result.type = parsedLine.get(5);
+//		return result;
 	}
 
 	public static void addBinding(BindingInfo bindingInfo, IBinding binding) {
