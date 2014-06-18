@@ -43,17 +43,8 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
 			if(type.equals("CXXMethodDecl") || type.equals("CXXDestructorDecl")) {
 				line = cursor.getLine();
-				CPPASTFunctionDeclaration funcDecl = CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this);
+				IASTDeclaration funcDecl = CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this);
 				_members.add(funcDecl);
-				
-				List<Integer> ids = CPPASTTranslationUnit.getIds(line);
-				// has previous binding
-				if(ids.size() > 1) {
-					int oldId = ids.get(1);
-					if(ids.size() == 3) // has parent id
-						oldId = ids.get(2);
-					CPPASTTranslationUnit._instance._bindingSynonyms.put(oldId, funcDecl._binding);
-				}
 			} else if(type.equals("FieldDecl") || type.equals("VarDecl")) {
 				_members.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXConstructorDecl")) {

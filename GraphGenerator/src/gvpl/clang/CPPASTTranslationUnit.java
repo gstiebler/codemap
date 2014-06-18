@@ -129,6 +129,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			_instance._bindingSynonyms.put(oldId, funcDecl._binding);
 		}
 		return funcDecl;
+//		if(funcDecl._body != null)
+//			return funcDecl;
+//		else
+//			return new CPPASTSimpleDeclaration(line, parent, funcDecl);
 	}
 
 	public static String getType(String line) {
