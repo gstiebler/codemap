@@ -21,6 +21,7 @@ public class CPPASTUnaryExpression extends ASTNode implements IASTUnaryExpressio
 		
 		_opMap.put("&", IASTUnaryExpression.op_amper);
 		_opMap.put("*", IASTUnaryExpression.op_star);
+		_opMap.put("!", IASTUnaryExpression.op_not);
 		// TODO diferentiate prefixed and postfiexed
 		_opMap.put("++", IASTUnaryExpression.op_postFixIncr);
 		

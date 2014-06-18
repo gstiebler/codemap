@@ -5,8 +5,8 @@ import org.eclipse.cdt.core.dom.ast.IASTPointer;
 
 public class CPPASTPointer extends ASTNode implements IASTPointer {
 
-	public CPPASTPointer(Cursor cursor, IASTNode parent) {
-		super(cursor.getLine(), parent);
+	public CPPASTPointer(String line, IASTNode parent) {
+		super(line, parent);
 	}
 
 	@Override

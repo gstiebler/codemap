@@ -189,10 +189,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("events");
 //	}
 //
-//	@Test
-//	public void funcReturnPointer() {
-//		TestsUtil.baseTest("func_return_pointer");
-//	}
+	@Test
+	public void funcReturnPointer() {
+		TestsUtil.baseTest("func_return_pointer");
+	}
 
 	@Test
 	public void globalVar() {
