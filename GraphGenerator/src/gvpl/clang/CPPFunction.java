@@ -20,8 +20,10 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	String _name;
 	boolean _isStatic = false;
 	String _hex;
+	CPPASTFunctionDeclaration _parent;
 	
-	public CPPFunction(BindingInfo bi, String name, Cursor cursor) {
+	public CPPFunction(BindingInfo bi, String name, Cursor cursor, CPPASTFunctionDeclaration parent) {
+		_parent = parent;
 		_bindingId = bi.bindingId;
 		_isStatic = isStatic(cursor.getLine());
 		CPPASTTranslationUnit.addBinding(bi, this);
@@ -45,6 +47,10 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 	}
 
 	public IASTNode getDefinition() {
+//		IASTNode result = null;
+//		if(_parent._body != null)
+//			result = _parent._declarator;
+//		return _parent._declarator;
 		// TODO Auto-generated method stub
 		logger.error("Not implemented");
 		return null;

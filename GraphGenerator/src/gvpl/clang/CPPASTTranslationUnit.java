@@ -85,7 +85,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		
 		String type = getType(line);
 		if (type.equals("FunctionDecl")) {
-			return loadFuncDecl(cursor, false);
+			return loadFuncDecl(cursor, false, null);
 		} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
 			List<Integer> ids = getIds(line);
 			int parentId = ids.get(1);
@@ -94,7 +94,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			if(binding == null)
 				logger.error("Prev Id {} not found", prevId);
 
-			CPPASTFunctionDeclaration funcDecl = loadFuncDecl(cursor, true);
+			CPPASTFunctionDeclaration funcDecl = loadFuncDecl(cursor, true, null);
 			
 			CPPClassType ct = (CPPClassType) getBinding(parentId);
 			ct._parent.replaceFuncDecl(binding, funcDecl);
@@ -117,9 +117,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 	
-	static CPPASTFunctionDeclaration loadFuncDecl(Cursor cursor, boolean isMethod) {
+	static CPPASTFunctionDeclaration loadFuncDecl(Cursor cursor, boolean isMethod, ASTNode parent) {
 		String line = cursor.getLine();
-		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), isMethod, null);
+		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), isMethod, parent);
 		List<Integer> ids = getIds(line);
 		// has previous binding
 		if(ids.size() > 1) {

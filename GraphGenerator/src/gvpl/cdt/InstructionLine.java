@@ -670,8 +670,7 @@ public class InstructionLine {
 		}
 
 		List<FuncParameter> parameterValues = loadFunctionParameters(func, paramExpr);
-		Function loadFunction = _astInterpreter.getFuncId(idExprBinding);
-		return loadFunction.addFuncRef(parameterValues, _gvplGraph, _parentBaseScope);
+		return func.addFuncRef(parameterValues, _gvplGraph, _parentBaseScope);
 	}
 	
 	/**

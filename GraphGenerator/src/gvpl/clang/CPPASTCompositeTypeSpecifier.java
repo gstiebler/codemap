@@ -43,7 +43,7 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			String type = CPPASTTranslationUnit.getType( cursor.getLine() );
 			if(type.equals("CXXMethodDecl") || type.equals("CXXDestructorDecl")) {
 				line = cursor.getLine();
-				CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, this);
+				CPPASTFunctionDeclaration funcDecl = CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this);
 				_members.add(funcDecl);
 				
 				List<Integer> ids = CPPASTTranslationUnit.getIds(line);
@@ -59,7 +59,7 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			} else if(type.equals("CXXConstructorDecl")) {
 				List<Integer> ids = CPPASTTranslationUnit.getIds(cursor.getLine());
 				if(ids.size() == 1) {
-					_members.add(new CPPASTFunctionDeclaration(cursor.getSubCursor(), true, this));
+					_members.add(CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this));
 				} else {
 					cursor.runToTheEnd();
 				}
