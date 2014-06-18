@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.common.BaseScope;
+import gvpl.common.ClassDecl;
 import gvpl.common.ClassVar;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -519,7 +520,8 @@ public class InstructionLine {
 		Value rhsValue = _parentBaseScope.getValueFromExpr(rhsOp);
 		
 		int operator = binExpr.getOperator();
-		MemberFunc opFunc = lhsVar.getClassDecl().getOpFunc(operator);
+		ClassDecl classDecl = lhsVar.getClassDecl();
+		MemberFunc opFunc = classDecl.getOpFunc(operator);
 		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
 		parameterValues.add(new FuncParameter(rhsValue, IndirectionType.E_REFERENCE));
 		if(opFunc == null) {

@@ -14,22 +14,20 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 	public static CPPASTName loadASTName(IBinding binding, String line, IASTNode parent) {
 		if(binding == null)
 			logger.error("Binding should not be null");
-		BindingInfo bi = CPPASTTranslationUnit.parseBindingInfo(line);
 
 		List<String> strings = CPPASTTranslationUnit.parseLine(line);
-		// TODO improve check if the function is an operator
-		if(strings.size() >= 5) {
-			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
-			int index = 4;
-			if(ids.size() == 3)
-				index = 8;
-			
-			if(strings.get(index).contains("operator"))
-				return new CPPASTOperatorName(binding, line, parent);
+		
+		String type = CPPASTTranslationUnit.getType(line);
+		if(type.equals("DeclRefExpr")) { 
+			type = strings.get(5);
 		}
 		
-		if(bi.type.equals("CXXMethod")) {
-			return new CPPASTQualifiedName(binding, line, parent);
+		if(type.equals("CXXMethod") || type.equals("CXXMethodDecl")) {
+			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
+			if(CPPASTQualifiedName.isOperator(line) && ids.size() == 1)// if it's the operator declaration, the name is OperatorName
+				return new CPPASTOperatorName(binding, line, parent);
+			else // otherwise it will be QualifiedName with OperatorName inside
+				return new CPPASTQualifiedName(binding, line, parent);
 		} else
 			return new CPPASTName(binding, line, parent);
 	}

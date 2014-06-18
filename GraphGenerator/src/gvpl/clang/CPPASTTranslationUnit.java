@@ -121,19 +121,19 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	
 	static IASTDeclaration loadFuncDecl(Cursor cursor, boolean isMethod, ASTNode parent) {
 		String line = cursor.getLine();
-		CPPASTFunctionDefinition funcDecl = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
+		CPPASTFunctionDefinition funcDefinition = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
 		List<Integer> ids = getIds(line);
 		// has previous binding
 		if(ids.size() > 1) {
 			int oldId = ids.get(1);
 			if(ids.size() == 3) // has parent id
 				oldId = ids.get(2);
-			_instance._bindingSynonyms.put(oldId, funcDecl._binding);
+			_instance._bindingSynonyms.put(oldId, funcDefinition._binding);
 		}
-		if(funcDecl._body != null || isMethod)
-			return funcDecl;
-		else {
-			return new CPPASTSimpleDeclaration(line, parent, funcDecl._declarator);
+		if(funcDefinition._body != null) {
+			return funcDefinition;
+		} else {
+			return new CPPASTSimpleDeclaration(line, parent, funcDefinition._declarator);
 		}
 	}
 

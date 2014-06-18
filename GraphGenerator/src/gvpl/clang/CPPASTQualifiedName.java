@@ -1,5 +1,7 @@
 package gvpl.clang;
 
+import java.util.List;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -15,8 +17,26 @@ public class CPPASTQualifiedName extends CPPASTName implements org.eclipse.cdt.c
 	public CPPASTQualifiedName(IBinding binding, String line, IASTNode parent) {
 		super(binding, line, parent);
 		_names[0] = ((CPPMethod) binding).className;
-		_names[1] = this;
-		// TODO Auto-generated constructor stub
+		
+		if(isOperator(line))
+			_names[1] = new CPPASTOperatorName(binding, line, parent);
+		else
+			_names[1] = this;
+	}
+	
+	public static boolean isOperator(String line) {
+		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		// TODO improve check if the function is an operator
+		if(strings.size() >= 5) {
+			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
+			int index = 4;
+			if(ids.size() == 3)
+				index = 8;
+			
+			if(strings.get(index).contains("operator"))
+				return true;
+		}
+		return false;
 	}
 
 	@Override
