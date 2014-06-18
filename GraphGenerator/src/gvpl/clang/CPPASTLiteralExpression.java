@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -16,8 +14,8 @@ public class CPPASTLiteralExpression extends ASTNode implements org.eclipse.cdt.
 	public CPPASTLiteralExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
-		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
-		_value = parsedLine.get(4);
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
+		_value = parsedLine.get("literal");
 	}
 	
 	public String toString() {

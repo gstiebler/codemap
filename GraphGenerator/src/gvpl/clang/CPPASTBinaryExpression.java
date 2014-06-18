@@ -25,17 +25,12 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 	public CPPASTBinaryExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
-		List<String> parsedLine = CPPASTTranslationUnit.parseLine(line);
-		
-		if(parsedLine.get(0).equals("BinaryOperator"))
-			_opStr = parsedLine.get( parsedLine.size() - 1 );
-		else if(parsedLine.get(0).equals("CXXOperatorCallExpr")) {
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
+		String type = parsedLine.get("mainType");
+		if(type.equals("CXXOperatorCallExpr"))
 			cursor.nextLine();
-			List<String> currParsedLine = CPPASTTranslationUnit.parseLine(cursor.nextLine());
-			_opStr = currParsedLine.get(7);
-			_opStr = _opStr.split("operator")[1];
-		} else
-			_opStr = parsedLine.get( 5 );
+			
+		_opStr = parsedLine.get("binOpcode");
 		
 		_operand1 = ASTExpression.loadExpression(cursor, this);
 		_operand2 = ASTExpression.loadExpression(cursor, this);

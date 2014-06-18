@@ -15,10 +15,9 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 		if(binding == null)
 			logger.error("Binding should not be null");
 
-		List<String> strings = CPPASTTranslationUnit.parseLine(line);
-		
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("DeclRefExpr")) { 
+			List<String> strings = CPPASTTranslationUnit.parseLine(line);
 			type = strings.get(5);
 		}
 		

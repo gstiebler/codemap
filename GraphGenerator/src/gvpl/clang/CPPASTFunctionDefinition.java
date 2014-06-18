@@ -30,14 +30,9 @@ public class CPPASTFunctionDefinition extends CPPASTDeclaration implements org.e
 		else
 			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), this);
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
-		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 		
-		int nameIndex = strings.size() - 2;
-		if(strings.get(strings.size() - 1).equals("static"))
-			nameIndex = strings.size() - 3;
-		else if (strings.get(strings.size() - 1).equals("pure"))
-			nameIndex = strings.size() - 4;
-		_funcName = strings.get(nameIndex);
+		_funcName = strings.get("name");
 
 		if(firstType.equals("CXXConstructorDecl")) {
 			_binding = new CPPConstructor(bindingInfo, _funcName, cursor.getSubCursor(), this);

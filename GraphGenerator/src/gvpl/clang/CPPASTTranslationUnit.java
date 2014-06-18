@@ -47,7 +47,6 @@ class BindingOwner {
 
 class ClangLine {
 	Map<String, List<String> > _values = new TreeMap<String, List<String> >();
-
 	
 	public static List<String> initList(String firstElement) {
 		List<String> result = new ArrayList<String>();
@@ -275,16 +274,22 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	public static String[] breakIn2(String line, char splitter) {
 		String[] result = new String[2];
 		int pos = line.indexOf(splitter);
-		result[0] = line.substring(0, pos);
-		result[1] = line.substring(pos + 1, line.length());
+		if(pos >= 0) {
+			result[0] = line.substring(0, pos);
+			result[1] = line.substring(pos + 1, line.length());
+		} else {
+			result[0] = line;
+			result[1] = "";
+		}
 		
 		return result;
 	}
 	
 	public static ClangLine lineToMap(String line) {
 		ClangLine result = new ClangLine();
-		String[] lines = breakIn2(line, ' ');
-		String mainType = lines[0].split("-")[1];
+		String[] lines = breakIn2(line, '-');
+		lines = breakIn2(lines[1], ' ');
+		String mainType = lines[0];
 		result.put("mainType", mainType);
 		line = lines[1];
 		while(true) {
@@ -298,7 +303,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				lines = breakIn2(lines[1], ' ');
 			}
 			String value = lines[0];
-			result.put(key, value);
+			result.put(key.trim(), value);
 			line = lines[1];
 			if(line.length() == 0)
 				break;
@@ -314,7 +319,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		
 		result.location = parsedLine.get("srcRange");
 		result.type = parsedLine.get("type");
-		result.type = parsedLine.get("name");
+		result.name = parsedLine.get("name");
 		return result;
 		
 //		if(parsedLine.get(0).equals("public")) {
