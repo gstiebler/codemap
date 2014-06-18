@@ -25,18 +25,10 @@ public class CPPASTQualifiedName extends CPPASTName implements org.eclipse.cdt.c
 	}
 	
 	public static boolean isOperator(String line) {
-		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 		// TODO improve check if the function is an operator
-		if(strings.size() >= 5) {
-			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
-			int index = 4;
-			if(ids.size() == 3)
-				index = 8;
-			
-			if(strings.get(index).contains("operator"))
-				return true;
-		}
-		return false;
+		String funcName = strings.getAndCheck("name");
+		return funcName.contains("operator");
 	}
 
 	@Override

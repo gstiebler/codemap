@@ -26,8 +26,8 @@ public class CPPClassType implements org.eclipse.cdt.core.dom.ast.cpp.ICPPClassT
 	public CPPClassType(String line, CPPASTCompositeTypeSpecifier parent) {
 		_parent = parent;
 		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
-		_name = _bindingInfo.type;
-		String typeName = _bindingInfo.type;
+		_name = _bindingInfo.name;
+		String typeName = _bindingInfo.name;
 		String compositeTypeName = CPPASTTranslationUnit.getCurrentNamespace() + typeName;
 		CPPASTTranslationUnit.addBinding(compositeTypeName, this);
 		CPPASTTranslationUnit.addBinding(_bindingInfo, this);

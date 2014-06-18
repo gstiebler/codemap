@@ -17,8 +17,8 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 
 		String type = CPPASTTranslationUnit.getType(line);
 		if(type.equals("DeclRefExpr")) { 
-			List<String> strings = CPPASTTranslationUnit.parseLine(line);
-			type = strings.get(5);
+			ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
+			type = strings.get("kindName");
 		}
 		
 		if((type.equals("CXXMethod") || 

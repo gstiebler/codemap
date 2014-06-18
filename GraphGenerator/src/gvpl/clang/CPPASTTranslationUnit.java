@@ -295,6 +295,21 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		while(true) {
 			lines = breakIn2(line, ':');
 			String key = lines[0];
+			{
+				String[] parsed = key.split(" ");
+				for(int i = parsed.length - 1; i >= 0; --i) {
+					if(parsed[i].length() > 0) {
+						key = parsed[i];
+						break;
+					}
+				}
+			}
+			if(lines[1].length() == 0) {
+				line = lines[1];
+				if(line.length() == 0)
+					break;
+				continue;
+			}
 			char firstChar = lines[1].charAt(0);
 			if(firstChar == '\'') {
 				String excludeFirstchar = lines[1].substring(1);
@@ -318,8 +333,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		result.bindingId = hexStrToInt(parsedLine.get("pointer"));
 		
 		result.location = parsedLine.get("srcRange");
-		result.type = parsedLine.get("type");
-		result.name = parsedLine.get("name");
+		result.type = parsedLine.getAndCheck("type");
+		result.name = parsedLine.getAndCheck("name");
 		return result;
 		
 //		if(parsedLine.get(0).equals("public")) {
