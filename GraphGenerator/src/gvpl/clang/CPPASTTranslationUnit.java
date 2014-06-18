@@ -94,10 +94,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			if(binding == null)
 				logger.error("Prev Id {} not found", prevId);
 
-			CPPASTFunctionDeclaration funcDecl = loadFuncDecl(cursor, true, null);
+			IASTDeclaration funcDecl = loadFuncDecl(cursor, true, null);
 			
-			CPPClassType ct = (CPPClassType) getBinding(parentId);
-			ct._parent.replaceFuncDecl(binding, funcDecl);
+			if(funcDecl instanceof CPPASTFunctionDeclaration) {
+				CPPClassType ct = (CPPClassType) getBinding(parentId);
+				ct._parent.replaceFuncDecl(binding, (CPPASTFunctionDeclaration)funcDecl);
+			}
 					
 			return funcDecl;
 		} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
@@ -117,7 +119,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 	
-	static CPPASTFunctionDeclaration loadFuncDecl(Cursor cursor, boolean isMethod, ASTNode parent) {
+	static IASTDeclaration loadFuncDecl(Cursor cursor, boolean isMethod, ASTNode parent) {
 		String line = cursor.getLine();
 		CPPASTFunctionDeclaration funcDecl = new CPPASTFunctionDeclaration(cursor.getSubCursor(), isMethod, parent);
 		List<Integer> ids = getIds(line);
@@ -128,11 +130,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				oldId = ids.get(2);
 			_instance._bindingSynonyms.put(oldId, funcDecl._binding);
 		}
-		return funcDecl;
-//		if(funcDecl._body != null)
-//			return funcDecl;
-//		else
-//			return new CPPASTSimpleDeclaration(line, parent, funcDecl);
+		if(funcDecl._body != null || isMethod)
+			return funcDecl;
+		else {
+			return new CPPASTSimpleDeclaration(line, parent, funcDecl._declarator);
+		}
 	}
 
 	public static String getType(String line) {
