@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -22,8 +20,8 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		IBinding binding = null;
 		if(firstType.equals("CXXNewExpr")) {
 			cursor.nextLine();
-			List<String> stringsConstr = CPPASTTranslationUnit.parseLine(cursor.getLine());
-			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, stringsConstr.get(4));
+			ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
+			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, strings.get("name"));
 		} else {
 			binding = CPPASTTranslationUnit.getBinding(simpleType);
 		}

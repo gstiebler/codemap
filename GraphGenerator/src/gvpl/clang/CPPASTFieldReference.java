@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -20,8 +18,8 @@ public class CPPASTFieldReference extends ASTNode implements IASTFieldReference 
 	
 	public CPPASTFieldReference(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		List<String> lines = CPPASTTranslationUnit.parseLine(cursor.getLine());
-		String bindingStr = lines.get(lines.size() - 1);
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+		String bindingStr = strings.get("pointer", 1);
 		int bindingId = CPPASTTranslationUnit.hexStrToInt(bindingStr);
 		IBinding binding = CPPASTTranslationUnit.getBinding(bindingId);
 		_fieldName = CPPASTName.loadASTName(binding, cursor.nextLine(), this);

@@ -1,7 +1,6 @@
 package gvpl.clang;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
@@ -17,7 +16,7 @@ public class CPPASTUnaryExpression extends ASTNode implements IASTUnaryExpressio
 	
 	public CPPASTUnaryExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
 		
 		_opMap.put("&", IASTUnaryExpression.op_amper);
 		_opMap.put("*", IASTUnaryExpression.op_star);
@@ -25,7 +24,7 @@ public class CPPASTUnaryExpression extends ASTNode implements IASTUnaryExpressio
 		// TODO diferentiate prefixed and postfiexed
 		_opMap.put("++", IASTUnaryExpression.op_postFixIncr);
 		
-		String operatorStr = strings.get(strings.size() - 1);
+		String operatorStr = strings.get("unaryOpcode");
 
 		if(!_opMap.containsKey(operatorStr)) {
 			logger.error("Operator {} not found");

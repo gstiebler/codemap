@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
@@ -16,7 +14,8 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 	
 	public static IASTDeclSpecifier loadDeclSpec(Cursor cursor, IASTNode parent) {
 		String line = cursor.getLine();
-		String type = CPPASTTranslationUnit.getUserType(line);
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
+		String type = strings.get("type");
 		// separates *
 		String simpleType = CPPASTTranslationUnit.simplifyType(type);
 		//TODO improve, it will not work with typedefs or defines

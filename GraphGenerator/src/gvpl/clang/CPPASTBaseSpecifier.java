@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IBinding;
@@ -13,8 +11,8 @@ public class CPPASTBaseSpecifier extends ASTNode implements ICPPASTBaseSpecifier
 	
 	public CPPASTBaseSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
-		String simpleType = CPPASTTranslationUnit.simplifyType(strings.get(1));
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+		String simpleType = CPPASTTranslationUnit.simplifyType(strings.get("type"));
 		IBinding binding = CPPASTTranslationUnit.getBinding(simpleType);
 		_name = CPPASTName.loadASTName(binding, cursor.getLine(), this);
 		cursor.nextLine();

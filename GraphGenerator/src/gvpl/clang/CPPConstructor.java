@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.DOMException;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPConstructor;
 
@@ -9,8 +7,8 @@ public class CPPConstructor  extends CPPMethod implements ICPPConstructor {
 
 	public CPPConstructor(BindingInfo bi, String name, Cursor cursor, CPPASTFunctionDefinition parent) {
 		super(bi, name, cursor, parent);
-		List<String> strings = CPPASTTranslationUnit.parseLine(cursor.getLine());
-		CPPASTTranslationUnit.addConstructorBinding(this, strings.get(4), strings.get(5));
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+		CPPASTTranslationUnit.addConstructorBinding(this, strings.get("name"), strings.get("type"));
 	}
 
 	@Override

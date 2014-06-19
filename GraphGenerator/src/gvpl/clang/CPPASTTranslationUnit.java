@@ -201,64 +201,6 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		}
 	}
 	
-	private static List<String> parseLineSimple(String line, boolean includePlic) {
-		List<String> result = new ArrayList<String>();
-		
-		String[] plic = line.split("'");
-		for(int i = 0; i < plic.length; ++i) {
-			if((i % 2) == 0) { // outside plics
-				
-				String[] postBico1 = plic[i].split("<");
-				String[] space = postBico1[0].split(" ");
-				for(String splited : space)
-					result.add(splited);
-				
-				for(int j = 1; j < postBico1.length; ++j) {
-					String[] postBico2 = postBico1[j].split(">");
-					result.add(postBico2[0]);
-					
-					for(int k = 1; k < postBico2.length; ++k) {
-						String[] space2 = postBico2[k].split(" ");
-						for(String splited : space2)
-							result.add(splited);
-					}
-				}
-			} else { // what's inside plics
-				if(includePlic) {
-					result.add("'" + plic[i] + "'");
-				} else {
-					result.add(plic[i]);
-				}
-			}
-		}
-		
-		List<String> result2 = new ArrayList<String>();
-		for(String res : result) {
-			if(!res.equals(""))
-				result2.add(res);
-		}
-			
-		return result2;
-	}
-	
-	public static String getUserType(String line) {
-		List<String> lines = parseLineSimple(line, true);
-		String userType = "";
-		for(int i = lines.size() - 1; i >= 0; --i) {
-			userType = lines.get(i);
-			if(userType.substring(0, 1).equals("'"))
-				return userType.split("'")[1];
-		}
-		return userType;
-	}
-	
-	public static List<String> parseLine(String line) {
-		int dashIndex = line.indexOf('-');
-		String dash1 = line.substring(dashIndex + 1);
-		List<String> result = parseLineSimple(dash1, false);
-		return result;
-	}
-	
 	public static String[] breakIn2(String line, char splitter) {
 		String[] result = new String[2];
 		int pos = line.indexOf(splitter);
