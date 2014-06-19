@@ -2,6 +2,7 @@ package gvpl.clang;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,7 +50,8 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 				_members.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXConstructorDecl")) {
 				ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
-				if(!parsedLine.containsKey("funcDecl")) {
+				Set<String> funcDecl = parsedLine.getSet("funcDecl");
+				if(!funcDecl.contains("noexcept-unevaluated")) {
 					_members.add(CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this));
 				} else {
 					cursor.runToTheEnd();

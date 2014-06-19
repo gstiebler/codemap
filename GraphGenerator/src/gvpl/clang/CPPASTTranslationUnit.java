@@ -3,8 +3,10 @@ package gvpl.clang;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -76,6 +78,17 @@ class ClangLine {
 	
 	public String get(String key, int index) {
 		return _values.get(key).get(index);
+	}
+	
+	public Set<String> getSet(String key) {
+		Set<String> result = new HashSet<String>();
+		if(_values.containsKey(key)) {
+			List<String> list = _values.get(key);
+			for(String listItem : list) {
+				result.add(listItem);
+			}
+		} 
+		return result;
 	}
 	
 	public boolean containsKey(String key) {
