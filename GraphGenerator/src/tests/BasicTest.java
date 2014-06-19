@@ -114,20 +114,20 @@ public class BasicTest {
 		TestsUtil.baseTest("if_member");
 	}
 
-//	@Test
-//	public void inheritance() {
-//		TestsUtil.baseTest("inheritance");
-//	}
+	@Test
+	public void inheritance() {
+		TestsUtil.baseTest("inheritance");
+	}
 
-//	@Test
-//	public void polymorphism() {
-//		TestsUtil.baseTest("polymorphism");
-//	}
+	@Test
+	public void polymorphism() {
+		TestsUtil.baseTest("polymorphism");
+	}
 
-//	@Test
-//	public void polymorphism2() {
-//		TestsUtil.baseTest("polymorphism2");
-//	}
+	@Test
+	public void polymorphism2() {
+		TestsUtil.baseTest("polymorphism2");
+	}
 //
 //	@Test
 //	public void polymorphism3() {
