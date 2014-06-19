@@ -84,46 +84,46 @@ public class BasicTest {
 		TestsUtil.baseTest("class_new");
 	}
 	
+//	@Test
+//	public void constructor() {
+//		TestsUtil.baseTest("constructor");
+//	}
+	
 	@Test
-	public void constructor() {
-		TestsUtil.baseTest("constructor");
+	public void constructorChain() {
+		TestsUtil.baseTest("constructor_chain");
 	}
-//	
-//	@Test
-//	public void constructorChain() {
-//		TestsUtil.baseTest("constructor_chain");
-//	}
-//
-//	@Test
-//	public void funcPointerReference() {
-//		TestsUtil.baseTest("func_pointer_reference");
-//	}
-//
-//	@Test
-//	public void ifPointer() {
-//		TestsUtil.baseTest("if_pointer");
-//	}
-//
-//	@Test
-//	public void ifPointer2() {
-//		TestsUtil.baseTest("if_pointer2");
-//	}
-//	
-//	@Test
-//	public void ifMember() {
-//		TestsUtil.baseTest("if_member");
-//	}
-//
+
+	@Test
+	public void funcPointerReference() {
+		TestsUtil.baseTest("func_pointer_reference");
+	}
+
+	@Test
+	public void ifPointer() {
+		TestsUtil.baseTest("if_pointer");
+	}
+
+	@Test
+	public void ifPointer2() {
+		TestsUtil.baseTest("if_pointer2");
+	}
+	
+	@Test
+	public void ifMember() {
+		TestsUtil.baseTest("if_member");
+	}
+
 //	@Test
 //	public void inheritance() {
 //		TestsUtil.baseTest("inheritance");
 //	}
-//
-//	@Test
-//	public void polymorphism() {
-//		TestsUtil.baseTest("polymorphism");
-//	}
-//
+
+	@Test
+	public void polymorphism() {
+		TestsUtil.baseTest("polymorphism");
+	}
+
 //	@Test
 //	public void polymorphism2() {
 //		TestsUtil.baseTest("polymorphism2");
@@ -133,42 +133,42 @@ public class BasicTest {
 //	public void polymorphism3() {
 //		TestsUtil.baseTest("polymorphism3");
 //	}
-//
-//	@Test
-//	public void array() {
-//		TestsUtil.baseTest("array");
-//	}
-//
-//	@Test
-//	public void destructor() {
-//		TestsUtil.baseTest("destructor");
-//	}
+
+	@Test
+	public void array() {
+		TestsUtil.baseTest("array");
+	}
+
+	@Test
+	public void destructor() {
+		TestsUtil.baseTest("destructor");
+	}
 //
 //	@Test
 //	public void thisPointer() {
 //		TestsUtil.baseTest("this");
 //	}
-//
+
 //	@Test
 //	public void operatorOverload() {
 //		TestsUtil.baseTest("operator_overload");
 //	}
-//
+
 //	@Test
 //	public void nestedIf() {
 //		TestsUtil.baseTest("nested_if");
 //	}
-//
-//	@Test
-//	public void switchTest() {
-//		TestsUtil.baseTest("switch");
-//	}
-//
-//	@Test
-//	public void garbage() {
-//		TestsUtil.baseTest("garbage");
-//	}
-//
+
+	@Test
+	public void switchTest() {
+		TestsUtil.baseTest("switch");
+	}
+
+	@Test
+	public void garbage() {
+		TestsUtil.baseTest("garbage");
+	}
+
 //	@Test
 //	public void postInitFunc() {
 //		TestsUtil.baseTest("post_init_func");
