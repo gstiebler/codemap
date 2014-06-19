@@ -25,7 +25,7 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 		String line = cursor.nextLine();
 		while(true) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
-			if(!type.equals("public")) //TODO private and protected
+			if(!type.equals("AccessSpecifier:public")) //TODO private and protected
 				break;
 
 			_baseSpecs.add(new CPPASTBaseSpecifier(cursor.getSubCursor(), this));

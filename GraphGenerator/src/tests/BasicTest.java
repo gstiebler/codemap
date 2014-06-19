@@ -208,11 +208,11 @@ public class BasicTest {
 	public void staticMember() {
 		TestsUtil.baseTest("static_member");
 	}
-//
-//	@Test
-//	public void parentClassMethod() {
-//		TestsUtil.baseTest("parent_class_method");
-//	}
+
+	@Test
+	public void parentClassMethod() {
+		TestsUtil.baseTest("parent_class_method");
+	}
 //
 //	@Test
 //	public void enumTest() {
@@ -234,10 +234,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("return");
 //	}
 //
-//	@Test
-//	public void classPointerAssignment() {
-//		TestsUtil.baseTest("class_pointer_assignment");
-//	}
+	@Test
+	public void classPointerAssignment() {
+		TestsUtil.baseTest("class_pointer_assignment");
+	}
 //
 //	@Test
 //	public void typedef() {
