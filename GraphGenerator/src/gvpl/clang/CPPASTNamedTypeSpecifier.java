@@ -21,7 +21,7 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		if(firstType.equals("CXXNewExpr")) {
 			cursor.nextLine();
 			ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
-			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, strings.get("type"));
+			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, strings.get("type", 1));
 		} else {
 			binding = CPPASTTranslationUnit.getBinding(simpleType);
 		}
