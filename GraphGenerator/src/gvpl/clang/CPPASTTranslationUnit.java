@@ -81,6 +81,11 @@ class ClangLine {
 	public boolean containsKey(String key) {
 		return _values.containsKey(key);
 	}
+	
+	@Override
+	public String toString() {
+		return _values.toString();
+	}
 }
 
 public class CPPASTTranslationUnit implements IASTTranslationUnit {
@@ -162,10 +167,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		CPPASTFunctionDefinition funcDefinition = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
 		ClangLine parsedLine = lineToMap(line);
 		// has previous binding
-		if(parsedLine.containsKey("prev")) {
-			int oldId = hexStrToInt( parsedLine.get("prev") );
-			if(parsedLine.containsKey("parent")) // has parent id
-				oldId = hexStrToInt( parsedLine.get("parent") );
+		if(parsedLine.containsKey("parent")) {
+			int oldId = hexStrToInt( parsedLine.get("parent") );
+			if(parsedLine.containsKey("prev")) // has parent id
+				oldId = hexStrToInt( parsedLine.get("prev") );
 			_instance._bindingSynonyms.put(oldId, funcDefinition._binding);
 		}
 		if(funcDefinition._body != null) {
@@ -366,7 +371,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			if(binding == null)
 				continue;
 			if(bindingOwner.owner instanceof CPPASTName) {
-				((CPPASTName)bindingOwner.owner)._binding = binding;
+				((CPPASTName)bindingOwner.owner).setBinding( binding );
 			} else if (bindingOwner.owner instanceof CPPASTFunctionDefinition) {
 				((CPPASTFunctionDefinition)bindingOwner.owner)._binding = binding;
 			}

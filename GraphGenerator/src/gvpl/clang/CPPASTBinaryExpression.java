@@ -1,7 +1,6 @@
 package gvpl.clang;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
@@ -11,30 +10,31 @@ import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IType;
 
+public class CPPASTBinaryExpression extends ASTNode implements
+		org.eclipse.cdt.core.dom.ast.IASTBinaryExpression {
 
-public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTBinaryExpression {
+	static Logger logger = LogManager.getLogger(CPPASTBinaryExpression.class
+			.getName());
 
-	static Logger logger = LogManager.getLogger(CPPASTBinaryExpression.class.getName());
-	
 	int _operator;
 	String _opStr;
 	IASTExpression _operand1;
 	IASTExpression _operand2;
 	Map<String, Integer> _opMap = new HashMap<String, Integer>();
-	
+
 	public CPPASTBinaryExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
 		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
 		String type = parsedLine.get("mainType");
-		if(type.equals("CXXOperatorCallExpr"))
+		if (type.equals("CXXOperatorCallExpr"))
 			cursor.nextLine();
-			
+
 		_opStr = parsedLine.get("binOpcode");
-		
+
 		_operand1 = ASTExpression.loadExpression(cursor, this);
 		_operand2 = ASTExpression.loadExpression(cursor, this);
-		
+
 		_opMap.put("*", IASTBinaryExpression.op_multiply);
 		_opMap.put("/", IASTBinaryExpression.op_divide);
 		_opMap.put("%", IASTBinaryExpression.op_modulo);
@@ -57,38 +57,36 @@ public class CPPASTBinaryExpression extends ASTNode implements org.eclipse.cdt.c
 		_opMap.put("-=", IASTBinaryExpression.op_minusAssign);
 		_opMap.put("/=", IASTBinaryExpression.op_divideAssign);
 
-/*
+		/*
+		 * 
+		 * // Field descriptor #8 I public static final int op_moduloAssign =
+		 * 20;
+		 * 
+		 * // Field descriptor #8 I public static final int op_shiftLeftAssign =
+		 * 23;
+		 * 
+		 * // Field descriptor #8 I public static final int op_shiftRightAssign
+		 * = 24;
+		 * 
+		 * // Field descriptor #8 I public static final int op_binaryAndAssign =
+		 * 25;
+		 * 
+		 * // Field descriptor #8 I public static final int op_binaryXorAssign =
+		 * 26;
+		 * 
+		 * // Field descriptor #8 I public static final int op_binaryOrAssign =
+		 * 27;
+		 * 
+		 * // Field descriptor #8 I public static final int op_equals = 28;
+		 * 
+		 * // Field descriptor #8 I public static final int op_notequals = 29;
+		 * 
+		 * // Field descriptor #8 I public static final int op_last = 29;
+		 */
 
-		// Field descriptor #8 I
-		public static final int op_moduloAssign = 20;
-
-		// Field descriptor #8 I
-		public static final int op_shiftLeftAssign = 23;
-
-		// Field descriptor #8 I
-		public static final int op_shiftRightAssign = 24;
-
-		// Field descriptor #8 I
-		public static final int op_binaryAndAssign = 25;
-
-		// Field descriptor #8 I
-		public static final int op_binaryXorAssign = 26;
-
-		// Field descriptor #8 I
-		public static final int op_binaryOrAssign = 27;
-
-		// Field descriptor #8 I
-		public static final int op_equals = 28;
-
-		// Field descriptor #8 I
-		public static final int op_notequals = 29;
-
-		// Field descriptor #8 I
-		public static final int op_last = 29;*/
-		
-		if(!_opMap.containsKey(_opStr))
+		if (!_opMap.containsKey(_opStr))
 			logger.error("Operator {} not found");
-		
+
 		_operator = _opMap.get(_opStr);
 	}
 

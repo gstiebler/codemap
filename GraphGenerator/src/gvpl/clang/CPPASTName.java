@@ -7,7 +7,7 @@ import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTName{
 
-	public IBinding _binding = null;
+	private IBinding _binding = null;
 	
 	public static CPPASTName loadASTName(IBinding binding, String line, IASTNode parent) {
 		if(binding == null)
@@ -44,7 +44,6 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 		return _binding.toString();
 	}
 	
-
 	@Override
 	public IBinding getBinding() {
 		return _binding;
@@ -98,5 +97,7 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 	}
 
 	@Override
-	public void setBinding(IBinding arg0) {}
+	public void setBinding(IBinding binding) {
+		_binding = binding;
+	}
 }
