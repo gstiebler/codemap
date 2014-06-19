@@ -20,8 +20,8 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		IBinding binding = null;
 		if(firstType.equals("CXXNewExpr")) {
 			cursor.nextLine();
-			ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
-			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, strings.get("name"));
+			ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, strings.get("type"));
 		} else {
 			binding = CPPASTTranslationUnit.getBinding(simpleType);
 		}

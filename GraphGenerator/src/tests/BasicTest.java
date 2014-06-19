@@ -43,47 +43,47 @@ public class BasicTest {
 	public void forLoop() {
 		TestsUtil.baseTest("for_loop");
 	}
-//	
-//	@Test
-//	public void operators() {
-//		TestsUtil.baseTest("operators");
-//	}
-//	
-//	@Test
-//	public void pointer() {
-//		TestsUtil.baseTest("pointer");
-//	}
-//	
-//	@Test
-//	public void pointerFunc() {
-//		TestsUtil.baseTest("pointer_func");
-//	}
-//	
-//	@Test
-//	public void reference() {
-//		TestsUtil.baseTest("reference");
-//	}
-//	
-//	@Test
-//	public void newOp() {
-//		TestsUtil.baseTest("new_op");
-//	}
-//	
-//	@Test
-//	public void writePointedInsideBlock() {
-//		TestsUtil.baseTest("write_pointed_inside_block");
-//	}
-//	
-//	@Test
-//	public void classStructure() {
-//		TestsUtil.baseTest("class_structure");
-//	}
-//	
-//	@Test
-//	public void classNew() {
-//		TestsUtil.baseTest("class_new");
-//	}
-//	
+	
+	@Test
+	public void operators() {
+		TestsUtil.baseTest("operators");
+	}
+	
+	@Test
+	public void pointer() {
+		TestsUtil.baseTest("pointer");
+	}
+	
+	@Test
+	public void pointerFunc() {
+		TestsUtil.baseTest("pointer_func");
+	}
+	
+	@Test
+	public void reference() {
+		TestsUtil.baseTest("reference");
+	}
+	
+	@Test
+	public void newOp() {
+		TestsUtil.baseTest("new_op");
+	}
+	
+	@Test
+	public void writePointedInsideBlock() {
+		TestsUtil.baseTest("write_pointed_inside_block");
+	}
+	
+	@Test
+	public void classStructure() {
+		TestsUtil.baseTest("class_structure");
+	}
+	
+	@Test
+	public void classNew() {
+		TestsUtil.baseTest("class_new");
+	}
+	
 //	@Test
 //	public void constructor() {
 //		TestsUtil.baseTest("constructor");
