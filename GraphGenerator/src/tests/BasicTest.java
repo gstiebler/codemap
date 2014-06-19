@@ -173,12 +173,12 @@ public class BasicTest {
 	public void postInitFunc() {
 		TestsUtil.baseTest("post_init_func");
 	}
-//
-//	@Test
-//	public void files() {
-//		TestsUtil.baseTest("files");
-//	}
-//
+
+	@Test
+	public void files() {
+		TestsUtil.baseTest("files");
+	}
+
 	@Test
 	public void headerOnlyFunc() {
 		TestsUtil.baseTest("header_only_func");
