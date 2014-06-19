@@ -27,13 +27,19 @@ public class CPPASTBinaryExpression extends ASTNode implements
 		String line = cursor.nextLine();
 		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
 		String type = parsedLine.get("mainType");
-		if (type.equals("CXXOperatorCallExpr"))
+		
+		if(type.equals("BinaryOperator"))
+			_opStr = parsedLine.get("binOpcode");
+		else if(type.equals("CXXOperatorCallExpr")) {
 			cursor.nextLine();
+			parsedLine = CPPASTTranslationUnit.lineToMap(cursor.nextLine());
+			_opStr = parsedLine.get("refName");
+			_opStr = _opStr.split("operator")[1];
+		} else
+			_opStr = parsedLine.get("binOpcode");
 
-		_opStr = parsedLine.get("binOpcode");
-
-		_operand1 = ASTExpression.loadExpression(cursor, this);
-		_operand2 = ASTExpression.loadExpression(cursor, this);
+		_operand1 = ASTExpression.loadExpression(cursor.getSubCursor(), this);
+		_operand2 = ASTExpression.loadExpression(cursor.getSubCursor(), this);
 
 		_opMap.put("*", IASTBinaryExpression.op_multiply);
 		_opMap.put("/", IASTBinaryExpression.op_divide);

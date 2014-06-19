@@ -24,7 +24,7 @@ public class ASTExpression {
 		} else if(type.equals("BinaryOperator") || 
 				type.equals("CompoundAssignOperator") || 
 				type.equals("CXXOperatorCallExpr")) {
-			return new CPPASTBinaryExpression(cursor, parent);
+			return new CPPASTBinaryExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("ImplicitCastExpr") ||
 				type.equals("ParenExpr") ||
 				type.equals("CStyleCastExpr") ||

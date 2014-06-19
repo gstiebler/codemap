@@ -149,10 +149,10 @@ public class BasicTest {
 		TestsUtil.baseTest("this");
 	}
 
-//	@Test
-//	public void operatorOverload() {
-//		TestsUtil.baseTest("operator_overload");
-//	}
+	@Test
+	public void operatorOverload() {
+		TestsUtil.baseTest("operator_overload");
+	}
 
 	@Test
 	public void nestedIf() {
@@ -179,10 +179,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("files");
 //	}
 //
-//	@Test
-//	public void headerOnlyFunc() {
-//		TestsUtil.baseTest("header_only_func");
-//	}
+	@Test
+	public void headerOnlyFunc() {
+		TestsUtil.baseTest("header_only_func");
+	}
 //
 //	@Test
 //	public void events() {
