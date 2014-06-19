@@ -14,10 +14,10 @@ public class BasicTest {
 		TestsUtil.baseTest("func_call");
 	}
 	
-//	@Test
-//	public void memberFunc() {
-//		TestsUtil.baseTest("member_func");
-//	}
+	@Test
+	public void memberFunc() {
+		TestsUtil.baseTest("member_func");
+	}
 //	
 //	@Test
 //	public void memberFunc2() {

@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ILinkage;
 import org.eclipse.cdt.core.dom.ast.IASTCompletionContext;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -16,8 +14,8 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 			logger.error("Binding should not be null");
 
 		String type = CPPASTTranslationUnit.getType(line);
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 		if(type.equals("DeclRefExpr")) { 
-			ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 			type = strings.get("kindName");
 		}
 		
@@ -25,8 +23,7 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 				type.equals("CXXMethodDecl") || 
 				type.equals("CXXConstructorDecl")) &&
 					binding != null) {
-			List<Integer> ids = CPPASTTranslationUnit.getIds(line);
-			if(CPPASTQualifiedName.isOperator(line) && ids.size() == 1)// if it's the operator declaration, the name is OperatorName
+			if(CPPASTQualifiedName.isOperator(line) && !strings.containsKey("prev"))// if it's the operator declaration, the name is OperatorName
 				return new CPPASTOperatorName(binding, line, parent);
 			else // otherwise it will be QualifiedName with OperatorName inside
 				return new CPPASTQualifiedName(binding, line, parent);

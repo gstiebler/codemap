@@ -48,8 +48,8 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			} else if(type.equals("FieldDecl") || type.equals("VarDecl")) {
 				_members.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXConstructorDecl")) {
-				List<Integer> ids = CPPASTTranslationUnit.getIds(cursor.getLine());
-				if(ids.size() == 1) {
+				ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+				if(!parsedLine.containsKey("funcDecl")) {
 					_members.add(CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this));
 				} else {
 					cursor.runToTheEnd();

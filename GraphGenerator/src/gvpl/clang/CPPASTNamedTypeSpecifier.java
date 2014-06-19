@@ -14,11 +14,9 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		super(cursor, parent);
 		String line = cursor.getLine();
 		
-		List<String> strings = CPPASTTranslationUnit.parseLine(line);
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
 		// may have *
-		String completeType = strings.get(strings.size() - 1);
-		if(completeType.equals("static"))
-			completeType = strings.get(strings.size() - 2);
+		String completeType = parsedLine.get("type");
 		String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
 		String firstType = CPPASTTranslationUnit.getType(line);
 		IBinding binding = null;

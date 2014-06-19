@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -16,15 +14,15 @@ public class CPPASTConstructorChainInitializer extends ASTNode implements ICPPAS
 	public CPPASTConstructorChainInitializer(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
-		List<Integer> ids = CPPASTTranslationUnit.getIds(line);
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 		IBinding binding;
-		if(ids.size() == 0) {
+		if(!strings.containsKey("pointer")) {
 			line = cursor.getLine();
-			List<String> strings = CPPASTTranslationUnit.parseLine(line);
-			String typeName = CPPASTTranslationUnit.simplifyType(strings.get(3));
-			binding = CPPASTTranslationUnit.getConstructorBinding(typeName, strings.get(4));
+			String typeName = CPPASTTranslationUnit.simplifyType(strings.get("type"));
+			binding = CPPASTTranslationUnit.getConstructorBinding(typeName, strings.get("name"));
 		} else {
-			binding = CPPASTTranslationUnit.getBinding(ids.get(0));
+			int bindId = CPPASTTranslationUnit.hexStrToInt(strings.get("pointer"));
+			binding = CPPASTTranslationUnit.getBinding(bindId);
 		}
 		_memberInitId = CPPASTName.loadASTName(binding, line, this);
 		_initValue = ASTExpression.loadExpression(cursor.getSubCursor(), this);

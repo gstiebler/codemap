@@ -125,9 +125,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		if (type.equals("FunctionDecl")) {
 			return loadFuncDecl(cursor, false, null);
 		} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
-			List<Integer> ids = getIds(line);
-			int parentId = ids.get(1);
-			int prevId = ids.get(2);
+			ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
+			int parentId = hexStrToInt(strings.get("parent"));
+			int prevId = hexStrToInt(strings.get("prev"));
 			IBinding binding = getBinding(prevId);
 			if(binding == null)
 				logger.error("Prev Id {} not found", prevId);
@@ -160,12 +160,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	static IASTDeclaration loadFuncDecl(Cursor cursor, boolean isMethod, ASTNode parent) {
 		String line = cursor.getLine();
 		CPPASTFunctionDefinition funcDefinition = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
-		List<Integer> ids = getIds(line);
+		ClangLine parsedLine = lineToMap(line);
 		// has previous binding
-		if(ids.size() > 1) {
-			int oldId = ids.get(1);
-			if(ids.size() == 3) // has parent id
-				oldId = ids.get(2);
+		if(parsedLine.containsKey("prev")) {
+			int oldId = hexStrToInt( parsedLine.get("prev") );
+			if(parsedLine.containsKey("parent")) // has parent id
+				oldId = hexStrToInt( parsedLine.get("parent") );
 			_instance._bindingSynonyms.put(oldId, funcDefinition._binding);
 		}
 		if(funcDefinition._body != null) {
@@ -199,18 +199,6 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		} catch(NumberFormatException e) {
 			return -1;
 		}
-	}
-	
-	public static List<Integer> getIds(String line) {
-		List<String> parsedLine = parseLineSimple(line, false);
-		
-		List<Integer> ids = new ArrayList<Integer>();
-		for(String pLine : parsedLine) {
-			int currBindingId = hexStrToInt(pLine);
-			if(currBindingId != -1)
-				ids.add(currBindingId);
-		}
-		return ids;
 	}
 	
 	private static List<String> parseLineSimple(String line, boolean includePlic) {

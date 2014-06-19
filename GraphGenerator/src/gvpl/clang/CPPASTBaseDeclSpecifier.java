@@ -31,10 +31,10 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 	
 	CPPASTBaseDeclSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		List<Integer> ids = CPPASTTranslationUnit.getIds(cursor.getLine());
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
 		IBinding previousBinding = null;
-		if(ids.size() >= 3) {// has bind, prev and parent
-			int prev = ids.get(2);
+		if(parsedLine.containsKey("prev")) {// has bind, prev and parent
+			int prev = CPPASTTranslationUnit.hexStrToInt( parsedLine.get("prev") );
 			previousBinding = CPPASTTranslationUnit.getBinding(prev);
 		}
 		if(previousBinding instanceof CPPMethod) {
