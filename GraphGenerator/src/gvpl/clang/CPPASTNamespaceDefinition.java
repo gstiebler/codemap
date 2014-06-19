@@ -18,7 +18,7 @@ public class CPPASTNamespaceDefinition extends ASTNode implements ICPPASTNamespa
 		super(cursor.getLine(), parent);
 		String line = cursor.nextLine();
 		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
-		_name = strings.get("refName");
+		_name = strings.get("name");
 		CPPASTTranslationUnit.addNamespace(_name);
 		while (!cursor.theEnd()) {
 			IASTDeclaration decl = CPPASTTranslationUnit.loadDeclaration(cursor, this);

@@ -16,6 +16,12 @@ public class CPPASTLiteralExpression extends ASTNode implements org.eclipse.cdt.
 		String line = cursor.nextLine();
 		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
 		_value = parsedLine.get("literal");
+	}	
+	
+	public CPPASTLiteralExpression(Cursor cursor, IASTNode parent, String value) {
+		super(cursor.getLine(), parent);
+		cursor.nextLine();
+		_value = value;
 	}
 	
 	public String toString() {

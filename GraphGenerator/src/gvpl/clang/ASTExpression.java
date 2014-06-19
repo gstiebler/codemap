@@ -17,9 +17,10 @@ public class ASTExpression {
 		} else if(type.equals("IntegerLiteral") ||
 				type.equals("FloatingLiteral") ||
 				type.equals("CXXBoolLiteralExpr") ||
-				type.equals("StringLiteral") ||
-				type.equals("CXXThisExpr")) {
+				type.equals("StringLiteral")) {
 			return new CPPASTLiteralExpression(cursor, parent);
+		} else if(type.equals("CXXThisExpr")) {
+			return new CPPASTLiteralExpression(cursor.getSubCursor(), parent, "this");
 		} else if(type.equals("BinaryOperator") || 
 				type.equals("CompoundAssignOperator") || 
 				type.equals("CXXOperatorCallExpr")) {

@@ -119,10 +119,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("inheritance");
 //	}
 
-	@Test
-	public void polymorphism() {
-		TestsUtil.baseTest("polymorphism");
-	}
+//	@Test
+//	public void polymorphism() {
+//		TestsUtil.baseTest("polymorphism");
+//	}
 
 //	@Test
 //	public void polymorphism2() {
@@ -143,21 +143,21 @@ public class BasicTest {
 	public void destructor() {
 		TestsUtil.baseTest("destructor");
 	}
-//
-//	@Test
-//	public void thisPointer() {
-//		TestsUtil.baseTest("this");
-//	}
+
+	@Test
+	public void thisPointer() {
+		TestsUtil.baseTest("this");
+	}
 
 //	@Test
 //	public void operatorOverload() {
 //		TestsUtil.baseTest("operator_overload");
 //	}
 
-//	@Test
-//	public void nestedIf() {
-//		TestsUtil.baseTest("nested_if");
-//	}
+	@Test
+	public void nestedIf() {
+		TestsUtil.baseTest("nested_if");
+	}
 
 	@Test
 	public void switchTest() {
@@ -194,20 +194,20 @@ public class BasicTest {
 //		TestsUtil.baseTest("func_return_pointer");
 //	}
 //
-//	@Test
-//	public void globalVar() {
-//		TestsUtil.baseTest("global_var");
-//	}
-//
-//	@Test
-//	public void deepMethod() {
-//		TestsUtil.baseTest("deep_method");
-//	}
-//
-//	@Test
-//	public void staticMember() {
-//		TestsUtil.baseTest("static_member");
-//	}
+	@Test
+	public void globalVar() {
+		TestsUtil.baseTest("global_var");
+	}
+
+	@Test
+	public void deepMethod() {
+		TestsUtil.baseTest("deep_method");
+	}
+
+	@Test
+	public void staticMember() {
+		TestsUtil.baseTest("static_member");
+	}
 //
 //	@Test
 //	public void parentClassMethod() {
@@ -244,10 +244,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("typedef");
 //	}
 //
-//	@Test
-//	public void namespace() {
-//		TestsUtil.baseTest("namespace");
-//	}
+	@Test
+	public void namespace() {
+		TestsUtil.baseTest("namespace");
+	}
 //
 //	@Test
 //	public void charStr() {
