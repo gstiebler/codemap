@@ -22,7 +22,7 @@ startinglines = "33_39_39";
 	node_000050 [ label = "*", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=52 ]
 	node_000051 [ label = "k", startingline=52 ]
 	node_000055 [ label = "x", startingline=55 ]
-	node_000059 [ label = "z", startingline=58 ]
+	node_000062 [ label = "z", startingline=58 ]
 subgraph cluster_2 {
 label = "sInterno::sInterno";
 parent = "cluster_1";
@@ -100,6 +100,18 @@ startinglines = "9_55_57";
 	node_000057 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
 	node_000058 [ label = "seg.interno.soEsse", startingline=9 ]
 }
+subgraph cluster_12 {
+label = "sSeg::sSeg";
+parent = "cluster_1";
+startinglines = "55_57_9";
+subgraph cluster_13 {
+label = "sInterno::sInterno";
+parent = "cluster_12";
+startinglines = "57_9_33";
+	node_000060 [ label = "1.110000e+01", style=filled, fillcolor="#E9FFE9", startinglines=9 ]
+	node_000061 [ label = "seg.interno.soEsse", startingline=9 ]
+}
+}
 }
 	node_000001 -> node_000002
 	node_000002 -> node_000013
@@ -135,5 +147,6 @@ startinglines = "9_55_57";
 	node_000053 -> node_000054
 	node_000054 -> node_000055
 	node_000057 -> node_000058
-	node_000058 -> node_000059
+	node_000060 -> node_000061
+	node_000061 -> node_000062
 }

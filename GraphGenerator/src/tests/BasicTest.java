@@ -84,10 +84,10 @@ public class BasicTest {
 		TestsUtil.baseTest("class_new");
 	}
 	
-//	@Test
-//	public void constructor() {
-//		TestsUtil.baseTest("constructor");
-//	}
+	@Test
+	public void constructor() {
+		TestsUtil.baseTest("constructor");
+	}
 	
 	@Test
 	public void constructorChain() {
@@ -128,11 +128,11 @@ public class BasicTest {
 	public void polymorphism2() {
 		TestsUtil.baseTest("polymorphism2");
 	}
-//
-//	@Test
-//	public void polymorphism3() {
-//		TestsUtil.baseTest("polymorphism3");
-//	}
+
+	@Test
+	public void polymorphism3() {
+		TestsUtil.baseTest("polymorphism3");
+	}
 
 	@Test
 	public void array() {
@@ -169,10 +169,10 @@ public class BasicTest {
 		TestsUtil.baseTest("garbage");
 	}
 
-//	@Test
-//	public void postInitFunc() {
-//		TestsUtil.baseTest("post_init_func");
-//	}
+	@Test
+	public void postInitFunc() {
+		TestsUtil.baseTest("post_init_func");
+	}
 //
 //	@Test
 //	public void files() {
@@ -219,10 +219,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("enum");
 //	}
 //
-//	@Test
-//	public void parentConstructorChain() {
-//		TestsUtil.baseTest("parent_constructor_chain");
-//	}
+	@Test
+	public void parentConstructorChain() {
+		TestsUtil.baseTest("parent_constructor_chain");
+	}
 //
 //	@Test
 //	public void template() {
@@ -233,7 +233,7 @@ public class BasicTest {
 //	public void returnFixture() {
 //		TestsUtil.baseTest("return");
 //	}
-//
+
 	@Test
 	public void classPointerAssignment() {
 		TestsUtil.baseTest("class_pointer_assignment");

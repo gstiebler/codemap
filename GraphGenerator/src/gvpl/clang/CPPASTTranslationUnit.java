@@ -180,10 +180,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		CPPASTFunctionDefinition funcDefinition = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
 		ClangLine parsedLine = lineToMap(line);
 		// has previous binding
-		if(parsedLine.containsKey("parent")) {
-			int oldId = hexStrToInt( parsedLine.get("parent") );
-			if(parsedLine.containsKey("prev")) // has parent id
-				oldId = hexStrToInt( parsedLine.get("prev") );
+		if(parsedLine.containsKey("prev")) {
+			int oldId = hexStrToInt( parsedLine.get("prev") );
+//			if(parsedLine.containsKey("prev")) // has parent id
+//				oldId = hexStrToInt( parsedLine.get("prev") );
 			_instance._bindingSynonyms.put(oldId, funcDefinition._binding);
 		}
 		if(funcDefinition._body != null) {
