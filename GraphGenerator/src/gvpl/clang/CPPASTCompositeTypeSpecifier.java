@@ -52,7 +52,9 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 				} else {
 					cursor.runToTheEnd();
 				}
-			} else if(type.equals("FieldDecl") || type.equals("VarDecl")) {
+			} else if(type.equals("FieldDecl") || 
+					type.equals("VarDecl") || 
+					type.equals("EnumDecl")) {
 				_members.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXConstructorDecl")) {
 				ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
