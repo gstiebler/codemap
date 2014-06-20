@@ -16,7 +16,8 @@ public class CPPASTEnumerator extends ASTNode implements IASTEnumerator {
 		IBinding binding = new CPPEnumerator(cursor.getLine());
 		_name = CPPASTName.loadASTName(binding, cursor.getLine(), this);
 		cursor.nextLine();
-		_value = ASTExpression.loadExpression(cursor.getSubCursor(), this);
+		if(!cursor.theEnd())
+			_value = ASTExpression.loadExpression(cursor.getSubCursor(), this);
 	}
 
 	@Override
