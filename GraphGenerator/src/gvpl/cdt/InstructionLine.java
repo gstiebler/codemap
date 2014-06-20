@@ -2,6 +2,7 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
+import gvpl.clang.ClangSizeof;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassVar;
@@ -384,14 +385,9 @@ public class InstructionLine {
 			} else if (node instanceof IASTExpressionList) {
 				IASTExpressionList exprList = (IASTExpressionList) node;
 				throw new ClassNotImplementedException(node.getClass().toString(), exprList.getRawSignature());
-			} else if (node instanceof ICPPASTConstructorInitializer) {
-				//CPPASTConstructorInitializer constrInit = (CPPASTConstructorInitializer) node;
-				//IASTInitializerClause[] initClauses = constrInit.getArguments();
-				//if(initClauses.length > 1)
-				//	logger.error("Only dealing with 1 param. Work here. {}", node);
-				//return loadValue(initClauses[0]);
-				logger.fatal("Not implemented in this version of CDT");
-				return null;
+			} else if (node instanceof ClangSizeof) {
+				GraphNode graphNode = _gvplGraph.addGraphNode(node.toString(), NodeType.E_DIRECT_VALUE);
+				return new Value(graphNode);
 			} else
 				throw new ClassNotImplementedException(node.getClass().toString(), node.getRawSignature());
 		} catch (ClassNotImplementedException e) {

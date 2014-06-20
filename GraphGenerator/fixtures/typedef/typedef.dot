@@ -5,12 +5,15 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "11_13_13";
+startinglines = "5_13_13";
 	node_000002 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=16 ]
 	node_000003 [ label = "var1._memberA", startingline=16 ]
-	node_000004 [ label = "sizeof(d)", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
-	node_000005 [ label = "h", startingline=18 ]
+	node_000004 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
+	node_000005 [ label = "d", startingline=18 ]
+	node_000006 [ label = "sizeof(d)", style=filled, fillcolor="#E9FFE9", startinglines=19 ]
+	node_000007 [ label = "h", startingline=19 ]
 }
 	node_000002 -> node_000003
 	node_000004 -> node_000005
+	node_000006 -> node_000007
 }

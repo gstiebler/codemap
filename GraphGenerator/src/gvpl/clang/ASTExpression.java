@@ -63,6 +63,8 @@ public class ASTExpression {
 			return new CPPASTArraySubscriptExpression(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXDeleteExpr")) {
 			return new CPPASTDeleteExpression(cursor.getSubCursor(), parent);
+		} else if(type.equals("UnaryExprOrTypeTraitExpr")) {//TODO check if it's always sizeof
+			return new ClangSizeof(cursor.getSubCursor(), parent);
 		} else if(type.equals("CXXThisExpr")) {
 			logger.warn("Check if {} should be treated", type);
 			cursor.runToTheEnd();
