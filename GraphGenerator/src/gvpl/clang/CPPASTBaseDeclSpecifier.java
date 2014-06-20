@@ -15,7 +15,7 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 	public static IASTDeclSpecifier loadDeclSpec(Cursor cursor, IASTNode parent) {
 		String line = cursor.getLine();
 		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
-		String type = strings.get("type");
+		String type = CPPASTTranslationUnit.getUserType(strings);
 		// separates *
 		String simpleType = CPPASTTranslationUnit.simplifyType(type);
 		//TODO improve, it will not work with typedefs or defines

@@ -19,8 +19,9 @@ public class CPPASTConstructorChainInitializer extends ASTNode implements ICPPAS
 		if(!strings.containsKey("pointer")) {
 			line = cursor.getLine();
 			strings = CPPASTTranslationUnit.lineToMap(line);
-			String typeName = CPPASTTranslationUnit.simplifyType(strings.get("type"));
-			binding = CPPASTTranslationUnit.getConstructorBinding(typeName, strings.get("type", 1));
+			String userType = CPPASTTranslationUnit.getUserType(strings);
+			String typeName = CPPASTTranslationUnit.simplifyType(userType);
+			binding = CPPASTTranslationUnit.getConstructorBinding(typeName, CPPASTTranslationUnit.getUserType(strings, 1));
 		} else {
 			int bindId = CPPASTTranslationUnit.hexStrToInt(strings.get("pointer"));
 			binding = CPPASTTranslationUnit.getBinding(bindId);

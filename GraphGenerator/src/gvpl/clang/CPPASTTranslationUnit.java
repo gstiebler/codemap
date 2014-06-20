@@ -243,14 +243,21 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	
 	public static ClangLine lineToMap(String line) {
 		ClangLine result = new ClangLine();
-		String[] lines = breakIn2(line, '-');
-		lines = breakIn2(lines[1], ' ');
-		String mainType = lines[0];
-		result.put("mainType", mainType);
-		line = lines[1];
+		{
+			String[] linesDivComma = breakIn2(line, '-');
+			linesDivComma = breakIn2(linesDivComma[1], ' ');
+			String mainType = linesDivComma[0];
+			result.put("mainType", mainType);
+			line = linesDivComma[1];
+		}
 		while(true) {
-			lines = breakIn2(line, ':');
-			String key = lines[0];
+			String key = "";
+			String afterComma = "";
+			{
+				String[] linesDivCommaInside = breakIn2(line, ':');
+				key = linesDivCommaInside[0];
+				afterComma = linesDivCommaInside[1];
+			}
 			{
 				String[] parsed = key.split(" ");
 				for(int i = parsed.length - 1; i >= 0; --i) {
@@ -260,26 +267,56 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 					}
 				}
 			}
-			if(lines[1].length() == 0) {
-				line = lines[1];
+			if(afterComma.length() == 0) {
+				line = afterComma;
 				if(line.length() == 0)
 					break;
 				continue;
 			}
-			char firstChar = lines[1].charAt(0);
-			if(firstChar == '\'') {
-				String excludeFirstchar = lines[1].substring(1);
-				lines = breakIn2(excludeFirstchar, '\'');
-			} else {
-				lines = breakIn2(lines[1], ' ');
+			String value = "";
+			String remainingLine = "";
+			// at this point, lines[0] is what's before ':', lines[1] have what's left
+			char firstChar = afterComma.charAt(0);
+			remainingLine = afterComma;
+			while(true) {
+				if(firstChar == '\'') {
+					String excludeFirstchar = remainingLine.substring(1);
+					String[] lines = breakIn2(excludeFirstchar, '\'');
+					value = value + lines[0];
+					remainingLine = lines[1];
+					if(remainingLine.length() > 0)
+						firstChar = remainingLine.charAt(0);
+					else
+						break;
+				} else if(firstChar == ':') {
+					String excludeFirstchar = remainingLine.substring(1);
+					remainingLine = excludeFirstchar;
+					firstChar = remainingLine.charAt(0);
+					value = value + "%";
+				} else {
+					String[] lines = breakIn2(remainingLine, ' ');
+					value = value + lines[0];
+					remainingLine = lines[1];
+					break;
+				}
 			}
-			String value = lines[0];
+			// at this point, lines[0] could be whatever, but lines[1] should be the rest of parameters
 			result.put(key.trim(), value);
-			line = lines[1];
+			line = remainingLine;
 			if(line.length() == 0)
 				break;
 		}
 		return result;
+	}
+	
+	public static String getUserType(ClangLine line) {
+		return getUserType(line, 0);
+	}
+	
+	public static String getUserType(ClangLine line, int index) {
+		String result = line.get("type", index);
+		String[] strings = result.split("[%]");
+		return strings[strings.length - 1];
 	}
 	
 	public static BindingInfo parseBindingInfo(String line) {

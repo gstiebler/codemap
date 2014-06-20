@@ -50,7 +50,7 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 	public static IASTPointerOperator[] loadPointerOps(String line, IASTNode parent) {
 		IASTPointerOperator[] result = null;
 		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
-		String currType = strings.get("type");
+		String currType = CPPASTTranslationUnit.getUserType(strings);
 		currType = currType.split("[(]")[0];
 		int count = currType.length() - currType.replace("*", "").length();
 		if(count > 0) {

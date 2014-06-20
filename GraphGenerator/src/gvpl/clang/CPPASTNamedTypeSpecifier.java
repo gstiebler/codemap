@@ -14,14 +14,14 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		
 		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
 		// may have *
-		String completeType = parsedLine.get("type");
+		String completeType = CPPASTTranslationUnit.getUserType(parsedLine);
 		String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
 		String firstType = CPPASTTranslationUnit.getType(line);
 		IBinding binding = null;
 		if(firstType.equals("CXXNewExpr")) {
 			cursor.nextLine();
 			ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
-			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, strings.get("type", 1));
+			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, CPPASTTranslationUnit.getUserType(strings, 1));
 		} else {
 			binding = CPPASTTranslationUnit.getBinding(simpleType);
 		}
