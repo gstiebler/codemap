@@ -179,17 +179,19 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		String line = cursor.getLine();
 		CPPASTFunctionDefinition funcDefinition = new CPPASTFunctionDefinition(cursor.getSubCursor(), isMethod, parent);
 		ClangLine parsedLine = lineToMap(line);
-		// has previous binding
-		if(parsedLine.containsKey("prev")) {
-			int oldId = hexStrToInt( parsedLine.get("prev") );
-//			if(parsedLine.containsKey("prev")) // has parent id
-//				oldId = hexStrToInt( parsedLine.get("prev") );
-			_instance._bindingSynonyms.put(oldId, funcDefinition._binding);
-		}
+		addBindingSynonymIfNecessary(parsedLine, funcDefinition._binding);
 		if(funcDefinition._body != null) {
 			return funcDefinition;
 		} else {
 			return new CPPASTSimpleDeclaration(line, parent, funcDefinition._declarator);
+		}
+	}
+	
+	public static void addBindingSynonymIfNecessary(ClangLine parsedLine, IBinding binding) {
+		// has previous binding
+		if(parsedLine.containsKey("prev")) {
+			int oldId = hexStrToInt( parsedLine.get("prev") );
+			_instance._bindingSynonyms.put(oldId, binding);
 		}
 	}
 
@@ -279,53 +281,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		ClangLine parsedLine = lineToMap(line);
 
 		result.bindingId = hexStrToInt(parsedLine.get("pointer"));
-		
 		result.location = parsedLine.get("srcRange");
 		result.type = parsedLine.getAndCheck("type");
 		result.name = parsedLine.getAndCheck("name");
-		return result;
 		
-//		if(parsedLine.get(0).equals("public")) {
-//			return result;
-//		}
-//		
-//		if(parsedLine.get(2).equals("prev")) {
-//			result.location = parsedLine.get("srcRange").get(0);
-//			result.type = parsedLine.get("type").get(0);
-//			result.name = result.type;
-//			return result;
-//		} else if (parsedLine.size() >= 5 && parsedLine.get(4).equals("prev")) {
-//			result.location = parsedLine.get("srcRange").get(0);
-//			result.type = parsedLine.get("type").get(0);
-//			result.type = parsedLine.get("name").get(0);
-//			return result;
-//		}
-//		
-//		if(parsedLine.get(0).equals("CXXNewExpr")) {
-//			result.location = parsedLine.get("srcRange").get(0);
-//			result.type = parsedLine.get("type").get(0);
-//			return result;
-//		} else if (parsedLine.get(0).equals("CXXCtorInitializer")) {
-//			result.bindingId = hexStrToInt(parsedLine.get("pointer").get(0));
-//			result.type = parsedLine.get("type").get(0);
-//			result.type = parsedLine.get("name").get(0);
-//			return result;
-//		} else if (parsedLine.get(0).equals("CXXConstructExpr")) {
-//			result.location = parsedLine.get(2);
-//			result.type = parsedLine.get(3);
-//			result.name = parsedLine.get(4);
-//			return result;
-//		}
-//		
-//		result.location = parsedLine.get(3);
-//		result.name = parsedLine.get(4);
-//		if(parsedLine.get(0).equals("ParmVarDecl")) {
-//			if(parsedLine.size() < 6)
-//				return result;
-//		}
-//		
-//		result.type = parsedLine.get(5);
-//		return result;
+		return result;
 	}
 
 	public static void addBinding(BindingInfo bindingInfo, IBinding binding) {

@@ -1,7 +1,5 @@
 package gvpl.clang;
 
-import java.util.List;
-
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTInitializer;
 import org.eclipse.cdt.core.dom.ast.IASTName;
@@ -29,6 +27,8 @@ public class CPPASTDeclarator extends ASTNode implements org.eclipse.cdt.core.do
 		else
 			logger.error("Type not expected: {}", firstType);
 		
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
+		CPPASTTranslationUnit.addBindingSynonymIfNecessary(parsedLine, binding);
 		_name = CPPASTName.loadASTName(binding, line, this);
 		_pointerOperators = loadPointerOps(line, this);
 		cursor.nextLine();

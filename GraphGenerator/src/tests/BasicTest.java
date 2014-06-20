@@ -189,11 +189,11 @@ public class BasicTest {
 //		TestsUtil.baseTest("events");
 //	}
 //
-//	@Test
-//	public void funcReturnPointer() {
-//		TestsUtil.baseTest("func_return_pointer");
-//	}
-//
+	@Test
+	public void funcReturnPointer() {
+		TestsUtil.baseTest("func_return_pointer");
+	}
+
 	@Test
 	public void globalVar() {
 		TestsUtil.baseTest("global_var");
@@ -214,11 +214,11 @@ public class BasicTest {
 		TestsUtil.baseTest("parent_class_method");
 	}
 //
-//	@Test
+//	@Test 
 //	public void enumTest() {
 //		TestsUtil.baseTest("enum");
 //	}
-//
+
 	@Test
 	public void parentConstructorChain() {
 		TestsUtil.baseTest("parent_constructor_chain");
