@@ -158,7 +158,9 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			}
 					
 			return funcDecl;
-		} else if (type.equals("CXXRecordDecl") || type.equals("VarDecl")) {
+		} else if (type.equals("CXXRecordDecl") || 
+				type.equals("VarDecl") || 
+				type.equals("EnumDecl")) {
 			return new CPPASTSimpleDeclaration(cursor.getSubCursor(), parent);
 		} else if (type.equals("NamespaceDecl")) {
 			return new CPPASTNamespaceDefinition(cursor.getSubCursor(), parent);
@@ -202,7 +204,11 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 	}
 	
 	public static String simplifyType(String line) {
-		String result = line.replace("class", "").replace("struct", "").replace("*", "").replace("&", "").trim();
+		String result = line.replace("class", "")
+				.replace("struct", "")
+				.replace("enum", "")
+				.replace("*", "")
+				.replace("&", "").trim();
 		return result.split(" ")[0];
 	}
 	

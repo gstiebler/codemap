@@ -19,7 +19,7 @@ public:
 
 int main() 
 {
-	int a = E_FIRST;
+	eMyEnum a = E_FIRST;
     eMyEnum b = E_SECOND;
     a = E_THIRD;
     eMyEnum c;

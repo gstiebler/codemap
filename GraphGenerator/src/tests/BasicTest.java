@@ -213,11 +213,11 @@ public class BasicTest {
 	public void parentClassMethod() {
 		TestsUtil.baseTest("parent_class_method");
 	}
-//
-//	@Test 
-//	public void enumTest() {
-//		TestsUtil.baseTest("enum");
-//	}
+
+	@Test 
+	public void enumTest() {
+		TestsUtil.baseTest("enum");
+	}
 
 	@Test
 	public void parentConstructorChain() {
