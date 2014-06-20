@@ -229,10 +229,10 @@ public class BasicTest {
 //		TestsUtil.baseTest("template");
 //	}
 //
-//	@Test
-//	public void returnFixture() {
-//		TestsUtil.baseTest("return");
-//	}
+	@Test
+	public void returnFixture() {
+		TestsUtil.baseTest("return");
+	}
 
 	@Test
 	public void classPointerAssignment() {

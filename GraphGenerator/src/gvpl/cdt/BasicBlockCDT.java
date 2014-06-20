@@ -7,8 +7,8 @@ import gvpl.graph.Graph;
 
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
+import org.eclipse.cdt.core.dom.ast.IASTReturnStatement;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReturnStatement;
 
 import debug.ExecTreeLogger;
 
@@ -30,7 +30,7 @@ public class BasicBlockCDT extends BaseScopeCDT {
 		else if (baseStatement instanceof IASTExpressionStatement) {
 			statements = new IASTStatement[1];
 			statements[0] = baseStatement;
-		} else if (baseStatement instanceof CPPASTReturnStatement) { 
+		} else if (baseStatement instanceof IASTReturnStatement) { 
 			statements = new IASTStatement[1];
 			statements[0] = baseStatement;
 		} else {
