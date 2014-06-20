@@ -167,7 +167,8 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		} else if (type.equals("EmptyDecl") || 
 				type.equals("UsingDecl") || 
 				type.equals("UsingDirectiveDecl") || 
-				type.equals("UsingShadowDecl")) {
+				type.equals("UsingShadowDecl") || 
+				type.equals("TypedefDecl")) {
 			cursor.runToTheEnd();
 			return null;
 		} else {
