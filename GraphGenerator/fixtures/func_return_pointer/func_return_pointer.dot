@@ -2,7 +2,7 @@ digraph G
 {
 rankdir=LR;
 label = "root";
-	node_000011 [ label = "NULL (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=27 ]
+	node_000011 [ label = "0 (GARBAGE)", style=filled, fillcolor="#FF8080", startinglines=27 ]
 	node_000012 [ label = "*classInst", startingline=27 ]
 	node_000016 [ label = "If", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=41 ]
 subgraph cluster_1 {

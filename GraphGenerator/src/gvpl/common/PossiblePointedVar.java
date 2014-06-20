@@ -205,7 +205,8 @@ public class PossiblePointedVar implements IVar, IClassVar, java.io.Serializable
 		}
 
 		PossiblePointedVar result = new PossiblePointedVar(ppv._finalVar);
-		if(ppv._finalVar.getName().equals("NULL")) {
+		// check if "0" always has the NULL value semantics here
+		if(ppv._finalVar.getName().equals("NULL") || ppv._finalVar.getName().equals("0")) {
 			result._finalVar = ppv._finalVar;
 		} else {
 			DebugOptions.assertD( ppv._finalVar instanceof IClassVar );

@@ -1,4 +1,4 @@
-
+#define NULL 0
 int* func()
 {
 	int *x = new int;
