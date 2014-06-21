@@ -222,6 +222,7 @@ public class Function extends BaseScopeCDT {
 	public Value addFuncRef(List<FuncParameter> parameterValues, Graph extGraph, BaseScope caller) {
 		_parent = caller;
 		resetBaseScope();
+		System.out.println("addFuncRef " + this);
 		logger.debug(" -- Add func ref {}: {}", this, DebugOptions.getCurrCodeLocation());
 		_gvplGraph = new Graph(_externalName);
 		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);

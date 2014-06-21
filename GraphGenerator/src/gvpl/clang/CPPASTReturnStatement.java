@@ -10,7 +10,8 @@ public class CPPASTReturnStatement extends ASTNode implements IASTReturnStatemen
 	
 	public CPPASTReturnStatement(Cursor cursor, IASTNode parent) {
 		super(cursor.nextLine(), parent);
-		_value = ASTExpression.loadExpression(cursor, this);
+		if(!cursor.theEnd())
+			_value = ASTExpression.loadExpression(cursor, this);
 	}
 
 	@Override

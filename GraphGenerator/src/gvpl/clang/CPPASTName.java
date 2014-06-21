@@ -19,7 +19,7 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 			type = strings.get("kindName");
 		}
 		
-		if((type.equals("CXXMethod") || 
+		if((type.equals("CXXMethod") ||  
 				type.equals("CXXMethodDecl") || 
 				type.equals("CXXConstructorDecl")) &&
 					binding != null) {
@@ -27,8 +27,18 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 				return new CPPASTOperatorName(binding, line, parent);
 			else // otherwise it will be QualifiedName with OperatorName inside
 				return new CPPASTQualifiedName(binding, line, parent);
-		} else
-			return new CPPASTName(binding, line, parent);
+		} else {
+			if(!strings.containsKey("type"))
+				return new CPPASTName(binding, line, parent);
+			
+			String completeType = CPPASTTranslationUnit.getUserType(strings);
+			String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
+			if(simpleType.contains("<")) {
+				return new CPPASTTemplateId(binding, line, parent);
+			} else {
+				return new CPPASTName(binding, line, parent);
+			}
+		}
 	}
 	
 	public CPPASTName(IBinding binding, String line, IASTNode parent) {

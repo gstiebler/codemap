@@ -20,7 +20,7 @@ public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.
 		super(cursor.getLine(), parent);
 		String baseType = CPPASTTranslationUnit.getType(cursor.getLine());
 		if(baseType.equals("CXXRecordDecl")) {
-			_declSpec = new CPPASTCompositeTypeSpecifier(cursor.getSubCursor(), this);
+			_declSpec = new CPPASTCompositeTypeSpecifier(cursor.getSubCursor(), this, true);
 		} else if (baseType.equals("EnumDecl")) {
 			_declSpec = new CPPASTEnumerationSpecifier(cursor.getSubCursor(), parent);
 		} else if(baseType.equals("FieldDecl") || baseType.equals("VarDecl")) {
@@ -42,6 +42,11 @@ public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.
 			logger.error("Not implemented  " + baseType);
 			cursor.runToTheEnd();
 		}
+	}
+	
+	public CPPASTSimpleDeclaration(String line, IASTNode parent, IASTDeclSpecifier declSpec) {
+		super(line, parent);
+		_declSpec = declSpec;
 	}
 	
 	public CPPASTSimpleDeclaration(String line, IASTNode parent, IASTDeclarator child) {

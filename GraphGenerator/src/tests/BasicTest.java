@@ -223,12 +223,12 @@ public class BasicTest {
 	public void parentConstructorChain() {
 		TestsUtil.baseTest("parent_constructor_chain");
 	}
-//
-//	@Test
-//	public void template() {
-//		TestsUtil.baseTest("template");
-//	}
-//
+
+	@Test
+	public void template() {
+		TestsUtil.baseTest("template");
+	}
+
 	@Test
 	public void returnFixture() {
 		TestsUtil.baseTest("return");

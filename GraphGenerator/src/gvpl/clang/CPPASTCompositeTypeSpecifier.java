@@ -20,9 +20,11 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	List<ICPPASTBaseSpecifier> _baseSpecs = new ArrayList<ICPPASTBaseSpecifier>();
 	IASTName _name;
 	
-	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent) {
+	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent, boolean hasHeader) {
 		super(cursor, parent);
-		String line = cursor.nextLine();
+		String line = cursor.getLine();
+		if(hasHeader)
+			cursor.nextLine();
 		while(true) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if(!type.equals("AccessSpecifier:public")) //TODO private and protected

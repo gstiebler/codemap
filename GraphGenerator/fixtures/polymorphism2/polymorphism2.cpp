@@ -14,6 +14,7 @@ public:
 
 class ClassA : public BaseClass
 {
+private:
 	int _aMember;
 	
 public:
@@ -28,6 +29,7 @@ public:
 
 class ClassB : public BaseClass
 {
+private:
 	int _bMember;
 	
 public:

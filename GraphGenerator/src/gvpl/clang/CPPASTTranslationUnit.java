@@ -171,6 +171,10 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 				type.equals("TypedefDecl")) {
 			cursor.runToTheEnd();
 			return null;
+		} else if (type.equals("ClassTemplateDecl")) {
+			return new CPPASTTemplateDeclaration(cursor.getSubCursor(), parent);
+		} else if (type.equals("ClassTemplateSpecializationDecl")) {
+			return new CPPASTTemplateSpecialization(cursor.getSubCursor(), parent);
 		} else {
 			logger.error("Not prepared for type {}, line {}", type, cursor.getPos());
 			cursor.runToTheEnd();
