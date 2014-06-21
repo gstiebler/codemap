@@ -23,8 +23,15 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent, boolean hasHeader) {
 		super(cursor, parent);
 		String line = cursor.getLine();
+		IBinding binding = new CPPClassType(line, this);
+		_name = CPPASTName.loadASTName(binding, line, this);
 		if(hasHeader)
 			cursor.nextLine();
+		initialize(cursor);
+	}
+	
+	void initialize(Cursor cursor) {
+		String line = cursor.getLine();
 		while(true) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if(!type.equals("AccessSpecifier:public")) //TODO private and protected
@@ -38,8 +45,6 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 		if(!classType.equals("CXXRecordDecl"))
 			logger.error("Type not expected " + classType);
 		
-		IBinding binding = new CPPClassType(line, this);
-		_name = CPPASTName.loadASTName(binding, line, this);
 		CPPASTTranslationUnit.lastClassName = _name;
 		
 		while(!cursor.theEnd()) {
