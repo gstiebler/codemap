@@ -1,6 +1,9 @@
 package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
+import gvpl.clang.CPPClassInstance;
+import gvpl.clang.CPPClassSpecialization;
+import gvpl.clang.CPPClassTemplate;
 import gvpl.common.AstInterpreter;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -55,8 +58,6 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassType;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPField;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPNamespace;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassSpecialization;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType.CPPClassTypeDelegate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
@@ -407,7 +408,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				ICPPASTTemplateId tid = (ICPPASTTemplateId) name;
 				IBinding binding = tid.resolveBinding();
 				IASTName templateName = null;
-				if(binding instanceof ICPPClassType) {
+				if(binding instanceof CPPClassInstance) {
 					ICPPInternalBinding classSpecialization = (ICPPInternalBinding) binding;
 					templateName = (IASTName) classSpecialization.getDefinition();
 				} else if (binding instanceof CPPUnknownClass) {
@@ -416,7 +417,9 @@ public class AstInterpreterCDT extends AstInterpreter {
 				} else if (binding instanceof CPPDeferredClassInstance) {
 					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
 					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
-					IASTNode node = classTemplate.getDefinition();
+					logger.error("work here");
+					IASTNode node = null;
+					//classTemplate.getDefinition();
 					if(node instanceof IASTName) {
 						templateName = (IASTName) node;
 					} else if (node == null)
