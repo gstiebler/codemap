@@ -26,6 +26,11 @@ public class CPPClassTemplate implements ICPPClassTemplate {
 	}
 	
 	@Override
+	public String toString() {
+		return _bindingInfo.name;
+	}
+	
+	@Override
 	public ICPPTemplateParameter[] getTemplateParameters() throws DOMException {
 		// TODO Auto-generated method stub
 		logger.error("not implemented");

@@ -24,6 +24,11 @@ public class CPPClassSpecialization implements ICPPSpecialization {
 		CPPASTTranslationUnit.addBinding(compositeTypeName, this);
 		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
 	}
+	
+	@Override
+	public String toString() {
+		return _bindingInfo.name;
+	}
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
