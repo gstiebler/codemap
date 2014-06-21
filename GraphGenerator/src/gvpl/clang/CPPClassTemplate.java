@@ -1,0 +1,95 @@
+package gvpl.clang;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.eclipse.cdt.core.dom.ILinkage;
+import org.eclipse.cdt.core.dom.ast.DOMException;
+import org.eclipse.cdt.core.dom.ast.IScope;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassTemplate;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassTemplatePartialSpecialization;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPTemplateParameter;
+import org.eclipse.core.runtime.CoreException;
+
+public class CPPClassTemplate implements ICPPClassTemplate {
+
+	static Logger logger = LogManager.getLogger(CPPClassTemplate.class.getName());
+
+	BindingInfo _bindingInfo;
+	
+	public CPPClassTemplate(String line) {
+		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
+		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
+	}
+	
+	@Override
+	public ICPPTemplateParameter[] getTemplateParameters() throws DOMException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public String[] getQualifiedName() throws DOMException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public char[][] getQualifiedNameCharArray() throws DOMException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public boolean isGloballyQualified() throws DOMException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return false;
+	}
+
+	@Override
+	public ILinkage getLinkage() throws CoreException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public String getName() {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public char[] getNameCharArray() {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public IScope getScope() throws DOMException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public Object getAdapter(Class arg0) {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public ICPPClassTemplatePartialSpecialization[] getPartialSpecializations()
+			throws DOMException {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+}

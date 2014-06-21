@@ -20,13 +20,18 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	List<ICPPASTBaseSpecifier> _baseSpecs = new ArrayList<ICPPASTBaseSpecifier>();
 	IASTName _name;
 	
-	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent, boolean hasHeader) {
+	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
 		String line = cursor.getLine();
 		IBinding binding = new CPPClassType(line, this);
 		_name = CPPASTName.loadASTName(binding, line, this);
-		if(hasHeader)
-			cursor.nextLine();
+		cursor.nextLine();
+		initialize(cursor);
+	}
+	
+	public CPPASTCompositeTypeSpecifier(Cursor cursor, IASTNode parent, IASTName name) {
+		super(cursor, parent);
+		_name = name;
 		initialize(cursor);
 	}
 	

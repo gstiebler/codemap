@@ -2,6 +2,7 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTemplateDeclaration;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTemplateParameter;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPTemplateScope;
@@ -14,7 +15,11 @@ public class CPPASTTemplateDeclaration extends ASTNode implements ICPPASTTemplat
 		super(cursor.getLine(), parent);
 		cursor.nextLine();
 		cursor.nextLine(); //TemplateTypeParmDecl
-		_declaration = CPPASTTranslationUnit.loadDeclaration(cursor.getSubCursor(), this);
+		String line = cursor.getLine();
+		IBinding binding = new CPPClassTemplate(line);
+		CPPASTTemplateId name = new CPPASTTemplateId(binding, line, this);
+		CPPASTCompositeTypeSpecifier compositeTypeSpec = new CPPASTCompositeTypeSpecifier(cursor, this, name);
+		_declaration = new CPPASTSimpleDeclaration(cursor.getLine(), this, compositeTypeSpec);
 		cursor.runToTheEnd();
 		cursor.runToTheEnd();
 	}

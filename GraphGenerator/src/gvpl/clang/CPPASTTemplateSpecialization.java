@@ -2,6 +2,7 @@ package gvpl.clang;
 
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTemplateSpecialization;
 
 public class CPPASTTemplateSpecialization extends ASTNode implements ICPPASTTemplateSpecialization {
@@ -12,7 +13,10 @@ public class CPPASTTemplateSpecialization extends ASTNode implements ICPPASTTemp
 		super(cursor.getLine(), parent);
 		cursor.nextLine(); // header
 		cursor.nextLine(); // template argument
-		CPPASTCompositeTypeSpecifier compositeTypeSpec = new CPPASTCompositeTypeSpecifier(cursor, this, false);
+		String line = cursor.getLine();
+		IBinding binding = new CPPClassSpecialization(line);
+		CPPASTTemplateId name = new CPPASTTemplateId(binding, line, this);
+		CPPASTCompositeTypeSpecifier compositeTypeSpec = new CPPASTCompositeTypeSpecifier(cursor, this, name);
 		_declaration = new CPPASTSimpleDeclaration(cursor.getLine(), this, compositeTypeSpec);
 	}
 
