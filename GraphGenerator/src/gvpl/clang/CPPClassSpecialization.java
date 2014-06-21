@@ -16,8 +16,12 @@ public class CPPClassSpecialization implements ICPPSpecialization {
 
 	BindingInfo _bindingInfo;	
 	
-	public CPPClassSpecialization(String line) {
+	public CPPClassSpecialization(String line, String specializationType) {
 		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
+		//_name = _bindingInfo.name;
+		String typeName = _bindingInfo.name;
+		String compositeTypeName = CPPASTTranslationUnit.getCurrentNamespace() + typeName + "<" + specializationType + ">";
+		CPPASTTranslationUnit.addBinding(compositeTypeName, this);
 		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
 	}
 

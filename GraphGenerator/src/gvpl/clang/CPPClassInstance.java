@@ -4,32 +4,28 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ILinkage;
 import org.eclipse.cdt.core.dom.ast.DOMException;
+import org.eclipse.cdt.core.dom.ast.IASTName;
+import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.IScope;
-import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassTemplate;
-import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassTemplatePartialSpecialization;
-import org.eclipse.cdt.core.dom.ast.cpp.ICPPTemplateParameter;
+import org.eclipse.cdt.core.dom.ast.cpp.ICPPDelegate;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.ICPPInternalBinding;
 import org.eclipse.core.runtime.CoreException;
 
-public class CPPClassTemplate implements ICPPClassTemplate {
+public class CPPClassInstance implements ICPPInternalBinding {
 
-	static Logger logger = LogManager.getLogger(CPPClassTemplate.class.getName());
-
-	BindingInfo _bindingInfo;
+	static Logger logger = LogManager.getLogger(CPPClassInstance.class.getName());
 	
-	public CPPClassTemplate(String line) {
-		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
-		//_name = _bindingInfo.name;
-		String typeName = _bindingInfo.name;
-		String compositeTypeName = CPPASTTranslationUnit.getCurrentNamespace() + typeName + "<>";
-		CPPASTTranslationUnit.addBinding(compositeTypeName, this);
-		CPPASTTranslationUnit.addBinding(_bindingInfo, this);
+	IASTName _name = null;
+	
+	public CPPClassInstance(String templateClassName, String line, IASTNode parent) {
+		IBinding binding = CPPASTTranslationUnit.getBinding(templateClassName + "<>");
+		_name = new CPPASTName(binding, line, parent);
 	}
-	
+
 	@Override
-	public ICPPTemplateParameter[] getTemplateParameters() throws DOMException {
-		// TODO Auto-generated method stub
-		logger.error("not implemented");
-		return null;
+	public IASTNode getDefinition() {
+		return _name;
 	}
 
 	@Override
@@ -89,11 +85,26 @@ public class CPPClassTemplate implements ICPPClassTemplate {
 	}
 
 	@Override
-	public ICPPClassTemplatePartialSpecialization[] getPartialSpecializations()
-			throws DOMException {
+	public ICPPDelegate createDelegate(IASTName arg0) {
 		// TODO Auto-generated method stub
 		logger.error("not implemented");
 		return null;
 	}
+
+	@Override
+	public IASTNode[] getDeclarations() {
+		// TODO Auto-generated method stub
+		logger.error("not implemented");
+		return null;
+	}
+
+	@Override
+	public void addDeclaration(IASTNode arg0) {}
+
+	@Override
+	public void addDefinition(IASTNode arg0) {}
+
+	@Override
+	public void removeDeclaration(IASTNode arg0) {}
 
 }

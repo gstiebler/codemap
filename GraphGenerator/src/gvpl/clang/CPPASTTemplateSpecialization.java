@@ -12,9 +12,10 @@ public class CPPASTTemplateSpecialization extends ASTNode implements ICPPASTTemp
 	public CPPASTTemplateSpecialization(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		cursor.nextLine(); // header
-		cursor.nextLine(); // template argument
+		ClangLine templateArgsLine = CPPASTTranslationUnit.lineToMap(cursor.nextLine());
+		String specializationType = templateArgsLine.get("type");
 		String line = cursor.getLine();
-		IBinding binding = new CPPClassSpecialization(line);
+		IBinding binding = new CPPClassSpecialization(line, specializationType);
 		CPPASTTemplateId name = new CPPASTTemplateId(binding, line, this);
 		CPPASTCompositeTypeSpecifier compositeTypeSpec = new CPPASTCompositeTypeSpecifier(cursor, this, name);
 		_declaration = new CPPASTSimpleDeclaration(cursor.getLine(), this, compositeTypeSpec);

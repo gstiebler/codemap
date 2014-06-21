@@ -55,14 +55,13 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassType;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPField;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPNamespace;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassInstance;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassTemplate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType.CPPClassTypeDelegate;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPSpecialization;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.GPPASTExplicitTemplateInstantiation;
+import org.eclipse.cdt.internal.core.dom.parser.cpp.ICPPInternalBinding;
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -409,7 +408,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				IBinding binding = tid.resolveBinding();
 				IASTName templateName = null;
 				if(binding instanceof ICPPClassType) {
-					CPPSpecialization classSpecialization = (CPPClassInstance) binding;
+					ICPPInternalBinding classSpecialization = (ICPPInternalBinding) binding;
 					templateName = (IASTName) classSpecialization.getDefinition();
 				} else if (binding instanceof CPPUnknownClass) {
 					logger.error("CPPUnknownClass, {}", binding.getName());

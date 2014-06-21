@@ -31,6 +31,13 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 			binding = CPPASTTranslationUnit.getBinding(bi.type);
 		}
 		
+		if(binding == null) {
+			String[] strings = simpleType.split("[<]");
+			if(strings.length == 2) {
+				binding = new CPPClassInstance(strings[0], line, this);
+			}
+		}
+		
 		_name = CPPASTName.loadASTName(binding, line, parent);
 	}
 
