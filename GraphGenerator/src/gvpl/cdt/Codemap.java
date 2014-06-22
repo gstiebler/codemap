@@ -125,7 +125,6 @@ public class Codemap {
 		try {
 			outFile = new FileWriter(basePath + "generated.dot");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

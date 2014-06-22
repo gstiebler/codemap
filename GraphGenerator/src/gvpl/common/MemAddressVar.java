@@ -24,7 +24,6 @@ public class MemAddressVar extends Var {
 
 	public MemAddressVar(Graph gvplGraph, String name, TypeId type) {
 		super(gvplGraph, name, type);
-		// TODO Auto-generated constructor stub
 	}
 	
 	public MemAddressVar(MemAddressVar other) {

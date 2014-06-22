@@ -35,7 +35,6 @@ public class ScriptManager {
 				return;
 			_javaScriptFile = new FileReader(file);
 		} catch (FileNotFoundException e2) {
-			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
 	
@@ -53,7 +52,6 @@ public class ScriptManager {
 		try {
 			_cx.evaluateReader(_scope, _javaScriptFile, _fileName, 1, null);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		org.mozilla.javascript.Function fct = (Function)_scope.get("main", _scope);

@@ -292,7 +292,6 @@ public class ClassDeclCDT extends ClassDecl{
 		return _parentClasses;
 	}
 	
-	//TODO review efficiency
 	@Override
 	public Iterable<ClassDecl> getParentClasses() {
 		List<ClassDecl> list = new ArrayList<ClassDecl>();
