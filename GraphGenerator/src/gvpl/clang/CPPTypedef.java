@@ -13,8 +13,8 @@ public class CPPTypedef implements ITypedef {
 
 	static Logger logger = LogManager.getLogger(CPPTypedef.class.getName());
 	
-	public CPPTypedef(Cursor cursor) {
-		//cursor.runToTheEnd();
+	public CPPTypedef(String userType) {
+		CPPASTTranslationUnit.addBinding(userType, this);
 	}
 	
 	@Override

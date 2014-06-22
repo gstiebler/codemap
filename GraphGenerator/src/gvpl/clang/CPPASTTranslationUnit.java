@@ -171,7 +171,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			String userType = CPPASTTranslationUnit.getUserType(parsedLine);
 			if(userType.contains("("))
 			{
-				IBinding binding = new CPPTypedef(cursor.getSubCursor());
+				IBinding binding = new CPPTypedef(userType);
 				IASTDeclarator funcDecl = new CPPASTFunctionDeclarator(binding, parent, cursor.getSubCursor());
 				IASTDeclSpecifier declSpec = new CPPASTSimpleDeclSpecifier(cursor.getSubCursor(), parent);
 				return new CPPASTSimpleDeclaration(line, parent, declSpec, funcDecl);

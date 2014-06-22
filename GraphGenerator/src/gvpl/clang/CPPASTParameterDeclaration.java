@@ -3,6 +3,7 @@ package gvpl.clang;
 import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
+import org.eclipse.cdt.core.dom.ast.IBinding;
 
 public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration{
 
@@ -12,7 +13,14 @@ public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.c
 	public CPPASTParameterDeclaration(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		
-		_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), this);
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+		String userType = CPPASTTranslationUnit.getUserType(parsedLine);
+		if(userType.contains("(")) { // is function pointer
+			IBinding cppTypedef = CPPASTTranslationUnit.getBinding(userType);
+			_declSpec = new CPPASTNamedTypeSpecifier(cursor, cppTypedef, parent);
+		} else {
+			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), this);
+		}
 		_declarator = new CPPASTDeclarator(cursor.getSubCursor(), this);
 	}
 

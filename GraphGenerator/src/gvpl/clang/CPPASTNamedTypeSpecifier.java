@@ -36,6 +36,12 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		
 		_name = CPPASTName.loadASTName(binding, line, parent);
 	}
+	
+
+	public CPPASTNamedTypeSpecifier(Cursor cursor, IBinding binding, IASTNode parent) {
+		super(cursor, parent);
+		_name = CPPASTName.loadASTName(binding, cursor.getLine(), parent);
+	}
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
