@@ -86,7 +86,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 	Map<CodeLocation, Function> _funcByLocation = new TreeMap<CodeLocation, Function>();
 	Map<CodeLocation, ClassDeclCDT> _classByLocation = new TreeMap<CodeLocation, ClassDeclCDT>();
 	Map<IBinding, IBinding> _typedefBindings = new HashMap<IBinding, IBinding>();
-	//TODO check if this set is really necessary
 	Set<IBinding> _functionTypedefs = new LinkedHashSet<IBinding>();
 	Function _mainFunction = null;
 	List<EventFunction> _eventFunctions = new ArrayList<EventFunction>();

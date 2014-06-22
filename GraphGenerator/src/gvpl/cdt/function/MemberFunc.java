@@ -160,7 +160,6 @@ public class MemberFunc extends Function {
 			return var;
 		
 		String exprStr = expr.getRawSignature();
-		// TODO Create a special class for "this"
 		if (exprStr.equals("this")) {
 			// quite weird, but to deal with "this" in source code, i had to use "this" here
 			MemberFunc thisMemberFunc = (MemberFunc) this;
