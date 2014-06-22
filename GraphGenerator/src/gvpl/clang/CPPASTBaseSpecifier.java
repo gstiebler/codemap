@@ -11,9 +11,7 @@ public class CPPASTBaseSpecifier extends ASTNode implements ICPPASTBaseSpecifier
 	
 	public CPPASTBaseSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
-		ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
-		String userType = CPPASTTranslationUnit.getUserType(strings);
-		String simpleType = CPPASTTranslationUnit.simplifyType(userType);
+		String simpleType = CPPASTTranslationUnit.getSimplifiedUserType(cursor.getLine());
 		IBinding binding = CPPASTTranslationUnit.getBinding(simpleType);
 		_name = CPPASTName.loadASTName(binding, cursor.getLine(), this);
 		cursor.nextLine();

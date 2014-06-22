@@ -32,8 +32,7 @@ public class CPPASTName extends ASTNode implements org.eclipse.cdt.core.dom.ast.
 				return new CPPASTName(binding, line, parent);
 			
 			String completeType = CPPASTTranslationUnit.getUserType(strings);
-			String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
-			if(simpleType.contains("<")) {
+			if(completeType.contains("<")) {
 				return new CPPASTTemplateId(binding, line, parent);
 			} else {
 				return new CPPASTName(binding, line, parent);

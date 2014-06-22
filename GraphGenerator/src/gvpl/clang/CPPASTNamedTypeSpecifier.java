@@ -11,11 +11,7 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 	public CPPASTNamedTypeSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
 		String line = cursor.getLine();
-		
-		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
-		// may have *
-		String completeType = CPPASTTranslationUnit.getUserType(parsedLine);
-		String simpleType = CPPASTTranslationUnit.simplifyType(completeType);
+		String simpleType = CPPASTTranslationUnit.getSimplifiedUserType(line);
 		String firstType = CPPASTTranslationUnit.getType(line);
 		IBinding binding = null;
 		if(firstType.equals("CXXNewExpr")) {

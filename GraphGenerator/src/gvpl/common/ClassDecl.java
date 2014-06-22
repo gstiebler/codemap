@@ -26,7 +26,7 @@ public abstract class ClassDecl {
 	CodeLocation _location;
 	
 	public ClassDecl(CodeLocation location, IBinding binding) {
-		_typeId = new TypeId();
+		_typeId = new TypeId(this);
 		_location = location;
 	}
 

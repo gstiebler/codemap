@@ -23,6 +23,7 @@ public class CPPASTFunctionDefinition extends CPPASTDeclaration implements org.e
 		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
 		String firstType = CPPASTTranslationUnit.getType(line);
+		// seems like _declSpec represents the return type of the function
 		if(firstType.equals("CXXConstructorDecl") || firstType.equals("CXXDestructorDecl"))
 			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, parent);
 		else

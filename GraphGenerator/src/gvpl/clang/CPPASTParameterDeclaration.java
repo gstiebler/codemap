@@ -12,7 +12,7 @@ public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.c
 	public CPPASTParameterDeclaration(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		
-		_declSpec = new CPPASTSimpleDeclSpecifier(cursor.getSubCursor(), this);
+		_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), this);
 		_declarator = new CPPASTDeclarator(cursor.getSubCursor(), this);
 	}
 

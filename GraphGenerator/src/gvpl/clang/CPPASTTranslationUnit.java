@@ -332,6 +332,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		return getUserType(line, 0);
 	}
 	
+	public static String getSimplifiedUserType(String line) {
+		ClangLine parsedLine = lineToMap(line);
+		String userType = getUserType(parsedLine);
+		return simplifyType(userType);
+	}
+	
 	public static String getUserType(ClangLine line, int index) {
 		String result = line.get("type", index);
 		String[] strings = result.split("[%]");
