@@ -22,14 +22,18 @@ public class CPPASTFunctionDefinition extends CPPASTDeclaration implements org.e
 	public CPPASTFunctionDefinition(Cursor cursor, boolean isMethod, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		String line = cursor.getLine();
+		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 		String firstType = CPPASTTranslationUnit.getType(line);
 		// seems like _declSpec represents the return type of the function
 		if(firstType.equals("CXXConstructorDecl") || firstType.equals("CXXDestructorDecl"))
 			_declSpec = new CPPASTSimpleDeclSpecifier(cursor, parent);
-		else
-			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), this);
+		else {
+			String userType = CPPASTTranslationUnit.getUserType(strings);
+			String[] breakedTypes = CPPASTTranslationUnit.breakIn2(userType, ' ');
+			String returnType = breakedTypes[0];
+			_declSpec = CPPASTBaseDeclSpecifier.loadDeclSpec(cursor.getSubCursor(), returnType, this);
+		}
 		BindingInfo bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
-		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
 		
 		_funcName = strings.get("name");
 

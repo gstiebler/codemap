@@ -14,15 +14,16 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 	
 	public static IASTDeclSpecifier loadDeclSpec(Cursor cursor, IASTNode parent) {
 		String line = cursor.getLine();
-		ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
-		String type = CPPASTTranslationUnit.getUserType(strings);
-		// separates *
-		String simpleType = CPPASTTranslationUnit.simplifyType(type);
+		String simpleType = CPPASTTranslationUnit.getSimplifiedUserType(line);
+		return loadDeclSpec(cursor, simpleType, parent);
+	}
+	
+	public static IASTDeclSpecifier loadDeclSpec(Cursor cursor, String simpleUserType, IASTNode parent) {
 		//TODO improve, it will not work with typedefs or defines
-		if(simpleType.equals("float") || 
-				simpleType.equals("int") ||
-				simpleType.equals("bool") ||
-				simpleType.equals("void") )
+		if(simpleUserType.equals("float") || 
+				simpleUserType.equals("int") ||
+				simpleUserType.equals("bool") ||
+				simpleUserType.equals("void") )
 			return new CPPASTSimpleDeclSpecifier(cursor, parent);
 		else
 			return new CPPASTNamedTypeSpecifier(cursor, parent);
