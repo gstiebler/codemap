@@ -58,10 +58,6 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPClassType;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPField;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPNamespace;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPVariable;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPClassType.CPPClassTypeDelegate;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPDeferredClassInstance;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPUnknownClass;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.GPPASTExplicitTemplateInstantiation;
 import org.eclipse.cdt.internal.core.dom.parser.cpp.ICPPInternalBinding;
 
 import debug.DebugOptions;
@@ -209,9 +205,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 		} else if ( declaration instanceof ICPPASTTemplateSpecialization ){
 			ICPPASTTemplateSpecialization ts = (ICPPASTTemplateSpecialization) declaration;
 			loadDeclaration(ts.getDeclaration());
-		} else if ( declaration instanceof GPPASTExplicitTemplateInstantiation ){
-			GPPASTExplicitTemplateInstantiation ti = (GPPASTExplicitTemplateInstantiation) declaration;
-			logger.warn("Not implemented GPPASTExplicitTemplateInstantiation: {}", ti.getRawSignature());
 		} else
 			logger.error("Deu merda aqui. {}", declaration.getClass());
 	}
@@ -273,9 +266,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 		if(classBinding instanceof IProblemBinding) {
 			logger.error("problem binding: {}", ((IProblemBinding)classBinding).getMessage());
 			return;
-		} else if(classBinding instanceof CPPDeferredClassInstance) {
-			logger.warn("Not implemented CPPDeferredClassInstance: {}", ((CPPDeferredClassInstance)classBinding).getName());
-			return;
 		} else if(classBinding instanceof ICPPNamespace) {
 			logger.info("Not implemented CPPNamespace: {}", ((ICPPNamespace)classBinding).getName());
 			return;
@@ -283,7 +273,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.warn("Not implemented CPPClassSpecialization: {}", ((CPPClassSpecialization)classBinding).getName());
 			return;
 		} else if (classBinding instanceof ICPPClassType ) {
-			logger.info("CPPClassType: {}", ((ICPPClassType)classBinding).getName());
+			logger.info("CPPClassType: {}", ((ICPPClassType)classBinding).toString());
 		} else if (classBinding instanceof IASTName ) {
 			logger.warn("Not implemented CPPASTName: {}", ((IASTName)classBinding));
 			return;
@@ -411,23 +401,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 				if(binding instanceof CPPClassInstance) {
 					ICPPInternalBinding classSpecialization = (ICPPInternalBinding) binding;
 					templateName = (IASTName) classSpecialization.getDefinition();
-				} else if (binding instanceof CPPUnknownClass) {
-					logger.error("CPPUnknownClass, {}", binding.getName());
-					return null;
-				} else if (binding instanceof CPPDeferredClassInstance) {
-					CPPDeferredClassInstance dci = (CPPDeferredClassInstance) binding;
-					CPPClassTemplate classTemplate = (CPPClassTemplate) dci.getSpecializedBinding();
-					logger.error("work here");
-					IASTNode node = null;
-					//classTemplate.getDefinition();
-					if(node instanceof IASTName) {
-						templateName = (IASTName) node;
-					} else if (node == null)
-						return null;
-					else {
-						logger.error("Problem loading class {}, {}", node.getClass());
-						return null;
-					}
 				} else if (binding instanceof CPPClassSpecialization) {
 					return binding;
 				} else  {
@@ -449,10 +422,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 				IBinding newBinding = _typedefBindings.get(binding);
 				if(newBinding != null)
 					return newBinding;
-			} else if (binding instanceof CPPClassTypeDelegate) {
-				CPPClassTypeDelegate ctd = (CPPClassTypeDelegate) binding;
-				binding = ctd.getBinding();
-			}
+			} 
 			return binding;
 		}
 		else if(declSpec instanceof ICPPASTElaboratedTypeSpecifier)

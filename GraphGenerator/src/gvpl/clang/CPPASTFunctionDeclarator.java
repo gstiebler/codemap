@@ -153,9 +153,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public String getRawSignature() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		return _name.toString();
 	}
 
 	@Override

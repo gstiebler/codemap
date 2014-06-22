@@ -34,8 +34,6 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTOperatorName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTemplateId;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPScope.CPPScopeProblem;
-
 import debug.DebugOptions;
 
 public class ClassDeclCDT extends ClassDecl{
@@ -197,12 +195,6 @@ public class ClassDeclCDT extends ClassDecl{
 		for(ICPPASTBaseSpecifier baseSpec : baseSpecs) {
 			IASTName baseSpecName = baseSpec.getName();
 			IBinding binding = baseSpecName.resolveBinding();
-			if(binding instanceof CPPScopeProblem)
-			{
-				logger.error("Problema in base class. Class {}, Base Class {}",
-						_name, baseSpecName.toString());
-				continue;
-			}
 			ClassDeclCDT parentClass = astInterpreter.getClassDecl(binding);
 			if(parentClass == null){
 				logger.error("Parent class from {} is null", _name);

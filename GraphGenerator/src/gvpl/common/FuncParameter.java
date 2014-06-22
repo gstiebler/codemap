@@ -11,7 +11,6 @@ public class FuncParameter {
 	private Value _value = null;
 	private Function _functionPointer = null;
 	private IndirectionType _indirectionType = null;
-	int _type = -1;
 	
 	public FuncParameter(Value value, IndirectionType type) {
 		_value = value;
@@ -35,10 +34,6 @@ public class FuncParameter {
 		return _indirectionType;
 	}
 	
-	public void setType(int type) {
-		_type = type;
-	}
-	
 	public Function getFunction() {
 		return _functionPointer;
 	}
@@ -46,9 +41,6 @@ public class FuncParameter {
 	//TODO improve
 	public boolean isEquivalent(FuncParameter other) {
 		if(_indirectionType != other._indirectionType)
-			return false;
-		
-		if(_type != other._type)
 			return false;
 		
 		return true;

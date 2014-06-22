@@ -5,6 +5,8 @@ import gvpl.cdt.BaseScopeCDT;
 import gvpl.cdt.ClassDeclCDT;
 import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
+//import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction; //CDT_CLANG
+import gvpl.clang.CPPFunction; //CDT_CLANG
 import gvpl.common.BaseScope;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -37,17 +39,13 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTPointer;
 import org.eclipse.cdt.core.dom.ast.IASTPointerOperator;
-import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
+import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTStatement;
 import org.eclipse.cdt.core.dom.ast.IBinding;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTConstructorChainInitializer;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTQualifiedName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTReferenceOperator;
-import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPASTSimpleDeclaration;
-//import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction; //CDT_CLANG
-import gvpl.clang.CPPFunction; //CDT_CLANG
 
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
@@ -102,8 +100,8 @@ public class Function extends BaseScopeCDT {
 	public void loadDeclaration(ICPPASTFunctionDeclarator decl) {
 		_returnPointerOps = decl.getPointerOperators();
 		IASTNode parentNode = decl.getParent();
-		if( parentNode instanceof CPPASTSimpleDeclaration ) {
-			CPPASTSimpleDeclaration simpleDecl = (CPPASTSimpleDeclaration) parentNode;
+		if( parentNode instanceof IASTSimpleDeclaration ) {
+			IASTSimpleDeclaration simpleDecl = (IASTSimpleDeclaration) parentNode;
 			_isStatic = simpleDecl.getDeclSpecifier().getStorageClass() == IASTDeclSpecifier.sc_static;
 		} else if ( parentNode instanceof IASTFunctionDefinition ) {
 			IASTFunctionDefinition funcDef = (IASTFunctionDefinition) parentNode;
@@ -191,8 +189,6 @@ public class Function extends BaseScopeCDT {
 				FuncParameter.IndirectionType parameterVarType = null;
 				parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
 				funcParameter = new FuncParameter(parameterVarType);
-				if(declSpec instanceof IASTSimpleDeclSpecifier)
-					funcParameter.setType(((IASTSimpleDeclSpecifier)declSpec).getType());
 			}
 
 			addParameter(binding, funcParameter);
@@ -288,8 +284,8 @@ public class Function extends BaseScopeCDT {
 		if (pointerOps.length > 0) {
 			if (pointerOps[0] instanceof IASTPointer)
 				return IndirectionType.E_POINTER;
-			else if (pointerOps[0] instanceof CPPASTReferenceOperator)
-				return IndirectionType.E_REFERENCE;
+//			else if (pointerOps[0] instanceof CPPASTReferenceOperator)
+//				return IndirectionType.E_REFERENCE;
 		} else
 			return IndirectionType.E_VARIABLE;
 		Function.logger.fatal("error not expected");
