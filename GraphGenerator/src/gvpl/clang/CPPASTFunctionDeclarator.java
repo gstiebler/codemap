@@ -41,7 +41,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 		while(!cursor.theEnd()) {
 			String type = CPPASTTranslationUnit.getType(cursor.getLine());
 			if (type.equals("ParmVarDecl")) {
-				_parameters.add(new ASTParameterDeclaration(cursor.getSubCursor(), this));
+				_parameters.add(new CPPASTParameterDeclaration(cursor.getSubCursor(), this));
 			} else if (type.equals("CXXCtorInitializer")) {
 				_constrChainInit.add(new CPPASTConstructorChainInitializer(cursor.getSubCursor(), this));
 			} else {
@@ -59,7 +59,7 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 
 	@Override
 	public IASTParameterDeclaration[] getParameters() {
-		ASTParameterDeclaration[] result = new ASTParameterDeclaration[_parameters.size()];
+		CPPASTParameterDeclaration[] result = new CPPASTParameterDeclaration[_parameters.size()];
 		return _parameters.toArray(result);
 	}
 

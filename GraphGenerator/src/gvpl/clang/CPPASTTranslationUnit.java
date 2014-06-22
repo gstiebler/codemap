@@ -15,7 +15,9 @@ import org.eclipse.cdt.core.dom.IName;
 import org.eclipse.cdt.core.dom.ast.ASTNodeProperty;
 import org.eclipse.cdt.core.dom.ast.ASTVisitor;
 import org.eclipse.cdt.core.dom.ast.IASTComment;
+import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
+import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTFileLocation;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
@@ -164,6 +166,18 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			return new CPPASTSimpleDeclaration(cursor.getSubCursor(), parent);
 		} else if (type.equals("NamespaceDecl")) {
 			return new CPPASTNamespaceDefinition(cursor.getSubCursor(), parent);
+		} else if (type.equals("TypedefDecl")) {
+			ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
+			String userType = CPPASTTranslationUnit.getUserType(parsedLine);
+			if(userType.contains("("))
+			{
+				IBinding binding = new CPPTypedef(cursor.getSubCursor());
+				IASTDeclarator funcDecl = new CPPASTFunctionDeclarator(binding, parent, cursor.getSubCursor());
+				IASTDeclSpecifier declSpec = new CPPASTSimpleDeclSpecifier(cursor.getSubCursor(), parent);
+				return new CPPASTSimpleDeclaration(line, parent, declSpec, funcDecl);
+			} else
+				cursor.runToTheEnd();
+			return null;
 		} else if (type.equals("EmptyDecl") || 
 				type.equals("UsingDecl") || 
 				type.equals("UsingDirectiveDecl") || 
@@ -190,7 +204,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		if(funcDefinition._body != null) {
 			return funcDefinition;
 		} else {
-			return new CPPASTSimpleDeclaration(line, parent, funcDefinition._declarator);
+			return new CPPASTSimpleDeclaration(line, parent, null, funcDefinition._declarator);
 		}
 	}
 	

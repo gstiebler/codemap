@@ -27,8 +27,6 @@ public class CPPASTNewExpression extends ASTNode implements ICPPASTNewExpression
 
 	@Override
 	public IASTExpression getNewInitializer() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
 		return _newInit;
 	}
 

@@ -4,24 +4,26 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
 import org.eclipse.cdt.core.dom.ast.IASTNode;
 
-public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration {
+public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.cdt.core.dom.ast.IASTParameterDeclaration{
 
-	public CPPASTParameterDeclaration(String line, IASTNode parent) {
-		super(line, parent);
+	IASTDeclSpecifier _declSpec;
+	IASTDeclarator _declarator;
+	
+	public CPPASTParameterDeclaration(Cursor cursor, IASTNode parent) {
+		super(cursor.getLine(), parent);
+		
+		_declSpec = new CPPASTSimpleDeclSpecifier(cursor.getSubCursor(), this);
+		_declarator = new CPPASTDeclarator(cursor.getSubCursor(), this);
 	}
 
 	@Override
 	public IASTDeclSpecifier getDeclSpecifier() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		return _declSpec;
 	}
 
 	@Override
 	public IASTDeclarator getDeclarator() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		return _declarator;
 	}
 
 	@Override
@@ -29,5 +31,6 @@ public class CPPASTParameterDeclaration extends ASTNode implements org.eclipse.c
 
 	@Override
 	public void setDeclarator(IASTDeclarator arg0) {}
+
 
 }

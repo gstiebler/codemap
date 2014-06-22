@@ -44,23 +44,21 @@ public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.
 		}
 	}
 	
-	public CPPASTSimpleDeclaration(String line, IASTNode parent, IASTDeclSpecifier declSpec) {
+	public CPPASTSimpleDeclaration(String line, IASTNode parent, IASTDeclSpecifier declSpec, IASTDeclarator child) {
 		super(line, parent);
 		_declSpec = declSpec;
-	}
-	
-	public CPPASTSimpleDeclaration(String line, IASTNode parent, IASTDeclarator child) {
-		super(line, parent);
-		_declarators.add(child);
-		if(child instanceof CPPASTFunctionDeclarator) {
-			CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) child;
-			IASTNode fdParent = funcDecl._parent;
-			if(fdParent instanceof CPPASTFunctionDefinition) {
-				_declSpec = ((CPPASTFunctionDefinition)fdParent)._declSpec;
-				return;
+		if(child != null) {
+			_declarators.add(child);
+			if(child instanceof CPPASTFunctionDeclarator) {
+				CPPASTFunctionDeclarator funcDecl = (CPPASTFunctionDeclarator) child;
+				IASTNode fdParent = funcDecl._parent;
+				if(fdParent instanceof CPPASTFunctionDefinition) {
+					_declSpec = ((CPPASTFunctionDefinition)fdParent)._declSpec;
+					return;
+				}
 			}
+			logger.error("not expected");
 		}
-		logger.error("not expected");
 	}
 
 	@Override

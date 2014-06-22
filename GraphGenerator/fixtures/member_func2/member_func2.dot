@@ -5,21 +5,48 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "12_19_19";
-	node_000007 [ label = "x", startingline=23 ]
-	node_000008 [ label = "y", startingline=24 ]
+startinglines = "29_34_34";
+	node_000007 [ label = "x", startingline=38 ]
+	node_000008 [ label = "y", startingline=39 ]
+	node_000011 [ label = "a", startingline=42 ]
+	node_000014 [ label = "b", startingline=45 ]
+	node_000016 [ label = "c", startingline=48 ]
 subgraph cluster_2 {
 label = "sPri::func1";
 parent = "cluster_1";
-startinglines = "19_20_21";
+startinglines = "34_35_36";
 	node_000003 [ label = "2.000000e+01", style=filled, fillcolor="#E9FFE9", startinglines=14 ]
 	node_000004 [ label = "str1.sIntA.soEsse", startingline=14 ]
 	node_000005 [ label = "3.000000e+01", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
 	node_000006 [ label = "str1.sIntB.soEsse", startingline=15 ]
+}
+subgraph cluster_3 {
+label = "receiveStructRef";
+parent = "cluster_1";
+startinglines = "38_39_41";
+	node_000009 [ label = "5.500000e+01", style=filled, fillcolor="#E9FFE9", startinglines=21 ]
+	node_000010 [ label = "str1.sIntA.soEsse", startingline=21 ]
+}
+subgraph cluster_4 {
+label = "receiveStructPointer";
+parent = "cluster_1";
+startinglines = "21_42_44";
+	node_000012 [ label = "1.550000e+02", style=filled, fillcolor="#E9FFE9", startinglines=26 ]
+	node_000013 [ label = "str1.sIntA.soEsse", startingline=26 ]
+}
+subgraph cluster_5 {
+label = "receiveStructCopy";
+parent = "cluster_1";
+startinglines = "26_45_47";
 }
 }
 	node_000003 -> node_000004
 	node_000004 -> node_000007
 	node_000005 -> node_000006
 	node_000006 -> node_000008
+	node_000009 -> node_000010
+	node_000010 -> node_000011
+	node_000012 -> node_000013
+	node_000013 -> node_000014
+	node_000013 -> node_000016
 }
