@@ -386,7 +386,7 @@ public class Function extends BaseScopeCDT {
 	
 	@Override
 	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
-		ExecTreeLogger.log(binding.getName());
+		ExecTreeLogger.log(binding.toString());
 		FuncParameter funcParameter = _parametersMap.get(binding);
 		if(funcParameter != null) {
 			Value value = funcParameter.getValue();

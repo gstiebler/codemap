@@ -118,7 +118,7 @@ public abstract class BaseScope implements IScope {
 	}
 	
 	protected IVar getLocalVar(IBinding binding) {
-		ExecTreeLogger.log(binding.getName());
+		ExecTreeLogger.log(binding.toString());
 		return _localVariables.get(binding);
 	}
 	

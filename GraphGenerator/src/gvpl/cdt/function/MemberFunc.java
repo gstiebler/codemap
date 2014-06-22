@@ -119,7 +119,7 @@ public class MemberFunc extends Function {
 			if(var != null)
 				return var;
 		} else {
-			logger.debug("listing members of class {}, binding {} not found", _parentClass.getName(), binding.getName());
+			logger.debug("listing members of class {}, binding {} not found", _parentClass.getName(), binding.toString());
 			for(Map.Entry<IBinding, ClassMember> memberES : _parentClass._memberIdMap.entrySet()) {
 				logger.debug("member binding: {}, member: {}", memberES.getKey(), 
 						memberES.getValue().getName());
@@ -192,7 +192,7 @@ public class MemberFunc extends Function {
 
 	@Override
 	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
-		ExecTreeLogger.log(binding.getName());
+		ExecTreeLogger.log(binding.toString());
 		if(binding instanceof IProblemBinding) {
 			logger.warn("problem binding {}", binding.getName());
 			return null;

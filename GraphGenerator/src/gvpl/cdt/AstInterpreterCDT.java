@@ -518,8 +518,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 	}
 	
 	public void addGlobalVar( IBinding binding, CodeLocation fileLoc, IVar var ) {
-		ExecTreeLogger.log(binding.getName());
-		logger.debug(binding.getName());
+		ExecTreeLogger.log(binding.toString());
+		logger.debug(binding.toString());
 		_globalVars.put(binding, var);
 		_globalVarsByCodeLoc.put(fileLoc, var);
 	}
@@ -529,8 +529,8 @@ public class AstInterpreterCDT extends AstInterpreter {
 			logger.error("Binding can't be null");
 			return new Var(_gvplGraph, "ERROR", _primitiveType);
 		}
-		ExecTreeLogger.log(binding.getName());
-		logger.debug(binding.getName());
+		ExecTreeLogger.log(binding.toString());
+		logger.debug(binding.toString());
 		IVar var = _globalVars.get(binding);
 		if(var != null)
 			return var;
@@ -608,7 +608,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 	
 	@Override
 	public IVar getVarFromBinding(IBinding binding, CodeLocation codeLoc) {
-		ExecTreeLogger.log(binding.getName());
+		ExecTreeLogger.log(binding.toString());
 		return getGlobalVar(binding, codeLoc);
 	}
 	
