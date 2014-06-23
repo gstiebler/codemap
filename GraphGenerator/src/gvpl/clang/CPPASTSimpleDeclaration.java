@@ -44,6 +44,11 @@ public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.
 		}
 	}
 	
+	@Override
+	public String toString() {
+		return _declSpec.toString() + " - " + _declarators.toString();
+	}
+	
 	public CPPASTSimpleDeclaration(String line, IASTNode parent, IASTDeclSpecifier declSpec, IASTDeclarator child) {
 		super(line, parent);
 		_declSpec = declSpec;

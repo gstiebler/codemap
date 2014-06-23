@@ -8,9 +8,18 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTSimpleDeclSpecifier;
 public class CPPASTSimpleDeclSpecifier extends CPPASTBaseDeclSpecifier implements ICPPASTSimpleDeclSpecifier{
 	
 	static Logger logger = LogManager.getLogger(CPPASTSimpleDeclSpecifier.class.getName());
+	
+	String _name = "";
 
 	public CPPASTSimpleDeclSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor, parent);
+		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
+		_name = parsedLine.getAndCheck("name");
+	}
+	
+	@Override
+	public String toString() {
+		return _name;
 	}
 
 	@Override

@@ -52,6 +52,11 @@ public class CPPASTFunctionDeclarator implements org.eclipse.cdt.core.dom.ast.cp
 	}
 	
 	@Override
+	public String toString() {
+		return _name.toString();
+	}
+	
+	@Override
 	public void addParameterDeclaration(IASTParameterDeclaration arg0) {
 		// TODO Auto-generated method stub
 		
