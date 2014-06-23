@@ -22,4 +22,6 @@ int main()
 	ct._member = f;
 	
 	int h = ct.somaCT(a, b);
+    
+    int j = ClassTest::staticOnCpp();
 }

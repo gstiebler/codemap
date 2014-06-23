@@ -22,6 +22,7 @@ startinglines = "2_6_6";
 	node_000028 [ label = "f", startingline=11 ]
 	node_000030 [ label = "ct._member", startingline=22 ]
 	node_000033 [ label = "h", startingline=16 ]
+	node_000039 [ label = "j", startingline=6 ]
 subgraph cluster_2 {
 label = "soma2";
 parent = "cluster_1";
@@ -68,6 +69,21 @@ startinglines = "21_22_24";
 	node_000031 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=16 ]
 	node_000032 [ label = "ClassTest::somaCT", style=filled, fillcolor="#FFFFD0", startinglines=16 ]
 }
+subgraph cluster_8 {
+label = "ClassTest::staticOnCpp";
+parent = "cluster_1";
+startinglines = "24_16_26";
+	node_000034 [ label = "42", style=filled, fillcolor="#E9FFE9", startinglines=11 ]
+	node_000038 [ label = "ClassTest::staticOnCpp", style=filled, fillcolor="#FFFFD0", startinglines=6 ]
+subgraph cluster_9 {
+label = "ClassTest::staticFunc";
+parent = "cluster_8";
+startinglines = "16_26_11";
+	node_000035 [ label = "7", style=filled, fillcolor="#E9FFE9", startinglines=6 ]
+	node_000036 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=6 ]
+	node_000037 [ label = "ClassTest::staticFunc", style=filled, fillcolor="#FFFFD0", startinglines=6 ]
+}
+}
 }
 	node_000001 -> node_000002
 	node_000002 -> node_000005
@@ -99,4 +115,9 @@ startinglines = "21_22_24";
 	node_000027 -> node_000028
 	node_000031 -> node_000032
 	node_000032 -> node_000033
+	node_000034 -> node_000036
+	node_000038 -> node_000039
+	node_000035 -> node_000036
+	node_000036 -> node_000037
+	node_000037 -> node_000038
 }

@@ -15,4 +15,6 @@ public:
 	{
 		return x + y;
 	}
+    
+    static int staticOnCpp();
 };

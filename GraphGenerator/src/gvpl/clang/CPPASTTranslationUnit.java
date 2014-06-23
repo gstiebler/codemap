@@ -37,6 +37,10 @@ class BindingInfo {
 	public String location = "";
 	public String name = "";
 	public String type = "";
+	
+	public String toString() {
+		return "0x" + Integer.toHexString(bindingId) + " - " + type;
+	}
 }
 
 class BindingOwner {
@@ -146,18 +150,12 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 			return loadFuncDecl(cursor, false, null);
 		} else if (type.equals("CXXMethodDecl") || type.equals("CXXConstructorDecl")) {
 			ClangLine strings = CPPASTTranslationUnit.lineToMap(line);
-			int parentId = hexStrToInt(strings.get("parent"));
 			int prevId = hexStrToInt(strings.get("prev"));
 			IBinding binding = getBinding(prevId);
 			if(binding == null)
 				logger.error("Prev Id {} not found", prevId);
 
 			IASTDeclaration funcDecl = loadFuncDecl(cursor, true, null);
-			
-			if(funcDecl instanceof CPPASTFunctionDefinition) {
-				CPPClassType ct = (CPPClassType) getBinding(parentId);
-				ct._parent.replaceFuncDecl(binding, (CPPASTFunctionDefinition)funcDecl);
-			}
 					
 			return funcDecl;
 		} else if (type.equals("CXXRecordDecl") || 

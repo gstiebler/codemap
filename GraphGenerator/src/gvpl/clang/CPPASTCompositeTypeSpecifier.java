@@ -85,21 +85,6 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			}
 		}
 	}
-	
-	public void replaceFuncDecl(IBinding binding, CPPASTFunctionDefinition funcDecl) {
-		for(int i = 0; i < _members.size(); ++i) {
-			IASTDeclaration member = _members.get(i);
-			if(member instanceof CPPASTFunctionDefinition) {
-				CPPASTFunctionDefinition currFuncDecl = (CPPASTFunctionDefinition) member;
-				IBinding currBinding = currFuncDecl.getDeclarator().getName().getBinding();
-				if(currBinding == binding) {
-					_members.set(i, funcDecl);
-					return;
-				}
-			}
-		}
-		logger.error("Could not replace function from binding {}", binding);
-	}
 
 	@Override
 	public ICPPASTBaseSpecifier[] getBaseSpecifiers() {
