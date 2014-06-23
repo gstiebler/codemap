@@ -275,7 +275,10 @@ public class InstructionLine {
 			ClassVar classVar = (ClassVar) lhsVar;
 			int numParameters = getChildExpressions(initExpr).length;
 			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(numParameters);
-			parameterValues = loadFunctionParameters(constructorFunc, initExpr);
+			if(constructorFunc != null)
+				parameterValues = loadFunctionParameters(constructorFunc, initExpr);
+			else
+				parameterValues = new ArrayList<FuncParameter>();
 		} else {
 			parameterValues = new ArrayList<FuncParameter>();
 			Value value = loadValue(initExpr);
