@@ -7,6 +7,7 @@ import gvpl.cdt.CodeLocationCDT;
 import gvpl.cdt.InstructionLine;
 //import org.eclipse.cdt.internal.core.dom.parser.cpp.CPPFunction; //CDT_CLANG
 import gvpl.clang.CPPFunction; //CDT_CLANG
+import gvpl.common.AstInterpreter;
 import gvpl.common.BaseScope;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -104,7 +105,7 @@ public class Function extends BaseScopeCDT {
 			}
 		}
 		
-		_returnType = _astInterpreter.getPrimitiveType();
+		_returnType = AstInterpreter.getPrimitiveType();
 	}
 	
 	public void loadDeclaration(ICPPASTFunctionDeclarator decl) {
@@ -346,7 +347,6 @@ public class Function extends BaseScopeCDT {
 		return isEquivalentParameterList(parameters);
 	}
 	
-	//TODO compare parameter types too
 	public boolean isEquivalentParameterList(List<FuncParameter> parametersList) {
 		for(int i = 0; i < _originalParameters.size(); ++i) {
 			FuncParameter internal = getOriginalParameter(i);

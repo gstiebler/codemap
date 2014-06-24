@@ -34,7 +34,6 @@ public abstract class ClassDecl {
 		return _typeId;
 	}
 
-	//TODO check parameters types too
 	public MemberFunc getConstructorFunc(List<TypeId> parameterTypes) {
 		for(MemberFunc constructor : _constructorFuncs) {
 			if(constructor.hasEquivalentParameterTypes(parameterTypes))

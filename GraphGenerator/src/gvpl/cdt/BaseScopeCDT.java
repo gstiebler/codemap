@@ -2,7 +2,7 @@ package gvpl.cdt;
 
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
-import gvpl.clang.CPPVariable;
+import gvpl.common.AstInterpreter;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassMember;
 import gvpl.common.CodeLocation;
@@ -74,7 +74,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 	    IBinding binding = getBindingFromExpr(expr);
 	    CodeLocation codeLocation = null;
 		if (binding instanceof ICPPVariable) {
-			CPPVariable cppvar = (CPPVariable) binding;
+//			CPPVariable cppvar = (CPPVariable) binding;
 //			IASTNode[] nodes = cppvar.getDeclarations();
 //			if (nodes != null && nodes.length > 0) {
 //				codeLocation = CodeLocationCDT.NewFromFileLocation(nodes[0]);
@@ -180,7 +180,7 @@ public abstract class BaseScopeCDT extends BaseScope{
 				return thisMemberFunc.getThisReference();
 			} else {
 				// only used for char*
-				return addVarDecl(expr.getRawSignature(), _astInterpreter.getPrimitiveType(), 
+				return addVarDecl(expr.getRawSignature(), AstInterpreter.getPrimitiveType(), 
 						IndirectionType.E_VARIABLE, _gvplGraph, _astInterpreter);
 			}
 		} else if (expr instanceof IASTArraySubscriptExpression) {

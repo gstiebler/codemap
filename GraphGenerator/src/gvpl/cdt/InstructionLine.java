@@ -3,6 +3,7 @@ package gvpl.cdt;
 import gvpl.cdt.function.Function;
 import gvpl.cdt.function.MemberFunc;
 import gvpl.clang.ClangSizeof;
+import gvpl.common.AstInterpreter;
 import gvpl.common.BaseScope;
 import gvpl.common.ClassDecl;
 import gvpl.common.ClassVar;
@@ -539,13 +540,13 @@ public class InstructionLine {
 			lhsPointer.setPointedVar(result.getVar());
 		} else if (rhsOp instanceof IASTLiteralExpression) {
 			IVar var = BaseScopeCDT.addVarDecl(rhsOp.getRawSignature(), 
-					_astInterpreter.getPrimitiveType(), IndirectionType.E_VARIABLE, _gvplGraph, _astInterpreter);
+					AstInterpreter.getPrimitiveType(), IndirectionType.E_VARIABLE, _gvplGraph, _astInterpreter);
 			lhsPointer.setPointedVar(var);
 		} else {
 			//TODO gambierre?
 			if(rhsOp.getRawSignature().equals("NULL"))
 			{			
-				IVar var = BaseScopeCDT.addVarDecl("NULL", _astInterpreter.getPrimitiveType(), 
+				IVar var = BaseScopeCDT.addVarDecl("NULL", AstInterpreter.getPrimitiveType(), 
 						IndirectionType.E_VARIABLE, _gvplGraph, _astInterpreter);
 				lhsPointer.setPointedVar(var);
 				return;
