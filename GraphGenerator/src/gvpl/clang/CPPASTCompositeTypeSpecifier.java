@@ -36,6 +36,8 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	}
 	
 	void initialize(Cursor cursor) {
+		if(cursor.theEnd()) // probably a forward declaration
+			return;
 		String line = cursor.getLine();
 		String classType;
 		while(true) {
