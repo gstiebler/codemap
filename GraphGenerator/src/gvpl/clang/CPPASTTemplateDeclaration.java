@@ -18,6 +18,7 @@ public class CPPASTTemplateDeclaration extends ASTNode implements ICPPASTTemplat
 		String line = cursor.getLine();
 		IBinding binding = new CPPClassTemplate(line);
 		CPPASTTemplateId name = new CPPASTTemplateId(binding, line, this);
+		cursor.nextLine();
 		CPPASTCompositeTypeSpecifier compositeTypeSpec = new CPPASTCompositeTypeSpecifier(cursor, this, name);
 		_declaration = new CPPASTSimpleDeclaration(cursor.getLine(), this, compositeTypeSpec, null);
 	}
