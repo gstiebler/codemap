@@ -34,6 +34,8 @@ public class Binding  {
 			return ((CPPClassInstance)binding)._bindingInfo.bindingId;
 		} else if(binding instanceof CPPClassSpecialization) {
 			return ((CPPClassSpecialization)binding)._bindingInfo.bindingId;
+		} else if(binding instanceof CPPEnumeration) {
+			return ((CPPEnumeration)binding)._bindingInfo.bindingId;
 		} else {
 			logger.error("Class not found: {}", binding.getClass());
 			return -1;

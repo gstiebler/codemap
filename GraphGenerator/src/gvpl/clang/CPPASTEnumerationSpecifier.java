@@ -10,9 +10,12 @@ import org.eclipse.cdt.core.dom.ast.IASTNode;
 public class CPPASTEnumerationSpecifier extends CPPASTBaseDeclSpecifier implements IASTEnumerationSpecifier{
 
 	List<IASTEnumerator> _enumerators = new ArrayList<IASTEnumerator>();
+	IASTName _name;
 	
 	CPPASTEnumerationSpecifier(Cursor cursor, IASTNode parent) {
 		super(cursor.getSubCursor(), parent);
+		String line = cursor.getLine();
+		_name = new CPPASTName(new CPPEnumeration(line), line, this);
 		cursor.nextLine();
 		while(!cursor.theEnd()) {
 			_enumerators.add(new CPPASTEnumerator(cursor.getSubCursor(), this));
@@ -34,9 +37,7 @@ public class CPPASTEnumerationSpecifier extends CPPASTBaseDeclSpecifier implemen
 
 	@Override
 	public IASTName getName() {
-		// TODO Auto-generated method stub
-		logger.error("Not implemented");
-		return null;
+		return _name;
 	}
 
 	@Override
