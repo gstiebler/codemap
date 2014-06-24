@@ -37,16 +37,17 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 	
 	void initialize(Cursor cursor) {
 		String line = cursor.getLine();
+		String classType;
 		while(true) {
-			String type = CPPASTTranslationUnit.getType(cursor.getLine());
-			if(!type.equals("AccessSpecifier:public")) //TODO private and protected
+			classType = CPPASTTranslationUnit.getType(cursor.getLine());
+			if(!classType.equals("AccessSpecifier:public")) { //TODO private and protected
 				break;
+			}
 
 			_baseSpecs.add(new CPPASTBaseSpecifier(cursor.getSubCursor(), this));
 		}
 		cursor.nextLine();
 		//_name = new CPPASTName(binding, line);
-		String classType = CPPASTTranslationUnit.getType( line );
 		if(!classType.equals("CXXRecordDecl"))
 			logger.error("Type not expected " + classType);
 		
@@ -71,7 +72,7 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 			} else if(type.equals("CXXConstructorDecl")) {
 				ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
 				Set<String> funcDecl = parsedLine.getSet("funcDecl");
-				if(!funcDecl.contains("noexcept-unevaluated")) {
+			    if(!funcDecl.contains("noexcept-unevaluated")) {
 					_members.add(CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this));
 				} else {
 					cursor.runToTheEnd();
