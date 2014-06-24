@@ -10,17 +10,17 @@ startinglines = "2_4_4";
 	node_000002 [ label = "x", startingline=6 ]
 	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=7 ]
 	node_000004 [ label = "y", startingline=7 ]
-	node_000006 [ label = "z", startingline=8 ]
+	node_000007 [ label = "z", startingline=8 ]
 subgraph cluster_2 {
 label = "soma";
 parent = "cluster_1";
 startinglines = "6_7_8";
-	node_000005 [ label = "soma", style=filled, fillcolor="#FFFFD0", startinglines=8 ]
+	node_000006 [ label = "soma", style=filled, fillcolor="#FFFFD0", startinglines=8 ]
 }
 }
 	node_000001 -> node_000002
-	node_000002 -> node_000005
+	node_000002 -> node_000006
 	node_000003 -> node_000004
-	node_000004 -> node_000005
-	node_000005 -> node_000006
+	node_000004 -> node_000006
+	node_000006 -> node_000007
 }

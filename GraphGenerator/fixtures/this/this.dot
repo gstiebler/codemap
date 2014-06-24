@@ -8,15 +8,20 @@ parent = "G";
 startinglines = "20_26_26";
 	node_000009 [ label = "c", startingline=29 ]
 subgraph cluster_2 {
+label = "sPri::sPri";
+parent = "cluster_1";
+startinglines = "26_26_27";
+}
+subgraph cluster_3 {
 label = "sPri::func1";
 parent = "cluster_1";
 startinglines = "26_27_28";
 	node_000003 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=22 ]
 	node_000004 [ label = "str1._a", startingline=22 ]
 	node_000008 [ label = "str1._b", startingline=17 ]
-subgraph cluster_3 {
+subgraph cluster_4 {
 label = "globalFunc";
-parent = "cluster_2";
+parent = "cluster_3";
 startinglines = "28_22_23";
 	node_000005 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=17 ]
 	node_000006 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=17 ]

@@ -272,32 +272,11 @@ public class InstructionLine {
 	public void loadConstructorInitializer(IVar lhsVar, IASTNode initExpr) {
 		List<FuncParameter> parameterValues = null;
 		if(lhsVar instanceof ClassVar) {
-			ClassVar classVar = (ClassVar) lhsVar;
-			int numParameters = getChildExpressions(initExpr).length;
-			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(numParameters);
-			if(constructorFunc != null)
-				parameterValues = loadFunctionParameters(constructorFunc, initExpr);
-			else
-				parameterValues = new ArrayList<FuncParameter>();
+			IASTNode[] parameterNodes = getChildExpressions(initExpr);
+			parameterValues = loadFunctionParameters(parameterNodes);
 		} else {
 			parameterValues = new ArrayList<FuncParameter>();
 			Value value = loadValue(initExpr);
-			FuncParameter funcParameter = new FuncParameter(value, IndirectionType.E_INDIFERENT);
-			parameterValues.add(funcParameter);
-		}
-		lhsVar.callConstructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
-				_parentBaseScope, _astInterpreter);
-	}
-
-	public void loadConstructorInitializer(IVar lhsVar, IASTNode[] nodes) {
-		List<FuncParameter> parameterValues = null;
-		if(lhsVar instanceof ClassVar) {
-			ClassVar classVar = (ClassVar) lhsVar;
-			Function constructorFunc = classVar.getClassDecl().getConstructorFunc(nodes.length);
-			parameterValues = loadFunctionParameters(constructorFunc, nodes);
-		} else {
-			parameterValues = new ArrayList<FuncParameter>();
-			Value value = loadValue(nodes[0]);
 			FuncParameter funcParameter = new FuncParameter(value, IndirectionType.E_INDIFERENT);
 			parameterValues.add(funcParameter);
 		}
@@ -551,9 +530,8 @@ public class InstructionLine {
 
 			List<FuncParameter> parameterValues = null;
 			IASTExpression expr = ((ICPPASTNewExpression) rhsOp).getNewInitializer();
-			int numParameters = getChildExpressions(expr).length;
-			Function constructorFunc = classDecl.getConstructorFunc(numParameters);
-			parameterValues = loadFunctionParameters(constructorFunc, expr);
+			IASTNode[] parameterNodes = getChildExpressions(expr);
+			parameterValues = loadFunctionParameters(parameterNodes);
 			lhsPointer.constructor(parameterValues, NodeType.E_VARIABLE, _gvplGraph,
 					_parentBaseScope, _astInterpreter, classDecl.getTypeId());
 		} else if (rhsOp instanceof IASTFunctionCallExpression) {
@@ -825,6 +803,55 @@ public class InstructionLine {
 				logger.fatal("Work here ");
 
 			parameterValues.add(localParameter);
+		}
+
+		return parameterValues;
+	}
+	
+	public List<FuncParameter> loadFunctionParameters(IASTNode[] parameters) {
+		List<FuncParameter> parameterValues = new ArrayList<FuncParameter>();
+
+		if(parameters == null) {
+			logger.error("No parameters");
+			return new ArrayList<FuncParameter>();
+		}
+
+		for (IASTNode parameter : parameters) {
+			Value value = loadValue(parameter);
+			IndirectionType indirType = IndirectionType.E_VARIABLE;
+			{
+				IVar var = value.getVar();
+				if(var != null)
+				{
+					if(var instanceof PointerVar)
+						indirType = IndirectionType.E_POINTER;
+				}
+			}
+			FuncParameter localParameter = new FuncParameter(value, indirType);
+			parameterValues.add(localParameter);
+
+//			if (insideFuncParameter.getType() == IndirectionType.E_POINTER) {
+//				IVar paramVar;
+//				try {
+//					paramVar = loadVarInAddress(parameter, _parentBaseScope);
+//				} catch (NotFoundException e) {
+//					continue;
+//				}
+//				localParameter = new FuncParameter(new Value(paramVar), IndirectionType.E_POINTER);
+//			} else if (insideFuncParameter.getType() == IndirectionType.E_REFERENCE) {
+//				Value value = _parentBaseScope.getValueFromExpr(parameter);
+//				localParameter = new FuncParameter(value, IndirectionType.E_REFERENCE);
+//			} else if (insideFuncParameter.getType() == IndirectionType.E_VARIABLE) {
+//				localParameter = new FuncParameter(loadValue(parameter), IndirectionType.E_VARIABLE);
+//			} else if (insideFuncParameter.getType() == IndirectionType.E_FUNCTION_POINTER) {
+//				IASTIdExpression idExpr = (IASTIdExpression) parameter;
+//				IBinding binding = idExpr.getName().resolveBinding();
+//				Function funcPointer = _astInterpreter.getFuncId(binding);
+//				localParameter = new FuncParameter(funcPointer);
+//			} else
+//				logger.fatal("Work here ");
+//
+//			parameterValues.add(localParameter);
 		}
 
 		return parameterValues;

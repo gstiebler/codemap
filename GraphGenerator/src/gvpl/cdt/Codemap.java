@@ -129,9 +129,9 @@ public class Codemap {
 		}
 		
 		Graph mainGraph = astInterpreter.getGraph();
-		mainGraph.saveToFile(basePath + "graph.ser");	
-		
-		OutputManager.getInstance().saveToFile(basePath + "output.ser");
+//		mainGraph.saveToFile(basePath + "graph.ser");	
+//		
+//		OutputManager.getInstance().saveToFile(basePath + "output.ser");
 
 		fileDriver.print(mainGraph, outFile, visualizer);
 		

@@ -5,25 +5,35 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "39_45_45";
+startinglines = "26_45_45";
 	node_000003 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=48 ]
 	node_000006 [ label = "a", startingline=16 ]
 	node_000007 [ label = "3.000000e+00", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
 	node_000008 [ label = "1.200000e+01", style=filled, fillcolor="#E9FFE9", startinglines=53 ]
 	node_000013 [ label = "x", startingline=41 ]
 subgraph cluster_2 {
+label = "vector::vector";
+parent = "cluster_1";
+startinglines = "45_45_47";
+}
+subgraph cluster_3 {
 label = "vector::push_back";
 parent = "cluster_1";
 startinglines = "45_47_48";
 	node_000004 [ label = "myVector._internalValue", startingline=11 ]
 }
-subgraph cluster_3 {
+subgraph cluster_4 {
 label = "vector::get_value";
 parent = "cluster_1";
 startinglines = "48_11_50";
 	node_000005 [ label = "vector::get_value", style=filled, fillcolor="#FFFFD0", startinglines=16 ]
 }
-subgraph cluster_4 {
+subgraph cluster_5 {
+label = "vector::vector";
+parent = "cluster_1";
+startinglines = "50_16_52";
+}
+subgraph cluster_6 {
 label = "vector::soma";
 parent = "cluster_1";
 startinglines = "16_52_53";

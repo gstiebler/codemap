@@ -9,6 +9,21 @@ startinglines = "7_12_12";
 	node_000002 [ label = "8", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
 	node_000003 [ label = "classA._m1", startingline=15 ]
 	node_000005 [ label = "b", startingline=18 ]
+subgraph cluster_2 {
+label = "ClassA::ClassA";
+parent = "cluster_1";
+startinglines = "12_12_14";
+}
+subgraph cluster_3 {
+label = "ClassA::ClassA";
+parent = "cluster_1";
+startinglines = "14_15_16";
+}
+subgraph cluster_4 {
+label = "ParentClass::ParentClass";
+parent = "cluster_1";
+startinglines = "14_15_16";
+}
 }
 	node_000002 -> node_000003
 	node_000003 -> node_000005

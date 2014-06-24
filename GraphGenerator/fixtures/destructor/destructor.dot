@@ -5,17 +5,27 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "7_12_12";
+startinglines = "2_12_12";
 	node_000005 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=18 ]
 	node_000006 [ label = "x", startingline=18 ]
 subgraph cluster_2 {
+label = "UniqueClass::UniqueClass";
+parent = "cluster_1";
+startinglines = "12_12_14";
+}
+subgraph cluster_3 {
+label = "UniqueClass::UniqueClass";
+parent = "cluster_1";
+startinglines = "12_14_15";
+}
+subgraph cluster_4 {
 label = "UniqueClass::~UniqueClass";
 parent = "cluster_1";
 startinglines = "14_15_17";
 	node_000003 [ label = "3", style=filled, fillcolor="#E9FFE9", startinglines=8 ]
 	node_000004 [ label = "pInstance_pointed._floatMember", startingline=8 ]
 }
-subgraph cluster_3 {
+subgraph cluster_5 {
 label = "UniqueClass::~UniqueClass";
 parent = "cluster_1";
 startinglines = "17_8_18";

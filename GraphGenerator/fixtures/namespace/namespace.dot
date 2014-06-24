@@ -19,8 +19,23 @@ startinglines = "45_45_47";
 	node_000003 [ label = "var1._memberA", startingline=26 ]
 	node_000005 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=29 ]
 	node_000006 [ label = "var2._memberA", startingline=29 ]
-}
 subgraph cluster_3 {
+label = "ClassA::ClassA";
+parent = "cluster_2";
+startinglines = "45_47_25";
+}
+subgraph cluster_4 {
+label = "ClassA::ClassA";
+parent = "cluster_2";
+startinglines = "25_26_28";
+}
+}
+subgraph cluster_5 {
+label = "ClassB::ClassB";
+parent = "cluster_1";
+startinglines = "28_29_49";
+}
+subgraph cluster_6 {
 label = "soma";
 parent = "cluster_1";
 startinglines = "49_50_52";

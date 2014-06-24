@@ -224,6 +224,7 @@ public class CPPASTTranslationUnit implements IASTTranslationUnit {
 		String result = line.replace("class", "")
 				.replace("struct", "")
 				.replace("enum", "")
+				.replace("const", "")
 				.replace("*", "")
 				.replace("&", "").trim();
 		return result.split(" ")[0];

@@ -27,13 +27,23 @@ parent = "cluster_1";
 startinglines = "6_37_38";
 	node_000008 [ label = "10", style=filled, fillcolor="#E9FFE9", startinglines=19 ]
 	node_000009 [ label = "classTemp_pointed._a", startingline=19 ]
-}
 subgraph cluster_4 {
+label = "Class::Class";
+parent = "cluster_3";
+startinglines = "37_38_18";
+}
+}
+subgraph cluster_5 {
 label = "instancia";
 parent = "cluster_1";
 startinglines = "19_20_40";
 	node_000013 [ label = "!", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=27 ]
 	node_000014 [ label = "classInst_pointed._a", startingline=29 ]
+subgraph cluster_6 {
+label = "Class::Class";
+parent = "cluster_5";
+startinglines = "40_27_29";
+}
 }
 }
 	node_000011 -> node_000012

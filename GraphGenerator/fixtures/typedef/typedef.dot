@@ -12,6 +12,11 @@ startinglines = "5_13_13";
 	node_000005 [ label = "d", startingline=18 ]
 	node_000006 [ label = "sizeof(d)", style=filled, fillcolor="#E9FFE9", startinglines=19 ]
 	node_000007 [ label = "h", startingline=19 ]
+subgraph cluster_2 {
+label = "ClassA::ClassA";
+parent = "cluster_1";
+startinglines = "13_13_15";
+}
 }
 	node_000002 -> node_000003
 	node_000004 -> node_000005

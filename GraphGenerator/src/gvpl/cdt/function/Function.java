@@ -50,6 +50,16 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPFunction;
 import debug.DebugOptions;
 import debug.ExecTreeLogger;
 
+class OriginalFunctionParameter {
+	IBinding binding;
+	TypeId typeBinding;
+	
+	OriginalFunctionParameter(IBinding binding, TypeId typeBinding) {
+		this.binding = binding;
+		this.typeBinding = typeBinding;
+	}
+}
+
 public class Function extends BaseScopeCDT {
 	
 	static Logger logger = LogManager.getLogger(Function.class.getName());
@@ -61,7 +71,7 @@ public class Function extends BaseScopeCDT {
 
 	private String _externalName = "";
 	private Map<IBinding, FuncParameter> _originalParametersMap;
-	private List<IBinding> _originalParameters;
+	private List<OriginalFunctionParameter> _originalParameters;
 	
 	private Map<IBinding, FuncParameter> _parametersMap = null;
 	protected String _funcName;
@@ -174,11 +184,12 @@ public class Function extends BaseScopeCDT {
 	 *            Parameters of the function
 	 */
 	public void loadFuncParameters(IASTParameterDeclaration[] parameters) {
-		_originalParameters = new ArrayList<IBinding>();
+		_originalParameters = new ArrayList<OriginalFunctionParameter>();
 		_originalParametersMap = new LinkedHashMap<IBinding, FuncParameter>();
 		for (IASTParameterDeclaration parameter : parameters) {
 			IASTDeclarator parameterVarDecl = parameter.getDeclarator();
 			IASTDeclSpecifier declSpec = parameter.getDeclSpecifier();
+			TypeId parameterType = _astInterpreter.getType(declSpec);
 			IBinding binding = parameterVarDecl.getName().resolveBinding();
 			FuncParameter funcParameter = null;
 			if(_astInterpreter.isFunctionTypedef(declSpec)) {
@@ -191,7 +202,7 @@ public class Function extends BaseScopeCDT {
 				funcParameter = new FuncParameter(parameterVarType);
 			}
 
-			addParameter(binding, funcParameter);
+			addParameter(binding, parameterType, funcParameter);
 		}
 	}
 	
@@ -223,6 +234,10 @@ public class Function extends BaseScopeCDT {
 		_gvplGraph = new Graph(_externalName);
 		IndirectionType returnIndirectionType = getIndirectionType(_returnPointerOps);
 		_returnVar = BaseScope.instanceVar(returnIndirectionType, _externalName, _returnType, _gvplGraph, _astInterpreter);
+		if(parameterValues != null)
+			DebugOptions.assertD(parameterValues.size() == _originalParameters.size());
+		else
+			DebugOptions.assertD(_originalParameters.size() == 0);
 		
 		if(_body != null) {
 			String previousFileName = CodeLocation.getCurrentFileName();
@@ -233,7 +248,7 @@ public class Function extends BaseScopeCDT {
 				size = parameterValues.size();
 			for(int i = 0; i < size; ++i) {
 				FuncParameter callerParam = parameterValues.get(i);
-				_parametersMap.put(_originalParameters.get(i), callerParam);
+				_parametersMap.put(_originalParameters.get(i).binding, callerParam);
 			}
 
 			loadConstructorChain(_gvplGraph, caller);
@@ -292,13 +307,13 @@ public class Function extends BaseScopeCDT {
 		return null;
 	}
 	
-	private void addParameter(IBinding binding, FuncParameter parameter) {
+	private void addParameter(IBinding binding, TypeId parameterType, FuncParameter parameter) {
 		_originalParametersMap.put(binding, parameter);
-		_originalParameters.add(binding);
+		_originalParameters.add(new OriginalFunctionParameter(binding, parameterType));
 	}
 	
 	public FuncParameter getOriginalParameter(int index) {
-		return _originalParametersMap.get(_originalParameters.get(index));
+		return _originalParametersMap.get(_originalParameters.get(index).binding);
 	}
 	
 	public int getNumParameters() {
@@ -331,11 +346,24 @@ public class Function extends BaseScopeCDT {
 		return isEquivalentParameterList(parameters);
 	}
 	
+	//TODO compare parameter types too
 	public boolean isEquivalentParameterList(List<FuncParameter> parametersList) {
 		for(int i = 0; i < _originalParameters.size(); ++i) {
 			FuncParameter internal = getOriginalParameter(i);
 			FuncParameter external = parametersList.get(i);
 			if(!internal.isEquivalent(external))
+				return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean hasEquivalentParameterTypes(List<TypeId> typeBindings) {
+		if(typeBindings.size() != _originalParameters.size())
+			return false;
+		
+		for(int i = 0; i < _originalParameters.size(); i++) {
+			if(_originalParameters.get(i).typeBinding != typeBindings.get(i))
 				return false;
 		}
 		

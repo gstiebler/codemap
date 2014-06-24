@@ -5,13 +5,23 @@ label = "root";
 subgraph cluster_1 {
 label = "main";
 parent = "G";
-startinglines = "23_34_34";
+startinglines = "19_34_34";
 	node_000001 [ label = "30", style=filled, fillcolor="#E9FFE9", startinglines=37 ]
 	node_000014 [ label = "m", startingline=28 ]
 subgraph cluster_2 {
+label = "cSeg::cSeg";
+parent = "cluster_1";
+startinglines = "34_34_35";
+subgraph cluster_3 {
+label = "cPri::cPri";
+parent = "cluster_2";
+startinglines = "34_35_19";
+}
+}
+subgraph cluster_4 {
 label = "cSeg::inc_a5";
 parent = "cluster_1";
-startinglines = "34_35_37";
+startinglines = "35_19_37";
 	node_000002 [ label = "5", style=filled, fillcolor="#E9FFE9", startinglines=25 ]
 	node_000003 [ label = "seg._a", startingline=25 ]
 	node_000006 [ label = "w", startingline=10 ]
@@ -19,16 +29,16 @@ startinglines = "34_35_37";
 	node_000011 [ label = "k", startingline=15 ]
 	node_000012 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=28 ]
 	node_000013 [ label = "cSeg::inc_a5", style=filled, fillcolor="#FFFFD0", startinglines=28 ]
-subgraph cluster_3 {
+subgraph cluster_5 {
 label = "cPri::soma";
-parent = "cluster_2";
+parent = "cluster_4";
 startinglines = "37_25_26";
 	node_000004 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=10 ]
 	node_000005 [ label = "cPri::soma", style=filled, fillcolor="#FFFFD0", startinglines=10 ]
 }
-subgraph cluster_4 {
+subgraph cluster_6 {
 label = "cPri::subtracao";
-parent = "cluster_2";
+parent = "cluster_4";
 startinglines = "26_10_27";
 	node_000008 [ label = "50", style=filled, fillcolor="#E9FFE9", startinglines=15 ]
 	node_000009 [ label = "-", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=15 ]

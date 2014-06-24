@@ -1,13 +1,13 @@
 package tests;
 
 import static org.junit.Assert.assertTrue;
-import gvpl.cdt.AstInterpreterCDT;
 import gvpl.cdt.Codemap;
+import gvpl.common.FileFuncs;
+
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.cesta.parsers.dot.DotTree;
-import org.cesta.parsers.dot.DotTree.Graph;
 
 public class TestsUtil {
 	
@@ -18,10 +18,16 @@ public class TestsUtil {
 		String examplePath = fixturesPath + testName + "/";
 		String mainFile = examplePath + testName + ".cpp";
 		
-		AstInterpreterCDT astInterpreter = Codemap.execute(examplePath, mainFile);
-		
-		Graph gvGraph = DotTree.getGraphFromDot(examplePath + testName + ".dot");
-		assertTrue(GraphCompare.isEqual(astInterpreter.getGraph(), gvGraph));
+		Codemap.execute(examplePath, mainFile);
+
+		try {
+			List<String> original = FileFuncs.readLines(new java.io.File(examplePath + testName + ".dot"));
+			List<String> generated = FileFuncs.readLines(new java.io.File(examplePath + "generated.dot"));
+			assertTrue(original.equals(generated));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		System.out.println("Terminou de executar.");
 	}

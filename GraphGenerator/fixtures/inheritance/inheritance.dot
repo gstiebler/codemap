@@ -12,6 +12,21 @@ startinglines = "14_20_20";
 	node_000005 [ label = "derived._baseMemberB", startingline=24 ]
 	node_000006 [ label = "+", shape=invtriangle, style=filled, fillcolor="#E0E0E0", startinglines=25 ]
 	node_000007 [ label = "a", startingline=25 ]
+subgraph cluster_2 {
+label = "DerivedClass::DerivedClass";
+parent = "cluster_1";
+startinglines = "20_20_22";
+subgraph cluster_3 {
+label = "BaseClassA::BaseClassA";
+parent = "cluster_2";
+startinglines = "20_22_14";
+}
+subgraph cluster_4 {
+label = "BaseClassB::BaseClassB";
+parent = "cluster_2";
+startinglines = "22_14_14";
+}
+}
 }
 	node_000002 -> node_000003
 	node_000003 -> node_000006

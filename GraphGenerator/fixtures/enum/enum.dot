@@ -17,24 +17,24 @@ subgraph cluster_1 {
 label = "main";
 parent = "G";
 startinglines = "9_20_20";
-	node_000013 [ label = "a", startingline=22 ]
-	node_000015 [ label = "b", startingline=23 ]
-	node_000017 [ label = "a", startingline=24 ]
-	node_000018 [ label = "c", startingline=26 ]
-	node_000019 [ label = "d", startingline=27 ]
-	node_000021 [ label = "e", startingline=29 ]
+	node_000012 [ label = "a", startingline=22 ]
+	node_000013 [ label = "b", startingline=23 ]
+	node_000014 [ label = "a", startingline=24 ]
+	node_000015 [ label = "c", startingline=26 ]
+	node_000016 [ label = "d", startingline=27 ]
+	node_000017 [ label = "e", startingline=29 ]
 }
 	node_000001 -> node_000002
-	node_000002 -> node_000013
+	node_000002 -> node_000012
 	node_000003 -> node_000004
 	node_000004 -> node_000006
-	node_000004 -> node_000015
-	node_000004 -> node_000019
+	node_000004 -> node_000013
+	node_000004 -> node_000016
 	node_000005 -> node_000006
 	node_000006 -> node_000007
-	node_000007 -> node_000017
+	node_000007 -> node_000014
 	node_000008 -> node_000009
 	node_000010 -> node_000011
-	node_000011 -> node_000021
-	node_000017 -> node_000018
+	node_000011 -> node_000017
+	node_000014 -> node_000015
 }

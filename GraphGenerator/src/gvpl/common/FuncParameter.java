@@ -17,6 +17,7 @@ public class FuncParameter {
 		_indirectionType = type;
 	}
 	
+	// TODO remove this constructor
 	public FuncParameter(IndirectionType type) {
 		_indirectionType = type;
 	}
@@ -34,13 +35,25 @@ public class FuncParameter {
 		return _indirectionType;
 	}
 	
+	public TypeId getTypeId() {
+		if(_value == null)
+			return AstInterpreter.getPrimitiveType();
+		
+		if(_value.getVar() == null)
+			return AstInterpreter.getPrimitiveType();
+		
+		return _value.getVar().getType();
+	}
+	
 	public Function getFunction() {
 		return _functionPointer;
 	}
 	
-	//TODO improve
 	public boolean isEquivalent(FuncParameter other) {
 		if(_indirectionType != other._indirectionType)
+			return false;
+	
+		if(getTypeId() != other.getTypeId())
 			return false;
 		
 		return true;

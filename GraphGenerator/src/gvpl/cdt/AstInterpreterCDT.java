@@ -3,7 +3,6 @@ package gvpl.cdt;
 import gvpl.cdt.function.Function;
 import gvpl.clang.CPPClassInstance;
 import gvpl.clang.CPPClassSpecialization;
-import gvpl.clang.CPPClassTemplate;
 import gvpl.common.AstInterpreter;
 import gvpl.common.CodeLocation;
 import gvpl.common.FuncParameter;
@@ -33,7 +32,6 @@ import org.eclipse.cdt.core.dom.ast.IASTEnumerationSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTFunctionDefinition;
 import org.eclipse.cdt.core.dom.ast.IASTName;
 import org.eclipse.cdt.core.dom.ast.IASTNamedTypeSpecifier;
-import org.eclipse.cdt.core.dom.ast.IASTNode;
 import org.eclipse.cdt.core.dom.ast.IASTProblemDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTSimpleDeclaration;
@@ -385,7 +383,7 @@ public class AstInterpreterCDT extends AstInterpreter {
 		}
 	}
 	
-	IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) throws ClassNotImplementedException {
+	public IBinding bindingFromDeclSpec(IASTDeclSpecifier declSpec) throws ClassNotImplementedException {
 		if(declSpec instanceof IASTNamedTypeSpecifier) {
 			IASTName name = ((IASTNamedTypeSpecifier) declSpec).getName();
 			if(name instanceof ICPPASTQualifiedName) {

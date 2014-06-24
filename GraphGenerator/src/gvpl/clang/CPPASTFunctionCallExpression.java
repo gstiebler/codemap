@@ -16,6 +16,7 @@ public class CPPASTFunctionCallExpression extends ASTNode implements org.eclipse
 	
 	public CPPASTFunctionCallExpression(Cursor cursor, IASTNode parent) {
 		super(cursor.nextLine(), parent);
+		// for an unknown reasons, should not use .getSubCursor in any of the lines here
 		_functionNameExpression = ASTExpression.loadExpression(cursor, this);
 		if(!cursor.theEnd())
 			_parameterExpression = new CPPASTExpressionList(cursor, this);

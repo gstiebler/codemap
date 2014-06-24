@@ -35,9 +35,9 @@ public abstract class ClassDecl {
 	}
 
 	//TODO check parameters types too
-	public MemberFunc getConstructorFunc(int numParameters) {
+	public MemberFunc getConstructorFunc(List<TypeId> parameterTypes) {
 		for(MemberFunc constructor : _constructorFuncs) {
-			if(constructor.getNumParameters() == numParameters)
+			if(constructor.hasEquivalentParameterTypes(parameterTypes))
 				return constructor;
 		}
 		

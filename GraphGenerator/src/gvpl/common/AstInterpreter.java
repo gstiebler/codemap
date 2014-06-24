@@ -21,7 +21,7 @@ public abstract class AstInterpreter extends BaseScope {
 
 	protected Map<TypeId, ClassDeclCDT> _typeIdToClass;
 	/** the same for all primitive types */
-	protected TypeId _primitiveType = new TypeId(null);
+	protected static TypeId _primitiveType = new TypeId(null);
 
 	/**
 	 * The base function. It all starts here.
@@ -44,7 +44,7 @@ public abstract class AstInterpreter extends BaseScope {
 		return type.equals(_primitiveType);
 	}
 
-	public TypeId getPrimitiveType() {
+	public static TypeId getPrimitiveType() {
 		return _primitiveType;
 	}
 

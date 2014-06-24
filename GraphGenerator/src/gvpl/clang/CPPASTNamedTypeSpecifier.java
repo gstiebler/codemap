@@ -17,7 +17,8 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		if(firstType.equals("CXXNewExpr")) {
 			cursor.nextLine();
 			ClangLine strings = CPPASTTranslationUnit.lineToMap(cursor.getLine());
-			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, CPPASTTranslationUnit.getUserType(strings, 1));
+			String userType = CPPASTTranslationUnit.getUserType(strings, 1);
+			binding = CPPASTTranslationUnit.getConstructorBinding(simpleType, userType);
 		} else {
 			binding = CPPASTTranslationUnit.getBinding(simpleType);
 		}
@@ -29,6 +30,7 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 		
 		if(binding == null) {
 			String[] strings = simpleType.split("[<]");
+			// if it's a template
 			if(strings.length == 2) {
 				binding = new CPPClassInstance(strings[0], line, this);
 			}
