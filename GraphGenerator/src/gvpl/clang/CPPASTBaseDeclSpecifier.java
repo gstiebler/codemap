@@ -23,6 +23,8 @@ public class CPPASTBaseDeclSpecifier extends ASTNode implements org.eclipse.cdt.
 		if(simpleUserType.equals("float") || 
 				simpleUserType.equals("int") ||
 				simpleUserType.equals("bool") ||
+				simpleUserType.equals("char") ||
+				simpleUserType.equals("_Bool") ||
 				simpleUserType.equals("void") )
 			return new CPPASTSimpleDeclSpecifier(cursor, parent);
 		else
