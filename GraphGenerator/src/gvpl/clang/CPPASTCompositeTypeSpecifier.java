@@ -70,14 +70,6 @@ public class CPPASTCompositeTypeSpecifier extends CPPASTBaseDeclSpecifier implem
 					type.equals("EnumDecl")) {
 				_members.add(new CPPASTSimpleDeclaration(cursor.getSubCursor(), this));
 			} else if(type.equals("CXXConstructorDecl")) {
-//				ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(cursor.getLine());
-//				Set<String> funcDecl = parsedLine.getSet("funcDecl");
-//			    if(!funcDecl.contains("noexcept-unevaluated")) {
-//					_members.add(CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this));
-//				} else {
-//					cursor.runToTheEnd();
-//				}
-				
 				_members.add(CPPASTTranslationUnit.loadFuncDecl(cursor.getSubCursor(), true, this));
 			} else if(type.equals("AccessSpecDecl")) {
 				logger.info("AccessSpecDecl");

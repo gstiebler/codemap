@@ -17,8 +17,10 @@ public class CPPClassInstance implements ICPPInternalBinding {
 	static Logger logger = LogManager.getLogger(CPPClassInstance.class.getName());
 	
 	IASTName _name = null;
+	BindingInfo _bindingInfo;
 	
 	public CPPClassInstance(String templateClassName, String line, IASTNode parent) {
+		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		IBinding binding = CPPASTTranslationUnit.getBinding(templateClassName + "<>");
 		_name = new CPPASTName(binding, line, parent);
 	}

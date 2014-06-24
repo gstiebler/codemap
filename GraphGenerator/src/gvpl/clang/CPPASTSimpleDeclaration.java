@@ -61,8 +61,8 @@ public class CPPASTSimpleDeclaration extends ASTNode implements org.eclipse.cdt.
 					_declSpec = ((CPPASTFunctionDefinition)fdParent)._declSpec;
 					return;
 				}
-			}
-			logger.error("not expected");
+			} else
+				logger.error("not expected");
 		}
 	}
 

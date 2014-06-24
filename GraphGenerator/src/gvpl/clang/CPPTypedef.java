@@ -13,7 +13,10 @@ public class CPPTypedef implements ITypedef {
 
 	static Logger logger = LogManager.getLogger(CPPTypedef.class.getName());
 	
-	public CPPTypedef(String userType) {
+	BindingInfo _bindingInfo;
+	
+	public CPPTypedef(String line, String userType) {
+		_bindingInfo = CPPASTTranslationUnit.parseBindingInfo(line);
 		CPPASTTranslationUnit.addBinding(userType, this);
 	}
 	
