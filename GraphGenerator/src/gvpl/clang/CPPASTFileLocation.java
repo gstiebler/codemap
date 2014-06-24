@@ -13,6 +13,7 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 	int _col = -1;
 	String _file;
 	IASTNode _parent;
+	static int _lastLine = -1;
 	
 	public CPPASTFileLocation(String line, IASTNode parent) {
 		_parent = parent;
@@ -49,6 +50,12 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 		
 		if(_file != null && _file.substring(0, 2).equals("./"))
 			_file = _file.substring(2, _file.length());
+		
+		if(_parent == null && _line < 0)
+			_line = _lastLine;
+		
+		if(_line >= 0)
+			_lastLine = _line;
 	}
 	
 	public CPPASTFileLocation(String fileName) {
