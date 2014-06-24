@@ -4,6 +4,7 @@ import static org.junit.Assert.assertTrue;
 import gvpl.cdt.Codemap;
 import gvpl.common.FileFuncs;
 
+import java.io.File;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -17,16 +18,21 @@ public class TestsUtil {
 		String fixturesPath = System.getProperty("user.dir") + "/fixtures/";
 		String examplePath = fixturesPath + testName + "/";
 		String mainFile = examplePath + testName + ".cpp";
+	
+		String generatedFileName = examplePath + "generated.dot";
+		File oldGeneratedFile = new java.io.File(generatedFileName);
+		oldGeneratedFile.delete();
 		
 		Codemap.execute(examplePath, mainFile);
 
 		try {
 			List<String> original = FileFuncs.readLines(new java.io.File(examplePath + testName + ".dot"));
-			List<String> generated = FileFuncs.readLines(new java.io.File(examplePath + "generated.dot"));
+			List<String> generated = FileFuncs.readLines(new java.io.File(generatedFileName));
 			assertTrue(original.equals(generated));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			assertTrue(false);
 		}
 		
 		System.out.println("Terminou de executar.");

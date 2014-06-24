@@ -14,13 +14,23 @@ public class CPPASTTemplateDeclaration extends ASTNode implements ICPPASTTemplat
 	public CPPASTTemplateDeclaration(Cursor cursor, IASTNode parent) {
 		super(cursor.getLine(), parent);
 		cursor.nextLine();
-		cursor.nextLine(); //TemplateTypeParmDecl
+		loadTemplateParams(cursor); //TemplateTypeParmDecl
 		String line = cursor.getLine();
 		IBinding binding = new CPPClassTemplate(line);
 		CPPASTTemplateId name = new CPPASTTemplateId(binding, line, this);
 		cursor.nextLine();
+		// should not use .getSubCursor()
 		CPPASTCompositeTypeSpecifier compositeTypeSpec = new CPPASTCompositeTypeSpecifier(cursor, this, name);
 		_declaration = new CPPASTSimpleDeclaration(cursor.getLine(), this, compositeTypeSpec, null);
+	}
+	
+	// TODO may be more than one template param
+	void loadTemplateParams(Cursor cursor) {
+		cursor.nextLine();
+		//String line = cursor.nextLine();
+//		ClangLine parsedLine = CPPASTTranslationUnit.lineToMap(line);
+//		String templateName = parsedLine.get("name");
+//		CPPASTTranslationUnit.addBinding(templateName, new CPPTemplateTypeParameter());
 	}
 
 	@Override
@@ -37,7 +47,7 @@ public class CPPASTTemplateDeclaration extends ASTNode implements ICPPASTTemplat
 
 	@Override
 	public ICPPASTTemplateParameter[] getTemplateParameters() {
-		// TODO Auto-generated method stub
+		// if you want this you should work on loadTemplateParams
 		logger.error("not implemented");
 		return null;
 	}
