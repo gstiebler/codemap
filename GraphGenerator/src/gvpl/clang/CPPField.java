@@ -26,49 +26,49 @@ public class CPPField extends CPPVariable implements ICPPField {
 
 	@Override
 	public ICompositeType getCompositeTypeOwner() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public ICPPClassType getClassOwner() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public int getVisibility() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isMutable() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

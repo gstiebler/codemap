@@ -49,7 +49,7 @@ public class CPPASTUnaryExpression extends ASTNode implements IASTUnaryExpressio
 	@Override
 	public IType getExpressionType() {
 		logger.error("Not implemented");
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 

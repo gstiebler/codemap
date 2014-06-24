@@ -38,7 +38,7 @@ public class CPPASTConditionalExpression extends ASTNode implements IASTConditio
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

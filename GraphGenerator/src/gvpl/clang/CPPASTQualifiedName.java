@@ -36,34 +36,34 @@ public class CPPASTQualifiedName extends CPPASTName implements org.eclipse.cdt.c
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public void addName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 	}
 
 	@Override
 	public IASTName getLastName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isConversionOrOperator() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isFullyQualified() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

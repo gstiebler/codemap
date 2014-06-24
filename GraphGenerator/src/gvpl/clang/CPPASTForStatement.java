@@ -46,7 +46,7 @@ public class CPPASTForStatement extends ASTNode implements IASTForStatement{
 
 	@Override
 	public IScope getScope() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

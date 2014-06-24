@@ -32,63 +32,63 @@ public class CPPClassTemplate implements ICPPClassTemplate {
 	
 	@Override
 	public ICPPTemplateParameter[] getTemplateParameters() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return false;
 	}
 
 	@Override
 	public ILinkage getLinkage() throws CoreException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public char[] getNameCharArray() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
@@ -96,7 +96,7 @@ public class CPPClassTemplate implements ICPPClassTemplate {
 	@Override
 	public ICPPClassTemplatePartialSpecialization[] getPartialSpecializations()
 			throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}

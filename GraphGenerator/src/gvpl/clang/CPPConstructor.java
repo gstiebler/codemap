@@ -13,7 +13,7 @@ public class CPPConstructor  extends CPPMethod implements ICPPConstructor {
 
 	@Override
 	public boolean isExplicit() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

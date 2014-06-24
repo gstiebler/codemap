@@ -15,7 +15,6 @@ public class CPPASTBaseSpecifier extends ASTNode implements ICPPASTBaseSpecifier
 		IBinding binding = CPPASTTranslationUnit.getBinding(simpleType);
 		_name = CPPASTName.loadASTName(binding, cursor.getLine(), this);
 		cursor.nextLine();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -25,21 +24,21 @@ public class CPPASTBaseSpecifier extends ASTNode implements ICPPASTBaseSpecifier
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public int getVisibility() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public boolean isVirtual() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

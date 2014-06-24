@@ -38,21 +38,21 @@ public class CPPASTFieldReference extends ASTNode implements IASTFieldReference 
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public boolean isPointerDereference() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

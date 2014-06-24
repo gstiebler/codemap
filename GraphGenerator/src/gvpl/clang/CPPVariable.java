@@ -26,98 +26,98 @@ public class CPPVariable implements ICPPVariable {
 	
 	@Override
 	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public ILinkage getLinkage() throws CoreException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public char[] getNameCharArray() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IType getType() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isAuto() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isExtern() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isRegister() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isStatic() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isMutable() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

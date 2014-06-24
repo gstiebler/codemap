@@ -32,14 +32,14 @@ public class CPPASTSwitchStatement extends ASTNode implements ICPPASTSwitchState
 
 	@Override
 	public IASTDeclaration getControllerDeclaration() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

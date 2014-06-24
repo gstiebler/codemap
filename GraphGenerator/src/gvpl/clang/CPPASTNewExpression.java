@@ -32,35 +32,35 @@ public class CPPASTNewExpression extends ASTNode implements ICPPASTNewExpression
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IASTExpression getNewPlacement() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IASTExpression[] getNewTypeIdArrayExpressions() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGlobal() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isNewTypeId() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

@@ -35,7 +35,7 @@ public class ExecTreeLogger {
 			_elementsStack.add(rootElement);
 			
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 
@@ -59,13 +59,13 @@ public class ExecTreeLogger {
 //
 //			transformer.transform(source, result);
 //		} catch (TransformerConfigurationException e) {
-//			// TODO Auto-generated catch block
+//			
 //			e.printStackTrace();
 //		} catch (TransformerFactoryConfigurationError e) {
-//			// TODO Auto-generated catch block
+//			
 //			e.printStackTrace();
 //		} catch (TransformerException e) {
-//			// TODO Auto-generated catch block
+//			
 //			e.printStackTrace();
 //		}
 	}

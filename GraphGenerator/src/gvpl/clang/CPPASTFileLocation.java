@@ -64,14 +64,14 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 	
 	@Override
 	public IASTFileLocation asFileLocation() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public int getNodeLength() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
@@ -83,7 +83,7 @@ public class CPPASTFileLocation implements org.eclipse.cdt.core.dom.ast.IASTFile
 
 	@Override
 	public int getEndingLineNumber() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}

@@ -52,126 +52,126 @@ public class CPPFunction implements org.eclipse.cdt.core.dom.ast.cpp.ICPPFunctio
 		if(_parent._body != null)
 			result = _parent._declarator;
 		return result;
-//		// TODO Auto-generated method stub
+//		
 //		logger.error("Not implemented");
 //		return null;
 	}
 	
 	@Override
 	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getFunctionScope() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IParameter[] getParameters() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IFunctionType getType() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isAuto() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isExtern() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isRegister() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean takesVarArgs() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isInline() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isMutable() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public ILinkage getLinkage() throws CoreException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public char[] getNameCharArray() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

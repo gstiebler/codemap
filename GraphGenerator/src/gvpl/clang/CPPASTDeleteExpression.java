@@ -17,7 +17,7 @@ public class CPPASTDeleteExpression extends ASTNode implements ICPPASTDeleteExpr
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
@@ -29,14 +29,14 @@ public class CPPASTDeleteExpression extends ASTNode implements ICPPASTDeleteExpr
 
 	@Override
 	public boolean isGlobal() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isVectored() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

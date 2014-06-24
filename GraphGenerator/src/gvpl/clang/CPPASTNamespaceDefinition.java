@@ -35,7 +35,7 @@ public class CPPASTNamespaceDefinition extends ASTNode implements ICPPASTNamespa
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return 0;
 	}
@@ -48,14 +48,14 @@ public class CPPASTNamespaceDefinition extends ASTNode implements ICPPASTNamespa
 
 	@Override
 	public IASTName getName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}

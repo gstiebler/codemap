@@ -40,14 +40,14 @@ public class CPPASTIfStatement extends ASTNode implements ICPPASTIfStatement{
 
 	@Override
 	public IASTDeclaration getConditionDeclaration() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

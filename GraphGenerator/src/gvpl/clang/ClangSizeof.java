@@ -21,7 +21,7 @@ public class ClangSizeof extends ASTNode implements IASTExpression {
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}

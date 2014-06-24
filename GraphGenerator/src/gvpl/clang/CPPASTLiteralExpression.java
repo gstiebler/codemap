@@ -30,14 +30,14 @@ public class CPPASTLiteralExpression extends ASTNode implements org.eclipse.cdt.
 
 	@Override
 	public int getKind() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

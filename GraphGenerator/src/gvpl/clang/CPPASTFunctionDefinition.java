@@ -92,7 +92,7 @@ public class CPPASTFunctionDefinition extends CPPASTDeclaration implements org.e
 
 	@Override
 	public IScope getScope() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

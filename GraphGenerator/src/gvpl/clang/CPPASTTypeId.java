@@ -21,7 +21,7 @@ public class CPPASTTypeId extends ASTNode implements IASTTypeId{
 
 	@Override
 	public IASTDeclarator getAbstractDeclarator() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}

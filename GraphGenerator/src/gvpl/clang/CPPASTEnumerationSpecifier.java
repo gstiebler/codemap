@@ -24,7 +24,7 @@ public class CPPASTEnumerationSpecifier extends CPPASTBaseDeclSpecifier implemen
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}

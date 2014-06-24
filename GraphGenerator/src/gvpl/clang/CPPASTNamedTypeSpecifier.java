@@ -47,7 +47,7 @@ public class CPPASTNamedTypeSpecifier extends CPPASTBaseDeclSpecifier implements
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}

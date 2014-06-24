@@ -11,14 +11,14 @@ public class CPPASTPointer extends ASTNode implements IASTPointer {
 
 	@Override
 	public boolean isConst() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean isVolatile() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

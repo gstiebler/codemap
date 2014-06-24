@@ -11,35 +11,35 @@ public class CPPParameter extends CPPVariable implements ICPPParameter {
 
 	@Override
 	public boolean isMutable() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}
 
 	@Override
 	public boolean hasDefaultValue() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return false;
 	}

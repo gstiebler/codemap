@@ -165,7 +165,7 @@ public class DotTree extends TreeParser {
 		try {
 			lex = new DotLexer(new ANTLRFileStream(filePath));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
         
@@ -176,7 +176,7 @@ public class DotTree extends TreeParser {
 		try {
 			treeNodeTokens = new CommonTreeNodeStream((Tree) parser.graph().getTree());
 		} catch (RecognitionException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
         DotTree tree = new DotTree(treeNodeTokens);
@@ -185,7 +185,7 @@ public class DotTree extends TreeParser {
 		try {
 			graphReturn = tree.graph();
 		} catch (RecognitionException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
         return graphReturn.graphObj;
@@ -394,7 +394,7 @@ public class DotTree extends TreeParser {
 
 		@Override
 		public int compareTo(Object other) {
-			// TODO Auto-generated method stub
+			
 			return id.compareTo(((Node)other).id);
 		}
 	}

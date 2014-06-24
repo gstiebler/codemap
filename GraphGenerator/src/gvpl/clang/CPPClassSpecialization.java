@@ -32,69 +32,69 @@ public class CPPClassSpecialization implements ICPPSpecialization {
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return false;
 	}
 
 	@Override
 	public ILinkage getLinkage() throws CoreException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
+		
 		return null;
 	}
 
 	@Override
 	public char[] getNameCharArray() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public ObjectMap getArgumentMap() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IBinding getSpecializedBinding() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}

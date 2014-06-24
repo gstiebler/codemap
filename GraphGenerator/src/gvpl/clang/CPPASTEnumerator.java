@@ -32,7 +32,7 @@ public class CPPASTEnumerator extends ASTNode implements IASTEnumerator {
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return 0;
 	}

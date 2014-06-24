@@ -15,21 +15,21 @@ public class CPPASTTemplateId extends CPPASTName implements ICPPASTTemplateId {
 
 	@Override
 	public int getRoleForName(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return 0;
 	}
 
 	@Override
 	public IASTNode[] getTemplateArguments() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IASTName getTemplateName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}

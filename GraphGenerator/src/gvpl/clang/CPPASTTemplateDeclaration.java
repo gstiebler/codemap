@@ -40,7 +40,7 @@ public class CPPASTTemplateDeclaration extends ASTNode implements ICPPASTTemplat
 
 	@Override
 	public ICPPTemplateScope getScope() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
@@ -54,7 +54,7 @@ public class CPPASTTemplateDeclaration extends ASTNode implements ICPPASTTemplat
 
 	@Override
 	public boolean isExported() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return false;
 	}

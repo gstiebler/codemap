@@ -30,7 +30,7 @@ public class TestsUtil {
 			List<String> generated = FileFuncs.readLines(new java.io.File(generatedFileName));
 			assertTrue(original.equals(generated));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 			assertTrue(false);
 		}

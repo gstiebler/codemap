@@ -118,26 +118,26 @@ public class CPPASTBinaryExpression extends ASTNode implements
 
 	@Override
 	public IType getExpressionType() {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 		return null;
 	}
 
 	@Override
 	public void setOperand1(IASTExpression arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 	}
 
 	@Override
 	public void setOperand2(IASTExpression arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 	}
 
 	@Override
 	public void setOperator(int arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("Not implemented");
 	}
 }

@@ -16,7 +16,7 @@ public class Cursor {
 		try {
 			_lines = FileFuncs.readLines(new java.io.File(astFileName));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 		}
 		System.out.println("Cursor opening file " + astFileName);

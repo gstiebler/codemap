@@ -32,70 +32,70 @@ public class CPPClassInstance implements ICPPInternalBinding {
 
 	@Override
 	public String[] getQualifiedName() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public char[][] getQualifiedNameCharArray() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public boolean isGloballyQualified() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return false;
 	}
 
 	@Override
 	public ILinkage getLinkage() throws CoreException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public String getName() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public char[] getNameCharArray() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IScope getScope() throws DOMException {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public Object getAdapter(Class arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public ICPPDelegate createDelegate(IASTName arg0) {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
 
 	@Override
 	public IASTNode[] getDeclarations() {
-		// TODO Auto-generated method stub
+		
 		logger.error("not implemented");
 		return null;
 	}
