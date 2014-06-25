@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.logging.log4j.LogManager;
@@ -34,6 +35,7 @@ import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTCompositeTypeSpecifier.ICPPASTBas
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTFunctionDeclarator;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTOperatorName;
 import org.eclipse.cdt.core.dom.ast.cpp.ICPPASTTemplateId;
+
 import debug.DebugOptions;
 
 public class ClassDeclCDT extends ClassDecl{
@@ -42,8 +44,7 @@ public class ClassDeclCDT extends ClassDecl{
 
 	private AstInterpreterCDT _astInterpreter;
 
-	//TODO debug, should be private
-	public Map<IBinding, ClassMember> _memberIdMap;
+	private Map<IBinding, ClassMember> _memberIdMap;
 	private Map<CodeLocation, ClassMember> _membersLocation = new TreeMap<CodeLocation, ClassMember>();
 	private Map<IBinding, MemberFunc> _memberFuncIdMap;
 	private Map<CodeLocation, MemberFunc> _membersFuncLocation = new TreeMap<CodeLocation, MemberFunc>();
@@ -302,5 +303,9 @@ public class ClassDeclCDT extends ClassDecl{
 	@Override
 	protected Iterable<MemberFunc> getMemberFuncList() {
 		return _memberFuncIdMap.values();
+	}
+	
+	public Set<Map.Entry<IBinding, ClassMember>> getMemberIdIterable() {
+		return _memberIdMap.entrySet();
 	}
 }

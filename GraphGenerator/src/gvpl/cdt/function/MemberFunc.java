@@ -120,7 +120,7 @@ public class MemberFunc extends Function {
 				return var;
 		} else {
 			logger.debug("listing members of class {}, binding {} not found", _parentClass.getName(), binding.toString());
-			for(Map.Entry<IBinding, ClassMember> memberES : _parentClass._memberIdMap.entrySet()) {
+			for(Map.Entry<IBinding, ClassMember> memberES : _parentClass.getMemberIdIterable()) {
 				logger.debug("member binding: {}, member: {}", memberES.getKey(), 
 						memberES.getValue().getName());
 			}
