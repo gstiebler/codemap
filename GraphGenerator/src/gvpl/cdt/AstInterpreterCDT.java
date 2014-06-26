@@ -209,7 +209,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 	private void initializeGlobalVar(IBinding binding, IASTDeclarator declarator) {
 		IASTName name = declarator.getName();
 		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
-		// TODO get correct type
 		IVar var = getGlobalVar(binding, codeLocation);
 		if(var == null) {
 			logger.error("Global var not found: {}", binding.getName());
@@ -471,7 +470,6 @@ public class AstInterpreterCDT extends AstInterpreter {
 		
 		CodeLocation codeLocation = CodeLocationCDT.NewFromFileLocation(name);
 		IBinding binding = name.resolveBinding();
-		//TODO get correct type
 		IVar var = BaseScopeCDT.addVarDecl(name.toString(), type, 
 				declarator.getPointerOperators(), _gvplGraph, this);
 		addGlobalVar(binding, codeLocation, var);

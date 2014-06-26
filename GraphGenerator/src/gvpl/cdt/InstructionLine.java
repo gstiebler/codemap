@@ -29,7 +29,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.eclipse.cdt.core.dom.ast.IASTArraySubscriptExpression;
 import org.eclipse.cdt.core.dom.ast.IASTBinaryExpression;
-import org.eclipse.cdt.core.dom.ast.IASTCaseStatement;
 import org.eclipse.cdt.core.dom.ast.IASTCastExpression;
 import org.eclipse.cdt.core.dom.ast.IASTCompoundStatement;
 import org.eclipse.cdt.core.dom.ast.IASTConditionalExpression;
@@ -37,7 +36,6 @@ import org.eclipse.cdt.core.dom.ast.IASTDeclSpecifier;
 import org.eclipse.cdt.core.dom.ast.IASTDeclaration;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarationStatement;
 import org.eclipse.cdt.core.dom.ast.IASTDeclarator;
-import org.eclipse.cdt.core.dom.ast.IASTDefaultStatement;
 import org.eclipse.cdt.core.dom.ast.IASTExpression;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionList;
 import org.eclipse.cdt.core.dom.ast.IASTExpressionStatement;
@@ -143,62 +141,13 @@ public class InstructionLine {
 			BasicBlockCDT basicBlockLoader = new BasicBlockCDT(_parentBaseScope, _astInterpreter, _gvplGraph);
 			basicBlockLoader.load(statement);
 		} else if (statement instanceof ICPPASTSwitchStatement) {
-			loadSwitch((ICPPASTSwitchStatement) statement);
+			Switch.loadSwitch((ICPPASTSwitchStatement) statement, this);
 		} else if (statement instanceof IASTWhileStatement) {
 			logger.error("Node type not found!! Node: " + statement.toString());
 		} else
 			logger.error("Node type not found!! Node: " + statement.toString());
 
 		DebugOptions.setCurrCodeLocation(previousCodeLocation);
-	}
-	
-	private void loadSwitch(ICPPASTSwitchStatement switchStatement) {
-		IASTExpression controlExpr = switchStatement.getControllerExpression();
-		IASTCompoundStatement body = (IASTCompoundStatement) switchStatement.getBody();
-		GraphNode controlNode = loadValue(controlExpr).getNode();
-		IASTStatement[] stmts = body.getStatements();
-		int numStatements = stmts.length;
-		
-		IASTStatement defaultStatement = null;
-		for (int i = 0; i < numStatements; i++) {
-			IASTStatement statement = null;
-			statement = body.getStatements()[i];
-			if (!(statement instanceof IASTDefaultStatement)) continue;
-			
-			defaultStatement = stmts[i + 1];
-			break;
-		}
-		
-		boolean first = true;
-		for(int i = 0; i < numStatements; ) {
-			IASTStatement statement = null;
-			GraphNode condExpr = null;
-			for(;i < numStatements; i++){
-				statement = body.getStatements()[i];
-				if(statement instanceof IASTCaseStatement) {
-					IASTExpression caseExpr = ((IASTCaseStatement) statement).getExpression();
-					condExpr = loadValue(caseExpr).getNode();
-				} else if (statement instanceof IASTExpressionStatement) {
-					i++;
-					break;
-				}
-			}
-			
-			//TODO deal with default in switch
-			if(condExpr == null)
-				break;
-			
-			IASTStatement elseStatement = null;
-			if(first == true)
-				elseStatement = defaultStatement;
-			
-			GraphNode compareOpNode = _gvplGraph.addGraphNode("==", NodeType.E_OPERATION);
-			condExpr.addDependentNode(compareOpNode);
-			controlNode.addDependentNode(compareOpNode);
-
-			IfConditionCDT.loadIfCondition(compareOpNode, statement, elseStatement, this);
-			first = false;
-		}
 	}
 	
 	void loadDeleteOp(ICPPASTDeleteExpression deleteExpr) {

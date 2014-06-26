@@ -196,8 +196,6 @@ public class Function extends BaseScopeCDT {
 			if(_astInterpreter.isFunctionTypedef(declSpec)) {
 				funcParameter = new FuncParameter(IndirectionType.E_FUNCTION_POINTER);
 			} else {
-				// TODO use the type of the parameter
-				//TypeId type = _astInterpreter.getType(declSpec);
 				FuncParameter.IndirectionType parameterVarType = null;
 				parameterVarType = getIndirectionType(parameter.getDeclarator().getPointerOperators());
 				funcParameter = new FuncParameter(parameterVarType);
@@ -320,9 +318,7 @@ public class Function extends BaseScopeCDT {
 	public int getNumParameters() {
 		return _originalParameters.size();
 	}
-	
-	//TODO improve! Can be done with bindings? There is a function in Eclipse IDE that
-	// do this. It points the implementations of a function
+
 	/**
 	 * Returns true if the declarations are equivalent. It's used to verify if one function
 	 * is the implementation of the other in a derived class 
@@ -339,7 +335,6 @@ public class Function extends BaseScopeCDT {
 		if(_originalParameters.size() != other._originalParameters.size())
 			return false;
 		
-		//TODO review if this have to be done every time
 		List<FuncParameter> parameters = new ArrayList<FuncParameter>();
 		for(int i = 0; i < getNumParameters(); i++)
 			parameters.add(getOriginalParameter(i));
