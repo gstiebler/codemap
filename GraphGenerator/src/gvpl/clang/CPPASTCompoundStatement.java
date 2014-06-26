@@ -29,6 +29,12 @@ public class CPPASTCompoundStatement extends ASTNode implements org.eclipse.cdt.
 		}
 	}
 	
+	// May be used past the reading of the input ast file
+	public CPPASTCompoundStatement(List<IASTStatement> statements) {
+		super("", null);
+		_statements = statements;
+	}
+	
 	public static IASTStatement loadStatement(Cursor cursor, ASTNode parent) {
 		String stmtLine = cursor.getLine();
 		String stmtType = CPPASTTranslationUnit.getType(stmtLine);
