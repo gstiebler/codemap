@@ -54,4 +54,4 @@ int main()
 ```
 
 Now, try to guess the value of the "a" variable looking at this image:
-![Graph Image](hhttps://www.dropbox.com/s/5ehhz7at96ja6jb/polimosfismo.PNG?dl=0 "Input image")
+![Graph Image](https://raw.githubusercontent.com/gstiebler/codemap/master/polymorphism.png)
