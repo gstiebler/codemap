@@ -1,9 +1,9 @@
 # codemap
-The objective of this project is the generate e data-flow representation of C++ code.
+The objective of this project is the generate a data-flow representation of C++ code.
 
 To understand the purpose of this project, please do the following exercise. Discover what is the value of the "a" variable after the execution of the following C++ code. Measure the time you took to do so.
 
-
+```
 class BaseClass
 {
 	int _baseMember;
@@ -51,6 +51,7 @@ int main()
 	bcPointer = new ClassA();
 	int a = bcPointer->process(40);
 }
+```
 
-
-Now, now to guess the value of the "a" variable looking the for image in this link: https://www.dropbox.com/s/5ehhz7at96ja6jb/polimosfismo.PNG?dl=0.
+Now, try to guess the value of the "a" variable looking at this image:
+![Graph Image](hhttps://www.dropbox.com/s/5ehhz7at96ja6jb/polimosfismo.PNG?dl=0 "Input image")
