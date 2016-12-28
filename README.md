@@ -1,5 +1,5 @@
 # codemap
-The objective of this project is the generate a data-flow representation of C++ code.
+The objective of this project is to generate a data-flow representation of C++ code.
 
 To understand the purpose of this project, please do the following exercise. Discover what is the value of the "a" variable after the execution of the following C++ code. Measure the time you took to do so.
 
@@ -53,5 +53,5 @@ int main()
 }
 ```
 
-Now, try to guess the value of the "a" variable looking at this image:
+Now, try to guess the value of the "a" variable by looking at this image:
 ![Graph Image](https://raw.githubusercontent.com/gstiebler/codemap/master/polymorphism.png)
